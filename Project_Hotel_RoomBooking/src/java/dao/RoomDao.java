@@ -141,7 +141,7 @@ public class RoomDao {
         return false;
     }
 
-    // Xóa mềm (soft delete)
+    // Xóa mền để không ảnh hướng mấy bnawgr kia
     public boolean deleteRoom(int id) {
         String sql = "UPDATE Rooms SET isDelete = 1 WHERE id = ?";
 
