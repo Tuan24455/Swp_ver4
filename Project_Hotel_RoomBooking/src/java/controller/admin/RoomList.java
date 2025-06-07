@@ -13,8 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.awt.Robot;
 import java.util.List;
+import java.util.Map;
 import model.Room;
 
 /**
@@ -60,12 +60,18 @@ public class RoomList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         RoomDao dao = new RoomDao();
-        List<Room> room = dao.getAllRooms();
-        request.setAttribute("room", room);
-        request.getRequestDispatcher("admin/roomList.jsp").forward(request, response);
-    } 
+        List<Room> room = dao.getAllRooms();    
+        
+        Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
 
-    /** 
+        int totalRooms = room.size();
+        request.setAttribute("room", room);
+        request.setAttribute("totalRooms", totalRooms);
+        request.setAttribute("statusCounts", statusCounts);
+        request.getRequestDispatcher("admin/roomList.jsp").forward(request, response);
+    }
+
+    /**
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response

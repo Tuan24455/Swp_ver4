@@ -67,7 +67,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Total Rooms</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">150</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${totalRooms}</h2>
                   <p class="card-text text-info">
                     <i class="fas fa-bed me-1"></i> All room types
                   </p>
@@ -78,7 +78,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Available</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">87</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Available'] != null ? statusCounts['Available'] : 0}</h2>
                   <p class="card-text text-success">
                     <i class="fas fa-check-circle me-1"></i> Ready for booking
                   </p>
@@ -89,7 +89,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Occupied</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">45</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Occupied'] != null ? statusCounts['Occupied'] : 0}</h2>
                   <p class="card-text text-warning">
                     <i class="fas fa-user me-1"></i> Currently booked
                   </p>
@@ -100,7 +100,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Maintenance</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">18</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}</h2>
                   <p class="card-text text-danger">
                     <i class="fas fa-tools me-1"></i> Under maintenance
                   </p>
@@ -231,33 +231,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     </c:forEach>
                   </tbody>
                 </table>
-              </div>
-
-              <div
-                class="d-flex justify-content-between align-items-center mt-3 flex-wrap"
-              >
-                <small class="text-muted mb-2 mb-md-0"
-                  >Showing 1 to 4 of 150 entries</small
-                >
-                <nav aria-label="Page navigation">
-                  <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled">
-                      <a class="page-link" href="#">Previous</a>
-                    </li>
-                    <li class="page-item active">
-                      <a class="page-link" href="#">1</a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                      <a class="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>

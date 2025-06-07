@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Room;
 /**
  *
@@ -155,4 +157,25 @@ public class RoomDao {
 
         return false;
     }
+    
+    public Map<String, Integer> getRoomStatusCounts() {
+    Map<String, Integer> statusCounts = new HashMap<>();
+    String sql = "SELECT room_status, COUNT(*) AS total FROM Rooms WHERE isDelete = 0 GROUP BY room_status";
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            String status = rs.getString("room_status");
+            int count = rs.getInt("total");
+            statusCounts.put(status, count);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return statusCounts;
+}
 }
