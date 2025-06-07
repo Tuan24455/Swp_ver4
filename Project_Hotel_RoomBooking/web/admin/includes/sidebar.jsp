@@ -23,7 +23,7 @@
                 <i class="fas fa-hotel me-2"></i> Users
             </a>
             <a
-                c
+                href="${pageContext.request.contextPath}/promotionList"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'promotion' ? 'active' : ''}"
                 >
                 <i class="fas fa-hotel me-2"></i> Manage Promotions
@@ -71,9 +71,6 @@
             </div>
         </div>
 
-        <h6 class="menu-heading text-uppercase text-white-50 mt-4 px-3">
-            ROOMS SETTINGS
-        </h6>
         <div class="list-group list-group-flush">
             <a
                 href="roomlist.jsp"
@@ -81,17 +78,11 @@
                 >
                 <i class="fas fa-list me-2"></i> Room List
             </a>
-            <a
-                href="roomstatus.jsp"
-                class="list-group-item list-group-item-action py-3 ${param.activePage == 'roomstatus' ? 'active' : ''}"
-                >
-                <i class="fas fa-clipboard-list me-2"></i> Room Status
-            </a>
         </div>
 
         <!-- Account & System Section -->
         <h6 class="menu-heading text-uppercase text-white-50 mt-4 px-3">
-            ACCOUNT & SYSTEM
+           
         </h6>
         <div class="list-group list-group-flush">
             <a

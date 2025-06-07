@@ -13,15 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.Promotion;
 
 /**
  *
  * @author Phạm Quốc Tuấn
  */
-@WebServlet(name="PromotionList", urlPatterns={"/promotionList"})
-public class PromotionList extends HttpServlet {
+@WebServlet(name="deletePromotion", urlPatterns={"/deletePromotion"})
+public class deletePromotion extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +36,10 @@ public class PromotionList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PromotionList</title>");  
+            out.println("<title>Servlet deletePromotion</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet PromotionList at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet deletePromotion at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,17 +55,12 @@ public class PromotionList extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PromotionDao dao = new PromotionDao();
-        List<Promotion> pro = dao.getAllPromotions();
-        request.setAttribute("pro", pro);
-        request.getRequestDispatcher("admin/promotionsList.jsp").forward(request, response);
+    throws ServletException, IOException {
+        processRequest(request, response);
+    } 
 
-    }
-
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -76,7 +69,27 @@ public class PromotionList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+               String idStr = request.getParameter("id");
+        if (idStr != null) {
+            try {
+                int id = Integer.parseInt(idStr);
+                PromotionDao dao = new PromotionDao();
+                boolean deleted = dao.deletePromotion(id);
+                if (deleted) {
+                    
+                    response.sendRedirect(request.getContextPath() + "/promotionList");
+                } else {
+                    request.setAttribute("error", "Delete failed.");
+                    request.getRequestDispatcher("/admin/promotions.jsp").forward(request, response);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Invalid ID.");
+                request.getRequestDispatcher("admin/promotions.jsp").forward(request, response);
+            }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/promotionList");
+        }
     }
 
     /** 
