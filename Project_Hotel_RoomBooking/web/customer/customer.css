@@ -1,0 +1,536 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jun 6, 2025, 10:33:17 AM
+    Author     : ADMIN
+*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, #74ebd5, #9face6);
+    height: 100vh;
+    background-image: url('../img/Background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    max-width: 100%;
+}
+
+/* FORM CONTAINER */
+.form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 89vh; /* Adjust to allow space for header/footer if present */
+}
+
+.login-form{
+    background-color: white;
+    padding: 30px 40px;
+    width: 80%;
+    max-width: 90%;
+    height: auto;
+}
+
+/* MAIN FORM BOX */
+.form {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden; /* Rất quan trọng để ẩn các phần hình thức tràn trong quá trình di chuyển */
+    position: relative; /* Định vị cho vị trí các phần con có thể di chuyển */
+    height: auto; /* Cho phép điều chỉnh chiều cao tự động */
+    min-height: 480px; /* Đặt chiều cao tối thiểu để tránh tình trạng form bị sụp xuống quá nhỏ */
+}
+
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* TAB NAVIGATION (Email/Phone) */
+.form > div.login-tabs { /* Added a class 'login-tabs' to the div for clarity */
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative; /* For the dynamic underline */
+    border-bottom: 1px solid #eee; /* Default subtle underline */
+}
+
+.form > div.login-tabs span {
+    cursor: pointer;
+    padding: 10px 20px; /* Increased padding for easier clicking */
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    font-weight: normal;
+    color: #555; /* Default text color */
+    flex-grow: 1; /* Allows tabs to share space equally */
+    text-align: center;
+    z-index: 1; /* Ensures tabs are above the dynamic underline */
+    position: relative; /* Needed for z-index to work against ::after */
+}
+
+.form > div.login-tabs span.active-method {
+    font-weight: bold;
+    color: #4a69bd;
+}
+
+/* Dynamic underline for tabs */
+.form > div.login-tabs::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; /* Positions it below the border-bottom of the parent div */
+    height: 2px;
+    background-color: #4a69bd;
+    width: 50%; /* Each tab takes up 50% width */
+    transition: transform 0.3s ease-in-out;
+    left: 0; /* Default position for the first tab */
+}
+
+.form > div.login-tabs.active-phone::after {
+    transform: translateX(100%); /* Moves the underline to the right for the second tab */
+}
+
+
+/* COMMON FORM ELEMENT STYLES */
+form input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+form button {
+    margin: 2px 0;
+    width: 100%;
+    padding: 10px;
+    background-color: #4a69bd;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #1e3799;
+}
+
+form p {
+    margin-top: 15px;
+    text-align: center;
+}
+
+form a {
+    color: #4a69bd;
+    text-decoration: none;
+}
+
+form a:hover {
+    text-decoration: underline;
+}
+
+/* REMEMBER ME CHECKBOX SECTION */
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin: 10px 0 15px;
+    justify-content: space-between;
+}
+
+.remember-me input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+}
+
+.remember-me label {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Error message style */
+.error-message {
+    color: red;
+    text-align: center;
+}
+
+/*=================================================================================*/
+/*=======================            REGISTER               =======================*/
+/*=================================================================================*/
+/* Container for both steps */
+.register-container {
+    display: flex;
+    width: 800px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+
+/* Wrapper to slide forms */
+.form-wrapper {
+    display: flex;
+    width: 200%;
+    transition: transform 0.6s ease;
+}
+
+/* Shift left when moving to step 2 */
+.register-container.shift-left .form-wrapper {
+    transform: translateX(-100%);
+}
+
+/* Individual form section */
+.form-section {
+    flex: 1 0 100%;
+    padding: 40px;
+    justify-self: center;
+    align-self: center;
+}
+
+/* Titles */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+/* Input fields */
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4a69bd;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1e3799;
+}
+
+/*==================== FILTER MODAL ====================*/
+.filter-open-btn {
+    background-color: #4a69bd;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: 200px;
+    max-width: 300px;
+    justify-content: center;
+    margin: 30px auto; /* cách lề trên/dưới và tự căn giữa */
+    display: block;
+    text-align: center;
+}
+
+.filter-open-btn i {
+    font-size: 16px;
+}
+
+.filter-open-btn:hover {
+    background-color: #1e3799;
+    transform: translateY(-2px);
+}
+
+/* MODAL OVERLAY */
+.modal-overlayy {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* MODAL CONTENT: FLEX HÀNG NGANG, CÓ WRAP */
+.modal-contentt {
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 16px;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 90%;
+    width: 80%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    justify-content: center;
+}
+
+/* MỖI NHÓM FILTER */
+.filter-group {
+    flex: 0 1 auto; /* cho phép co giãn theo nội dung, wrap được */
+    min-width: 200px;
+    max-width: 300px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+}
+
+/* LABEL + INPUT */
+.filter-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.filter-group input[type="checkbox"],
+.filter-group input[type="date"],
+.filter-group input[type="number"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* CHECKBOX STYLE */
+.filter-group .checkbox-option {
+    display: flex;
+    justify-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.checkbox-option input{
+    max-width: 20%;
+}
+
+.checkbox-option label{
+    max-width: 80%;
+}
+
+/* NÚT LỌC */
+.filter-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #4a69bd;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    align-self: center;
+    transition: background-color 0.3s ease;
+}
+
+.filter-btn:hover {
+    background-color: #1e3799;
+}
+
+/*===============================    RoomList    ==================================*/
+/* Danh sach phong */
+/* ROOM LIST WRAPPER */
+.room-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.7); /* trắng với độ mờ 50% */
+    max-width: 90%;
+    margin: 20px auto;
+    border-radius: 20px;
+}
+
+/* ROOM CARD STYLING */
+.room-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    width: 250px;
+}
+
+.room-card:hover {
+    transform: scale(1.03);
+}
+
+.room-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.room-card h5 {
+    margin: 2px 16px 2px;
+    font-size: 12px;
+    color: #333;
+}
+
+.room-card p {
+    margin: 2px 16px 2px;
+    font-size: 14px;
+    color: #666;
+}
+
+.room-card p strong {
+    color: #000;
+}
+
+/*  Nut xem chi tiet phong*/
+.room-card .view-detail-btn {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px); /* bắt đầu trượt từ dưới */
+    transition: all 0.4s ease;
+    background-color: #4a69bd;
+    margin: 0 16px 10px;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    width: fit-content;
+    align-self: center;
+}
+
+.room-card:hover .view-detail-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* trượt lên */
+}
+
+/*==============================================================================*/
+/*============================       Register       ============================*/
+/*==============================================================================*/
+/* Container for both steps */
+.register-container {
+    display: flex;
+    width: 800px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+
+/* Wrapper to slide forms */
+.form-wrapper {
+    display: flex;
+    width: 200%;
+    transition: transform 0.6s ease;
+}
+
+/* Shift left when moving to step 2 */
+.register-container.shift-left .form-wrapper {
+    transform: translateX(-100%);
+}
+
+
+/* Individual form section */
+.form-section {
+    flex: 1 0 100%;
+    padding: 40px;
+    justify-self: center;
+    align-self: center;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+/*==============================================================================*/
+/*==========================       ROOM DETAIL       ===========================*/
+/*==============================================================================*/
+
+.room-detail-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: auto;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.room-image {
+    flex: 1 1 40%;
+    min-width: 300px;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.room-info {
+    flex: 1 1 60%;
+    padding: 30px;
+}
+
+.room-info h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 28px;
+}
+
+.room-info p {
+    font-size: 16px;
+    color: #444;
+    margin: 10px 0;
+}
+
+.room-info strong {
+    color: #222;
+}
