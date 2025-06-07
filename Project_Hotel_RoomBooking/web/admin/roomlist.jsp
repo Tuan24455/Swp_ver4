@@ -165,19 +165,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div
                 class="d-flex justify-content-between align-items-center mb-3 flex-wrap"
               >
-                <div class="d-flex align-items-center mb-2 mb-md-0">
-                  <span class="me-2 text-muted">Show</span>
-                  <select
-                    class="form-select form-select-sm"
-                    style="width: auto"
-                  >
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                  <span class="ms-2 text-muted">entries</span>
-                </div>
+  
                 <div
                   class="input-group search-table-input"
                   style="width: 250px"
@@ -208,13 +196,14 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     </tr>
                   </thead>
                   <tbody>
+                       <c:forEach var="r" items="${room}">
                     <tr>
-                      <td><strong>101</strong></td>
-                      <td>Standard Room</td>
-                      <td>1st Floor</td>
-                      <td>2 Guests</td>
-                      <td>$120.00</td>
-                      <td><span class="badge bg-success">Available</span></td>
+                      <td><strong>${r.roomNumber}</strong></td>
+                      <td>${r.roomTypeName}</td>
+                      <td>${r.floor}</td>
+                      <td>${r.capacity}</td>
+                      <td>${r.roomPrice}</td>
+                      <td><span class="badge bg-success">${r.roomStatus}</span></td>
                       <td>2025-05-25</td>
                       <td>
                         <div class="btn-group" role="group">
@@ -239,100 +228,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                         </div>
                       </td>
                     </tr>
-                    <tr>
-                      <td><strong>102</strong></td>
-                      <td>Deluxe Room</td>
-                      <td>1st Floor</td>
-                      <td>3 Guests</td>
-                      <td>$180.00</td>
-                      <td><span class="badge bg-warning">Occupied</span></td>
-                      <td>2025-05-24</td>
-                      <td>
-                        <div class="btn-group" role="group">
-                          <button
-                            class="btn btn-sm btn-outline-primary"
-                            title="View Details"
-                          >
-                            <i class="fas fa-eye"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-warning"
-                            title="Edit"
-                          >
-                            <i class="fas fa-edit"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-secondary"
-                            title="Check Out"
-                            disabled
-                          >
-                            <i class="fas fa-sign-out-alt"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><strong>201</strong></td>
-                      <td>Suite</td>
-                      <td>2nd Floor</td>
-                      <td>4 Guests</td>
-                      <td>$350.00</td>
-                      <td><span class="badge bg-danger">Maintenance</span></td>
-                      <td>2025-05-23</td>
-                      <td>
-                        <div class="btn-group" role="group">
-                          <button
-                            class="btn btn-sm btn-outline-primary"
-                            title="View Details"
-                          >
-                            <i class="fas fa-eye"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-warning"
-                            title="Edit"
-                          >
-                            <i class="fas fa-edit"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-success"
-                            title="Mark Available"
-                          >
-                            <i class="fas fa-check"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><strong>301</strong></td>
-                      <td>Presidential Suite</td>
-                      <td>3rd Floor</td>
-                      <td>6 Guests</td>
-                      <td>$750.00</td>
-                      <td><span class="badge bg-success">Available</span></td>
-                      <td>2025-05-25</td>
-                      <td>
-                        <div class="btn-group" role="group">
-                          <button
-                            class="btn btn-sm btn-outline-primary"
-                            title="View Details"
-                          >
-                            <i class="fas fa-eye"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-warning"
-                            title="Edit"
-                          >
-                            <i class="fas fa-edit"></i>
-                          </button>
-                          <button
-                            class="btn btn-sm btn-outline-info"
-                            title="Set Maintenance"
-                          >
-                            <i class="fas fa-tools"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    </c:forEach>
                   </tbody>
                 </table>
               </div>
