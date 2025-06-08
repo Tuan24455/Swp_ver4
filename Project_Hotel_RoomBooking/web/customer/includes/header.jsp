@@ -7,7 +7,7 @@
 
 <nav class="navbar">
     <div class="navbar-left">
-        <a href="home" class="logo">MyLogo</a>
+        <a href="home" style="text-decoration: none"><img class="logo" src="images/logo/logo.png" alt="Logo"/></a>
     </div>
 
     <div class="navbar-center">

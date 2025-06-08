@@ -18,11 +18,12 @@
 }
 
 /* Logo */
-.navbar .logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-  text-decoration: none;
+.navbar .logo { /* Selector này sẽ áp dụng cho thẻ <img class="logo"> */
+    max-height: 85px; /* Chiều cao tối đa, ví dụ 80px để logo không quá lớn */
+    width: auto; /* Giữ tỷ lệ khung hình */
+    vertical-align: middle; 
+    margin: -10px 0 0 0;
+    padding: 0;
 }
 
 /* Center nav links */
