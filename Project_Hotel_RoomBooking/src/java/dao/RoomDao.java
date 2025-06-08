@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.Room;
+import model.RoomType;
 /**
  *
  * @author Phạm Quốc Tuấn
@@ -178,4 +179,36 @@ public class RoomDao {
 
     return statusCounts;
 }
+    
+    public List<RoomType> getAllRoomTypes() {
+        List<RoomType> roomTypes = new ArrayList<>();
+        // Câu lệnh SQL để chọn ID và tên loại phòng từ bảng RoomTypes
+        String sql = "SELECT id, room_type FROM RoomTypes"; 
+
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                RoomType roomType = new RoomType();
+                roomType.setId(rs.getInt("id"));
+                roomType.setRoomType(rs.getString("room_type"));
+                roomTypes.add(roomType);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+            // Trong ứng dụng thực tế, bạn nên xử lý lỗi một cách mạnh mẽ hơn, ví dụ: log lỗi, throw exception.
+        }
+        return roomTypes; 
+    }
+    
+    public static void main(String[] args) {
+        List<RoomType> list = new ArrayList<>();
+        RoomDao dao = new RoomDao();
+        list = dao.getAllRoomTypes();
+        for (RoomType room : list) {
+            System.out.println(room);
+        }
+    }
 }
