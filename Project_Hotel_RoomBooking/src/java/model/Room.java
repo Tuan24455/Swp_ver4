@@ -12,6 +12,7 @@ public class Room {
     private int id;
     private String roomNumber;
     private int roomTypeId;
+    private String roomTypeName;
     private double roomPrice;
     private String roomStatus;
     private int capacity;
@@ -100,5 +101,13 @@ public class Room {
 
     public void setDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public String getRoomTypeName() {
+        return roomTypeName;
+    }
+
+    public void setRoomTypeName(String roomTypeName) {
+        this.roomTypeName = roomTypeName;
     }
 }
