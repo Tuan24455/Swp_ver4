@@ -10,6 +10,7 @@
     </head>
     <body>
         <jsp:include page="components/header.jsp"/>
+        <jsp:include page="customer/includes/header.jsp"/>
         <div class="form-container">
             <div class="register-container" id="formContainer">
                 <div class="form-wrapper">

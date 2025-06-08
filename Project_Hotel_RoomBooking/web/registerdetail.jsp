@@ -24,8 +24,8 @@
                             <!-- Hidden fields from step 1 -->
                             <input type="hidden" name="username" value="${username}"/>
                             <input type="hidden" name="password" value="${password}"/>
-
-                            <input type="text" name="fullName" placeholder="Họ và tên..." required />
+                            <input type="text" name="fistName" placeholder="Họ" required />
+                            <input type="text" name="lastName" placeholder="Tên" required />
                             <input type="date" name="birth" required />
                             <select name="gender" required>
                                 <option value="">Chọn giới tính</option>
