@@ -197,8 +197,7 @@ public class RoomDao {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); 
-            // Trong ứng dụng thực tế, bạn nên xử lý lỗi một cách mạnh mẽ hơn, ví dụ: log lỗi, throw exception.
+            e.printStackTrace();           
         }
         return roomTypes; 
     }
