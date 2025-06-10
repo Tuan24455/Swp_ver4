@@ -14,25 +14,25 @@
                 href="${pageContext.request.contextPath}dashboard.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'dashboard' ? 'active' : ''}"
                 >
-                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
             </a>
             <a
                 href="users.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'users' ? 'active' : ''}"
                 >
-                <i class="fas fa-hotel me-2"></i> Users
+                <i class="fas fa-hotel me-2"></i> Người dùng
             </a>
             <a
                 href="${pageContext.request.contextPath}/promotionList"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'promotion' ? 'active' : ''}"
                 >
-                <i class="fas fa-hotel me-2"></i> Manage Promotions
+                <i class="fas fa-hotel me-2"></i> Quản lý khuyến mãi
             </a>
             <a
                 href="bookings.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}"
                 >
-                <i class="fas fa-calendar-check me-2"></i> Manage Bookings
+                <i class="fas fa-calendar-check me-2"></i> Quản lý đặt phòng
             </a>
             <a
                 href="#"
@@ -41,7 +41,7 @@
                 data-bs-target="#roomBookSubmenu"
                 aria-expanded="${isReportActive ? 'true' : 'false'}"
                 >
-                <i class="fas fa-book me-2"></i> Reports & Analytics
+                <i class="fas fa-book me-2"></i> Báo cáo & Phân tích
                 <i class="fas fa-chevron-down ms-auto"></i>
             </a>
             <div
@@ -53,19 +53,19 @@
                         href="purchasereport.jsp"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'purchasereport' ? 'active' : ''}"
                         >
-                        <i class="fas fa-shopping-cart me-2"></i> Purchase Reports
+                        <i class="fas fa-shopping-cart me-2"></i> Báo cáo mua hàng
                     </a>
                     <a
                         href="stockreport.jsp"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'stockreport' ? 'active' : ''}"
                         >
-                        <i class="fas fa-boxes me-2"></i> Stock Reports
+                        <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
                     </a>
                     <a
                         href="bookingreport.jsp"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'bookingreport' ? 'active' : ''}"
                         >
-                        <i class="fas fa-chart-line me-2"></i> Booking Reports
+                        <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
                     </a>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                 href="${pageContext.request.contextPath}/roomList"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'roomlist' ? 'active' : ''}"
                 >
-                <i class="fas fa-list me-2"></i> Room List
+                <i class="fas fa-list me-2"></i> Danh sách phòng
             </a>
         </div>
 
@@ -89,14 +89,14 @@
                 href="account-settings.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'account-settings' ? 'active' : ''}"
                 >
-                <i class="fas fa-user-cog me-2"></i> Account Settings
+                <i class="fas fa-user-cog me-2"></i> Cài đặt tài khoản
             </a>
             <a
                 href="${pageContext.request.contextPath}/admin/logout"
                 class="list-group-item list-group-item-action py-3 text-danger"
-                onclick="return confirm('Are you sure you want to logout?')"
+                onclick="return confirm('Bạn có chắc muốn đăng xuất không?')"
                 >
-                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
             </a>
         </div>
     </div>
@@ -104,7 +104,7 @@
 
 <script>
     function confirmLogout() {
-        if (confirm("Are you sure you want to logout?")) {
+        if (confirm("Bạn có chắc muốn đăng xuất không?")) {
             // Invalidate session and redirect
             fetch("${pageContext.request.contextPath}/admin/logout", {
                 method: "POST",
