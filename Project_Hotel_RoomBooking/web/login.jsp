@@ -13,10 +13,10 @@
         <title>Đăng Nhập</title>
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="customer/customer.css" />
-        <link rel="stylesheet" href="components/component.css" />
+        <link rel="stylesheet" href="customer/includes/component.css" />
     </head>
     <body>
-        <jsp:include page="components/header.jsp"/>
+        <jsp:include page="customer/includes/header.jsp"/>
 
         <!-- Login 11 - Bootstrap Brain Component -->
         <section class="py-3 py-md-5 py-xl-8">

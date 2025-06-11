@@ -6,10 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Đăng Ký</title>
         <link rel="stylesheet" href="customer/customer.css" />
-        <link rel="stylesheet" href="components/component.css" />
+        <link rel="stylesheet" href="customer/includes/component.css" />
     </head>
     <body>
-        <jsp:include page="components/header.jsp"/>
         <jsp:include page="customer/includes/header.jsp"/>
         <div class="form-container">
             <div class="register-container" id="formContainer">
