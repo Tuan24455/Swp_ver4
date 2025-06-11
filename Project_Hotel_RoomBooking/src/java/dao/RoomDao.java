@@ -17,6 +17,7 @@ import model.Room;
 import model.RoomType;
 public class RoomDao {
 
+
     // Lấy tất cả phòng chưa bị xóa
     public List<Room> getAllRooms() {
         List<Room> list = new ArrayList<>();
