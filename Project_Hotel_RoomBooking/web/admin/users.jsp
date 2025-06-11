@@ -83,7 +83,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               </div>
               <div class="btn-group">
                 <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                  <i class="fas fa-plus me-2"></i>Add New User
+                  <i class="fas fa-plus me-2"></i> Add New Staff
                 </button>
               </div>
             </div>
