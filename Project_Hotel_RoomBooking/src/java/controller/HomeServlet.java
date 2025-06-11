@@ -69,8 +69,30 @@ public class HomeServlet extends HttpServlet {
         roomtypelist = dao.getAllRoomTypes();
         roomlist = dao.getAllRooms();
 
-        request.setAttribute("roomlist", roomlist);
+        // Phân trang
+        int pageSize = 8; // 8 phòng mỗi trang
+        int page = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int totalRooms = roomlist.size();
+        int totalPages = (int) Math.ceil((double) totalRooms / pageSize);
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalRooms);
+
+        List<Room> paginatedRooms = roomlist.subList(start, end);
+
+        request.setAttribute("roomlist", paginatedRooms);
         request.setAttribute("roomtypelist", roomtypelist);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
