@@ -100,6 +100,7 @@ public class LoginServlet extends HttpServlet {
 
                 } else {
                     username.setMaxAge(-1);
+                    pass.setMaxAge(-1);
                 }
                 response.sendRedirect("home");
             } else {

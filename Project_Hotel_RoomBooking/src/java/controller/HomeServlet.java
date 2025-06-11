@@ -5,16 +5,20 @@
 package controller;
 
 import dao.RoomDao;
+import dao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Room;
 import model.RoomType;
+import model.User;
 
 /**
  *
@@ -62,6 +66,7 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        checkCookie(request);
         List<Room> roomlist;
         List<RoomType> roomtypelist;
         RoomDao dao = new RoomDao();
@@ -94,6 +99,27 @@ public class HomeServlet extends HttpServlet {
         request.setAttribute("totalPages", totalPages);
 
         request.getRequestDispatcher("home.jsp").forward(request, response);
+    }
+    
+    void checkCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            String username = null;
+            String pass = null;
+            for (Cookie cookie : cookies) {
+                switch (cookie.getName()) {
+                    case "username" -> username = cookie.getValue();
+                    case "pass" -> pass = cookie.getValue();
+                }
+            }
+
+            UserDao dao = new UserDao();
+            User user = dao.loginByUsername(username, pass);
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+            }
+        }
     }
 
     /**
