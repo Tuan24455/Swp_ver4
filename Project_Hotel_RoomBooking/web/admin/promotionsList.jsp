@@ -68,13 +68,13 @@
                     </nav>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Promotions Management</h1>
+                        <h1 class="h3 mb-0">Quản lí dịch vụ</h1>
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addPromotionModal"
                             >
-                            <i class="fas fa-plus me-2"></i>Add New Promotion
+                            <i class="fas fa-plus me-2"></i>Thêm Dịch Vụ
                         </button>
                     </div>
                 </div>
@@ -190,7 +190,6 @@
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
-
                                                 </div>
                                             </td>
                                         </tr>
