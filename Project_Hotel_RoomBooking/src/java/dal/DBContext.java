@@ -30,12 +30,14 @@ public class DBContext {
     }
 
     public Connection getConnection() throws SQLException {
-        DBContext dbContext = new DBContext();
-        // Kiểm tra xem kết nối có null không trước khi trả về
-        if (dbContext.connection == null) {
+        // Simply return the connection that was created in the constructor
+        // and verify that it is valid before returning it. Creating a new
+        // DBContext here would open another connection and leak the current
+        // one.
+        if (connection == null || connection.isClosed()) {
             throw new SQLException("Failed to establish database connection through DBContext.");
         }
-        return dbContext.connection;
+        return connection;
     }
 
     public boolean isConnected() {
