@@ -224,9 +224,13 @@
                                                             <button class="btn btn-sm btn-outline-warning" title="Edit">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
+                                                            <form action="${pageContext.request.contextPath}/deleteRoom" method="POST" style="display:inline;" onsubmit="return confirmDelete(${r.roomNumber});">
+                                                                <input type="hidden" name="roomId" value="${r.id}" />
+                                                                <input type="hidden" name="action" value="delete" />
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -234,11 +238,18 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <script>
+                function confirmDelete(roomName) {
+                    return confirm('Are you sure you want to delete the room "' + roomName + '"?');
+                }
+            </script>
 
             <!-- Add Room Modal -->
             <div class="modal fade" id="addRoomModal" tabindex="-1">
@@ -316,7 +327,7 @@
                                             placeholder="Enter room features and amenities..."
                                             ></textarea>
                                     </div>
-                           
+
                                 </div>
                             </form>
                         </div>
