@@ -224,9 +224,9 @@
                                                             <button class="btn btn-sm btn-outline-warning" title="Edit">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
-                                                            <button class="btn btn-sm btn-outline-info" title="Set Maintenance">
-                                                                <i class="fas fa-tools"></i>
-                                                            </button>
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
                                                         </div>
                                                     </td>
                                                 </tr>
