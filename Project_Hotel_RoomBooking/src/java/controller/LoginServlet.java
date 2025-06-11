@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet {
 
         UserDao userdao = new UserDao();
         User user;
-        if (stringlog != null && stringlog.trim() != null) {
+        if (stringlog != null && !stringlog.trim().isEmpty()) {
             if (stringlog.matches("\\d+")) {
                 user = userdao.loginByPhone(stringlog, password);
             } else if (stringlog.contains("@")) {

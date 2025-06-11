@@ -32,10 +32,10 @@ public class DBContext {
     public Connection getConnection() throws SQLException {
         DBContext dbContext = new DBContext();
         // Kiểm tra xem kết nối có null không trước khi trả về
-        if (dbContext.connection == null) {
+        if (connection == null || connection.isClosed()) {
             throw new SQLException("Failed to establish database connection through DBContext.");
         }
-        return dbContext.connection;
+        return connection;
     }
 
     public boolean isConnected() {
