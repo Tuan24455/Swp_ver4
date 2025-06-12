@@ -32,7 +32,7 @@
 
                     <c:when test="${sessionScope.user.getRole() == 'Customer'}">
                         <span class="dropdown-item">Hello, ${sessionScope.user.getFullName()}</span>
-                        <a href="customer/customerInfor.jsp" class="dropdown-item"><i class="fas fa-user"></i> Thông tin cá nhân</a>
+                        <a href="information" class="dropdown-item"><i class="fas fa-user"></i> Thông tin cá nhân</a>
                         <a href="#" class="dropdown-item"><i class="fas fa-key"></i> Đổi mật khẩu</a>
                         <a href="#" class="dropdown-item"><i class="fas fa-history"></i> Lịch sử chi tiêu</a>
                         <a href="logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
