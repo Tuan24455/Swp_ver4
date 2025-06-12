@@ -68,7 +68,7 @@ public class RoomList extends HttpServlet {
         request.setAttribute("room", room);
         request.setAttribute("totalRooms", totalRooms);
         request.setAttribute("statusCounts", statusCounts);
-        request.getRequestDispatcher("admin/roomList.jsp").forward(request, response);
+        request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
     }
 
     /**

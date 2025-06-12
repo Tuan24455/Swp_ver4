@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import model.Room;
 import model.RoomType;
-public class RoomDao {
 
+public class RoomDao {
 
     // Lấy tất cả phòng chưa bị xóa
     public List<Room> getAllRooms() {
@@ -83,6 +83,21 @@ public class RoomDao {
         return null;
     }
 
+    public int getRoomTypeIdByName(String roomTypeName) {
+        String sql = "SELECT id FROM RoomTypes WHERE room_type = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, roomTypeName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // không tìm thấy
+    }
+
     // Thêm phòng mới
     public boolean insertRoom(Room room) {
         String sql = "INSERT INTO Rooms (room_number, room_type_id, room_price, room_status, capacity, description, image_url, floor, isDelete) "
@@ -110,9 +125,7 @@ public class RoomDao {
 
     // Cập nhật thông tin phòng
     public boolean updateRoom(Room room) {
-        String sql = "UPDATE Rooms SET room_number = ?, room_type_id = ?, room_price = ?, room_status = ?, "
-                + "capacity = ?, description = ?, image_url = ?, floor = ? WHERE id = ?";
-
+        String sql = "UPDATE Rooms SET room_number=?, room_type_id=?, room_price=?, room_status=?, capacity=?, description=?, image_url=?, floor=? WHERE id=?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, room.getRoomNumber());
@@ -126,11 +139,9 @@ public class RoomDao {
             ps.setInt(9, room.getId());
 
             return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         return false;
     }
 
@@ -200,7 +211,7 @@ public class RoomDao {
         String fstr = "abc";
         String str = "";
         for (int i = 0; i < fstr.length(); i++) {
-            str += (char)(fstr.charAt(i) - (fstr.length()-i));
+            str += (char) (fstr.charAt(i) - (fstr.length() - i));
         }
         System.out.println(str);
     }
