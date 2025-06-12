@@ -67,6 +67,12 @@
                         >
                         <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
                     </a>
+                    <a
+                        href="ratingreport.jsp"
+                        class="list-group-item list-group-item-action py-2 ${param.activePage == 'ratingreport' ? 'active' : ''}"
+                        >
+                        <i class="fas fa-star me-2"></i> Đánh Giá Xếp Hạng
+                    </a>
                 </div>
             </div>
         </div>
