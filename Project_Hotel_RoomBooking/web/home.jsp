@@ -14,10 +14,10 @@
         <link rel="stylesheet" href="customer/customer.css" />
         <link rel="stylesheet" href="customer/includes/component.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     </head>
     <body>
         <jsp:include page="customer/includes/header.jsp"/>
-
 
         <main>
             <!-- Nút mở bộ lọc -->
@@ -68,28 +68,56 @@
             </div>
 
             <!--         ROOM LIST         -->
-            <div class="room-list">
-                <c:forEach var="room" items="${roomlist}">
-                    <div class="room-card">
-                        <img src="${room.getImageUrl()}" alt="Room Image">
-                        <h5>Phòng ${room.getRoomNumber()}</h5>
-                        <h5>
-                            Loại phòng: ${room.getRoomTypeName()}
-                        </h5>
-                        <p style="color: red"><strong>Giá:</strong> ${room.getRoomPrice()} VND</p>
-                        <p><strong>Sức chứa:</strong> ${room.getCapacity()} người</p>
-                        <c:choose>
-                            <c:when test="${fn:length(room.getDescription()) > 50}">
-                                <p>${fn:substring(room.getDescription(), 0, 50)}...</p>
-                            </c:when>
-                            <c:otherwise>
-                                <p>${room.getDescription()}</p>
-                            </c:otherwise>
-                        </c:choose>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div class="room-list">
+                    <c:forEach var="room" items="${roomlist}">
+                        <div class="room-card">
+                            <img src="${room.getImageUrl()}" alt="Room Image">
+                            <h5>Phòng ${room.getRoomNumber()}</h5>
+                            <h5>
+                                Loại phòng: ${room.getRoomTypeName()}
+                            </h5>
+                            <p style="color: red"><strong>Giá:</strong> ${room.getRoomPrice()} VND</p>
+                            <p><strong>Sức chứa:</strong> ${room.getCapacity()} người</p>
+                            <c:choose>
+                                <c:when test="${fn:length(room.getDescription()) > 50}">
+                                    <p>${fn:substring(room.getDescription(), 0, 50)}...</p>
+                                </c:when>
+                                <c:otherwise>
+                                    <p>${room.getDescription()}</p>
+                                </c:otherwise>
+                            </c:choose>
 
-                        <a href="roomdetail?id=${room.getId()}" class="view-detail-btn">Xem chi tiết</a>
-                    </div>
-                </c:forEach>
+                            <a href="roomdetail?id=${room.getId()}" class="view-detail-btn">Xem chi tiết</a>
+                        </div>
+                    </c:forEach>
+                </div>
+                <!-- PHÂN TRANG -->
+                <div class="pagination">
+                    <c:if test="${totalPages > 1}">
+                        <nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
+                            <ul class="pagination">
+                                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                    <a class="page-link" href="home?page=${currentPage - 1}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <c:forEach var="i" begin="1" end="${totalPages}">
+                                    <li class="page-item ${i == currentPage ? 'active' : ''}">
+                                        <a class="page-link" href="home?page=${i}">${i}</a>
+                                    </li>
+                                </c:forEach>
+
+                                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                    <a class="page-link" href="home?page=${currentPage + 1}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </c:if>
+                </div>
             </div>
         </main>
         <script>
