@@ -11,7 +11,7 @@
     <div class="sidebar-menu">
         <div class="list-group list-group-flush">
             <a
-                href="${pageContext.request.contextPath}dashboard.jsp"
+                href="${pageContext.request.contextPath}/admin/dashboard.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'dashboard' ? 'active' : ''}"
                 >
                 <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
@@ -56,7 +56,7 @@
                         <i class="fas fa-shopping-cart me-2"></i> Báo cáo mua hàng
                     </a>
                     <a
-                        href="stockreport.jsp"
+                        href="${pageContext.request.contextPath}/stockreport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'stockreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
@@ -66,6 +66,12 @@
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'bookingreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
+                    </a>
+                    <a
+                        href="ratingreport.jsp"
+                        class="list-group-item list-group-item-action py-2 ${param.activePage == 'ratingreport' ? 'active' : ''}"
+                        >
+                        <i class="fas fa-star me-2"></i> Đánh Giá Xếp Hạng
                     </a>
                 </div>
             </div>

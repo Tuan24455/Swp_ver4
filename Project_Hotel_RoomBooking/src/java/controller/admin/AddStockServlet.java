@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 
 /**
- * Servlet để thêm stock cho items
+ * author: phạm xuân hiếu
  */
 @WebServlet(name = "AddStockServlet", urlPatterns = {"/addstock"})
 public class AddStockServlet extends HttpServlet {
