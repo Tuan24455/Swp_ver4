@@ -3,9 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.admin;
+package controller.customer;
 
-import dao.RoomDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,16 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import model.Room;
 
 /**
  *
- * @author Phạm Quốc Tuấn
+ * @author ADMIN
  */
-@WebServlet(name="RoomList", urlPatterns={"/roomList"})
-public class RoomList extends HttpServlet {
+@WebServlet(name="InformationServlet", urlPatterns={"/information"})
+public class InformationServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +35,10 @@ public class RoomList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RoomList</title>");  
+            out.println("<title>Servlet InformationServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RoomList at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet InformationServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,19 +55,10 @@ public class RoomList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        RoomDao dao = new RoomDao();
-        List<Room> room = dao.getAllRooms();    
-        
-        Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
+        request.getRequestDispatcher("/customer/customerInfor.jsp").forward(request, response);
+    } 
 
-        int totalRooms = room.size();
-        request.setAttribute("room", room);
-        request.setAttribute("totalRooms", totalRooms);
-        request.setAttribute("statusCounts", statusCounts);
-        request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
-    }
-
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response

@@ -3,26 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.admin;
+package controller;
 
-import dao.RoomDao;
+import dao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import model.Room;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
- * @author Phạm Quốc Tuấn
+ * @author ADMIN
  */
-@WebServlet(name="RoomList", urlPatterns={"/roomList"})
-public class RoomList extends HttpServlet {
+@WebServlet(name="LoginServlet", urlPatterns={"/login"})
+public class LoginServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +39,10 @@ public class RoomList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RoomList</title>");  
+            out.println("<title>Servlet LoginServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RoomList at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet LoginServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,19 +59,10 @@ public class RoomList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        RoomDao dao = new RoomDao();
-        List<Room> room = dao.getAllRooms();    
-        
-        Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
+        processRequest(request, response);
+    } 
 
-        int totalRooms = room.size();
-        request.setAttribute("room", room);
-        request.setAttribute("totalRooms", totalRooms);
-        request.setAttribute("statusCounts", statusCounts);
-        request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
-    }
-
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -80,8 +71,46 @@ public class RoomList extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+        String stringlog = request.getParameter("stringlog");
+        String password = request.getParameter("password");
+        String rememberMe = request.getParameter("rememberMe");
+
+        UserDao userdao = new UserDao();
+        User user;
+        if (stringlog != null && !stringlog.trim().isEmpty()) {
+            if (stringlog.matches("\\d+")) {
+                user = userdao.loginByPhone(stringlog, password);
+            } else if (stringlog.contains("@")) {
+                user = userdao.loginByEmail(stringlog, password);
+            } else {
+                user = userdao.loginByUsername(stringlog, password);
+            }
+
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                Cookie username = new Cookie("username", user.getUserName());
+                Cookie pass = new Cookie("pass", user.getPass());
+                if (rememberMe != null) {
+                    username.setMaxAge(60 * 60 * 24 * 3);
+                    pass.setMaxAge(60 * 60 * 24 * 3);
+                    response.addCookie(username);
+                    response.addCookie(pass);
+
+                } else {
+                    username.setMaxAge(-1);
+                    pass.setMaxAge(-1);
+                }
+                response.sendRedirect("home");
+            } else {
+                request.setAttribute("error", "Sai tài khoản hoặc mật khẩu");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+        } else {
+            request.setAttribute("error", "Hãy điền tài khoản mật khẩu");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
     }
 
     /** 

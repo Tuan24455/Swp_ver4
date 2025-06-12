@@ -12,11 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Promotion;
-
-/**
- *
- * @author Phạm Quốc Tuấn
- */
 public class PromotionDao {
 
     public List<Promotion> getAllPromotions() {
