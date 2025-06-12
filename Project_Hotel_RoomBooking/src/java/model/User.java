@@ -24,8 +24,6 @@ public class User {
     private String avatarUrl;
     private boolean isDeleted;
 
-    // Getter and Setter methods
-
     public int getId() {
         return id;
     }
