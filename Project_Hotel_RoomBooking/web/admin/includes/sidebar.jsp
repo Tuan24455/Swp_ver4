@@ -11,7 +11,7 @@
     <div class="sidebar-menu">
         <div class="list-group list-group-flush">
             <a
-                href="${pageContext.request.contextPath}dashboard.jsp"
+                href="${pageContext.request.contextPath}/admin/dashboard.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'dashboard' ? 'active' : ''}"
                 >
                 <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
