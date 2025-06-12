@@ -56,7 +56,7 @@
                         <i class="fas fa-shopping-cart me-2"></i> Báo cáo mua hàng
                     </a>
                     <a
-                        href="stockreport.jsp"
+                        href="${pageContext.request.contextPath}/stockreport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'stockreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
