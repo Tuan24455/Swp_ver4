@@ -99,7 +99,6 @@ public class ContactServlet extends HttpServlet {
         }
 
         // Chuyển tiếp yêu cầu trở lại trang JSP của form
-        // Đảm bảo đường dẫn này đúng với vị trí file JSP của bạn (ví dụ: /index.jsp)
         request.getRequestDispatcher("/contact.jsp").forward(request, response);
     }
 }
