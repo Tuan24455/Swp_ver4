@@ -11,48 +11,107 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Register Detail</title>
         <link rel="stylesheet" href="customer/customer.css" />
-        <link rel="stylesheet" href="components/component.css" />
+        <link rel="stylesheet" href="customer/includes/component.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     </head>
-    <body>
-        <jsp:include page="components/header.jsp"/>
-        <div class="form-container">
-            <div class="register-container" id="formContainer">
-                <div class="form-wrapper">
-                    <div class="form-section">
-                        <h2>Thông tin cá nhân</h2>
-                        <form action="registerdetail" method="POST">
-                            <!-- Hidden fields from step 1 -->
-                            <input type="hidden" name="username" value="${username}"/>
-                            <input type="hidden" name="password" value="${password}"/>
-                            <input type="text" name="fistName" placeholder="Họ" required />
-                            <input type="text" name="lastName" placeholder="Tên" required />
-                            <input type="date" name="birth" required />
-                            <select name="gender" required>
-                                <option value="">Chọn giới tính</option>
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
-                                <option value="Bê đê">Khác</option>
-                            </select>
-                            <input type="email" name="email" placeholder="Email @gmail.com" pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" required />
-                            <input type="text" name="phone" placeholder="Số điện thoại..." required />
-                            <input type="text" name="address" placeholder="Địa chỉ..." required />
+    <body style="background-image: url(images/system/Background.jpg)">
+        <jsp:include page="customer/includes/header.jsp"/>
+        <section class="py-3 py-md-5 py-xl-8">
+            <div class="container login-form">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-5">
+                            <h2 class="display-5 fw-bold text-center">Thông tin cá nhân</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-10 col-xl-8">
+                        <div class="row gy-5 justify-content-center">
+                            <div class="col-12 col-lg-7">
+                                <form action="register" method="post">
+                                    <div class="row g-3">
+                                        <!-- Họ -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" name="fName" id="firstName" placeholder="Họ" required>
+                                                <label for="firstName">Họ</label>
+                                            </div>
+                                        </div>
 
-                            <input type="hidden" name="role" value="customer" />
-                            <input type="hidden" name="isDeleted" value="false" />
+                                        <!-- Tên -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" name="lName" id="lastName" placeholder="Tên" required>
+                                                <label for="lastName">Tên</label>
+                                            </div>
+                                        </div>
 
-                            <button type="submit">Tạo tài khoản</button>
-                        </form>
+                                        <!-- Ngày sinh -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control" name="birth" id="birth" placeholder="Ngày sinh" required>
+                                                <label for="birth">Ngày sinh</label>
+                                            </div>
+                                        </div>
 
-                        <!-- Nút quay lại nằm ngoài form, để không bị lỗi lồng form -->
-                        <form action="registerdetail" method="GET">
-                            <input type="hidden" name="username" value="${username}" />
-                            <input type="hidden" name="password" value="${password}" />
-                            <button type="submit">Quay lại</button>
-                        </form>
+                                        <!-- Giới tính -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select class="form-select" name="gender" id="gender" required>
+                                                    <option value="" disabled selected>Chọn giới tính</option>
+                                                    <option value="Nam">Nam</option>
+                                                    <option value="Nữ">Nữ</option>
+                                                    <option value="Khác">Khác</option>
+                                                </select>
+                                                <label for="gender">Giới tính</label>
+                                            </div>
+                                        </div>
 
+                                        <!-- Email -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="email" class="form-control" name="email" id="email" placeholder="Email @gmail.com"
+                                                       pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" required>
+                                                <label for="email">Email @gmail.com</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Số điện thoại -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" name="phone" id="phone" placeholder="Số điện thoại..." required>
+                                                <label for="phone">Số điện thoại</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Địa chỉ (full width) -->
+                                        <div class="col-12">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" name="address" id="address" placeholder="Địa chỉ..." required>
+                                                <label for="address">Địa chỉ</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Lỗi -->
+                                        <div class="col-12">
+                                            <i style="color: red">${requestScope.error}</i>
+                                        </div>
+
+                                        <!-- Nút đăng ký -->
+                                        <div class="col-12 text-center">
+                                            <button class="btn btn-primary btn-lg px-5" type="submit">Đăng ký</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+        <jsp:include page="customer/includes/footer.jsp"/>
     </body>
 </html>

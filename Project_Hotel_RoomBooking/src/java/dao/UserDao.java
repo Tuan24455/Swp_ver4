@@ -143,6 +143,22 @@ public class UserDao {
         return null;
     }
 
+    public boolean isExist(String username) {
+        String sql = "SELECT 1 FROM Users WHERE user_name = ? AND isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // Trả về true nếu có bản ghi
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking user existence: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         System.out.println(new UserDao().loginByUsername("tranthithuy", "password456"));
     }
