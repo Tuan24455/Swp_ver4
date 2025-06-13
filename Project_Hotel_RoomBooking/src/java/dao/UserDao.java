@@ -9,14 +9,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import model.User;
 
-/**
- *
- * @author Phạm Quốc Tuấn
- */
 public class UserDao {
 
     // Lấy tất cả người dùng chưa bị xóa
@@ -159,7 +157,61 @@ public class UserDao {
         return false;
     }
 
+    public void insert(User user) {
+        String sql = "INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url, isDeleted) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getUserName());
+            ps.setString(2, user.getPass());
+            ps.setString(3, user.getFullName());
+            ps.setDate(4, new java.sql.Date(user.getBirth().getTime()));
+            ps.setString(5, user.getGender());
+            ps.setString(6, user.getEmail());
+            ps.setString(7, user.getPhone());
+            ps.setString(8, user.getAddress());
+            ps.setString(9, user.getRole());
+            ps.setString(10, user.getAvatarUrl());
+            ps.setBoolean(11, user.isDeleted());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Có thể log ra logger thực tế
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(new UserDao().loginByUsername("tranthithuy", "password456"));
+        try {
+            // Tạo ngày sinh từ chuỗi
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date birth = sdf.parse("2001-09-15");
+
+            // Tạo user giả lập
+            User testUser = new User(
+                    "newuser123",             // username
+                    "123456",                 // password
+                    "Nguyễn Văn A",           // full name
+                    birth,
+                    "Nam",
+                    "newuser123@gmail.com",
+                    "0987654321",
+                    "Hà Nội",
+                    "Customer",
+                    "",                       // avatar URL
+                    false                    // isDeleted
+            );
+
+            // Gọi DAO để insert
+            UserDao dao = new UserDao();
+            dao.insert(testUser);
+
+            System.out.println("✅ User inserted successfully.");
+
+        } catch (Exception e) {
+            System.err.println("❌ Error inserting user: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

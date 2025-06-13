@@ -6,11 +6,8 @@ package model;
 
 import java.util.Date;
 
-/**
- *
- * @author Phạm Quốc Tuấn
- */
 public class User {
+
     private int id;
     private String userName;
     private String pass;
@@ -23,6 +20,23 @@ public class User {
     private String role;
     private String avatarUrl;
     private boolean isDeleted;
+
+    public User() {
+    }
+
+    public User(String userName, String pass, String fullName, Date birth, String gender, String email, String phone, String address, String role, String avatarUrl, boolean isDeleted) {
+        this.userName = userName;
+        this.pass = pass;
+        this.fullName = fullName;
+        this.birth = birth;
+        this.gender = gender;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.role = role;
+        this.avatarUrl = avatarUrl;
+        this.isDeleted = isDeleted;
+    }
 
     public int getId() {
         return id;

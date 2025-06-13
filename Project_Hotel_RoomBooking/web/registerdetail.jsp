@@ -6,10 +6,10 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Register Detail</title>
+        <title>Chi tiết đăng ký</title>
         <link rel="stylesheet" href="customer/customer.css" />
         <link rel="stylesheet" href="customer/includes/component.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-5">
-                            <h2 class="display-5 fw-bold text-center">Thông tin cá nhân</h2>
+                            <h2 class="display-5 fw-bold text-center">Chi tiết đăng ký</h2>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,10 @@
                     <div class="col-12 col-lg-10 col-xl-8">
                         <div class="row gy-5 justify-content-center">
                             <div class="col-12 col-lg-7">
-                                <form action="register" method="post">
+                                <form action="registerDetail" method="post">
+                                    <!-- Hidden fields from step 1 -->
+                                    <input type="hidden" name="userName" value="${userName}"/>
+                                    <input type="hidden" name="password" value="${password}"/>
                                     <div class="row g-3">
                                         <!-- Họ -->
                                         <div class="col-md-6">

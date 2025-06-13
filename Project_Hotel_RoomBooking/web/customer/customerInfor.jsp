@@ -18,14 +18,6 @@
             <div id="page-content-wrapper" class="flex-fill">
 
                 <div class="container-fluid py-4">
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                Account Settings
-                            </li>
-                        </ol>
-                    </nav>
 
                     <!-- Page Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
