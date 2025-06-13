@@ -94,14 +94,17 @@ public class addRoom extends HttpServlet {
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
         // Đường dẫn vật lý lưu file
-        String uploadPath = getServletContext().getRealPath("/") + "images/rooms";
+//        String uploadPath = getServletContext().getRealPath("/") + "images/rooms";
+        String uploadPath = getServletContext().getRealPath("/images/rooms");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
+
+        // ✅ Lưu file vào thư mục
         filePart.write(uploadPath + File.separator + fileName);
 
-        // Đường dẫn ảnh lưu trong DB
+        // ✅ Đường dẫn lưu trong DB (trình duyệt truy cập được)
         String imageUrl = "images/rooms/" + fileName;
 
         RoomDao dao = new RoomDao();
