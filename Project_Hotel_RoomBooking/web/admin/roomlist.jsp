@@ -21,7 +21,7 @@
             />
     </head>
     <body>
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex" id="wrapper" >
             <jsp:include page="includes/sidebar.jsp">
                 <jsp:param name="activePage" value="roomlist" />
             </jsp:include>
@@ -29,7 +29,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav
+                <nav 
                     class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
                     >
                     <div class="container-fluid">
@@ -39,7 +39,7 @@
                     </div>
                 </nav>
 
-                <div class="container-fluid py-4">
+                <div class="container-fluid py-4" >
                     <nav aria-label="breadcrumb" class="mb-4">
                         <ol class="breadcrumb custom-breadcrumb">
                             <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
