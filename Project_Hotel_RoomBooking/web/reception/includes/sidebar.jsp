@@ -37,19 +37,12 @@ prefix="c" %>
       >
         <i class="fas fa-calendar-check me-2"></i> Quản lý đặt phòng
       </a>
-       <a
-        href="${pageContext.request.contextPath}/promotionList"
-        class="list-group-item list-group-item-action py-3 ${param.activePage == 'promotion' ? 'active' : ''}"
-      >
-        <i class="fas fa-calendar-check me-2"></i> Quản lý khuyến mãi      
-       </a>
-
 
     </div>
 
     <div class="list-group list-group-flush">
       <a
-        href="${pageContext.request.contextPath}/roomList"
+        href="${pageContext.request.contextPath}/roomStatus"
         class="list-group-item list-group-item-action py-3 ${param.activePage == 'roomlist' ? 'active' : ''}"
       >
         <i class="fas fa-list me-2"></i> Danh sách phòng

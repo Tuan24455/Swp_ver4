@@ -32,7 +32,7 @@
                 href="bookings.jsp"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}"
                 >
-                <i class="fas fa-calendar-check me-2"></i> Quản lý đặt phòng
+                <i class="fas fa-calendar-check me-2"></i> Quản lí dịch vụ
             </a>
             <a
                 href="#"
