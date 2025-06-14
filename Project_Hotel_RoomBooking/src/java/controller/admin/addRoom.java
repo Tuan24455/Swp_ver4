@@ -116,15 +116,7 @@ public class addRoom extends HttpServlet {
             return;
         }
 
-        Room room = new Room();
-        room.setRoomNumber(roomNumber);
-        room.setRoomTypeId(roomTypeId);
-        room.setRoomPrice(Double.parseDouble(roomPrice));
-        room.setRoomStatus(roomStatus);
-        room.setCapacity(Integer.parseInt(capacity));
-        room.setDescription(description);
-        room.setImageUrl(imageUrl);
-        room.setFloor(Integer.parseInt(floor));
+        Room room = new Room(roomNumber, roomTypeId, Double.parseDouble(roomPrice), roomStatus, Integer.parseInt(capacity), description, imageUrl, Integer.parseInt(floor));
 
         boolean success = dao.insertRoom(room);
 

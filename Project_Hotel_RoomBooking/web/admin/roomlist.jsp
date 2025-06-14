@@ -196,8 +196,8 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <c:forEach var="r" items="${room}">
+                                    <c:forEach var="r" items="${room}">
+                                        <tbody>                               
                                             <tr>
                                                 <td>
                                                     <img src="${r.imageUrl}" alt="Room Image" width="80" height="60" style="object-fit:cover; border-radius: 6px;" />
@@ -238,103 +238,102 @@
                                                             </form>
                                                         </div>
                                                     </td>
-                                                </tr>
-                                            </c:forEach>
-                                        </tbody>                                      
-                                    </table>
-                                </div>
-                               <!-- update Room Modal -->
-                               <c:forEach var="r" items="${room}">
-                                <div class="modal fade" id="editRoomModal${r.id}" tabindex="-1" aria-labelledby="updateRoomLabel${r.id}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <form action="updateRoom" method="post" enctype="multipart/form-data">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="updateRoomLabel${r.id}">Cập nhật phòng</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-
-                                                <div class="modal-body">
-                                                    <input type="hidden" name="roomId" value="${r.id}" />
-                                                    <input type="hidden" name="oldImageUrl" value="${r.imageUrl}" />
-
-                                                    <div class="row g-3">
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Room Number</label>
-                                                            <input type="text" class="form-control" name="roomNumber" value="${r.roomNumber}" required />
-                                                        </div>
-
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Room Type</label>
-                                                            <select name="roomType" class="form-select" required>
-                                                                <option value="Standard Room" ${r.roomTypeName == 'Standard Room' ? 'selected' : ''}>Standard Room</option>
-                                                                <option value="Deluxe Room" ${r.roomTypeName == 'Deluxe Room' ? 'selected' : ''}>Deluxe Room</option>
-                                                                <option value="Suite" ${r.roomTypeName == 'Suite' ? 'selected' : ''}>Suite</option>
-                                                                <option value="Presidential Suite" ${r.roomTypeName == 'Presidential Suite' ? 'selected' : ''}>Presidential Suite</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Floor</label>
-                                                            <select class="form-select" name="floor" required>
-                                                                <option value="1" <c:if test="${r.floor == 1}">selected</c:if>>1st Floor</option>
-                                                                <option value="2" <c:if test="${r.floor == 2}">selected</c:if>>2nd Floor</option>
-                                                                <option value="3" <c:if test="${r.floor == 3}">selected</c:if>>3rd Floor</option>
-                                                                <option value="4" <c:if test="${r.floor == 4}">selected</c:if>>4th Floor</option>
-                                                                <option value="5" <c:if test="${r.floor == 5}">selected</c:if>>5th Floor</option>
-                                                                </select>
+                                                </tr>          
+                                            </tbody>  
+                                            <div class="modal fade" id="editRoomModal${r.id}" tabindex="-1" aria-labelledby="updateRoomLabel${r.id}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <form action="updateRoom" method="post" enctype="multipart/form-data">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="updateRoomLabel${r.id}">Cập nhật phòng</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
 
-                                                            <div class="col-md-6">
-                                                                <label class="form-label">Capacity</label>
-                                                                <select class="form-select" name="capacity" required>
-                                                                    <option value="1" ${r.capacity == 1 ? 'selected' : ''}>1 Guest</option>
-                                                                <option value="2" ${r.capacity == 2 ? 'selected' : ''}>2 Guests</option>
-                                                                <option value="3" ${r.capacity == 3 ? 'selected' : ''}>3 Guests</option>
-                                                                <option value="4" ${r.capacity == 4 ? 'selected' : ''}>4 Guests</option>
-                                                                <option value="6" ${r.capacity == 6 ? 'selected' : ''}>6 Guests</option>
-                                                            </select>
-                                                        </div>
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="roomId" value="${r.id}" />
+                                                                <input type="hidden" name="oldImageUrl" value="${r.imageUrl}" />
 
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Price</label>
-                                                            <input type="number" class="form-control" step="0.01" name="price" value="${r.roomPrice}" required />
-                                                        </div>
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Room Number</label>
+                                                                        <input type="text" class="form-control" name="roomNumber" value="${r.roomNumber}" required />
+                                                                    </div>
 
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                <option value="Occupied" ${r.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                <option value="Cleaning" ${r.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                            </select>
-                                                        </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Room Type</label>
+                                                                        <select name="roomType" class="form-select" required>
+                                                                            <option value="Standard Room" ${r.roomTypeName == 'Standard Room' ? 'selected' : ''}>Standard Room</option>
+                                                                            <option value="Deluxe Room" ${r.roomTypeName == 'Deluxe Room' ? 'selected' : ''}>Deluxe Room</option>
+                                                                            <option value="Suite" ${r.roomTypeName == 'Suite' ? 'selected' : ''}>Suite</option>
+                                                                            <option value="Presidential Suite" ${r.roomTypeName == 'Presidential Suite' ? 'selected' : ''}>Presidential Suite</option>
+                                                                        </select>
+                                                                    </div>
 
-                                                        <div class="col-md-12">
-                                                            <label class="form-label">Image</label>
-                                                            <div class="mb-2">
-                                                                <img src="${pageContext.request.contextPath}/${r.imageUrl}" width="100" class="rounded" />
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Floor</label>
+                                                                        <select class="form-select" name="floor" required>
+                                                                            <option value="1" <c:if test="${r.floor == 1}">selected</c:if>>1st Floor</option>
+                                                                            <option value="2" <c:if test="${r.floor == 2}">selected</c:if>>2nd Floor</option>
+                                                                            <option value="3" <c:if test="${r.floor == 3}">selected</c:if>>3rd Floor</option>
+                                                                            <option value="4" <c:if test="${r.floor == 4}">selected</c:if>>4th Floor</option>
+                                                                            <option value="5" <c:if test="${r.floor == 5}">selected</c:if>>5th Floor</option>
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Capacity</label>
+                                                                            <select class="form-select" name="capacity" required>
+                                                                                <option value="1" ${r.capacity == 1 ? 'selected' : ''}>1 Guest</option>
+                                                                            <option value="2" ${r.capacity == 2 ? 'selected' : ''}>2 Guests</option>
+                                                                            <option value="3" ${r.capacity == 3 ? 'selected' : ''}>3 Guests</option>
+                                                                            <option value="4" ${r.capacity == 4 ? 'selected' : ''}>4 Guests</option>
+                                                                            <option value="6" ${r.capacity == 6 ? 'selected' : ''}>6 Guests</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Price</label>
+                                                                        <input type="number" class="form-control" step="0.01" name="price" value="${r.roomPrice}" required />
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Status</label>
+                                                                        <select name="status" class="form-select" required>
+                                                                            <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
+                                                                            <option value="Occupied" ${r.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
+                                                                            <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+                                                                            <option value="Cleaning" ${r.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="col-md-12">
+                                                                        <label class="form-label">Image</label>
+                                                                        <div class="mb-2">
+                                                                            <img src="${pageContext.request.contextPath}/${r.imageUrl}" width="100" class="rounded" />
+                                                                        </div>
+                                                                        <input type="file" class="form-control" name="roomImage" accept="image/*" />
+                                                                    </div>
+
+                                                                    <div class="col-12">
+                                                                        <label class="form-label">Description</label>
+                                                                        <textarea name="description" class="form-control" rows="3" required>${r.description}</textarea>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <input type="file" class="form-control" name="roomImage" accept="image/*" />
-                                                        </div>
 
-                                                        <div class="col-12">
-                                                            <label class="form-label">Description</label>
-                                                            <textarea name="description" class="form-control" rows="3" required>${r.description}</textarea>
-                                                        </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-primary">Update Room</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-primary">Update Room</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
+                                            </div>
+                                        </c:forEach>
+                                    </table>
                                 </div>
-                               </c:forEach>
+                                <!-- update Room Modal -->
+
                             </div>
                         </div>
 
@@ -402,9 +401,10 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Status</label>
                                         <select class="form-select" name="status" required>
-                                            <option value="available">Available</option>
-                                            <option value="maintenance">Maintenance</option>
-                                            <option value="cleaning">Cleaning</option>
+                                            <option value="Available">Available</option>
+                                            <option value="Occupied">Occupied</option>
+                                            <option value="Maintenance">Maintenance</option>
+                                            <option value="Cleaning">Cleaning</option>
                                         </select>
                                     </div>
                                     <div class="col-md-12">

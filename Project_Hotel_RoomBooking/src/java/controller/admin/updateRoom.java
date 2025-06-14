@@ -8,6 +8,7 @@ import dao.RoomDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import model.Room;
  * @author Phạm Quốc Tuấn
  */
 @WebServlet(name = "updateRoom", urlPatterns = {"/updateRoom"})
+@MultipartConfig
 public class updateRoom extends HttpServlet {
 
     /**
@@ -81,47 +83,83 @@ public class updateRoom extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         try {
-            int roomId = Integer.parseInt(request.getParameter("roomId"));
+            // Lấy roomId
+            String roomIdStr = request.getParameter("roomId");
+            if (roomIdStr == null || roomIdStr.trim().isEmpty()) {
+                throw new IllegalArgumentException("Thiếu roomId hoặc roomId không hợp lệ!");
+            }
+            int roomId = Integer.parseInt(roomIdStr);
+
+            // roomNumber
             String roomNumber = request.getParameter("roomNumber");
+            if (roomNumber == null || roomNumber.trim().isEmpty()) {
+                throw new IllegalArgumentException("roomNumber không được để trống.");
+            }
+
+            // roomType
             String roomTypeName = request.getParameter("roomType");
-            double price = Double.parseDouble(request.getParameter("price"));
+            if (roomTypeName == null || roomTypeName.trim().isEmpty()) {
+                throw new IllegalArgumentException("roomType không hợp lệ.");
+            }
+
+            // price
+            String priceStr = request.getParameter("price");
+            if (priceStr == null || priceStr.trim().isEmpty()) {
+                throw new IllegalArgumentException("Giá phòng không hợp lệ.");
+            }
+            double price = Double.parseDouble(priceStr);
+
+            // status
             String status = request.getParameter("status");
+            if (status == null || status.trim().isEmpty()) {
+                throw new IllegalArgumentException("Trạng thái phòng không hợp lệ.");
+            }
+
+            // capacity
             String capStr = request.getParameter("capacity");
             if (capStr == null || capStr.trim().isEmpty()) {
                 throw new IllegalArgumentException("Giá trị capacity không hợp lệ!");
             }
             int capacity = Integer.parseInt(capStr);
 
-            String description = request.getParameter("description");
-            String oldImageUrl = request.getParameter("oldImageUrl");
+            // floor
             String floorStr = request.getParameter("floor");
             if (floorStr == null || floorStr.trim().isEmpty()) {
                 throw new IllegalArgumentException("Giá trị floor không hợp lệ!");
             }
             int floor = Integer.parseInt(floorStr);
 
-            // Lấy ảnh mới nếu có
+            // description có thể nullable tùy yêu cầu
+            String description = request.getParameter("description");
+
+            // Ảnh cũ
+            String oldImageUrl = request.getParameter("oldImageUrl");
+
+            // Ảnh mới
             Part filePart = request.getPart("roomImage");
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String fileName = filePart != null ? Paths.get(filePart.getSubmittedFileName()).getFileName().toString() : null;
 
             String imageUrl;
             if (fileName == null || fileName.trim().isEmpty()) {
-                imageUrl = oldImageUrl; // giữ ảnh cũ
+                imageUrl = oldImageUrl;
             } else {
                 String uploadPath = getServletContext().getRealPath("/") + "images/rooms";
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
-
                 filePart.write(uploadPath + File.separator + fileName);
                 imageUrl = "images/rooms/" + fileName;
             }
 
-            // Lấy room_type_id từ tên
+            // Tìm room_type_id
             RoomDao dao = new RoomDao();
             int roomTypeId = dao.getRoomTypeIdByName(roomTypeName);
+            if (roomTypeId == -1) {
+                throw new IllegalArgumentException("Loại phòng '" + roomTypeName + "' không tồn tại.");
+            }
 
+            // Tạo và cập nhật phòng
             Room room = new Room();
             room.setId(roomId);
             room.setRoomNumber(roomNumber);
@@ -142,18 +180,18 @@ public class updateRoom extends HttpServlet {
                 request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
             }
 
+        } catch (IllegalArgumentException e) {
+            // Xử lý lỗi dữ liệu đầu vào
+            request.setAttribute("error", "Lỗi dữ liệu: " + e.getMessage());
+            request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
+
         } catch (Exception e) {
-            e.printStackTrace(); // In lỗi cụ thể ra console
-
-            // Gửi lỗi cụ thể về trang JSP
-            String errorMessage = "Đã xảy ra lỗi trong quá trình cập nhật phòng: " + e.getClass().getSimpleName() + " - " + e.getMessage();
-
-            // Đặt thuộc tính lỗi để hiển thị trong JSP
-            request.setAttribute("error", errorMessage);
-
-            // Gửi về lại trang danh sách kèm lỗi
+            // Lỗi hệ thống khác
+            e.printStackTrace();
+            request.setAttribute("error", "Lỗi hệ thống: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
         }
+
     }
 
     /**

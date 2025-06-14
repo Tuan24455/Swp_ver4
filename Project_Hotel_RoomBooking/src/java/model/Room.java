@@ -21,7 +21,22 @@ public class Room {
     private int floor;
     private boolean isDeleted;
 
-    // Getter and Setter methods
+    public Room() {
+    }
+
+    public Room(String roomNumber, int roomTypeId, double roomPrice, String roomStatus, int capacity, String description, String imageUrl, int floor) {
+        this.roomNumber = roomNumber;
+        this.roomTypeId = roomTypeId;
+        this.roomPrice = roomPrice;
+        this.roomStatus = roomStatus;
+        this.capacity = capacity;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.floor = floor;
+    }
+    
+
+    
 
     public int getId() {
         return id;
