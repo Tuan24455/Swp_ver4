@@ -209,9 +209,10 @@
                                                 <td>$${r.roomPrice}</td>
                                                 <td>
                                                     <span class="badge
-                                                          ${r.roomStatus == 'Available' ? 'bg-success' : 
+                                                          ${r.roomStatus == 'Available' ? 'bg-light text-dark' : 
                                                             (r.roomStatus == 'Occupied' ? 'bg-warning text-dark' : 
-                                                            (r.roomStatus == 'Maintenance' ? 'bg-danger' : 'bg-secondary'))}">
+                                                            (r.roomStatus == 'Maintenance' ? 'bg-danger' :
+                                                            (r.roomStatus == 'Cleaning' ? 'bg-info text-dark' : 'bg-secondary')))}">
                                                               ${r.roomStatus}
                                                           </span>
                                                     </td>
