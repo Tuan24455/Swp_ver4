@@ -201,6 +201,56 @@ public class RoomDao {
         return roomTypes;
     }
 
+    public List<Room> filterRooms(String roomTypeName, String status, Integer floor) {
+        List<Room> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT r.*, rt.room_type AS room_type_name FROM Rooms r ");
+        sql.append("JOIN RoomTypes rt ON r.room_type_id = rt.id WHERE r.isDelete = 0 ");
+
+        if (roomTypeName != null && !roomTypeName.isEmpty()) {
+            sql.append("AND rt.room_type = ? ");
+        }
+        if (status != null && !status.isEmpty()) {
+            sql.append("AND r.room_status = ? ");
+        }
+        if (floor != null) {
+            sql.append("AND r.floor = ? ");
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            if (roomTypeName != null && !roomTypeName.isEmpty()) {
+                ps.setString(index++, roomTypeName);
+            }
+            if (status != null && !status.isEmpty()) {
+                ps.setString(index++, status);
+            }
+            if (floor != null) {
+                ps.setInt(index++, floor);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Room room = new Room();
+                room.setId(rs.getInt("id"));
+                room.setRoomNumber(rs.getString("room_number"));
+                room.setRoomTypeId(rs.getInt("room_type_id"));
+                room.setRoomTypeName(rs.getString("room_type_name"));
+                room.setRoomPrice(rs.getDouble("room_price"));
+                room.setRoomStatus(rs.getString("room_status"));
+                room.setCapacity(rs.getInt("capacity"));
+                room.setDescription(rs.getString("description"));
+                room.setImageUrl(rs.getString("image_url"));
+                room.setFloor(rs.getInt("floor"));
+                room.setDeleted(rs.getBoolean("isDelete"));
+                list.add(room);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         List<RoomType> list;
         RoomDao dao = new RoomDao();

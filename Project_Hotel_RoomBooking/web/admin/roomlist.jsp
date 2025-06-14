@@ -110,52 +110,44 @@
                     </div>
 
                     <!-- Filter Section -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">Room Type</label>
-                                    <select class="form-select">
-                                        <option value="">All Types</option>
-                                        <option value="standard">Standard</option>
-                                        <option value="deluxe">Deluxe</option>
-                                        <option value="suite">Suite</option>
-                                        <option value="presidential">Presidential</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select">
-                                        <option value="">All Status</option>
-                                        <option value="available">Available</option>
-                                        <option value="occupied">Occupied</option>
-                                        <option value="maintenance">Maintenance</option>
-                                        <option value="cleaning">Cleaning</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Floor</label>
-                                    <select class="form-select">
-                                        <option value="">All Floors</option>
-                                        <option value="1">1st Floor</option>
-                                        <option value="2">2nd Floor</option>
-                                        <option value="3">3rd Floor</option>
-                                        <option value="4">4th Floor</option>
-                                        <option value="5">5th Floor</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">&nbsp;</label>
-                                    <div class="d-grid">
-                                        <button class="btn btn-outline-primary">
-                                            <i class="fas fa-search me-2"></i>Filter
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                    <form method="get" action="roomList" class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label">Loại phòng</label>
+                            <select name="roomType" class="form-select">
+                                <option value="">Tất cả</option>
+                                <c:forEach var="rt" items="${roomTypes}">
+                                    <option value="${rt.roomType}" ${param.roomType == rt.roomType ? 'selected' : ''}>
+                                        ${rt.roomType}
+                                    </option>
+                                </c:forEach>
+                            </select>
                         </div>
-                    </div>
 
+                        <div class="col-md-3">
+                            <label class="form-label">Tình trạng</label>
+                            <select name="roomStatus" class="form-select">
+                                <option value="">Tất cả</option>
+                                <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
+                                <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
+                                <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Tầng</label>
+                            <select name="floor" class="form-select">
+                                <option value="">Tất cả</option>
+                                <c:forEach begin="1" end="5" var="i">
+                                    <option value="${i}" ${param.floor == i ? 'selected' : ''}>Tầng ${i}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 align-self-end">
+                            <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                        </div>
+                    </form>
                     <!-- Rooms Table -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-white border-bottom py-3">
@@ -196,7 +188,7 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <c:forEach var="r" items="${room}">
+                                    <c:forEach var="r" items="${rooms}">
                                         <tbody>                               
                                             <tr>
                                                 <td>
