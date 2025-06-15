@@ -21,9 +21,11 @@
 
         <main>
             <!-- Nút mở bộ lọc -->
-            <button type="button" class="filter-open-btn" onclick="toggleFilter()">
+            <button type="button" class="filter-open-btn" onclick="toggleFilter()"
+                    style="font-size: 14px; padding: 6px 10px;">
                 <i class="fas fa-filter"></i> Lọc phòng
             </button>
+
 
             <!-- Modal -->
             <div id="filterModal" class="modal-overlayy">
@@ -69,6 +71,7 @@
 
             <!--         ROOM LIST         -->
             <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h2 class="text-center mb-4" style="margin: 5px 0 0 0; color: #fff">Danh Sách Phòng</h2>
                 <div class="room-list">
                     <c:forEach var="room" items="${roomlist}">
                         <div class="room-card">
