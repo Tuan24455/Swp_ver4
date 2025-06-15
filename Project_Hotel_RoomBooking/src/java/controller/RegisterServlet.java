@@ -54,7 +54,6 @@ public class RegisterServlet extends HttpServlet {
 
     private boolean isValidPassword(String password) {
         if (password.length() < 8 || password.length() > 16) return false;
-        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$")) return false;
-        return true;
+        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$");
     }
 }
