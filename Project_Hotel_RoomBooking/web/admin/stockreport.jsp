@@ -80,11 +80,11 @@ pageEncoding="UTF-8" %>
           <div class="page-header">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <h1 class="h2 mb-2">Inventory & Stock Reports</h1>
+                <h1 class="h2 mb-2">Báo Cáo Tồn Kho</h1>
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Home</a></li>
-                    <li class="breadcrumb-item active">Stock Reports</li>
+                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Báo Cáo Tồn Kho</li>
                   </ol>
                 </nav>
               </div>
@@ -218,43 +218,33 @@ pageEncoding="UTF-8" %>
               <!-- Detailed Stock Report -->
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Detailed Stock Report</h5>
+                  <h5 class="mb-0">Bảng Thống Kê</h5>
                 </div>
                 <div class="card-body">
                   <!-- Filter Section -->
                   <div class="row g-3 mb-4">
                     <div class="col-md-3">
-                      <label class="form-label">Category</label>
+                      <label class="form-label">Danh mục</label>
                       <select class="form-select" id="categoryFilter">
-                        <option value="">All Categories</option>
+                        <option value="">Tất cả danh mục</option>
                         <c:forEach var="cat" items="${categories}">
                           <option value="${cat}" ${param.category == cat ? 'selected' : ''}>${cat}</option>
                         </c:forEach>
                       </select>
                     </div>
                     <div class="col-md-3">
-                      <label class="form-label">Stock Status</label>
+                      <label class="form-label">Trạng thái tồn kho</label>
                       <select class="form-select" id="statusFilter">
-                        <option value="">All Status</option>
-                        <option value="in-stock">In Stock</option>
-                        <option value="low-stock">Low Stock</option>
-                        <option value="out-of-stock">Out of Stock</option>
-                      </select>
-                    </div>
-                    <div class="col-md-3">
-                      <label class="form-label">Supplier</label>
-                      <select class="form-select" id="supplierFilter">
-                        <option value="">All Suppliers</option>
-                        <option value="hotel-supplies">Hotel Supplies Co.</option>
-                        <option value="linen-express">Linen Express</option>
-                        <option value="maintenance-pro">Maintenance Pro</option>
+                        <option value="">Tất cả</option>
+                        <option value="in-stock">Còn hàng</option>
+                        <option value="low-stock">Gần hết</option>
+                        <option value="out-of-stock">Hết hàng</option>
                       </select>
                     </div>
                     <div class="col-md-3">
                       <label class="form-label">&nbsp;</label>
                       <div class="d-grid">
-                        <button class="btn btn-outline-primary" onclick="applyFilters()">
-                          <i class="fas fa-filter me-2"></i>Apply Filters
+                        <button class="btn btn-outline-primary" onclick="applyFilters()"><i class="fas fa-filter me-2"></i>Lọc
                         </button>
                       </div>
                     </div>
