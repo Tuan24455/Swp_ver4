@@ -48,7 +48,7 @@
   </head>
   <body>
     <div class="d-flex" id="wrapper">
-      <jsp:include page="includes/sidebar.jsp">
+      <jsp:include page="/admin/includes/sidebar.jsp">
         <jsp:param name="activePage" value="purchasereport" />
       </jsp:include>
 
@@ -66,37 +66,18 @@
         </nav>
 
         <div class="container-fluid py-4">
-          <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb custom-breadcrumb">
-              <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Purchase Reports
-              </li>
-            </ol>
-          </nav>
-
           <!-- Page Header -->
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Room Invoice & Purchase Reports</h1>
-            <div class="btn-group">
-              <button
-                class="btn btn-outline-primary"
-                onclick="exportReport('pdf')"
-              >
-                <i class="fas fa-file-pdf me-2"></i>Export PDF
-              </button>
-              <button
-                class="btn btn-outline-success"
-                onclick="exportReport('excel')"
-              >
-                <i class="fas fa-file-excel me-2"></i>Export Excel
-              </button>
-              <button
-                class="btn btn-outline-info"
-                onclick="generateInvoiceReport()"
-              >
-                <i class="fas fa-receipt me-2"></i>Generate Report
-              </button>
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="h2 mb-2">Báo Cáo Mua Hàng</h1>
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Home</a></li>
+                    <li class="breadcrumb-item active">Báo Cáo Mua Hàng</li>
+                  </ol>
+                </nav>
+              </div>
             </div>
           </div>
 
