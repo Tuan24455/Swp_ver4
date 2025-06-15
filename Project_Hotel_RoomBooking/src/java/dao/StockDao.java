@@ -215,6 +215,68 @@ public class StockDao {
     }
 
     // Fetch items by category filter
+    // Insert new inventory item and initial stock quantity
+    public boolean insertItem(String itemName, String category, int quantity, double unitPrice) {
+        String insertItemSql = "INSERT INTO InventoryItems (item_name, category, unit_price, min_required, isDeleted) VALUES (?, ?, ?, 0, 0)";
+        String insertStockSql = "INSERT INTO StockReports (item_id, remaining_stock) VALUES (?, ?)";
+
+        try (Connection conn = new DBContext().getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement psItem = conn.prepareStatement(insertItemSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                psItem.setString(1, itemName);
+                psItem.setString(2, category);
+                psItem.setDouble(3, unitPrice);
+                int affected = psItem.executeUpdate();
+                if (affected == 0) {
+                    conn.rollback();
+                    LOGGER.warning("Insert item failed, no rows affected.");
+                    return false;
+                }
+                int generatedId;
+                try (ResultSet rs = psItem.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                    } else {
+                        conn.rollback();
+                        LOGGER.warning("Insert item failed, no ID obtained.");
+                        return false;
+                    }
+                }
+
+                try (PreparedStatement psStock = conn.prepareStatement(insertStockSql)) {
+                    psStock.setInt(1, generatedId);
+                    psStock.setInt(2, quantity);
+                    psStock.executeUpdate();
+                }
+
+                conn.commit();
+                return true;
+            } catch (SQLException ex) {
+                conn.rollback();
+                LOGGER.log(Level.SEVERE, "Error inserting item", ex);
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Unexpected error inserting item", e);
+        }
+        return false;
+    }
+
+    // Insert new category (if Categories table exists)
+    public boolean insertCategory(String categoryName) {
+        String sql = "INSERT INTO Categories (category_name) VALUES (?)";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, categoryName);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Database error inserting category", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Unexpected error inserting category", e);
+        }
+        return false;
+    }
+
     public List<StockItem> getByCategory(String category) {
         List<StockItem> list = new ArrayList<>();
         String sql = "SELECT i.id, i.item_name, i.category, i.unit_price, " +
