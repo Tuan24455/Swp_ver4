@@ -17,12 +17,14 @@ public class StockDao {
     private static final Logger LOGGER = Logger.getLogger(StockDao.class.getName());
     
     private static final String SQL =
-            "SELECT i.id, i.item_name, i.category, i.unit_price, " +
+            "SELECT i.id, i.item_name, COALESCE(c.category_name, 'Chưa phân loại') AS category, i.unit_price, " +
             "COALESCE(i.min_required, 0) AS min_required, " +
             "COALESCE(MAX(sr.remaining_stock), 0) AS remaining_stock " +
-            "FROM InventoryItems i LEFT JOIN StockReports sr ON i.id = sr.item_id " +
+            "FROM InventoryItems i " +
+            "LEFT JOIN StockReports sr ON i.id = sr.item_id " +
+            "LEFT JOIN Categories c ON i.category_id = c.id " +
             "WHERE i.isDeleted = 0 " +
-            "GROUP BY i.id, i.item_name, i.category, i.unit_price, i.min_required";
+            "GROUP BY i.id, i.item_name, c.category_name, i.unit_price, i.min_required";
 
     public List<StockItem> getAll() {
         List<StockItem> list = new ArrayList<>();
@@ -144,12 +146,13 @@ public class StockDao {
     // Fetch items with low stock (remaining_stock <= min_required)
     public List<StockItem> getLowStockItems() {
         List<StockItem> list = new ArrayList<>();
-        String sql = "SELECT i.id, i.item_name, i.category, i.unit_price, " +
+        String sql = "SELECT i.id, i.item_name, COALESCE(c.category_name, 'Chưa phân loại') AS category, i.unit_price, " +
                      "COALESCE(i.min_required, 0) AS min_required, " +
                      "COALESCE(MAX(sr.remaining_stock), 0) AS remaining_stock " +
                      "FROM InventoryItems i LEFT JOIN StockReports sr ON i.id = sr.item_id " +
+                     "LEFT JOIN Categories c ON i.category_id = c.id " +
                      "WHERE i.isDeleted = 0 " +
-                     "GROUP BY i.id, i.item_name, i.category, i.unit_price, i.min_required " +
+                     "GROUP BY i.id, i.item_name, c.category_name, i.unit_price, i.min_required " +
                      "HAVING COALESCE(MAX(sr.remaining_stock), 0) <= COALESCE(i.min_required, 0) " +
                      "AND COALESCE(i.min_required, 0) > 0 " +
                      "ORDER BY (COALESCE(MAX(sr.remaining_stock), 0) - COALESCE(i.min_required, 0)) ASC";
@@ -188,7 +191,7 @@ public class StockDao {
     // Fetch distinct categories for filter
     public List<String> getCategories() {
         List<String> categories = new ArrayList<>();
-        String sql = "SELECT DISTINCT category FROM InventoryItems WHERE isDeleted = 0";
+        String sql = "SELECT category_name FROM Categories ORDER BY category_name";
         
         LOGGER.info("Attempting to fetch categories");
         
@@ -199,7 +202,7 @@ public class StockDao {
             LOGGER.info("Executing query: " + sql);
             
             while (rs.next()) {
-                String category = rs.getString("category");
+                String category = rs.getString("category_name");
                 categories.add(category);
                 LOGGER.info("Found category: " + category);
             }
@@ -216,15 +219,47 @@ public class StockDao {
 
     // Fetch items by category filter
     // Insert new inventory item and initial stock quantity
-    public boolean insertItem(String itemName, String category, int quantity, double unitPrice) {
-        String insertItemSql = "INSERT INTO InventoryItems (item_name, category, unit_price, min_required, isDeleted) VALUES (?, ?, ?, 0, 0)";
+    public boolean insertItem(String itemName, String categoryName, int quantity, double unitPrice) {
+        String selectCategorySql = "SELECT id FROM Categories WHERE category_name = ?";
+        String insertCategorySql = "INSERT INTO Categories (category_name) VALUES (?)";
+        String insertItemSql = "INSERT INTO InventoryItems (item_name, category_id, unit_price, min_required, isDeleted) VALUES (?, ?, ?, 0, 0)";
         String insertStockSql = "INSERT INTO StockReports (item_id, remaining_stock) VALUES (?, ?)";
 
         try (Connection conn = new DBContext().getConnection()) {
             conn.setAutoCommit(false);
+            int categoryId = -1;
+            // Try to find existing category id
+            try (PreparedStatement psCat = conn.prepareStatement(selectCategorySql)) {
+                psCat.setString(1, categoryName);
+                try (ResultSet rs = psCat.executeQuery()) {
+                    if (rs.next()) {
+                        categoryId = rs.getInt("id");
+                    }
+                }
+            }
+            // If not found, insert new category
+            if (categoryId == -1) {
+                try (PreparedStatement psNewCat = conn.prepareStatement(insertCategorySql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                    psNewCat.setString(1, categoryName);
+                    psNewCat.executeUpdate();
+                    try (ResultSet rs = psNewCat.getGeneratedKeys()) {
+                        if (rs.next()) {
+                            categoryId = rs.getInt(1);
+                        }
+                    }
+                }
+            }
+
+            if (categoryId == -1) {
+                conn.rollback();
+                LOGGER.warning("Unable to determine category id for name: " + categoryName);
+                return false;
+            }
+
+            int generatedId;
             try (PreparedStatement psItem = conn.prepareStatement(insertItemSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 psItem.setString(1, itemName);
-                psItem.setString(2, category);
+                psItem.setInt(2, categoryId);
                 psItem.setDouble(3, unitPrice);
                 int affected = psItem.executeUpdate();
                 if (affected == 0) {
@@ -232,7 +267,6 @@ public class StockDao {
                     LOGGER.warning("Insert item failed, no rows affected.");
                     return false;
                 }
-                int generatedId;
                 try (ResultSet rs = psItem.getGeneratedKeys()) {
                     if (rs.next()) {
                         generatedId = rs.getInt(1);
@@ -242,19 +276,18 @@ public class StockDao {
                         return false;
                     }
                 }
-
-                try (PreparedStatement psStock = conn.prepareStatement(insertStockSql)) {
-                    psStock.setInt(1, generatedId);
-                    psStock.setInt(2, quantity);
-                    psStock.executeUpdate();
-                }
-
-                conn.commit();
-                return true;
-            } catch (SQLException ex) {
-                conn.rollback();
-                LOGGER.log(Level.SEVERE, "Error inserting item", ex);
             }
+
+            try (PreparedStatement psStock = conn.prepareStatement(insertStockSql)) {
+                psStock.setInt(1, generatedId);
+                psStock.setInt(2, quantity);
+                psStock.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Database error inserting item", e);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Unexpected error inserting item", e);
         }
@@ -279,12 +312,13 @@ public class StockDao {
 
     public List<StockItem> getByCategory(String category) {
         List<StockItem> list = new ArrayList<>();
-        String sql = "SELECT i.id, i.item_name, i.category, i.unit_price, " +
+        String sql = "SELECT i.id, i.item_name, COALESCE(c.category_name, 'Chưa phân loại') AS category, i.unit_price, " +
                      "COALESCE(i.min_required, 0) AS min_required, " +
                      "COALESCE(MAX(sr.remaining_stock), 0) AS remaining_stock " +
                      "FROM InventoryItems i LEFT JOIN StockReports sr ON i.id = sr.item_id " +
-                     "WHERE i.isDeleted = 0 AND i.category = ? " +
-                     "GROUP BY i.id, i.item_name, i.category, i.unit_price, i.min_required";
+                     "LEFT JOIN Categories c ON i.category_id = c.id " +
+                     "WHERE i.isDeleted = 0 AND c.category_name = ? " +
+                     "GROUP BY i.id, i.item_name, c.category_name, i.unit_price, i.min_required";
         
         LOGGER.info("Attempting to fetch stock items by category: " + category);
         
