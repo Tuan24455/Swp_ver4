@@ -47,6 +47,21 @@ CREATE TABLE RoomReviews (
     FOREIGN KEY (room_id) REFERENCES Rooms(id)
 );
 
+-- Tạo bảng Categories
+CREATE TABLE dbo.Categories
+(
+    -- Khóa chính tự tăng
+    id INT IDENTITY(1,1) NOT NULL
+        CONSTRAINT PK_Categories PRIMARY KEY,
+
+    -- Tên danh mục (có dấu Unicode)
+    category_name NVARCHAR(100) NOT NULL,
+
+    -- Phân hệ (warehouse, room, …)
+    module NVARCHAR(50) NOT NULL
+);
+GO
+
 -- Bảng loại dịch vụ
 CREATE TABLE ServiceTypes (
     id INT PRIMARY KEY IDENTITY(1,1),

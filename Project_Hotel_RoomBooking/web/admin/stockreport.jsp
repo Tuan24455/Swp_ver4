@@ -274,7 +274,7 @@ pageEncoding="UTF-8" %>
                       </thead>
                       <tbody>
                         <c:forEach var="row" items="${stockList}">
-                          <c:if test="${row.category eq 'Thực phẩm'}">
+                          <c:if test="${row.category eq 'Thực Phẩm'}">
                             <tr>
                               <td><strong>${row.id}</strong></td>
                               <td>${row.itemName}</td>
