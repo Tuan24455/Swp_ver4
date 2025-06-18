@@ -111,6 +111,7 @@
 
                     <!-- Filter Section -->
                     <form method="get" action="roomList" class="row g-3 mb-4">
+                        <input type="hidden" name="page" value="1" />
                         <div class="col-md-3">
                             <label class="form-label">Loại phòng</label>
                             <select name="roomType" class="form-select">
@@ -321,11 +322,48 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>                                                                  
                                         </c:forEach>
+
                                     </table>
                                 </div>
-                                <!-- update Room Modal -->
+                                <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
+                                <c:set var="endEntry" value="${startEntry + rooms.size() - 1}" />
+
+                                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                                    <small class="text-muted mb-2 mb-md-0">
+                                        Showing ${startEntry} to ${endEntry} of ${totalRooms} entries
+                                    </small>
+
+                                    <nav aria-label="Room pagination">
+                                        <ul class="pagination pagination-sm mb-0">
+                                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                                <a class="page-link"
+                                                   href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${currentPage - 1}">
+                                                    Previous
+                                                </a>
+                                            </li>
+
+                                            <c:forEach begin="1" end="${totalPages}" var="p">
+                                                <li class="page-item ${p == currentPage ? 'active' : ''}">
+                                                    <a class="page-link"
+                                                       href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${p}">
+                                                        ${p}
+                                                    </a>
+                                                </li>
+                                            </c:forEach>
+
+                                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                                <a class="page-link"
+                                                   href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${currentPage + 1}">
+                                                    Next
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+
+
 
                             </div>
                         </div>
