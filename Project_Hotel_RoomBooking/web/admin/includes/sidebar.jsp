@@ -2,6 +2,88 @@
          pageEncoding="UTF-8" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
          prefix="c" %>
 
+<style>
+.sidebar-wrapper {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: #2c3e50;
+    z-index: 1000;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-wrapper.toggled {
+    transform: translateX(-100%);
+}
+
+.sidebar-menu {
+    padding-top: 1rem;
+}
+
+.sidebar-menu .list-group-item {
+    background-color: transparent;
+    border: none;
+    color: #ecf0f1;
+    border-radius: 0;
+    transition: all 0.3s ease;
+}
+
+.sidebar-menu .list-group-item:hover {
+    background-color: #34495e;
+    color: #3498db;
+}
+
+.sidebar-menu .list-group-item.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.sidebar-menu .list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.menu-heading {
+    color: #95a5a6 !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Đảm bảo main content không bị che khuất */
+#page-content-wrapper {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sidebar-wrapper {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar-wrapper.toggled {
+        transform: translateX(0);
+    }
+    
+    #page-content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+</style>
+
 <c:set
     var="isReportActive"
     value="${param.activePage == 'purchasereport' || param.activePage == 'stockreport' || param.activePage == 'bookingreport'}"
@@ -68,7 +150,7 @@
                         <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
                     </a>
                     <a
-                        href="ratingreport.jsp"
+                        href="${pageContext.request.contextPath}/admin/ratingreport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'ratingreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-star me-2"></i> Đánh Giá Xếp Hạng
@@ -121,4 +203,31 @@
         }
         return false;
     }
+
+    // Toggle sidebar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const wrapper = document.getElementById('wrapper');
+        const sidebar = document.getElementById('sidebar-wrapper');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                wrapper.classList.toggle('toggled');
+                sidebar.classList.toggle('toggled');
+            });
+        }
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 768) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggle = menuToggle && menuToggle.contains(event.target);
+                
+                if (!isClickInsideSidebar && !isClickOnToggle && !sidebar.classList.contains('toggled')) {
+                    wrapper.classList.add('toggled');
+                    sidebar.classList.add('toggled');
+                }
+            }
+        });
+    });
 </script>
