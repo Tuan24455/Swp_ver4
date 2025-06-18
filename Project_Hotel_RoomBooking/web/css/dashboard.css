@@ -1,0 +1,404 @@
+/* KPI Card Styles */
+.kpi-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: none;
+  border-radius: 12px;
+}
+
+.kpi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 350px;
+}
+
+.table-actions .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.65rem;
+}
+
+.quick-action-btn {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.page-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.breadcrumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.breadcrumb-item a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: white;
+}
+
+/* Modal Styles */
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: none;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.booking-detail-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.booking-detail-item:last-child {
+  border-bottom: none;
+}
+
+.booking-detail-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.booking-detail-value {
+  color: #212529;
+  font-size: 15px;
+}
+
+.room-status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Gantt Chart Styles */
+.gantt-container {
+  overflow-x: auto;
+  background: #f8f9fa;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.gantt-layout {
+  display: flex;
+  min-width: 800px;
+}
+
+.gantt-sidebar {
+  width: 400px;
+  background: white;
+  border-right: 2px solid #dee2e6;
+  flex-shrink: 0;
+}
+
+.gantt-timeline {
+  flex: 1;
+  background: white;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Sidebar Styles */
+.gantt-header-row {
+  display: flex;
+  background: #e9ecef;
+  font-weight: 600;
+  font-size: 12px;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  height: 30px;
+  align-items: center;
+}
+
+.gantt-room-row {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  height: 35px;
+  align-items: center;
+  background: white;
+  transition: background-color 0.2s;
+}
+
+.gantt-room-row:hover {
+  background: #f8f9fa;
+}
+
+.room-col {
+  width: 70px;
+  text-align: center;
+  padding: 0 8px;
+  border-right: 1px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+}
+
+.customer-col {
+  flex: 1;
+  padding: 0 8px;
+  border-right: 1px solid #dee2e6;
+  font-size: 12px;
+  color: #212529;
+}
+
+.status-col {
+  width: 100px;
+  text-align: center;
+  padding: 0 8px;
+}
+
+.room-number {
+  font-size: 14px;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+.customer-name {
+  font-size: 12px;
+  color: #495057;
+}
+
+/* Timeline Styles */
+.timeline-header {
+  display: flex;
+  background: #e9ecef;
+  border-bottom: 2px solid #dee2e6;
+  height: 30px;
+}
+
+.timeline-date {
+  flex: 1;
+  min-width: 50px;
+  text-align: center;
+  padding: 8px 6px;
+  font-weight: 600;
+  font-size: 11px;
+  color: #495057;
+  border-right: 1px solid #dee2e6;
+}
+
+.timeline-date.today {
+  background: #0dcaf0;
+  color: white;
+  font-weight: bold;
+}
+
+.timeline-content {
+  position: relative;
+  flex: 1;
+}
+
+.timeline-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  pointer-events: none;
+}
+
+.grid-line {
+  flex: 1;
+  min-width: 50px;
+  border-right: 1px solid #f1f3f4;
+}
+
+.timeline-row {
+  height: 35px;
+  border-bottom: 1px solid #dee2e6;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Gantt Bars */
+.gantt-bar {
+  height: 25px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin: 0 2px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: absolute;
+}
+
+.gantt-bar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.gantt-bar.confirmed {
+  background: linear-gradient(45deg, #198754, #20c997);
+}
+
+.gantt-bar.pending {
+  background: linear-gradient(45deg, #fd7e14, #ffc107);
+}
+
+.gantt-bar.checkin {
+  background: linear-gradient(45deg, #0dcaf0, #0d6efd);
+}
+
+.gantt-bar.checkout {
+  background: linear-gradient(45deg, #6c757d, #adb5bd);
+}
+
+.bar-text {
+  font-size: 10px;
+  font-weight: 600;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+/* Detail Sidebar Styles */
+.gantt-wrapper {
+  display: flex;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.detail-sidebar {
+  position: absolute;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background: white;
+  border-left: 2px solid #dee2e6;
+  overflow: hidden;
+  transition: right 0.3s ease;
+  z-index: 10;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+}
+
+.gantt-container {
+  flex: 1;
+}
+
+.detail-sidebar.show {
+  right: 0;
+}
+
+.detail-header {
+  background: #f8f9fa;
+  padding: 15px;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-content {
+  padding: 20px;
+  height: 400px;
+  overflow-y: auto;
+}
+
+.detail-item {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  color: #212529;
+  font-size: 14px;
+}
+
+.room-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.price-highlight {
+  background: linear-gradient(45deg, #198754, #20c997);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gantt-sidebar {
+    width: 300px;
+  }
+  
+  .customer-col {
+    font-size: 12px;
+  }
+  
+  .timeline-date {
+    min-width: 50px;
+    font-size: 11px;
+  }
+  
+  .grid-line {
+    min-width: 50px;
+  }
+
+  .detail-sidebar.show {
+    width: 280px;
+  }
+} 
