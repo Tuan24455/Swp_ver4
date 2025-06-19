@@ -72,7 +72,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
           <!-- Page Header -->
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Room Status Overview</h1>
+            <h1 class="h3 mb-0">Danh sách phòng</h1>
             <div class="btn-group">
               <button class="btn btn-outline-primary" onclick="refreshStatus()">
                 <i class="fas fa-sync-alt me-2"></i>Refresh
@@ -86,7 +86,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           <!-- Status Legend -->
           <div class="card shadow-sm mb-4">
             <div class="card-body">
-              <h6 class="card-title mb-3">Status Legend</h6>
+              <h6 class="card-title mb-3">Trạng thái</h6>
               <div class="row">
                 <div class="col-md-3">
                   <div class="d-flex align-items-center mb-2">

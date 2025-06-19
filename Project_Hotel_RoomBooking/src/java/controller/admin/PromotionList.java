@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import model.Promotion;
 
@@ -58,9 +59,47 @@ public class PromotionList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PromotionDao dao = new PromotionDao();
-        List<Promotion> pro = dao.getAllPromotions();
-        request.setAttribute("pro", pro);
+    String status = request.getParameter("status");
+    String startDateStr = request.getParameter("startDate");
+    String endDateStr = request.getParameter("endDate");
+    String pageStr = request.getParameter("page");
+
+    Date startDate = null;
+    Date endDate = null;
+    try {
+        if (startDateStr != null && !startDateStr.isEmpty()) {
+            startDate = java.sql.Date.valueOf(startDateStr);
+        }
+        if (endDateStr != null && !endDateStr.isEmpty()) {
+            endDate = java.sql.Date.valueOf(endDateStr);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    int page = (pageStr != null && !pageStr.isEmpty()) ? Integer.parseInt(pageStr) : 1;
+    int pageSize = 10;
+
+    PromotionDao dao = new PromotionDao();
+    List<Promotion> filtered = dao.filterPromotions(status, startDate, endDate);
+
+    int total = filtered.size();
+    int totalPages = (int) Math.ceil((double) total / pageSize);
+    int fromIndex = (page - 1) * pageSize;
+    int toIndex = Math.min(fromIndex + pageSize, total);
+    List<Promotion> paginated = filtered.subList(fromIndex, toIndex);
+
+    request.setAttribute("pro", paginated);
+    request.setAttribute("totalPromotions", total);
+    request.setAttribute("currentPage", page);
+    request.setAttribute("totalPages", totalPages);
+    request.setAttribute("pageSize", pageSize);
+
+    // giữ filter khi hiển thị lại
+    request.setAttribute("paramStatus", status);
+    request.setAttribute("paramStartDate", startDateStr);
+    request.setAttribute("paramEndDate", endDateStr);
+
         request.getRequestDispatcher("admin/promotionsList.jsp").forward(request, response);
 
     }

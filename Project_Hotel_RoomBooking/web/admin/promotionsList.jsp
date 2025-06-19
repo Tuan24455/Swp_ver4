@@ -80,34 +80,37 @@
                 </div>
 
                 <!-- Filter Section -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" name="status">
-                                    <option value="">All Status</option>
-                                    <option value="active">Active</option>
-                                    <option value="expired">Expired</option>
-                                    <option value="upcoming">Upcoming</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Start Date</label>
-                                <input type="date" class="form-control" name="startDate" />
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">End Date</label>
-                                <input type="date" class="form-control" name="endDate" />
-                            </div>
+                <form method="get" action="promotionsList"  class="mb-4">
+                    <input type="hidden" name="page" value="1" />
+
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="" ${paramStatus == null ? 'selected' : ''}>All Status</option>
+                                <option value="active" ${paramStatus == 'active' ? 'selected' : ''}>Active</option>
+                                <option value="expired" ${paramStatus == 'expired' ? 'selected' : ''}>Expired</option>
+                                <option value="upcoming" ${paramStatus == 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                            </select>
                         </div>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-primary">
+                        <div class="col-md-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" name="startDate" value="${paramStartDate}" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" name="endDate" value="${paramEndDate}" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label d-block">&nbsp;</label>    
+                            <button class="btn btn-outline-primary" type="submit">
                                 <i class="fas fa-search me-2"></i>Filter
                             </button>
                         </div>
                     </div>
-                </div>
+
+                </form>
+
 
                 <!-- Promotions Table -->
                 <div class="card shadow-sm">
@@ -200,39 +203,49 @@
                             </table>
                         </div>
 
-                        <div
-                            class="d-flex justify-content-between align-items-center mt-3 flex-wrap"
-                            >
-                            <small class="text-muted mb-2 mb-md-0"
-                                   >Showing 1 to 10 of 100 entries</small
-                            >
-                            <nav aria-label="Page navigation">
+                        <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
+                        <c:set var="endEntry" value="${startEntry + pro.size() - 1}" />
+
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                            <small class="text-muted mb-2 mb-md-0">
+                                Showing ${startEntry} to ${endEntry} of ${totalPromotions} entries
+                            </small>
+
+                            <nav aria-label="Promotion pagination">
                                 <ul class="pagination pagination-sm mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#">Previous</a>
+                                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                        <a class="page-link"
+                                           href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage - 1}">
+                                            Previous
+                                        </a>
                                     </li>
-                                    <li class="page-item active">
-                                        <a class="page-link" href="#">1</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">2</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">3</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Next</a>
+
+                                    <c:forEach begin="1" end="${totalPages}" var="p">
+                                        <li class="page-item ${p == currentPage ? 'active' : ''}">
+                                            <a class="page-link"
+                                               href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${p}">
+                                                ${p}
+                                            </a>
+                                        </li>
+                                    </c:forEach>
+
+                                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                        <a class="page-link"
+                                           href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage + 1}">
+                                            Next
+                                        </a>
                                     </li>
                                 </ul>
                             </nav>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    
+
+
 
 
 
@@ -283,7 +296,7 @@
             </div>
         </div>
     </div>
-                    
+
 
     <!-- Update Promotion Modal -->
     <div class="modal fade" id="updatePromotionModal" tabindex="-1" aria-labelledby="updatePromotionLabel" aria-hidden="true">
@@ -338,44 +351,44 @@
             </div>
         </div>
     </div>
-<script>
-  function openEditModal(id, title, percentage, startAt, endAt, description) {
-    // Gán dữ liệu vào các input của form update
-    document.getElementById('update_id').value = id;
-    document.getElementById('update_title').value = title;
-    document.getElementById('update_percentage').value = percentage;
+    <script>
+        function openEditModal(id, title, percentage, startAt, endAt, description) {
+            // Gán dữ liệu vào các input của form update
+            document.getElementById('update_id').value = id;
+            document.getElementById('update_title').value = title;
+            document.getElementById('update_percentage').value = percentage;
 
-    // Chuyển đổi định dạng ngày nếu cần
-    document.getElementById('update_start_at').value = startAt ? startAt.substring(0, 10) : '';
-    document.getElementById('update_end_at').value = endAt ? endAt.substring(0, 10) : '';
+            // Chuyển đổi định dạng ngày nếu cần
+            document.getElementById('update_start_at').value = startAt ? startAt.substring(0, 10) : '';
+            document.getElementById('update_end_at').value = endAt ? endAt.substring(0, 10) : '';
 
-    document.getElementById('update_description').value = description;
+            document.getElementById('update_description').value = description;
 
-    // Mở modal bằng Bootstrap 5 JS API
-    const updateModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
-    updateModal.show();
-  }
-</script>
+            // Mở modal bằng Bootstrap 5 JS API
+            const updateModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
+            updateModal.show();
+        }
+    </script>
 
-<script>
-  function validatePromotionForm(formId, startDateId, endDateId) {
-    const form = document.getElementById(formId);
-    form.addEventListener('submit', function(event) {
-      const startDate = new Date(document.getElementById(startDateId).value);
-      const endDate = new Date(document.getElementById(endDateId).value);
+    <script>
+        function validatePromotionForm(formId, startDateId, endDateId) {
+            const form = document.getElementById(formId);
+            form.addEventListener('submit', function (event) {
+                const startDate = new Date(document.getElementById(startDateId).value);
+                const endDate = new Date(document.getElementById(endDateId).value);
 
-      if (endDate <= startDate) {
-        event.preventDefault();  // Ngăn submit
-        alert('End Date phải lớn hơn Start Date!');
-        document.getElementById(endDateId).focus();
-      }
-    });
-  }
+                if (endDate <= startDate) {
+                    event.preventDefault();  // Ngăn submit
+                    alert('End Date phải lớn hơn Start Date!');
+                    document.getElementById(endDateId).focus();
+                }
+            });
+        }
 
-  // Gọi cho cả 2 form add và update
-  validatePromotionForm('promotionForm', 'start_at', 'end_at');
-  validatePromotionForm('updatePromotionForm', 'update_start_at', 'update_end_at');
-</script>
+        // Gọi cho cả 2 form add và update
+        validatePromotionForm('promotionForm', 'start_at', 'end_at');
+        validatePromotionForm('updatePromotionForm', 'update_start_at', 'update_end_at');
+    </script>
 
 
 
