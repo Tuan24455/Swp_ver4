@@ -377,7 +377,7 @@ button:hover {
     padding: 40px;
     background-color: rgba(255, 255, 255, 0.7); /* trắng với độ mờ 50% */
     max-width: 95%;
-    margin: 0 auto;
+    margin: 0 0 20px 0;
     border-radius: 20px;
 }
 
