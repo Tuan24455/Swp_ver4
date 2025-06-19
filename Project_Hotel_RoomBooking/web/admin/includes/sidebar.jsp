@@ -9,7 +9,7 @@
     left: 0;
     height: 100vh;
     width: 250px;
-    background-color: #2c3e50;
+    background-color: #E3F2FD; /* Màu nền xanh sáng */
     z-index: 1000;
     overflow-y: auto;
     overflow-x: hidden;
@@ -27,18 +27,18 @@
 .sidebar-menu .list-group-item {
     background-color: transparent;
     border: none;
-    color: #ecf0f1;
+    color: #0D47A1; /* Màu chữ xanh đậm */
     border-radius: 0;
     transition: all 0.3s ease;
 }
 
 .sidebar-menu .list-group-item:hover {
-    background-color: #34495e;
-    color: #3498db;
+    background-color: #BBDEFB; /* Hover - xanh dịu */
+    color: #1565C0; /* Xanh trung tính */
 }
 
 .sidebar-menu .list-group-item.active {
-    background-color: #3498db;
+    background-color: #42A5F5; /* Màu xanh đậm cho active */
     color: white;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .menu-heading {
-    color: #95a5a6 !important;
+    color: #1976D2 !important;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -83,6 +83,7 @@
     }
 }
 </style>
+
 
 <c:set
     var="isReportActive"
