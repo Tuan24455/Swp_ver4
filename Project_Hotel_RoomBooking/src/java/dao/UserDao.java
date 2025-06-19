@@ -182,6 +182,25 @@ public class UserDao {
         }
     }
 
+    public void update(User user) {
+        String sql = "UPDATE Users SET full_name = ?, birth = ?, gender = ?, email = ?, phone = ?, address = ?, avatar_url = ? WHERE id = ?";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getFullName());
+            ps.setDate(2, new java.sql.Date(user.getBirth().getTime()));
+            ps.setString(3, user.getGender());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, user.getPhone());
+            ps.setString(6, user.getAddress());
+            ps.setString(7, user.getAvatarUrl());
+            ps.setInt(8, user.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         try {
             // Tạo ngày sinh từ chuỗi
@@ -190,17 +209,17 @@ public class UserDao {
 
             // Tạo user giả lập
             User testUser = new User(
-                    "newuser123",             // username
-                    "123456",                 // password
-                    "Nguyễn Văn A",           // full name
+                    "newuser123", // username
+                    "123456", // password
+                    "Nguyễn Văn A", // full name
                     birth,
                     "Nam",
                     "newuser123@gmail.com",
                     "0987654321",
                     "Hà Nội",
                     "Customer",
-                    "",                       // avatar URL
-                    false                    // isDeleted
+                    "", // avatar URL
+                    false // isDeleted
             );
 
             // Gọi DAO để insert

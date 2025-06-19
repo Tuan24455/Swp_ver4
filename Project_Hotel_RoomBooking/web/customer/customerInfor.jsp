@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                             <div class="info-card-body">
-                                <form id="profileForm" action="updateProfile" method="post">
+                                <form id="profileForm" action="information" method="post">
                                     <div class="info-grid">
                                         <!-- Full Name -->
                                         <div class="info-group">
@@ -250,18 +250,6 @@
                                         </button>
                                     </div>
 
-                                    <div class="security-item">
-                                        <div class="security-info">
-                                            <i class="fas fa-mobile-alt security-icon"></i>
-                                            <div>
-                                                <h6>Xác thực 2 bước</h6>
-                                                <p>Tăng cường bảo mật với xác thực 2 bước</p>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-outline-success btn-sm">
-                                            <i class="fas fa-plus me-1"></i>Kích hoạt
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
