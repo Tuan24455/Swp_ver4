@@ -154,6 +154,40 @@ class ProfileManager {
   }
 }
 
+function showChangePasswordModal() {
+    const modal = new bootstrap.Modal(document.getElementById("changePasswordModal"));
+    modal.show();
+}
+
+function togglePassword(button) {
+  const input = button.parentNode.querySelector("input");
+  const icon = button.querySelector("i");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
+}
+
+// Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   window.profileManager = new ProfileManager();
+
+  // Add loading animation
+  document.body.classList.add("animate__animated", "animate__fadeIn")
+});
+
+// Handle page visibility change
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // Page is hidden - save draft if in edit mode
+    if (window.profileManager && window.profileManager.isEditMode) {
+      localStorage.setItem("profileDraft", JSON.stringify(window.profileManager.originalFormData));
+    }
+  }
 });
