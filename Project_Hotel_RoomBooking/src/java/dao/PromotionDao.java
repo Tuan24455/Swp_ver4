@@ -10,8 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import model.Promotion;
+
 public class PromotionDao {
 
     public List<Promotion> getAllPromotions() {
@@ -41,8 +43,12 @@ public class PromotionDao {
             e.printStackTrace();
         } finally {
             try {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -77,8 +83,12 @@ public class PromotionDao {
             e.printStackTrace();
         } finally {
             try {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -105,7 +115,9 @@ public class PromotionDao {
             e.printStackTrace();
         } finally {
             try {
-                if(pstmt != null) pstmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -133,7 +145,9 @@ public class PromotionDao {
             e.printStackTrace();
         } finally {
             try {
-                if(pstmt != null) pstmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -156,11 +170,63 @@ public class PromotionDao {
             e.printStackTrace();
         } finally {
             try {
-                if(pstmt != null) pstmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return false;
     }
+
+    public List<Promotion> filterPromotions(String status, Date startDate, Date endDate) {
+        List<Promotion> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Promotion WHERE 1=1");
+
+        if (status != null && !status.isEmpty()) {
+            if (status.equals("active")) {
+                sql.append(" AND start_at <= GETDATE() AND end_at >= GETDATE()");
+            } else if (status.equals("expired")) {
+                sql.append(" AND end_at < GETDATE()");
+            } else if (status.equals("upcoming")) {
+                sql.append(" AND start_at > GETDATE()");
+            }
+        }
+
+        if (startDate != null) {
+            sql.append(" AND start_at >= ?");
+        }
+        if (endDate != null) {
+            sql.append(" AND end_at <= ?");
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int index = 1;
+            if (startDate != null) {
+                ps.setDate(index++, new java.sql.Date(startDate.getTime()));
+            }
+            if (endDate != null) {
+                ps.setDate(index++, new java.sql.Date(endDate.getTime()));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Promotion p = new Promotion();
+                p.setId(rs.getInt("id"));
+                p.setTitle(rs.getString("title"));
+                p.setPercentage(rs.getDouble("percentage"));
+                p.setStartAt(rs.getDate("start_at"));
+                p.setEndAt(rs.getDate("end_at"));
+                p.setDescription(rs.getString("description"));
+                list.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }
