@@ -80,7 +80,7 @@
             }
         </style>
     </head>
-    <body>
+    <body style="background-image: url(images/system/Background.jpg)">
         <jsp:include page="customer/includes/header.jsp"/>
         <main>
             <div class="containerr">

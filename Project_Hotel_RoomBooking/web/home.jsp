@@ -1,142 +1,369 @@
 <%-- 
-    Document   : home
-    Created on : May 22, 2025, 3:28:03 PM
+    Document   : home.jsp
+    Created on : May 22, 2025
     Author     : ADMIN
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Trang chủ</title>
-        <link rel="stylesheet" href="customer/customer.css" />
-        <link rel="stylesheet" href="customer/includes/component.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Trang chủ - Hệ thống quản lý khách sạn</title>
+
+        <!-- CSS Files -->
+        <!--<link rel="stylesheet" href="customer/customer.css" />-->
+        <link rel="stylesheet" href="css/home-enhanced.css" />
+
+        <!-- External Libraries -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Animate.css for smooth animations -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     </head>
-    <body style="background-image: url(images/system/Background.jpg)">
+    <body>
+        <!-- Background overlay for better readability -->
+        <div class="background-overlay"></div>
+
+        <!-- Header -->
         <jsp:include page="customer/includes/header.jsp"/>
 
-        <main>
-            <!-- Nút mở bộ lọc -->
-            <button type="button" class="filter-open-btn" onclick="toggleFilter()"
-                    style="font-size: 14px; padding: 6px 10px;">
-                <i class="fas fa-filter"></i> Lọc phòng
-            </button>
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section animate__animated animate__fadeInDown">
+                <div class="container">
+                    <div class="hero-content text-center">
+                        <h1 class="hero-title">
+                            <i class="fas fa-hotel me-3"></i>
+                            Khám Phá Phòng Nghỉ Tuyệt Vời
+                        </h1>
+                        <p class="hero-subtitle">Tìm kiếm và đặt phòng khách sạn phù hợp với nhu cầu của bạn</p>
+                    </div>
+                </div>
+            </section>
 
+            <!-- Filter Section -->
+            <section class="filter-section">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <button type="button" class="filter-toggle-btn animate__animated animate__pulse animate__infinite" onclick="toggleFilter()">
+                            <i class="fas fa-filter me-2"></i>
+                            <span>Lọc phòng</span>
+                            <i class="fas fa-chevron-down ms-2 filter-arrow"></i>
+                        </button>
+                    </div>
 
-            <!-- Modal -->
-            <div id="filterModal" class="modal-overlayy">
-                <form method="get" action="home" class="modal-contentt">
-                    <!-- Nhóm: Loại phòng -->
-                    <div class="filter-group">
-                        <label>Loại phòng</label>
-                        <c:forEach var="type" items="${requestScope.roomtypelist}">
-                            <div class="checkbox-option">
-                                <input type="checkbox" name="roomType" value="${type.getId()}" <c:if test="${fn:contains(paramValues.roomType, type.getId().toString())}">checked</c:if> />
-                                <label style="width: 80%">${type.getRoomType()}</label>
+                    <!-- Enhanced Filter Modal -->
+                    <div id="filterModal" class="filter-modal">
+                        <div class="filter-modal-content animate__animated">
+                            <div class="filter-header">
+                                <h3><i class="fas fa-sliders-h me-2"></i>Bộ lọc tìm kiếm</h3>
+                                <button type="button" class="filter-close-btn" onclick="toggleFilter()">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
 
-                        </c:forEach>
-                    </div>
+                            <form method="post" action="home" class="filter-form">
+                                <div class="filter-grid">
+                                    <!-- Room Type Filter -->
+                                    <div class="filter-group">
+                                        <div class="filter-group-header">
+                                            <i class="fas fa-bed"></i>
+                                            <label>Loại phòng</label>
+                                        </div>
+                                        <div class="checkbox-container">
+                                            <c:forEach var="type" items="${requestScope.roomtypelist}">
+                                                <div class="checkbox-item">
+                                                    <input type="checkbox" 
+                                                           id="roomType_${type.getId()}"
+                                                           name="roomType" 
+                                                           value="${type.getId()}"
+                                                           <c:if test="${selectedRoomTypeIds != null && selectedRoomTypeIds.contains(type.getId())}">checked</c:if> />
+                                                    <label for="roomType_${type.getId()}" class="checkbox-label">
+                                                        ${type.getRoomType()}
+                                                    </label>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                    <!-- Date Filter -->
+                                    <div class="filter-group">
+                                        <div class="filter-group-header">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <label>Thời gian</label>
+                                        </div>
+                                        <div class="date-inputs">
+                                            <!-- Ngày nhận phòng -->
+                                            <div class="input-group">
+                                                <label class="input-label">Ngày nhận phòng</label>
+                                                <div class="date-select-vertical">
+                                                    <select name="checkinDay" class="form-select">
+                                                        <option value="" disabled ${empty param.checkinDay ? 'selected' : ''}>Ngày</option>
+                                                        <c:forEach var="d" begin="1" end="31">
+                                                            <option value="${d}" ${param.checkinDay == d ? 'selected' : ''}>${d}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <select name="checkinMonth" class="form-select">
+                                                        <option value="" disabled ${empty param.checkinMonth ? 'selected' : ''}>Tháng</option>
+                                                        <c:forEach var="m" begin="1" end="12">
+                                                            <option value="${m}" ${param.checkinMonth == m ? 'selected' : ''}>${m}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <select name="checkinYear" class="form-select">
+                                                        <option value="" disabled ${empty param.checkinYear ? 'selected' : ''}>Năm</option>
+                                                        <c:forEach var="y" begin="2024" end="2030">
+                                                            <option value="${y}" ${param.checkinYear == y ? 'selected' : ''}>${y}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                    <!-- Nhóm: Ngày -->
-                    <div class="filter-group">
-                        <label>Check-in (date)</label>
-                        <input type="date" name="checkin" value="${param.checkin}">
-                        <label>Check-out (date)</label>
-                        <input type="date" name="checkout" value="${param.checkout}">
-                    </div>
+                                            <!-- Ngày trả phòng -->
+                                            <div class="input-group">
+                                                <label class="input-label">Ngày trả phòng</label>
+                                                <div class="date-select-vertical">
+                                                    <select name="checkoutDay" class="form-select">
+                                                        <option value="" disabled ${empty param.checkoutDay ? 'selected' : ''}>Ngày</option>
+                                                        <c:forEach var="d" begin="1" end="31">
+                                                            <option value="${d}" ${param.checkoutDay == d ? 'selected' : ''}>${d}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <select name="checkoutMonth" class="form-select">
+                                                        <option value="" disabled ${empty param.checkoutMonth ? 'selected' : ''}>Tháng</option>
+                                                        <c:forEach var="m" begin="1" end="12">
+                                                            <option value="${m}" ${param.checkoutMonth == m ? 'selected' : ''}>${m}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <select name="checkoutYear" class="form-select">
+                                                        <option value="" disabled ${empty param.checkoutYear ? 'selected' : ''}>Năm</option>
+                                                        <c:forEach var="y" begin="2024" end="2030">
+                                                            <option value="${y}" ${param.checkoutYear == y ? 'selected' : ''}>${y}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Price Filter -->
+                                    <div class="filter-group">
+                                        <div class="filter-group-header">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                            <label>Khoảng giá</label>
+                                        </div>
+                                        <div class="price-inputs">
+                                            <div class="input-group">
+                                                <label class="input-label">Từ (VND)</label>
+                                                <input type="number" name="priceFrom" value="${param.priceFrom}" 
+                                                       min="0" step="50000" class="form-input" placeholder="0">
+                                            </div>
+                                            <div class="input-group">
+                                                <label class="input-label">Đến (VND)</label>
+                                                <input type="number" name="priceTo" value="${param.priceTo}" 
+                                                       min="0" step="50000" class="form-input" placeholder="Không giới hạn">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    <!-- Nhóm: Giá -->
-                    <div class="filter-group">
-                        <label>Price from</label>
-                        <input type="number" name="priceFrom" value="${param.priceFrom}" min="0">
-                        <label>Price to</label>
-                        <input type="number" name="priceTo" value="${param.priceTo}" min="0">
-                    </div>
+                                    <!-- Capacity Filter -->
+                                    <div class="filter-group">
+                                        <div class="filter-group-header">
+                                            <i class="fas fa-users"></i>
+                                            <label>Sức chứa</label>
+                                        </div>
+                                        <div class="input-group">
+                                            <input type="number" name="capacity" value="${param.capacity}" 
+                                                   min="1" max="10" class="form-input" placeholder="Số người">
+                                        </div>
+                                    </div>
 
-                    <!-- Nhóm: Sức chứa -->
-                    <div class="filter-group">
-                        <label>Numbers of person</label>
-                        <input type="number" name="capacity" value="${param.capacity}" min="1">
-                    </div>
+                                    <!-- Sort Filter -->
+                                    <div class="filter-group">
+                                        <div class="filter-group-header">
+                                            <i class="fas fa-sort-amount-down"></i>
+                                            <label>Sắp xếp</label>
+                                        </div>
+                                        <select name="sort" class="form-select">
+                                            <option value="">-- Mặc định --</option>
+                                            <option value="asc" ${param.sort == 'asc' ? 'selected' : ''}>Giá tăng dần</option>
+                                            <option value="desc" ${param.sort == 'desc' ? 'selected' : ''}>Giá giảm dần</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                    <!-- Nút submit -->
-                    <button type="submit" class="filter-btn">Lọc phòng</button>
-                </form>
-            </div>
-
-            <!--         ROOM LIST         -->
-            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <h2 class="text-center mb-4" style="margin: 5px 0 0 0; color: #fff">Danh Sách Phòng</h2>
-                <div class="room-list">
-                    <c:forEach var="room" items="${roomlist}">
-                        <div class="room-card">
-                            <img src="${room.getImageUrl()}" alt="Room Image">
-                            <h5>Phòng ${room.getRoomNumber()}</h5>
-                            <h5>
-                                Loại phòng: ${room.getRoomTypeName()}
-                            </h5>
-                            <p style="color: red"><strong>Giá:</strong> ${room.getRoomPrice()} VND</p>
-                            <p><strong>Sức chứa:</strong> ${room.getCapacity()} người</p>
-                            <c:choose>
-                                <c:when test="${fn:length(room.getDescription()) > 50}">
-                                    <p>${fn:substring(room.getDescription(), 0, 50)}...</p>
-                                </c:when>
-                                <c:otherwise>
-                                    <p>${room.getDescription()}</p>
-                                </c:otherwise>
-                            </c:choose>
-
-                            <a href="roomdetail?id=${room.getId()}" class="view-detail-btn">Xem chi tiết</a>
+                                <!-- Filter Actions -->
+                                <div class="filter-actions">
+                                    <button type="button" class="btn btn-reset" onclick="resetFilter()">
+                                        <i class="fas fa-undo me-2"></i>Đặt lại
+                                    </button>
+                                    <button type="submit" class="btn btn-apply">
+                                        <i class="fas fa-search me-2"></i>Áp dụng lọc
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </c:forEach>
+                    </div>
                 </div>
-                <!-- PHÂN TRANG -->
-                <div class="pagination">
-                    <c:if test="${totalPages > 1}">
-                        <nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
-                            <ul class="pagination">
-                                <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                    <a class="page-link" href="home?page=${currentPage - 1}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
+            </section>
+
+            <!-- Room List Section -->
+            <section class="room-list-section">
+                <div class="container">
+                    <!-- Section Header -->
+                    <div class="section-header text-center mb-5">
+                        <h2 class="section-title animate__animated animate__fadeInUp">
+                            <i class="fas fa-list me-3"></i>Danh Sách Phòng
+                        </h2>
+                        <div class="section-divider"></div>
+                        <c:if test="${not empty roomlist}">
+                            <p class="section-subtitle">
+                                Tìm thấy <strong>${fn:length(roomlist)}</strong> phòng phù hợp
+                            </p>
+                        </c:if>
+                    </div>
+
+                    <!-- Room Grid -->
+                    <div class="room-grid">
+                        <c:choose>
+                            <c:when test="${not empty roomlist}">
+                                <c:forEach var="room" items="${roomlist}" varStatus="status">
+                                    <div class="room-card animate__animated animate__fadeInUp" 
+                                         style="animation-delay: ${status.index * 0.1}s">
+                                        <div class="room-image-container">
+                                            <img src="${room.getImageUrl()}" alt="Phòng ${room.getRoomNumber()}" class="room-image">
+                                            <div class="room-overlay">
+                                                <div class="room-price-badge">
+                                                    <fmt:formatNumber value="${room.getRoomPrice()}" type="number" groupingUsed="true"/> VND
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="room-content">
+                                            <div class="room-header">
+                                                <h5 class="room-number">
+                                                    <i class="fas fa-door-open me-2"></i>Phòng ${room.getRoomNumber()}
+                                                </h5>
+                                                <div class="room-type-badge">${room.getRoomTypeName()}</div>
+                                            </div>
+
+                                            <div class="room-details">
+                                                <div class="room-detail-item">
+                                                    <i class="fas fa-users text-primary"></i>
+                                                    <span>${room.getCapacity()} người</span>
+                                                </div>
+                                                <div class="room-detail-item">
+                                                    <i class="fas fa-tag text-success"></i>
+                                                    <span class="room-price">
+                                                        <fmt:formatNumber value="${room.getRoomPrice()}" type="number" groupingUsed="true"/> VND
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="room-description">
+                                                <c:choose>
+                                                    <c:when test="${fn:length(room.getDescription()) > 80}">
+                                                        <p>${fn:substring(room.getDescription(), 0, 80)}...</p>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <p>${room.getDescription()}</p>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+
+                                            <div class="room-actions">
+                                                <a href="roomdetail?id=${room.getId()}" class="btn btn-view-detail">
+                                                    <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="no-rooms-found">
+                                    <div class="no-rooms-icon">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <h3>Không tìm thấy phòng phù hợp</h3>
+                                    <p>Vui lòng thử điều chỉnh bộ lọc tìm kiếm</p>
+                                    <button type="button" class="btn btn-reset" onclick="resetFilter()">
+                                        <i class="fas fa-undo me-2"></i>Đặt lại bộ lọc
+                                    </button>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Pagination -->
+            <c:if test="${totalPages > 1}">
+                <section class="pagination-section">
+                    <div class="container">
+                        <nav class="pagination-nav" aria-label="Phân trang">
+                            <ul class="pagination-list">
+                                <!-- Previous Button -->
+                                <li class="pagination-item ${currentPage == 1 ? 'disabled' : ''}">
+                                    <button class="pagination-link" type="button" 
+                                            onclick="goToPage(${currentPage - 1})"
+                                            ${currentPage == 1 ? 'disabled' : ''}>
+                                        <i class="fas fa-chevron-left"></i>
+                                        <span class="d-none d-sm-inline ms-1">Trước</span>
+                                    </button>
                                 </li>
 
+                                <!-- Page Numbers -->
                                 <c:forEach var="i" begin="1" end="${totalPages}">
-                                    <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                        <a class="page-link" href="home?page=${i}">${i}</a>
+                                    <li class="pagination-item ${i == currentPage ? 'active' : ''}">
+                                        <button class="pagination-link" type="button" onclick="goToPage(${i})">
+                                            ${i}
+                                        </button>
                                     </li>
                                 </c:forEach>
 
-                                <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                    <a class="page-link" href="home?page=${currentPage + 1}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
+                                <!-- Next Button -->
+                                <li class="pagination-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                    <button class="pagination-link" type="button" 
+                                            onclick="goToPage(${currentPage + 1})"
+                                            ${currentPage == totalPages ? 'disabled' : ''}>
+                                        <span class="d-none d-sm-inline me-1">Sau</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
                                 </li>
                             </ul>
                         </nav>
-                    </c:if>
-                </div>
-            </div>
+
+                        <!-- Pagination Info -->
+                        <div class="pagination-info text-center mt-3">
+                            <span class="pagination-text">
+                                Trang ${currentPage} / ${totalPages}
+                            </span>
+                        </div>
+                    </div>
+                </section>
+            </c:if>
         </main>
-        <script>
-            function toggleFilter() {
-                const modal = document.getElementById("filterModal");
-                modal.style.display = modal.style.display === "flex" ? "none" : "flex";
-            }
 
-            window.addEventListener("click", function (e) {
-                const modal = document.getElementById("filterModal");
-                if (e.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
-        </script>
+        <!-- Hidden Pagination Form -->
+        <form id="paginationForm" method="post" action="home" style="display: none;">
+            <input type="hidden" name="page" id="paginationPage" />
+            <c:forEach var="entry" items="${paramValues}">
+                <c:if test="${entry.key != 'page'}">
+                    <c:forEach var="v" items="${entry.value}">
+                        <input type="hidden" name="${entry.key}" value="${v}" />
+                    </c:forEach>
+                </c:if>
+            </c:forEach>
+        </form>
 
+        <!-- Footer -->
         <jsp:include page="customer/includes/footer.jsp"/>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="js/home-enhanced.js"></script>
     </body>
 </html>
