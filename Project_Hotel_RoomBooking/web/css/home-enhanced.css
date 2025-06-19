@@ -1,0 +1,747 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jun 19, 2025, 2:19:22 PM
+    Author     : ADMIN
+*/
+
+/* ===== ENHANCED HOME PAGE STYLES ===== */
+
+/* Background and Layout */
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(74, 105, 189, 0.1) 0%, rgba(30, 55, 153, 0.1) 100%);
+  background-image: url("../images/system/Background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: -1;
+}
+
+.main-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-top: 0rem; /* Giảm từ 2rem → 1rem hoặc 0 nếu header đã xử lý khoảng cách */
+  margin: 0;
+}
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+  padding: 3rem 0;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+  border-radius: 0 0 2rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin-bottom: 0;
+}
+
+/* ===== FILTER SECTION ===== */
+.filter-section {
+  margin-bottom: 3rem;
+}
+
+.filter-toggle-btn {
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 8px 25px rgba(74, 105, 189, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.filter-toggle-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(74, 105, 189, 0.4);
+}
+
+.filter-arrow {
+  transition: transform 0.3s ease;
+}
+
+.filter-toggle-btn.active .filter-arrow {
+  transform: rotate(180deg);
+}
+
+/* Filter Modal */
+.filter-modal {
+  position: fixed;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.filter-modal.show {
+  display: flex;
+}
+
+.filter-modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 90%;
+  width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.filter-header h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.filter-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.filter-close-btn:hover {
+  background: #ecf0f1;
+  color: #e74c3c;
+}
+
+/* Filter Grid */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.filter-group {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.filter-group:hover {
+  border-color: #4a69bd;
+  box-shadow: 0 5px 15px rgba(74, 105, 189, 0.1);
+}
+
+.filter-group-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.filter-group-header i {
+  margin-right: 0.5rem;
+  color: #4a69bd;
+  font-size: 1.1rem;
+}
+
+/* Form Inputs */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: white;
+  text-align: center;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #4a69bd;
+  box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.1);
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Checkbox Styling */
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  appearance: checkbox; /* fallback cho trình duyệt/IDE cũ */
+  accent-color: #4a69bd; /* chuẩn hiện đại */
+  cursor: pointer;
+}
+
+.checkbox-label {
+  cursor: pointer;
+  color: #495057;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Date and Price Inputs */
+.date-inputs,
+.price-inputs {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .date-inputs,
+  .price-inputs {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Filter Actions */
+.filter-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 2px solid #ecf0f1;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.btn-reset {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-reset:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+}
+
+.btn-apply {
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  color: white !important;
+  border: none;
+}
+
+.btn-apply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(74, 105, 189, 0.3);
+}
+
+/* ===== ROOM LIST SECTION ===== */
+.room-list-section {
+  padding: 2rem 0;
+}
+
+.section-header {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+}
+
+.section-divider {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  margin: 0 auto 1rem;
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Room Grid */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Room Card */
+.room-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.room-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.room-image-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.room-card:hover .room-image {
+  transform: scale(1.1);
+}
+
+.room-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+.room-price-badge {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* Room Content */
+.room-content {
+  padding: 1.5rem;
+}
+
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.room-number {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.room-type-badge {
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.room-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.room-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.room-price {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.room-description {
+  margin-bottom: 1.5rem;
+}
+
+.room-description p {
+  color: #6c757d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.room-actions {
+  text-align: center;
+}
+
+.btn-view-detail {
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  color: white !important;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.room-card:hover .btn-view-detail {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-view-detail:hover {
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 105, 189, 0.3);
+}
+
+/* No Rooms Found */
+.no-rooms-found {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6c757d;
+}
+
+.no-rooms-icon {
+  font-size: 4rem;
+  color: #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.no-rooms-found h3 {
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+/* ===== PAGINATION SECTION ===== */
+.pagination-section {
+  padding: 3rem 0;
+}
+
+.pagination-nav {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 50px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-item {
+  margin: 0;
+}
+
+.pagination-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: #495057;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.pagination-link:hover:not(:disabled) {
+  background: #4a69bd;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.pagination-item.active .pagination-link {
+  background: linear-gradient(135deg, #4a69bd 0%, #1e3799 100%);
+  color: white;
+  border-color: #4a69bd;
+}
+
+.pagination-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  margin-top: 1rem;
+}
+
+.pagination-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .filter-modal-content {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .room-grid {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .pagination-list {
+    padding: 0.5rem 1rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-toggle-btn {
+    min-width: auto;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .room-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .room-details {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* ===== ENHANCED HOME PAGE STYLES ===== */
+
+/* CSS bổ sung cho hiệu ứng mở/đóng modal */
+.animate__fadeInDown {
+  animation-name: fadeInDown;
+  animation-duration: 0.4s;
+  animation-fill-mode: both;
+}
+
+.animate__fadeOutUp {
+  animation-name: fadeOutUp;
+  animation-duration: 0.4s;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+/* Toast animation bổ sung */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+}
+
+/* Bạn có thể bổ sung tiếp các phần như .filter-modal, .room-card, .pagination nếu cần */
+.date-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.date-select-vertical {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: 100%;
+}
+
+.date-select-vertical select {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.date-select-vertical select:focus {
+  border-color: #4a69bd;
+  box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.15);
+  outline: none;
+}
+
+.form-select option[disabled] {
+    color: #adb5bd;
+}

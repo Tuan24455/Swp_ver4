@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Room;
 import model.RoomType;
@@ -75,7 +76,7 @@ public class HomeServlet extends HttpServlet {
         roomlist = dao.getAllRooms();
 
         // Phân trang
-        int pageSize = 8; // 8 phòng mỗi trang
+        int pageSize = 9; // 8 phòng mỗi trang
         int page = 1;
         String pageParam = request.getParameter("page");
         if (pageParam != null) {
@@ -100,7 +101,7 @@ public class HomeServlet extends HttpServlet {
 
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
-    
+
     void checkCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -108,8 +109,10 @@ public class HomeServlet extends HttpServlet {
             String pass = null;
             for (Cookie cookie : cookies) {
                 switch (cookie.getName()) {
-                    case "username" -> username = cookie.getValue();
-                    case "pass" -> pass = cookie.getValue();
+                    case "username" ->
+                        username = cookie.getValue();
+                    case "pass" ->
+                        pass = cookie.getValue();
                 }
             }
 
@@ -133,7 +136,66 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        checkCookie(request);
+        RoomDao dao = new RoomDao();
+
+        // Lấy danh sách loại phòng để hiển thị lại trên giao diện lọc
+        List<RoomType> roomtypelist = dao.getAllRoomTypes();
+        request.setAttribute("roomtypelist", roomtypelist);
+
+        // Lấy danh sách ID loại phòng được chọn
+        String[] typeArr = request.getParameterValues("roomType");
+        List<Integer> typeIds = new ArrayList<>();
+        if (typeArr != null) {
+            for (String typeId : typeArr) {
+                try {
+                    typeIds.add(Integer.valueOf(typeId));
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        request.setAttribute("selectedRoomTypeIds", typeIds); // ✅ Trả lại để hiển thị checked ở JSP
+
+        // Lấy và xử lý các tham số lọc khác
+        String priceFromStr = request.getParameter("priceFrom");
+        String priceToStr = request.getParameter("priceTo");
+        String capacityStr = request.getParameter("capacity");
+
+        Double priceFrom = (priceFromStr != null && !priceFromStr.trim().isEmpty()) ? Double.valueOf(priceFromStr) : null;
+        Double priceTo = (priceToStr != null && !priceToStr.trim().isEmpty()) ? Double.valueOf(priceToStr) : null;
+        Integer capacity = (capacityStr != null && !capacityStr.trim().isEmpty()) ? Integer.valueOf(capacityStr) : null;
+
+        String sortOrder = request.getParameter("sort");
+
+        // Truy vấn DAO với điều kiện lọc
+        List<Room> filteredRooms = dao.filterRoomsAdvanced(typeIds, priceFrom, priceTo, capacity, sortOrder);
+
+        // Phân trang
+        int pageSize = 9;
+        int page = 1;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        int totalRooms = filteredRooms.size();
+        int totalPages = (int) Math.ceil((double) totalRooms / pageSize);
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalRooms);
+
+        List<Room> paginatedRooms = filteredRooms.subList(start, end);
+
+        // Gửi kết quả về view
+        request.setAttribute("roomlist", paginatedRooms);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+
+        request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
     /**

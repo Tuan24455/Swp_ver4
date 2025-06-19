@@ -265,4 +265,80 @@ public class RoomDao {
         }
         System.out.println(str);
     }
+
+    public List<Room> filterRoomsAdvanced(List<Integer> typeIds, Double priceFrom, Double priceTo, Integer capacity, String sortOrder) {
+        List<Room> rooms = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT r.*, rt.room_type AS room_type_name "
+                + "FROM Rooms r JOIN RoomTypes rt ON r.room_type_id = rt.id "
+                + "WHERE r.isDelete = 0 "
+        );
+
+        // Tạo danh sách điều kiện
+        List<Object> params = new ArrayList<>();
+
+        if (typeIds != null && !typeIds.isEmpty()) {
+            sql.append("AND r.room_type_id IN (");
+            for (int i = 0; i < typeIds.size(); i++) {
+                sql.append("?");
+                if (i < typeIds.size() - 1) {
+                    sql.append(", ");
+                }
+                params.add(typeIds.get(i));
+            }
+            sql.append(") ");
+        }
+
+        if (priceFrom != null) {
+            sql.append("AND r.room_price >= ? ");
+            params.add(priceFrom);
+        }
+
+        if (priceTo != null) {
+            sql.append("AND r.room_price <= ? ");
+            params.add(priceTo);
+        }
+
+        if (capacity != null) {
+            sql.append("AND r.capacity >= ? ");
+            params.add(capacity);
+        }
+
+        // Sắp xếp
+        if ("asc".equalsIgnoreCase(sortOrder)) {
+            sql.append("ORDER BY r.room_price ASC");
+        } else if ("desc".equalsIgnoreCase(sortOrder)) {
+            sql.append("ORDER BY r.room_price DESC");
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Room room = new Room();
+                room.setId(rs.getInt("id"));
+                room.setRoomNumber(rs.getString("room_number"));
+                room.setRoomTypeId(rs.getInt("room_type_id"));
+                room.setRoomTypeName(rs.getString("room_type_name"));
+                room.setRoomPrice(rs.getDouble("room_price"));
+                room.setRoomStatus(rs.getString("room_status"));
+                room.setCapacity(rs.getInt("capacity"));
+                room.setDescription(rs.getString("description"));
+                room.setImageUrl(rs.getString("image_url"));
+                room.setFloor(rs.getInt("floor"));
+                room.setDeleted(rs.getBoolean("isDelete"));
+                rooms.add(room);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rooms;
+    }
+
 }
