@@ -8,8 +8,8 @@
     top: 0;
     left: 0;
     height: 100vh;
-    width: 250px;
-    background-color: #E3F2FD; /* Màu nền xanh sáng */
+    width: 230px; /* Sidebar rộng 230px */
+    background-color: #E3F2FD;
     z-index: 1000;
     overflow-y: auto;
     overflow-x: hidden;
@@ -27,18 +27,20 @@
 .sidebar-menu .list-group-item {
     background-color: transparent;
     border: none;
-    color: #0D47A1; /* Màu chữ xanh đậm */
+    color: #0D47A1;
     border-radius: 0;
     transition: all 0.3s ease;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .sidebar-menu .list-group-item:hover {
-    background-color: #BBDEFB; /* Hover - xanh dịu */
-    color: #1565C0; /* Xanh trung tính */
+    background-color: #BBDEFB;
+    color: #1565C0;
 }
 
 .sidebar-menu .list-group-item.active {
-    background-color: #42A5F5; /* Màu xanh đậm cho active */
+    background-color: #42A5F5;
     color: white;
 }
 
@@ -55,10 +57,10 @@
     letter-spacing: 1px;
 }
 
-/* Đảm bảo main content không bị che khuất */
+/* Điều chỉnh phần nội dung chính theo chiều rộng mới */
 #page-content-wrapper {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+    margin-left: 230px;
+    width: calc(100% - 230px);
     transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
@@ -67,16 +69,16 @@
     width: 100%;
 }
 
-/* Responsive design */
+/* Responsive */
 @media (max-width: 768px) {
     .sidebar-wrapper {
         transform: translateX(-100%);
     }
-    
+
     .sidebar-wrapper.toggled {
         transform: translateX(0);
     }
-    
+
     #page-content-wrapper {
         margin-left: 0;
         width: 100%;
@@ -100,7 +102,7 @@
                 <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
             </a>
             <a
-                href="users.jsp"
+                href="${pageContext.request.contextPath}/userList"
                 class="list-group-item list-group-item-action py-3 ${param.activePage == 'users' ? 'active' : ''}"
                 >
                 <i class="fas fa-hotel me-2"></i> Người dùng
