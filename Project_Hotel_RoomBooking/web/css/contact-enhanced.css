@@ -644,11 +644,11 @@ select.form-control {
 @media (min-width: 992px) {
   .contact-left-col {
     flex: 0 0 33.33333% !important;
-    max-width: 32% !important;
+    max-width: 32.3333% !important;
   }
 
   .col-lg-8 {
     flex: 0 0 66.66667% !important;
-    max-width: 66% !important;
+    max-width: 65% !important;
   }
 }
