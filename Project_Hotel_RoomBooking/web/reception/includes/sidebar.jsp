@@ -26,7 +26,7 @@ prefix="c" %>
         <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
       </a>
       <a
-        href="${pageContext.request.contextPath}/userList"
+        href="${pageContext.request.contextPath}/customerList"
         class="list-group-item list-group-item-action py-3 ${param.activePage == 'users' ? 'active' : ''}"
       >
         <i class="fas fa-hotel me-2"></i> Quản lý khách hàng
