@@ -256,7 +256,7 @@
                                                 <button type="reset" class="btn btn-reset">
                                                     <i class="fas fa-undo me-2"></i>Đặt lại
                                                 </button>
-                                                <button type="submit" class="btn btn-submit" id="submitBtn">
+                                                <button type="submit" class="btn btn-submit" id="submitBtn" style="color: white;">
                                                     <i class="fas fa-paper-plane me-2"></i>Gửi tin nhắn
                                                 </button>
                                             </div>

@@ -200,9 +200,9 @@
                                                 <i class="fas fa-venus-mars me-2"></i>Giới tính
                                             </label>
                                             <select class="form-select info-input" name="gender" disabled>
-                                                <option value="Nam" ${user.gender == 'Nam' ? 'selected' : ''}>Nam</option>
-                                                <option value="Nữ" ${user.gender == 'Nữ' ? 'selected' : ''}>Nữ</option>
-                                                <option value="Khác" ${user.gender == 'Khác' ? 'selected' : ''}>Khác</option>
+                                                <option value="Nam" ${user.gender == 'Nam' || user.gender == 'Male' ? 'selected' : ''}>Nam</option>
+                                                <option value="Nữ" ${user.gender == 'Nữ' || user.gender == 'Female' ? 'selected' : ''}>Nữ</option>
+                                                <option value="Khác" ${user.gender == 'Khác' || user.gender == 'Other' ? 'selected' : ''}>Khác</option>
                                             </select>
                                         </div>
 

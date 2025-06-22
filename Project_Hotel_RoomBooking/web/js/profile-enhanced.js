@@ -100,31 +100,41 @@ class ProfileManager {
     input.classList.remove("is-invalid", "is-valid");
   }
 
-  toggleEditMode() {
-    this.isEditMode = true;
-    const inputs = document.querySelectorAll(".info-input");
-    inputs.forEach((input) => {
-      input.removeAttribute("readonly");
-    });
+toggleEditMode() {
+  this.isEditMode = true;
+  const inputs = document.querySelectorAll(".info-input");
 
-    document.getElementById("formActions").style.display = "flex";
-    document.getElementById("editToggleBtn").style.display = "none";
-  }
+  inputs.forEach((input) => {
+    if (input.tagName === "SELECT") {
+      input.removeAttribute("disabled"); // Gỡ disabled khỏi select
+    } else {
+      input.removeAttribute("readonly"); // Gỡ readonly khỏi input/textarea
+    }
+  });
 
-  cancelEdit() {
-    this.isEditMode = false;
-    const form = document.getElementById("profileForm");
-    form.reset();
+  document.getElementById("formActions").style.display = "flex";
+  document.getElementById("editToggleBtn").style.display = "none";
+}
 
-    const inputs = document.querySelectorAll(".info-input");
-    inputs.forEach((input) => {
+cancelEdit() {
+  this.isEditMode = false;
+  const form = document.getElementById("profileForm");
+  form.reset();
+
+  const inputs = document.querySelectorAll(".info-input");
+
+  inputs.forEach((input) => {
+    if (input.tagName === "SELECT") {
+      input.setAttribute("disabled", true);
+    } else {
       input.setAttribute("readonly", true);
-      this.clearFieldError(input);
-    });
+    }
+    this.clearFieldError(input);
+  });
 
-    document.getElementById("formActions").style.display = "none";
-    document.getElementById("editToggleBtn").style.display = "inline-block";
-  }
+  document.getElementById("formActions").style.display = "none";
+  document.getElementById("editToggleBtn").style.display = "inline-block";
+}
 
   showToast(message, type = "info") {
     alert(message); // tạm thời dùng alert đơn giản
