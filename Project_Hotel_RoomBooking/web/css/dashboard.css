@@ -320,8 +320,8 @@
   flex: 1;
 }
 
-.detail-sidebar.show {
-  right: 0;
+.detail-sidebar-menu {
+  padding: 0;
 }
 
 .detail-header {

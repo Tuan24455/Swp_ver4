@@ -67,7 +67,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
       <!-- Main Content -->
       <div id="page-content-wrapper" class="flex-fill">
         <!-- Include Top Navigation -->
-        <jsp:include page="includes/header.jsp" />
+        <jsp:include page="includes/navbar.jsp" />
         <div class="container-fluid py-4">
           <!-- Page Header -->
           <div class="page-header">

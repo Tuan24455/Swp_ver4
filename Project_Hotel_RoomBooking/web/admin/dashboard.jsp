@@ -90,15 +90,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
       <!-- Main Content -->
       <div id="page-content-wrapper" class="flex-fill">
         <!-- Top Navigation -->
-        <nav
-          class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-        >
-          <div class="container-fluid">
-            <button class="btn btn-outline-secondary" id="menu-toggle">
-              <i class="fas fa-bars"></i>
-            </button>
-          </div>
-        </nav>
+        <jsp:include page="includes/navbar.jsp" />
 
         <div class="container-fluid py-4">
           <!-- Page Header -->
@@ -716,5 +708,42 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         return new bootstrap.Tooltip(tooltipTriggerEl);
       });
     </script>
-  </body>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrapper = document.getElementById('wrapper');
+    const sidebar = document.getElementById('sidebar-wrapper');
+    const showBtn = document.getElementById('showSidebarBtn');
+    document.querySelectorAll('#menu-toggle').forEach(btn => {
+      if (btn) {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          wrapper.classList.toggle('toggled');
+          if(showBtn){
+            showBtn.style.display = wrapper.classList.contains('toggled') ? 'block' : 'none';
+          }
+          sidebar.classList.toggle('toggled');
+        });
+      }
+    });
+    if(showBtn){
+      showBtn.addEventListener('click', e=>{
+        e.preventDefault();
+        wrapper.classList.remove('toggled');
+        sidebar.classList.remove('toggled');
+        showBtn.style.display='none';
+      });
+    }
+  });
+
+
+
+</script>
+<style>
+  #showSidebarBtn{display:none;position:fixed;top:10px;left:10px;z-index:1101;}
+  #wrapper.toggled #showSidebarBtn{display:block;}
+</style>
+<button id="showSidebarBtn" class="btn btn-sm btn-outline-secondary">
+  <i class="fas fa-bars"></i>
+</button>
+</body>
 </html>

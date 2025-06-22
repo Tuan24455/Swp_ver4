@@ -55,15 +55,7 @@
       <!-- Main Content -->
       <div id="page-content-wrapper" class="flex-fill">
         <!-- Top Navigation -->
-        <nav
-          class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-        >
-          <div class="container-fluid">
-            <button class="btn btn-outline-secondary" id="menu-toggle">
-              <i class="fas fa-bars"></i>
-            </button>
-          </div>
-        </nav>
+        <jsp:include page="includes/navbar.jsp" />
 
         <div class="container-fluid py-4">
           <nav aria-label="breadcrumb" class="mb-4">

@@ -29,15 +29,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav 
-                    class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-                    >
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-secondary" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                </nav>
+                <jsp:include page="includes/navbar.jsp" />
 
                 <div class="container-fluid py-4" >
                     <nav aria-label="breadcrumb" class="mb-4">
@@ -223,7 +215,7 @@
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
 
-                                                            <form action="${pageContext.request.contextPath}/deleteRoom" method="POST" style="display:inline;" onsubmit="return confirmDelete(${r.roomNumber});">
+                                                            <form action="${pageContext.request.contextPath}/deleteRoom" method="POST" style="display:inline;" class="delete-form" data-room-number="${r.roomNumber}">
                                                                 <input type="hidden" name="roomId" value="${r.id}" />
                                                                 <input type="hidden" name="action" value="delete" />
                                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
@@ -373,9 +365,16 @@
             </div>
 
             <script>
-                function confirmDelete(roomName) {
-                    return confirm('Are you sure you want to delete the room "' + roomName + '"?');
-                }
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.delete-form').forEach(form => {
+                        form.addEventListener('submit', function (event) {
+                            const roomNumber = this.dataset.roomNumber;
+                            if (!confirm('Are you sure you want to delete the room "' + roomNumber + '"?')) {
+                                event.preventDefault();
+                            }
+                        });
+                    });
+                });
             </script>
 
             <!-- Add Room Modal -->

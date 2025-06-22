@@ -20,10 +20,6 @@
     transform: translateX(-100%);
 }
 
-.sidebar-menu {
-    padding-top: 1rem;
-}
-
 .sidebar-menu .list-group-item {
     background-color: transparent;
     border: none;
@@ -68,6 +64,11 @@
     margin-left: 0;
     width: 100%;
 }
+/* Khi sidebar ẩn, triệt tiêu padding ngang của container chính */
+#wrapper.toggled #page-content-wrapper .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -93,6 +94,8 @@
     />
 
 <div class="sidebar-wrapper" id="sidebar-wrapper">
+    <!-- Toggle button -->
+
     <div class="sidebar-menu">
         <div class="list-group list-group-flush">
             <a
@@ -211,6 +214,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const menuToggle = document.getElementById('menu-toggle');
         const wrapper = document.getElementById('wrapper');
+
         const sidebar = document.getElementById('sidebar-wrapper');
         
         if (menuToggle) {
@@ -219,6 +223,8 @@
                 sidebar.classList.toggle('toggled');
             });
         }
+        
+
         
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function(event) {

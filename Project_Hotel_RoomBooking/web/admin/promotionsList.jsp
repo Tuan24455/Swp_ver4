@@ -32,13 +32,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-secondary" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                </nav>
+                <jsp:include page="includes/navbar.jsp" />
 
                 <style>
                     .header-bg {
@@ -181,7 +175,13 @@
                                                         class="btn btn-sm btn-outline-warning"
                                                         title="Edit"
                                                         type="button"
-                                                        onclick="openEditModal(${p.id}, '${p.title}', ${p.percentage}, '${p.startAt}', '${p.endAt}', '${p.description}')"
+                                                        data-id="${p.id}"
+                                                        data-title="${p.title}"
+                                                        data-percentage="${p.percentage}"
+                                                        data-start-at="${p.startAt}"
+                                                        data-end-at="${p.endAt}"
+                                                        data-description="${p.description}"
+                                                        onclick="openEditModal(this)"
                                                         >
                                                         <i class="fas fa-edit"></i>
                                                     </button>
@@ -352,21 +352,23 @@
         </div>
     </div>
     <script>
-        function openEditModal(id, title, percentage, startAt, endAt, description) {
-            // Gán dữ liệu vào các input của form update
+        function openEditModal(button) {
+            const id = button.getAttribute('data-id');
+            const title = button.getAttribute('data-title');
+            const percentage = button.getAttribute('data-percentage');
+            const startAt = button.getAttribute('data-start-at');
+            const endAt = button.getAttribute('data-end-at');
+            const description = button.getAttribute('data-description');
+
             document.getElementById('update_id').value = id;
             document.getElementById('update_title').value = title;
             document.getElementById('update_percentage').value = percentage;
-
-            // Chuyển đổi định dạng ngày nếu cần
-            document.getElementById('update_start_at').value = startAt ? startAt.substring(0, 10) : '';
-            document.getElementById('update_end_at').value = endAt ? endAt.substring(0, 10) : '';
-
+            document.getElementById('update_start_at').value = startAt.substring(0, 10);
+            document.getElementById('update_end_at').value = endAt.substring(0, 10);
             document.getElementById('update_description').value = description;
 
-            // Mở modal bằng Bootstrap 5 JS API
-            const updateModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
-            updateModal.show();
+            var myModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
+            myModal.show();
         }
     </script>
 
