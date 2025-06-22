@@ -136,7 +136,9 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <h6 class="card-subtitle text-muted mb-2">
                         Total Revenue
                       </h6>
-                      <h2 class="display-6 fw-bold mb-1">$125,000</h2>
+                      <h2 class="display-6 fw-bold mb-1">
+                          <fmt:formatNumber value="${totalRevenue}" type="currency" currencySymbol="$"/>
+                        </h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>15.3%
                         <span class="text-muted ms-1">vs last month</span>
@@ -157,7 +159,9 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <h6 class="card-subtitle text-muted mb-2">
                         Room Occupancy
                       </h6>
-                      <h2 class="display-6 fw-bold mb-1">80%</h2>
+                      <h2 class="display-6 fw-bold mb-1">
+                          <c:out value="${occupiedRooms}"/>/<c:out value="${totalRooms}"/>
+                        </h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>5.2%
                         <span class="text-muted ms-1">vs last week</span>
@@ -178,7 +182,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <h6 class="card-subtitle text-muted mb-2">
                         New Bookings
                       </h6>
-                      <h2 class="display-6 fw-bold mb-1">385</h2>
+                      <h2 class="display-6 fw-bold mb-1"><c:out value="${todayBookings}"/></h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>8.1%
                         <span class="text-muted ms-1">vs yesterday</span>
@@ -199,7 +203,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <h6 class="card-subtitle text-muted mb-2">
                         Customer Rating
                       </h6>
-                      <h2 class="display-6 fw-bold mb-1">4.8/5</h2>
+                      <h2 class="display-6 fw-bold mb-1"><c:out value="${totalUsers}"/></h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>0.3
                         <span class="text-muted ms-1">vs last month</span>
@@ -271,12 +275,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     <div class="row text-center">
                       <div class="col-6">
                         <div class="border-end">
-                          <h6 class="text-success mb-1">120</h6>
+                          <h6 class="text-success mb-1"><c:out value="${occupiedRooms}"/></h6>
                           <small class="text-muted">Occupied</small>
                         </div>
                       </div>
                       <div class="col-6">
-                        <h6 class="text-primary mb-1">30</h6>
+                        <h6 class="text-primary mb-1"><c:out value="${totalRooms - occupiedRooms}"/></h6>
                         <small class="text-muted">Available</small>
                       </div>
                     </div>
