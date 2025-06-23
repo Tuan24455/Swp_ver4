@@ -5,9 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.User;
+import valid.InputValidator;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 @WebServlet(name = "InformationServlet", urlPatterns = {"/information"})
@@ -41,8 +42,7 @@ public class InformationServlet extends HttpServlet {
             String gender = request.getParameter("gender");
 
             // Parse ngày sinh
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date birth = sdf.parse(birthStr);
+            Date birth = InputValidator.parseDate(birthStr);
 
             // Cập nhật lại user object
             user.setFullName(fullName);
@@ -55,12 +55,11 @@ public class InformationServlet extends HttpServlet {
             // Cập nhật DB
             new UserDao().update(user);
 
-            // Ghi lại vào session nếu cần
+            // Cập nhật session và thông báo
             session.setAttribute("user", user);
             request.setAttribute("success", "Cập nhật thông tin thành công!");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ParseException e) {
             request.setAttribute("error", "Đã xảy ra lỗi: " + e.getMessage());
         }
 

@@ -4,6 +4,7 @@ import dao.UserDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import valid.InputValidator;
 
 import java.io.IOException;
 
@@ -18,8 +19,8 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
-        // Validate username length
-        if (userName == null || userName.length() < 8) {
+        // Validate username
+        if (!InputValidator.isValidUsername(userName)) {
             request.setAttribute("error", "Tên đăng nhập phải có ít nhất 8 ký tự.");
             request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
@@ -40,20 +41,15 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // Validate password pattern
-        if (!isValidPassword(password)) {
+        if (!InputValidator.isValidPassword(password)) {
             request.setAttribute("error", "Mật khẩu phải dài từ 8–16 ký tự, chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và không chứa ký tự đặc biệt.");
             request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
         }
 
-        // Hợp lệ -> forward sang registerDetail.jsp
+        // Hợp lệ -> forward sang trang chi tiết
         request.setAttribute("userName", userName);
         request.setAttribute("password", password);
         request.getRequestDispatcher("registerDetail.jsp").forward(request, response);
-    }
-
-    private boolean isValidPassword(String password) {
-        if (password.length() < 8 || password.length() > 16) return false;
-        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$");
     }
 }

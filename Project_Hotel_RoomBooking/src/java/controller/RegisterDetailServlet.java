@@ -5,10 +5,10 @@ import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import valid.InputValidator;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @WebServlet(name = "RegisterDetailServlet", urlPatterns = {"/registerDetail"})
@@ -24,6 +24,7 @@ public class RegisterDetailServlet extends HttpServlet {
         String fName = request.getParameter("fName");
         String lName = request.getParameter("lName");
         String fullName = fName.trim() + " " + lName.trim();
+
         String birthStr = request.getParameter("birth");
         String gender = request.getParameter("gender");
         String email = request.getParameter("email");
@@ -31,7 +32,7 @@ public class RegisterDetailServlet extends HttpServlet {
         String address = request.getParameter("address");
 
         // Validate email
-        if (!isValidEmail(email)) {
+        if (!InputValidator.isValidEmail(email)) {
             request.setAttribute("error", "Email không hợp lệ.");
             request.setAttribute("userName", username);
             request.setAttribute("password", password);
@@ -40,7 +41,7 @@ public class RegisterDetailServlet extends HttpServlet {
         }
 
         // Validate phone
-        if (!isValidPhone(phone)) {
+        if (!InputValidator.isValidPhone(phone)) {
             request.setAttribute("error", "Số điện thoại phải là chuỗi gồm đúng 10 chữ số.");
             request.setAttribute("userName", username);
             request.setAttribute("password", password);
@@ -49,10 +50,9 @@ public class RegisterDetailServlet extends HttpServlet {
         }
 
         // Validate ngày sinh
-        Date birth = null;
+        Date birth;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            birth = sdf.parse(birthStr);
+            birth = InputValidator.parseDate(birthStr);
         } catch (ParseException e) {
             request.setAttribute("error", "Ngày sinh không hợp lệ.");
             request.setAttribute("userName", username);
@@ -81,13 +81,5 @@ public class RegisterDetailServlet extends HttpServlet {
         dao.insert(user);
 
         response.sendRedirect("login.jsp");
-    }
-
-    private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$");
-    }
-
-    private boolean isValidPhone(String phone) {
-        return phone != null && phone.matches("^\\d{10}$");
     }
 }
