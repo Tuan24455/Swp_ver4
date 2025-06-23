@@ -14,7 +14,7 @@ import model.StockItem;
 /**
  * Servlet hiển thị báo cáo tồn kho.
  */
-@WebServlet(name = "StockReportServlet", urlPatterns = {"/stockreport"})
+@WebServlet(name = "StockReportServlet", urlPatterns = {"/stockreport", "/admin/stockreport"})
 public class StockReportServlet extends HttpServlet {
 
     private final StockDao stockDao = new StockDao();

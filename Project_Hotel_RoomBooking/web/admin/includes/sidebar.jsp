@@ -150,7 +150,7 @@
                         <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
                     </a>
                     <a
-                        href="${pageContext.request.contextPath}/admin/bookingreport.jsp"
+                        href="bookingreport.jsp"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'bookingreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
