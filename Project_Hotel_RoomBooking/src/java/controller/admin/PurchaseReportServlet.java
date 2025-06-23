@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +28,6 @@ public class PurchaseReportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        HttpSession session = request.getSession();
-        
-        // Check if user is logged in and is admin
-        if (session.getAttribute("user") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
         
         try {
             // Get date range parameters
@@ -63,12 +55,12 @@ public class PurchaseReportServlet extends HttpServlet {
             request.setAttribute("endDate", endDate);
             
             // Forward to JSP
-            request.getRequestDispatcher("admin/purchasereport.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/purchasereport.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error loading purchase report: " + e.getMessage());
-            request.getRequestDispatcher("admin/purchasereport.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/purchasereport.jsp").forward(request, response);
         }
     }
     
