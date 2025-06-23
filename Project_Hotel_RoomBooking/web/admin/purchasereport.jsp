@@ -6,7 +6,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Purchase Reports - Hotel Management System</title>
+    <title>Báo Cáo Mua Hàng - Hệ Thống Quản Lý Khách Sạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
@@ -65,7 +65,7 @@
                 <h1 class="h2 mb-2">Báo Cáo Mua Hàng</h1>
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Home</a></li>
+                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
                     <li class="breadcrumb-item active">Báo Cáo Mua Hàng</li>
                   </ol>
                 </nav>
@@ -78,10 +78,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Total Revenue</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">Tổng Doanh Thu</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">$125,450</h2>
                   <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> +12.5% from last month
+                    <i class="fas fa-arrow-up me-1"></i> +12.5% so với tháng trước
                   </p>
                 </div>
               </div>
@@ -89,10 +89,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Room Revenue</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">Doanh Thu Phòng</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">$89,320</h2>
                   <p class="card-text text-info">
-                    <i class="fas fa-bed me-1"></i> 71.2% of total revenue
+                    <i class="fas fa-bed me-1"></i> 71.2% tổng doanh thu
                   </p>
                 </div>
               </div>
@@ -101,12 +101,12 @@
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">
-                    Additional Services
+                    Dịch Vụ Bổ Sung
                   </h6>
                   <h2 class="card-title display-6 fw-bold mb-1">$36,130</h2>
                   <p class="card-text text-warning">
-                    <i class="fas fa-plus-circle me-1"></i> 28.8% of total
-                    revenue
+                    <i class="fas fa-plus-circle me-1"></i> 28.8% tổng
+                    doanh thu
                   </p>
                 </div>
               </div>
@@ -114,10 +114,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Total Invoices</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">Tổng Hóa Đơn</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">1,247</h2>
                   <p class="card-text text-primary">
-                    <i class="fas fa-receipt me-1"></i> This month
+                    <i class="fas fa-receipt me-1"></i> Tháng này
                   </p>
                 </div>
               </div>
@@ -129,7 +129,7 @@
             <div class="col-lg-8">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Revenue Trends</h5>
+                  <h5 class="mb-0">Xu Hướng Doanh Thu</h5>
                 </div>
                 <div class="card-body">
                   <canvas id="revenueChart" style="height: 300px"></canvas>
@@ -139,7 +139,7 @@
             <div class="col-lg-4">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Revenue Distribution</h5>
+                  <h5 class="mb-0">Phân Bổ Doanh Thu</h5>
                 </div>
                 <div class="card-body">
                   <canvas
@@ -156,34 +156,34 @@
             <div class="col-lg-6">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Top Additional Services</h5>
+                  <h5 class="mb-0">Dịch Vụ Bổ Sung Hàng Đầu</h5>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
                       <thead class="table-light">
                         <tr>
-                          <th>Service</th>
-                          <th>Usage Count</th>
-                          <th>Revenue</th>
-                          <th>Avg. Price</th>
+                          <th>Dịch Vụ</th>
+                          <th>Số Lần Sử Dụng</th>
+                          <th>Doanh Thu</th>
+                          <th>Giá Trung Bình</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td><strong>Room Service</strong></td>
+                          <td><strong>Dịch Vụ Phòng</strong></td>
                           <td>342</td>
                           <td>$15,480</td>
                           <td>$45.26</td>
                         </tr>
                         <tr>
-                          <td><strong>Laundry Service</strong></td>
+                          <td><strong>Dịch Vụ Giặt Ủi</strong></td>
                           <td>198</td>
                           <td>$7,920</td>
                           <td>$40.00</td>
                         </tr>
                         <tr>
-                          <td><strong>Spa Services</strong></td>
+                          <td><strong>Dịch Vụ Spa</strong></td>
                           <td>89</td>
                           <td>$8,900</td>
                           <td>$100.00</td>
@@ -195,7 +195,7 @@
                           <td>$20.00</td>
                         </tr>
                         <tr>
-                          <td><strong>WiFi Premium</strong></td>
+                          <td><strong>WiFi Cao Cấp</strong></td>
                           <td>67</td>
                           <td>$670</td>
                           <td>$10.00</td>
@@ -209,7 +209,7 @@
             <div class="col-lg-6">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Monthly Service Usage</h5>
+                  <h5 class="mb-0">Sử Dụng Dịch Vụ Hàng Tháng</h5>
                 </div>
                 <div class="card-body">
                   <canvas id="serviceUsageChart" style="height: 300px"></canvas>
@@ -221,45 +221,45 @@
           <!-- Detailed Invoice Report -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
-              <h5 class="mb-0">Detailed Invoice Report</h5>
+              <h5 class="mb-0">Báo Cáo Hóa Đơn Chi Tiết</h5>
             </div>
             <div class="card-body">
               <!-- Filter Section -->
               <div class="row g-3 mb-4">
                 <div class="col-md-2">
-                  <label class="form-label">Date From</label>
+                  <label class="form-label">Từ Ngày</label>
                   <input type="date" class="form-control" id="dateFrom" />
                 </div>
                 <div class="col-md-2">
-                  <label class="form-label">Date To</label>
+                  <label class="form-label">Đến Ngày</label>
                   <input type="date" class="form-control" id="dateTo" />
                 </div>
                 <div class="col-md-2">
-                  <label class="form-label">Room Type</label>
+                  <label class="form-label">Loại Phòng</label>
                   <select class="form-select" id="roomTypeFilter">
-                    <option value="">All Types</option>
-                    <option value="standard">Standard</option>
-                    <option value="deluxe">Deluxe</option>
-                    <option value="suite">Suite</option>
-                    <option value="presidential">Presidential</option>
+                    <option value="">Tất Cả Loại</option>
+                    <option value="standard">Tiêu Chuẩn</option>
+                    <option value="deluxe">Cao Cấp</option>
+                    <option value="suite">Phòng Suite</option>
+                    <option value="presidential">Tổng Thống</option>
                   </select>
                 </div>
                 <div class="col-md-2">
-                  <label class="form-label">Payment Status</label>
+                  <label class="form-label">Trạng Thái Thanh Toán</label>
                   <select class="form-select" id="paymentStatusFilter">
-                    <option value="">All Status</option>
-                    <option value="paid">Paid</option>
-                    <option value="pending">Pending</option>
-                    <option value="overdue">Overdue</option>
+                    <option value="">Tất Cả Trạng Thái</option>
+                    <option value="paid">Đã Thanh Toán</option>
+                    <option value="pending">Chờ Thanh Toán</option>
+                    <option value="overdue">Quá Hạn</option>
                   </select>
                 </div>
                 <div class="col-md-2">
-                  <label class="form-label">Guest Type</label>
+                  <label class="form-label">Loại Khách</label>
                   <select class="form-select" id="guestTypeFilter">
-                    <option value="">All Guests</option>
-                    <option value="regular">Regular</option>
+                    <option value="">Tất Cả Khách</option>
+                    <option value="regular">Thường</option>
                     <option value="vip">VIP</option>
-                    <option value="corporate">Corporate</option>
+                    <option value="corporate">Doanh Nghiệp</option>
                   </select>
                 </div>
                 <div class="col-md-2">
@@ -269,7 +269,7 @@
                       class="btn btn-outline-primary"
                       onclick="applyFilters()"
                     >
-                      <i class="fas fa-filter me-2"></i>Apply
+                      <i class="fas fa-filter me-2"></i>Áp Dụng
                     </button>
                   </div>
                 </div>
@@ -279,16 +279,16 @@
                 <table class="table table-striped table-hover align-middle">
                   <thead class="table-light">
                     <tr>
-                      <th>Invoice #</th>
-                      <th>Guest Name</th>
-                      <th>Room</th>
-                      <th>Check-in</th>
-                      <th>Check-out</th>
-                      <th>Room Charges</th>
-                      <th>Additional Services</th>
-                      <th>Total Amount</th>
-                      <th>Status</th>
-                      <th>Actions</th>
+                      <th>Số Hóa Đơn</th>
+                      <th>Tên Khách</th>
+                      <th>Phòng</th>
+                      <th>Nhận Phòng</th>
+                      <th>Trả Phòng</th>
+                      <th>Phí Phòng</th>
+                      <th>Dịch Vụ Bổ Sung</th>
+                      <th>Tổng Tiền</th>
+                      <th>Trạng Thái</th>
+                      <th>Thao Tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -301,19 +301,19 @@
                       <td>$450.00</td>
                       <td>$125.50</td>
                       <td><strong>$575.50</strong></td>
-                      <td><span class="badge bg-success">Paid</span></td>
+                      <td><span class="badge bg-success">Đã Thanh Toán</span></td>
                       <td>
                         <div class="btn-group btn-group-sm">
                           <button
                             class="btn btn-outline-primary"
-                            title="View Invoice"
+                            title="Xem Hóa Đơn"
                             onclick="viewInvoice('INV-2025-001')"
                           >
                             <i class="fas fa-eye"></i>
                           </button>
                           <button
                             class="btn btn-outline-info"
-                            title="Print Invoice"
+                            title="In Hóa Đơn"
                             onclick="printInvoice('INV-2025-001')"
                           >
                             <i class="fas fa-print"></i>
@@ -342,14 +342,14 @@
                         <div class="btn-group btn-group-sm">
                           <button
                             class="btn btn-outline-primary"
-                            title="View Invoice"
+                            title="Xem Hóa Đơn"
                             onclick="viewInvoice('INV-2025-002')"
                           >
                             <i class="fas fa-eye"></i>
                           </button>
                           <button
                             class="btn btn-outline-info"
-                            title="Print Invoice"
+                            title="In Hóa Đơn"
                             onclick="printInvoice('INV-2025-002')"
                           >
                             <i class="fas fa-print"></i>
@@ -373,19 +373,19 @@
                       <td>$200.00</td>
                       <td>$45.25</td>
                       <td><strong>$245.25</strong></td>
-                      <td><span class="badge bg-success">Paid</span></td>
+                      <td><span class="badge bg-success">Đã Thanh Toán</span></td>
                       <td>
                         <div class="btn-group btn-group-sm">
                           <button
                             class="btn btn-outline-primary"
-                            title="View Invoice"
+                            title="Xem Hóa Đơn"
                             onclick="viewInvoice('INV-2025-003')"
                           >
                             <i class="fas fa-eye"></i>
                           </button>
                           <button
                             class="btn btn-outline-info"
-                            title="Print Invoice"
+                            title="In Hóa Đơn"
                             onclick="printInvoice('INV-2025-003')"
                           >
                             <i class="fas fa-print"></i>
@@ -414,14 +414,14 @@
                         <div class="btn-group btn-group-sm">
                           <button
                             class="btn btn-outline-primary"
-                            title="View Invoice"
+                            title="Xem Hóa Đơn"
                             onclick="viewInvoice('INV-2025-004')"
                           >
                             <i class="fas fa-eye"></i>
                           </button>
                           <button
                             class="btn btn-outline-info"
-                            title="Print Invoice"
+                            title="In Hóa Đơn"
                             onclick="printInvoice('INV-2025-004')"
                           >
                             <i class="fas fa-print"></i>
@@ -550,7 +550,7 @@
           ],
           datasets: [
             {
-              label: "Room Revenue",
+              label: "Doanh Thu Phòng",
               data: [
                 65000, 72000, 68000, 75000, 82000, 89000, 85000, 92000, 88000,
                 95000, 91000, 89320,
@@ -561,7 +561,7 @@
               fill: false,
             },
             {
-              label: "Additional Services",
+              label: "Dịch Vụ Bổ Sung",
               data: [
                 25000, 28000, 26000, 30000, 32000, 35000, 33000, 38000, 36000,
                 40000, 38000, 36130,
@@ -602,12 +602,12 @@
         type: "doughnut",
         data: {
           labels: [
-            "Room Charges",
-            "Room Service",
-            "Laundry",
+            "Phí Phòng",
+            "Dịch Vụ Phòng",
+            "Giặt Ủi",
             "Spa",
             "Mini Bar",
-            "Other",
+            "Khác",
           ],
           datasets: [
             {
@@ -643,15 +643,15 @@
         type: "bar",
         data: {
           labels: [
-            "Room Service",
-            "Laundry",
+            "Dịch Vụ Phòng",
+            "Giặt Ủi",
             "Spa",
             "Mini Bar",
-            "WiFi Premium",
+            "WiFi Cao Cấp",
           ],
           datasets: [
             {
-              label: "Usage Count",
+              label: "Số Lần Sử Dụng",
               data: [342, 198, 89, 156, 67],
               backgroundColor: "rgba(75, 192, 192, 0.8)",
               borderColor: "rgba(75, 192, 192, 1)",
