@@ -6,7 +6,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Booking Reports - Hotel Management System</title>
+    <title>Báo Cáo Đặt Phòng - Hệ Thống Quản Lý Khách Sạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
@@ -58,31 +58,34 @@
         <jsp:include page="includes/navbar.jsp" />
 
         <div class="container-fluid py-4">
-          <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb custom-breadcrumb">
-              <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Booking Reports
-              </li>
-            </ol>
-          </nav>
+
 
           <!-- Page Header -->
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Booking Reports & Analytics</h1>
-            <div class="btn-group">
-              <button
-                class="btn btn-outline-primary"
-                onclick="exportReport('pdf')"
-              >
-                <i class="fas fa-file-pdf me-2"></i>Export PDF
-              </button>
-              <button
-                class="btn btn-outline-success"
-                onclick="exportReport('excel')"
-              >
-                <i class="fas fa-file-excel me-2"></i>Export Excel
-              </button>
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="h2 mb-2">Báo Cáo Đặt Phòng</h1>
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Báo Cáo Đặt Phòng</li>
+                  </ol>
+                </nav>
+              </div>
+              <div class="btn-group">
+                <button
+                  class="btn btn-primary"
+                  onclick="exportReport('pdf')"
+                >
+                  <i class="fas fa-file-pdf me-2"></i>Xuất PDF
+                </button>
+                <button
+                  class="btn btn-success"
+                  onclick="exportReport('excel')"
+                >
+                  <i class="fas fa-file-excel me-2"></i>Xuất Excel
+                </button>
+              </div>
             </div>
           </div>
 
@@ -91,7 +94,7 @@
             <div class="card-body">
               <div class="row g-3 align-items-end">
                 <div class="col-md-3">
-                  <label class="form-label">From Date</label>
+                  <label class="form-label">Từ Ngày</label>
                   <input
                     type="date"
                     class="form-control"
@@ -100,7 +103,7 @@
                   />
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">To Date</label>
+                  <label class="form-label">Đến Ngày</label>
                   <input
                     type="date"
                     class="form-control"
@@ -109,13 +112,13 @@
                   />
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">Room Type</label>
+                  <label class="form-label">Loại Phòng</label>
                   <select class="form-select">
-                    <option value="">All Room Types</option>
-                    <option value="standard">Standard</option>
-                    <option value="deluxe">Deluxe</option>
-                    <option value="suite">Suite</option>
-                    <option value="presidential">Presidential</option>
+                    <option value="">Tất Cả Loại Phòng</option>
+                    <option value="standard">Tiêu Chuẩn</option>
+                    <option value="deluxe">Cao Cấp</option>
+                    <option value="suite">Phòng Suite</option>
+                    <option value="presidential">Tổng Thống</option>
                   </select>
                 </div>
                 <div class="col-md-3">
@@ -123,7 +126,7 @@
                     class="btn btn-primary w-100"
                     onclick="generateReport()"
                   >
-                    <i class="fas fa-chart-line me-2"></i>Generate Report
+                    <i class="fas fa-chart-line me-2"></i>Tạo Báo Cáo
                   </button>
                 </div>
               </div>
@@ -135,10 +138,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Total Bookings</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">Tổng Đặt Phòng</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">1,247</h2>
                   <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> 12% vs last month
+                    <i class="fas fa-arrow-up me-1"></i> 12% so với tháng trước
                   </p>
                 </div>
               </div>
@@ -146,10 +149,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Revenue</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">Doanh Thu</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">$89,450</h2>
                   <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> 18% vs last month
+                    <i class="fas fa-arrow-up me-1"></i> 18% so với tháng trước
                   </p>
                 </div>
               </div>
@@ -158,11 +161,11 @@
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">
-                    Avg. Stay Duration
+                    Thời Gian Lưu Trú TB
                   </h6>
                   <h2 class="card-title display-6 fw-bold mb-1">2.8</h2>
                   <p class="card-text text-info">
-                    <i class="fas fa-calendar me-1"></i> days per booking
+                    <i class="fas fa-calendar me-1"></i> ngày mỗi đặt phòng
                   </p>
                 </div>
               </div>
@@ -170,10 +173,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Occupancy Rate</h6>
+                  <h6 class="card-subtitle mb-2 text-muted">Tỷ Lệ Lấp Đầy</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">78%</h2>
                   <p class="card-text text-warning">
-                    <i class="fas fa-minus me-1"></i> 2% vs last month
+                    <i class="fas fa-minus me-1"></i> 2% so với tháng trước
                   </p>
                 </div>
               </div>
@@ -185,7 +188,7 @@
             <div class="col-lg-8">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Booking Trends</h5>
+                  <h5 class="mb-0">Xu Hướng Đặt Phòng</h5>
                 </div>
                 <div class="card-body">
                   <canvas
@@ -198,7 +201,7 @@
             <div class="col-lg-4">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Room Type Distribution</h5>
+                  <h5 class="mb-0">Phân Bổ Loại Phòng</h5>
                 </div>
                 <div class="card-body">
                   <canvas id="roomTypeChart" style="height: 300px"></canvas>
@@ -212,7 +215,7 @@
             <div class="col-lg-6">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Monthly Revenue</h5>
+                  <h5 class="mb-0">Doanh Thu Hàng Tháng</h5>
                 </div>
                 <div class="card-body">
                   <canvas id="revenueChart" style="height: 300px"></canvas>
@@ -241,18 +244,18 @@
                 <table class="table table-striped table-hover align-middle">
                   <thead class="table-light">
                     <tr>
-                      <th>Room Number</th>
-                      <th>Room Type</th>
-                      <th>Total Bookings</th>
-                      <th>Revenue Generated</th>
-                      <th>Occupancy Rate</th>
-                      <th>Avg. Rating</th>
+                      <th>Số Phòng</th>
+                      <th>Loại Phòng</th>
+                      <th>Tổng Đặt Phòng</th>
+                      <th>Doanh Thu Tạo Ra</th>
+                      <th>Tỷ Lệ Lấp Đầy</th>
+                      <th>Đánh Giá TB</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td><strong>301</strong></td>
-                      <td>Presidential Suite</td>
+                      <td>Phòng Tổng Thống</td>
                       <td>45</td>
                       <td>$33,750</td>
                       <td>89%</td>
@@ -269,7 +272,7 @@
                     </tr>
                     <tr>
                       <td><strong>201</strong></td>
-                      <td>Suite</td>
+                      <td>Phòng Suite</td>
                       <td>67</td>
                       <td>$23,450</td>
                       <td>85%</td>
@@ -286,7 +289,7 @@
                     </tr>
                     <tr>
                       <td><strong>102</strong></td>
-                      <td>Deluxe Room</td>
+                      <td>Phòng Cao Cấp</td>
                       <td>89</td>
                       <td>$16,020</td>
                       <td>82%</td>
@@ -303,7 +306,7 @@
                     </tr>
                     <tr>
                       <td><strong>101</strong></td>
-                      <td>Standard Room</td>
+                      <td>Phòng Tiêu Chuẩn</td>
                       <td>112</td>
                       <td>$13,440</td>
                       <td>78%</td>
@@ -403,7 +406,7 @@
       const roomTypeChart = new Chart(roomTypeCtx, {
         type: "doughnut",
         data: {
-          labels: ["Standard", "Deluxe", "Suite", "Presidential"],
+          labels: ["Tiêu Chuẩn", "Cao Cấp", "Suite", "Tổng Thống"],
           datasets: [
             {
               data: [45, 30, 20, 5],
@@ -438,7 +441,7 @@
           labels: ["Jan", "Feb", "Mar", "Apr", "May"],
           datasets: [
             {
-              label: "Revenue ($)",
+              label: "Doanh Thu ($)",
               data: [6800, 7400, 6200, 8400, 9600],
               backgroundColor: "rgba(75, 192, 192, 0.8)",
               borderColor: "rgba(75, 192, 192, 1)",
