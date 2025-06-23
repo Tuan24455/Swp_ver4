@@ -487,7 +487,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <i class="fas fa-users-cog me-2"></i>Quản Lý Nhân Viên
                     </a>
                     <a
-                      href="purchasereport.jsp"
+                      href="purchasereport"
                       class="btn btn-outline-warning quick-action-btn"
                     >
                       <i class="fas fa-chart-bar me-2"></i>Báo Cáo & Phân Tích
