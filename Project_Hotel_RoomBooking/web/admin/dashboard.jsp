@@ -6,7 +6,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - Hotel Management System</title>
+    <title>Bảng Điều Khiển - Hệ Thống Quản Lý Khách Sạn</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -97,22 +97,22 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           <div class="page-header">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <h1 class="h2 mb-2">Dashboard Overview</h1>
+                <h1 class="h2 mb-2">Tổng Quan Bảng Điều Khiển</h1>
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
-                      <a href="#"><i class="fas fa-home me-1"></i>Home</a>
+                      <a href="#"><i class="fas fa-home me-1"></i>Trang Chủ</a>
                     </li>
-                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item active">Bảng Điều Khiển</li>
                   </ol>
                 </nav>
               </div>
               <div class="btn-group">
                 <button class="btn btn-light" onclick="exportReport()">
-                  <i class="fas fa-download me-2"></i>Export Report
+                  <i class="fas fa-download me-2"></i>Xuất Báo Cáo
                 </button>
                 <button class="btn btn-light" onclick="refreshData()">
-                  <i class="fas fa-sync-alt me-2"></i>Refresh
+                  <i class="fas fa-sync-alt me-2"></i>Làm Mới
                 </button>
               </div>
             </div>
@@ -126,12 +126,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <div class="d-flex justify-content-between align-items-start">
                     <div>
                       <h6 class="card-subtitle text-muted mb-2">
-                        Total Revenue
+                        Tổng Doanh Thu
                       </h6>
                       <h2 class="display-6 fw-bold mb-1">$125,000</h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>15.3%
-                        <span class="text-muted ms-1">vs last month</span>
+                        <span class="text-muted ms-1">so với tháng trước</span>
                       </p>
                     </div>
                     <div class="stat-icon bg-primary bg-opacity-10">
@@ -147,12 +147,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <div class="d-flex justify-content-between align-items-start">
                     <div>
                       <h6 class="card-subtitle text-muted mb-2">
-                        Room Occupancy
+                        Tỷ Lệ Lấp Đầy
                       </h6>
                       <h2 class="display-6 fw-bold mb-1">80%</h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>5.2%
-                        <span class="text-muted ms-1">vs last week</span>
+                        <span class="text-muted ms-1">so với tuần trước</span>
                       </p>
                     </div>
                     <div class="stat-icon bg-success bg-opacity-10">
@@ -168,12 +168,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <div class="d-flex justify-content-between align-items-start">
                     <div>
                       <h6 class="card-subtitle text-muted mb-2">
-                        New Bookings
+                        Đặt Phòng Mới
                       </h6>
                       <h2 class="display-6 fw-bold mb-1">385</h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>8.1%
-                        <span class="text-muted ms-1">vs yesterday</span>
+                        <span class="text-muted ms-1">so với hôm qua</span>
                       </p>
                     </div>
                     <div class="stat-icon bg-info bg-opacity-10">
@@ -189,12 +189,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <div class="d-flex justify-content-between align-items-start">
                     <div>
                       <h6 class="card-subtitle text-muted mb-2">
-                        Customer Rating
+                        Đánh Giá Của Khách
                       </h6>
                       <h2 class="display-6 fw-bold mb-1">4.8/5</h2>
                       <p class="text-success mb-0">
                         <i class="fas fa-arrow-up me-1"></i>0.3
-                        <span class="text-muted ms-1">vs last month</span>
+                        <span class="text-muted ms-1">so với tháng trước</span>
                       </p>
                     </div>
                     <div class="stat-icon bg-warning bg-opacity-10">
@@ -215,27 +215,26 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     class="d-flex justify-content-between align-items-center"
                   >
                     <h5 class="mb-0">
-                      <i class="fas fa-chart-line me-2 text-primary"></i>Revenue
-                      Analytics
+                      <i class="fas fa-chart-line me-2 text-primary"></i>Phân Tích Doanh Thu
                     </h5>
                     <div class="btn-group btn-group-sm">
                       <button
                         class="btn btn-outline-secondary"
                         onclick="updateChart('weekly')"
                       >
-                        Weekly
+                        Hàng Tuần
                       </button>
                       <button
                         class="btn btn-outline-secondary active"
                         onclick="updateChart('monthly')"
                       >
-                        Monthly
+                        Hàng Tháng
                       </button>
                       <button
                         class="btn btn-outline-secondary"
                         onclick="updateChart('yearly')"
                       >
-                        Yearly
+                        Hàng Năm
                       </button>
                     </div>
                   </div>
@@ -251,8 +250,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
                   <h5 class="mb-0">
-                    <i class="fas fa-chart-pie me-2 text-success"></i>Room
-                    Status Overview
+                    <i class="fas fa-chart-pie me-2 text-success"></i>Tổng Quan Trạng Thái Phòng
                   </h5>
                 </div>
                 <div class="card-body">
@@ -264,12 +262,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <div class="col-6">
                         <div class="border-end">
                           <h6 class="text-success mb-1">120</h6>
-                          <small class="text-muted">Occupied</small>
+                          <small class="text-muted">Đã có khách</small>
                         </div>
                       </div>
                       <div class="col-6">
                         <h6 class="text-primary mb-1">30</h6>
-                        <small class="text-muted">Available</small>
+                        <small class="text-muted">Phòng trống</small>
                       </div>
                     </div>
                   </div>
@@ -287,11 +285,10 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     class="d-flex justify-content-between align-items-center"
                   >
                     <h5 class="mb-0">
-                      <i class="fas fa-calendar-alt me-2 text-info"></i>Recent
-                      Bookings
+                      <i class="fas fa-calendar-alt me-2 text-info"></i>Đặt Phòng Gần Đây
                     </h5>
-                    <a href="bookings.jsp" class="btn btn-sm btn-primary">
-                      <i class="fas fa-eye me-1"></i>View All
+                    <a href="${pageContext.request.contextPath}/admin/bookings.jsp" class="btn btn-sm btn-primary">
+                      <i class="fas fa-eye me-1"></i>Xem Tất Cả
                     </a>
                   </div>
                 </div>
@@ -300,12 +297,12 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     <table class="table table-hover align-middle mb-0">
                       <thead class="table-light">
                         <tr>
-                          <th>Guest</th>
-                          <th>Room Type</th>
-                          <th>Check In</th>
-                          <th>Check Out</th>
-                          <th>Status</th>
-                          <th>Actions</th>
+                          <th>Khách</th>
+                          <th>Loại Phòng</th>
+                          <th>Nhận Phòng</th>
+                          <th>Trả Phòng</th>
+                          <th>Trạng Thái</th>
+                          <th>Hành Động</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -328,30 +325,30 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                               >Deluxe Room</span
                             >
                           </td>
-                          <td>May 25, 2025</td>
-                          <td>May 28, 2025</td>
+                          <td>25/05/2025</td>
+                          <td>28/05/2025</td>
                           <td>
                             <span class="badge bg-success status-badge"
-                              >Confirmed</span
+                              >Đã xác nhận</span
                             >
                           </td>
                           <td>
                             <div class="table-actions">
                               <button
                                 class="btn btn-sm btn-outline-primary me-1"
-                                title="View Details"
+                                title="Xem chi tiết"
                               >
                                 <i class="fas fa-eye"></i>
                               </button>
                               <button
                                 class="btn btn-sm btn-outline-warning me-1"
-                                title="Edit"
+                                title="Chỉnh sửa"
                               >
                                 <i class="fas fa-edit"></i>
                               </button>
                               <button
                                 class="btn btn-sm btn-outline-danger"
-                                title="Cancel"
+                                title="Hủy bỏ"
                               >
                                 <i class="fas fa-times"></i>
                               </button>
@@ -373,32 +370,34 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                             </div>
                           </td>
                           <td>
-                            <span class="badge bg-light text-dark">Suite</span>
+                            <span class="badge bg-light text-dark"
+                              >Phòng Suite</span
+                            >
                           </td>
-                          <td>May 26, 2025</td>
-                          <td>May 30, 2025</td>
+                          <td>26/05/2025</td>
+                          <td>30/05/2025</td>
                           <td>
                             <span class="badge bg-warning status-badge"
-                              >Pending</span
+                              >Đang chờ</span
                             >
                           </td>
                           <td>
                             <div class="table-actions">
                               <button
                                 class="btn btn-sm btn-outline-primary me-1"
-                                title="View Details"
+                                title="Xem chi tiết"
                               >
                                 <i class="fas fa-eye"></i>
                               </button>
                               <button
                                 class="btn btn-sm btn-outline-warning me-1"
-                                title="Edit"
+                                title="Chỉnh sửa"
                               >
                                 <i class="fas fa-edit"></i>
                               </button>
                               <button
                                 class="btn btn-sm btn-outline-danger"
-                                title="Cancel"
+                                title="Hủy bỏ"
                               >
                                 <i class="fas fa-times"></i>
                               </button>
@@ -421,33 +420,33 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                           </td>
                           <td>
                             <span class="badge bg-light text-dark"
-                              >Standard Room</span
+                              >Phòng Standard</span
                             >
                           </td>
-                          <td>May 27, 2025</td>
-                          <td>May 29, 2025</td>
+                          <td>27/05/2025</td>
+                          <td>29/05/2025</td>
                           <td>
                             <span class="badge bg-success status-badge"
-                              >Confirmed</span
+                              >Đã xác nhận</span
                             >
                           </td>
                           <td>
                             <div class="table-actions">
                               <button
                                 class="btn btn-sm btn-outline-primary me-1"
-                                title="View Details"
+                                title="Xem chi tiết"
                               >
                                 <i class="fas fa-eye"></i>
                               </button>
                               <button
                                 class="btn btn-sm btn-outline-warning me-1"
-                                title="Edit"
+                                title="Chỉnh sửa"
                               >
                                 <i class="fas fa-edit"></i>
                               </button>
                               <button
                                 class="btn btn-sm btn-outline-danger"
-                                title="Cancel"
+                                title="Hủy bỏ"
                               >
                                 <i class="fas fa-times"></i>
                               </button>
@@ -464,40 +463,40 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div class="card shadow-sm">
                 <div class="card-header bg-white border-bottom py-3">
                   <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2 text-warning"></i>Quick Actions
+                    <i class="fas fa-bolt me-2 text-warning"></i>Tác Vụ Nhanh
                   </h5>
                 </div>
                 <div class="card-body">
                   <div class="d-grid gap-3">
                     <a
-                      href="bookings.jsp"
+                      href="${pageContext.request.contextPath}/admin/bookings.jsp"
                       class="btn btn-outline-primary quick-action-btn"
                     >
-                      <i class="fas fa-calendar-plus me-2"></i>New Booking
+                      <i class="fas fa-calendar-plus me-2"></i>Tạo Đặt Phòng Mới
                     </a>
                     <a
                       href="roomstatus.jsp"
                       class="btn btn-outline-info quick-action-btn"
                     >
-                      <i class="fas fa-door-open me-2"></i>Room Management
+                      <i class="fas fa-door-open me-2"></i>Quản Lý Phòng
                     </a>
                     <a
                       href="users.jsp"
                       class="btn btn-outline-success quick-action-btn"
                     >
-                      <i class="fas fa-users-cog me-2"></i>Staff Management
+                      <i class="fas fa-users-cog me-2"></i>Quản Lý Nhân Viên
                     </a>
                     <a
                       href="purchasereport.jsp"
                       class="btn btn-outline-warning quick-action-btn"
                     >
-                      <i class="fas fa-chart-bar me-2"></i>Reports & Analytics
+                      <i class="fas fa-chart-bar me-2"></i>Báo Cáo & Phân Tích
                     </a>
                     <a
                       href="stockreport.jsp"
                       class="btn btn-outline-secondary quick-action-btn"
                     >
-                      <i class="fas fa-box me-2"></i>Inventory Check
+                      <i class="fas fa-box me-2"></i>Kiểm Tra Kho
                     </a>
                   </div>
                 </div>
@@ -522,23 +521,23 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
       // Chart data
       const chartData = {
         weekly: {
-          labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          labels: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
           data: [15000, 18000, 22000, 19000, 25000, 28000, 24000],
         },
         monthly: {
           labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
+            "Thg 1",
+            "Thg 2",
+            "Thg 3",
+            "Thg 4",
+            "Thg 5",
+            "Thg 6",
+            "Thg 7",
+            "Thg 8",
+            "Thg 9",
+            "Thg 10",
+            "Thg 11",
+            "Thg 12",
           ],
           data: [
             65000, 75000, 88000, 85000, 92000, 95000, 98000, 105000, 115000,
@@ -561,7 +560,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           labels: chartData.monthly.labels,
           datasets: [
             {
-              label: "Revenue ($)",
+              label: "Doanh thu (VND)",
               data: chartData.monthly.data,
               borderColor: "rgb(54, 162, 235)",
               backgroundColor: "rgba(54, 162, 235, 0.1)",
@@ -615,7 +614,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
       const roomStatusChart = new Chart(roomStatusCtx, {
         type: "doughnut",
         data: {
-          labels: ["Occupied", "Available", "Reserved", "Maintenance"],
+          labels: ["Có khách", "Phòng trống", "Đang dọn", "Bảo trì"],
           datasets: [
             {
               data: [120, 20, 8, 2],
@@ -669,13 +668,13 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         const btn = event.target;
         const originalText = btn.innerHTML;
         btn.innerHTML =
-          '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+          '<i class="fas fa-spinner fa-spin me-2"></i>Đang xuất báo cáo...';
         btn.disabled = true;
 
         setTimeout(() => {
           btn.innerHTML = originalText;
           btn.disabled = false;
-          alert("Dashboard report has been generated and downloaded!");
+          alert("Đã xuất báo cáo thành công!");
         }, 2000);
       }
 
@@ -684,7 +683,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         const btn = event.target;
         const originalText = btn.innerHTML;
         btn.innerHTML =
-          '<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...';
+          '<i class="fas fa-spinner fa-spin me-2"></i>Đang làm mới...';
         btn.disabled = true;
 
         setTimeout(() => {
