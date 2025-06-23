@@ -31,14 +31,6 @@ public class BookingReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession();
-        
-        // Check if user is logged in and is admin
-        if (session.getAttribute("user") == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-        
         try {
             // Get date range parameters
             String startDate = request.getParameter("startDate");
@@ -67,12 +59,12 @@ public class BookingReportServlet extends HttpServlet {
             request.setAttribute("endDate", endDate);
             
             // Forward to JSP
-            request.getRequestDispatcher("admin/bookingreport.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/bookingreport.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error loading booking report: " + e.getMessage());
-            request.getRequestDispatcher("admin/bookingreport.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/bookingreport.jsp").forward(request, response);
         }
     }
     
