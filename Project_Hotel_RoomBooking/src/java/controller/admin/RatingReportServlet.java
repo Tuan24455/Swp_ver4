@@ -53,8 +53,8 @@ public class RatingReportServlet extends HttpServlet {
         
         try {
             // Get all rooms and services
-            List<Room> rooms = roomDao.getAll();
-            List<Service> services = serviceDao.getAll();
+            List<Room> rooms = roomDao.getAllRooms();
+            List<Service> services = serviceDao.getAllServices();
             
             // Get rating data
             List<RoomReview> roomReviews = getRoomReviews();
