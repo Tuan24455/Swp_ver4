@@ -45,7 +45,7 @@ public class BookingReportServlet extends HttpServlet {
             }
             
             // Get booking data (using available data)
-            List<User> users = userDao.getAll();
+            List<User> users = userDao.getAllUsers();
             List<Booking> bookings = new ArrayList<>(); // Placeholder for booking data
             
             // Calculate summary statistics
