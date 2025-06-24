@@ -90,6 +90,7 @@
                                             </c:forEach>
                                         </div>
                                     </div>
+
                                     <!-- Date Filter -->
                                     <div class="filter-group">
                                         <div class="filter-group-header">
@@ -100,54 +101,19 @@
                                             <!-- Ngày nhận phòng -->
                                             <div class="input-group">
                                                 <label class="input-label">Ngày nhận phòng</label>
-                                                <div class="date-select-vertical">
-                                                    <select name="checkinDay" class="form-select">
-                                                        <option value="" disabled ${empty param.checkinDay ? 'selected' : ''}>Ngày</option>
-                                                        <c:forEach var="d" begin="1" end="31">
-                                                            <option value="${d}" ${param.checkinDay == d ? 'selected' : ''}>${d}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                    <select name="checkinMonth" class="form-select">
-                                                        <option value="" disabled ${empty param.checkinMonth ? 'selected' : ''}>Tháng</option>
-                                                        <c:forEach var="m" begin="1" end="12">
-                                                            <option value="${m}" ${param.checkinMonth == m ? 'selected' : ''}>${m}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                    <select name="checkinYear" class="form-select">
-                                                        <option value="" disabled ${empty param.checkinYear ? 'selected' : ''}>Năm</option>
-                                                        <c:forEach var="y" begin="2024" end="2030">
-                                                            <option value="${y}" ${param.checkinYear == y ? 'selected' : ''}>${y}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div>
+                                                <input type="date" name="checkin" class="form-input"
+                                                       value="${param.checkin != null ? param.checkin : checkin}" />
                                             </div>
 
                                             <!-- Ngày trả phòng -->
                                             <div class="input-group">
                                                 <label class="input-label">Ngày trả phòng</label>
-                                                <div class="date-select-vertical">
-                                                    <select name="checkoutDay" class="form-select">
-                                                        <option value="" disabled ${empty param.checkoutDay ? 'selected' : ''}>Ngày</option>
-                                                        <c:forEach var="d" begin="1" end="31">
-                                                            <option value="${d}" ${param.checkoutDay == d ? 'selected' : ''}>${d}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                    <select name="checkoutMonth" class="form-select">
-                                                        <option value="" disabled ${empty param.checkoutMonth ? 'selected' : ''}>Tháng</option>
-                                                        <c:forEach var="m" begin="1" end="12">
-                                                            <option value="${m}" ${param.checkoutMonth == m ? 'selected' : ''}>${m}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                    <select name="checkoutYear" class="form-select">
-                                                        <option value="" disabled ${empty param.checkoutYear ? 'selected' : ''}>Năm</option>
-                                                        <c:forEach var="y" begin="2024" end="2030">
-                                                            <option value="${y}" ${param.checkoutYear == y ? 'selected' : ''}>${y}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div>
+                                                <input type="date" name="checkout" class="form-input"
+                                                       value="${param.checkout != null ? param.checkout : checkout}" />
                                             </div>
                                         </div>
                                     </div>
+
                                     <!-- Price Filter -->
                                     <div class="filter-group">
                                         <div class="filter-group-header">
@@ -158,12 +124,12 @@
                                             <div class="input-group">
                                                 <label class="input-label">Từ (VND)</label>
                                                 <input type="number" name="priceFrom" value="${param.priceFrom}" 
-                                                       min="0" step="50000" class="form-input" placeholder="0">
+                                                       min="0" class="form-input" placeholder="0">
                                             </div>
                                             <div class="input-group">
                                                 <label class="input-label">Đến (VND)</label>
                                                 <input type="number" name="priceTo" value="${param.priceTo}" 
-                                                       min="0" step="50000" class="form-input" placeholder="Không giới hạn">
+                                                       min="0" class="form-input" placeholder="Không giới hạn">
                                             </div>
                                         </div>
                                     </div>
@@ -193,6 +159,13 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                <!-- Hiển thị lỗi nếu có -->
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger text-center mb-3" role="alert">
+                                        ${error}
+                                    </div>
+                                </c:if>
 
                                 <!-- Filter Actions -->
                                 <div class="filter-actions">

@@ -157,6 +157,36 @@ public class UserDao {
         return false;
     }
 
+    // Kiểm tra email đã tồn tại
+    public boolean isEmailExist(String email) {
+        String sql = "SELECT 1 FROM Users WHERE email = ? AND isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking email existence: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+// Kiểm tra số điện thoại đã tồn tại
+    public boolean isPhoneExist(String phone) {
+        String sql = "SELECT 1 FROM Users WHERE phone = ? AND isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking phone existence: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void insert(User user) {
         String sql = "INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url, isDeleted) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

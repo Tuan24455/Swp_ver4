@@ -13,6 +13,7 @@ import valid.InputValidator;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
@@ -82,6 +83,21 @@ public class HomeServlet extends HttpServlet {
         Integer capacity = InputValidator.parseIntegerOrNull(request.getParameter("capacity"));
         String sortOrder = request.getParameter("sort");
 
+        // ✅ VALIDATION GIÁ
+        if (!InputValidator.isValidPriceRange(priceFrom, priceTo)) {
+            request.setAttribute("error", "Giá từ phải nhỏ hơn hoặc bằng giá đến.");
+            request.getRequestDispatcher("home.jsp").forward(request, response);
+            return;
+        }
+
+        //VALIDATION ngày nếu có lọc theo ngày
+         Date fromDate = InputValidator.parseDateOrNull(request.getParameter("checkin"));
+         Date toDate = InputValidator.parseDateOrNull(request.getParameter("checkout"));
+         if (!InputValidator.isValidDateRange(fromDate, toDate)) {
+             request.setAttribute("error", "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
+             request.getRequestDispatcher("home.jsp").forward(request, response);
+             return;
+         }
         List<Room> filteredRooms = dao.filterRoomsAdvanced(typeIds, priceFrom, priceTo, capacity, sortOrder);
 
         int pageSize = 9;

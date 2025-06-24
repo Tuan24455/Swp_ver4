@@ -85,29 +85,10 @@ class RoomFilterManager {
     }
 
     initFormValidation() {
-        const checkinInput = document.querySelector('input[name="checkin"]');
-        const checkoutInput = document.querySelector('input[name="checkout"]');
         const priceFromInput = document.querySelector('input[name="priceFrom"]');
         const priceToInput = document.querySelector('input[name="priceTo"]');
-
-        if (checkinInput && checkoutInput) {
-            checkinInput.addEventListener("change", () => {
-                if (checkinInput.value) {
-                    checkoutInput.min = checkinInput.value;
-                    if (checkoutInput.value && checkoutInput.value < checkinInput.value) {
-                        checkoutInput.value = "";
-                        this.showToast("Ngày trả phòng phải sau ngày nhận phòng", "warning");
-                    }
-                }
-            });
-
-            checkoutInput.addEventListener("change", () => {
-                if (checkoutInput.value && checkinInput.value && checkoutInput.value < checkinInput.value) {
-                    checkoutInput.value = "";
-                    this.showToast("Ngày trả phòng phải sau ngày nhận phòng", "warning");
-                }
-            });
-        }
+        const checkinInput = document.querySelector('input[name="checkin"]');
+        const checkoutInput = document.querySelector('input[name="checkout"]');
 
         if (priceFromInput && priceToInput) {
             priceFromInput.addEventListener("change", () => {
@@ -125,6 +106,22 @@ class RoomFilterManager {
                         priceToInput.value = "";
                         this.showToast("Giá đến không thể nhỏ hơn giá từ", "warning");
                     }
+                }
+            });
+        }
+
+        if (checkinInput && checkoutInput) {
+            checkinInput.addEventListener("change", () => {
+                if (checkinInput.value && checkoutInput.value && new Date(checkinInput.value) > new Date(checkoutInput.value)) {
+                    checkoutInput.value = "";
+                    this.showToast("Ngày nhận phòng phải trước hoặc bằng ngày trả phòng", "warning");
+                }
+            });
+
+            checkoutInput.addEventListener("change", () => {
+                if (checkinInput.value && checkoutInput.value && new Date(checkinInput.value) > new Date(checkoutInput.value)) {
+                    checkoutInput.value = "";
+                    this.showToast("Ngày nhận phòng phải trước hoặc bằng ngày trả phòng", "warning");
                 }
             });
         }

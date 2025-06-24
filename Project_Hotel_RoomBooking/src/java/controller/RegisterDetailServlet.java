@@ -31,37 +31,52 @@ public class RegisterDetailServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
 
-        // Validate email
+        UserDao dao = new UserDao();
+
+        // Kiểm tra email hợp lệ
         if (!InputValidator.isValidEmail(email)) {
             request.setAttribute("error", "Email không hợp lệ.");
-            request.setAttribute("userName", username);
-            request.setAttribute("password", password);
-            request.getRequestDispatcher("registerDetail.jsp").forward(request, response);
+            backToForm(request, response, username, password);
             return;
         }
 
-        // Validate phone
+        // Email đã tồn tại?
+        if (dao.isEmailExist(email)) {
+            request.setAttribute("error", "Email đã được sử dụng.");
+            backToForm(request, response, username, password);
+            return;
+        }
+
+        // Kiểm tra số điện thoại hợp lệ
         if (!InputValidator.isValidPhone(phone)) {
-            request.setAttribute("error", "Số điện thoại phải là chuỗi gồm đúng 10 chữ số.");
-            request.setAttribute("userName", username);
-            request.setAttribute("password", password);
-            request.getRequestDispatcher("registerDetail.jsp").forward(request, response);
+            request.setAttribute("error", "Số điện thoại phải bắt đầu bằng 0 và đủ 10 chữ số.");
+            backToForm(request, response, username, password);
             return;
         }
 
-        // Validate ngày sinh
+        // SĐT đã tồn tại?
+        if (dao.isPhoneExist(phone)) {
+            request.setAttribute("error", "Số điện thoại đã được sử dụng.");
+            backToForm(request, response, username, password);
+            return;
+        }
+
+        // Kiểm tra ngày sinh hợp lệ
         Date birth;
         try {
             birth = InputValidator.parseDate(birthStr);
+            if (!InputValidator.isAtLeast18YearsOld(birth)) {
+                request.setAttribute("error", "Bạn phải đủ 18 tuổi để đăng ký.");
+                backToForm(request, response, username, password);
+                return;
+            }
         } catch (ParseException e) {
             request.setAttribute("error", "Ngày sinh không hợp lệ.");
-            request.setAttribute("userName", username);
-            request.setAttribute("password", password);
-            request.getRequestDispatcher("registerDetail.jsp").forward(request, response);
+            backToForm(request, response, username, password);
             return;
         }
 
-        // Tạo user object
+        // Tạo user
         User user = new User(
                 username,
                 password,
@@ -76,10 +91,16 @@ public class RegisterDetailServlet extends HttpServlet {
                 false
         );
 
-        // Lưu user
-        UserDao dao = new UserDao();
+        // Lưu vào DB
         dao.insert(user);
 
         response.sendRedirect("login.jsp");
+    }
+
+    private void backToForm(HttpServletRequest request, HttpServletResponse response,
+            String username, String password) throws ServletException, IOException {
+        request.setAttribute("userName", username);
+        request.setAttribute("password", password);
+        request.getRequestDispatcher("registerDetail.jsp").forward(request, response);
     }
 }
