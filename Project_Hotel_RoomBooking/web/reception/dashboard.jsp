@@ -433,7 +433,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                 <div class="card-body">
                   <div class="d-grid gap-3">
                     <a
-                      href="bookings.jsp"
+                      href="${pageContext.request.contextPath}/admin/bookings.jsp"
                       class="btn btn-outline-primary quick-action-btn"
                     >
                       <i class="fas fa-calendar-plus me-2"></i>New Booking
