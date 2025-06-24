@@ -117,8 +117,8 @@
                 <i class="fas fa-hotel me-2"></i> Quản lý khuyến mãi
             </a>
             <a
-                href="${pageContext.request.contextPath}/admin/bookings.jsp"
-                class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}"
+                href="admin/serviceList.jsp"
+                class="list-group-item list-group-item-action py-3 ${param.activePage == 'service' ? 'active' : ''}"
                 >
                 <i class="fas fa-calendar-check me-2"></i> Quản lí dịch vụ
             </a>
@@ -150,7 +150,7 @@
                         <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
                     </a>
                     <a
-                        href="http://localhost:8080/Project_Hotel_RoomBooking/admin/bookingreport"
+                        href="${pageContext.request.contextPath}bookingreport.jsp"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'bookingreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
