@@ -20,9 +20,7 @@
     transform: translateX(-100%);
 }
 
-.sidebar-menu {
-    padding-top: 1rem;
-}
+
 
 .sidebar-menu .list-group-item {
     background-color: transparent;

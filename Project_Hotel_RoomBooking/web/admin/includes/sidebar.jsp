@@ -90,7 +90,7 @@
 
 <c:set
     var="isReportActive"
-    value="${param.activePage == 'purchasereport' || param.activePage == 'stockreport' || param.activePage == 'bookingreport'}"
+    value="${param.activePage == 'purchasereport' || param.activePage == 'stockreport' || param.activePage == 'bookingreport' || param.activePage == 'ratingreport'}"
     />
 
 <div class="sidebar-wrapper" id="sidebar-wrapper">
@@ -117,8 +117,8 @@
                 <i class="fas fa-hotel me-2"></i> Quản lý khuyến mãi
             </a>
             <a
-                href="bookings.jsp"
-                class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}"
+                href="admin/serviceList.jsp"
+                class="list-group-item list-group-item-action py-3 ${param.activePage == 'service' ? 'active' : ''}"
                 >
                 <i class="fas fa-calendar-check me-2"></i> Quản lí dịch vụ
             </a>
@@ -138,25 +138,25 @@
                 >
                 <div class="list-group list-group-flush ps-4">
                     <a
-                        href="purchasereport.jsp"
+                        href="http://localhost:8080/Project_Hotel_RoomBooking/admin/purchasereport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'purchasereport' ? 'active' : ''}"
                         >
-                        <i class="fas fa-shopping-cart me-2"></i> Báo cáo mua hàng
+                        <i class="fas fa-shopping-cart me-2"></i> Báo cáo doanh thu
                     </a>
                     <a
-                        href="${pageContext.request.contextPath}/stockreport"
+                        href="http://localhost:8080/Project_Hotel_RoomBooking/admin/stockreport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'stockreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
                     </a>
                     <a
-                        href="bookingreport.jsp"
+                        href="${pageContext.request.contextPath}bookingreport.jsp"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'bookingreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-chart-line me-2"></i> Báo cáo đặt phòng
                     </a>
                     <a
-                        href="${pageContext.request.contextPath}/admin/ratingreport"
+                        href="http://localhost:8080/Project_Hotel_RoomBooking/admin/ratingreport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'ratingreport' ? 'active' : ''}"
                         >
                         <i class="fas fa-star me-2"></i> Đánh Giá Xếp Hạng

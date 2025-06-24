@@ -106,7 +106,7 @@ pageEncoding="UTF-8" %>
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Total Value</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">
-                    <fmt:formatNumber value="${kpiMetrics.totalStockValue}" type="currency" currencySymbol="đ"/>
+                    <fmt:formatNumber value="${kpiMetrics.totalStockValue}" pattern="#,##0" />&nbsp;đ
                   </h2>
                   <p class="card-text text-success">
                     <i class="fas fa-dollar-sign me-1"></i> Tổng Doanh Thu
@@ -119,7 +119,7 @@ pageEncoding="UTF-8" %>
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Monthly Usage</h6>
                   <h2 class="card-title display-6 fw-bold mb-1">
-                    <fmt:formatNumber value="${kpiMetrics.monthlyUsage}" type="currency" currencySymbol="đ"/>
+                    <fmt:formatNumber value="${kpiMetrics.monthlyUsage}" pattern="#,##0" />&nbsp;đ
                   </h2>
                   <p class="card-text text-warning">
                     <i class="fas fa-chart-line me-1"></i> Doanh Thu Tháng Này
@@ -267,7 +267,13 @@ pageEncoding="UTF-8" %>
                       <tbody>
                         <c:forEach var="row" items="${stockList}">
                           <c:if test="${row.category eq 'Thực Phẩm'}">
-                            <tr>
+                            <tr class="product-row" style="cursor: pointer;" 
+                                data-id="${row.id}" 
+                                data-name="${row.itemName}" 
+                                data-category="${row.category}" 
+                                data-stock="${row.remainingStock}" 
+                                data-price="${row.unitPrice}"
+                                onclick="openEditModal(this)">
                               <td><strong>${row.id}</strong></td>
                               <td>${row.itemName}</td>
                               <td><span class="badge bg-secondary">${row.category}</span></td>
@@ -285,8 +291,8 @@ pageEncoding="UTF-8" %>
                                   </c:otherwise>
                                 </c:choose>
                               </td>
-                              <td><fmt:formatNumber value="${row.unitPrice}" type="currency" currencySymbol="đ"/></td>
-                              <td><fmt:formatNumber value="${row.totalValue}" type="currency" currencySymbol="đ"/></td>
+                              <td><fmt:formatNumber value="${row.unitPrice}" pattern="#,##0" />&nbsp;đ</td>
+                              <td><fmt:formatNumber value="${row.totalValue}" pattern="#,##0" />&nbsp;đ</td>
                             </tr>
                           </c:if>
                         </c:forEach>
@@ -311,7 +317,13 @@ pageEncoding="UTF-8" %>
                       <tbody>
                         <c:forEach var="row" items="${stockList}">
                           <c:if test="${row.category eq 'Tiện ích phòng'}">
-                            <tr>
+                            <tr class="product-row" style="cursor: pointer;" 
+                                data-id="${row.id}" 
+                                data-name="${row.itemName}" 
+                                data-category="${row.category}" 
+                                data-stock="${row.remainingStock}" 
+                                data-price="${row.unitPrice}"
+                                onclick="openEditModal(this)">
                               <td><strong>${row.id}</strong></td>
                               <td>${row.itemName}</td>
                               <td><span class="badge bg-secondary">${row.category}</span></td>
@@ -329,8 +341,8 @@ pageEncoding="UTF-8" %>
                                   </c:otherwise>
                                 </c:choose>
                               </td>
-                              <td><fmt:formatNumber value="${row.unitPrice}" type="currency" currencySymbol="đ"/></td>
-                              <td><fmt:formatNumber value="${row.totalValue}" type="currency" currencySymbol="đ"/></td>
+                              <td><fmt:formatNumber value="${row.unitPrice}" pattern="#,##0" />&nbsp;đ</td>
+                              <td><fmt:formatNumber value="${row.totalValue}" pattern="#,##0" />&nbsp;đ</td>
                             </tr>
                           </c:if>
                         </c:forEach>
@@ -398,6 +410,67 @@ pageEncoding="UTF-8" %>
             <div class="text-center py-5">
               <div class="spinner-border text-success"></div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProductModalLabel">Chỉnh Sửa Sản Phẩm</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editProductForm">
+              <input type="hidden" id="editProductId" name="productId">
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="editProductName" class="form-label">Tên sản phẩm</label>
+                    <input type="text" class="form-control" id="editProductName" name="productName" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="editProductCategory" class="form-label">Danh mục</label>
+                    <select class="form-select" id="editProductCategory" name="category" required>
+                      <option value="Thực Phẩm">Thực Phẩm</option>
+                      <option value="Tiện ích phòng">Tiện ích phòng</option>
+                      <option value="Đồ uống">Đồ uống</option>
+                      <option value="Khác">Khác</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="editProductStock" class="form-label">Số lượng</label>
+                    <input type="number" class="form-control" id="editProductStock" name="stock" min="0" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="editProductPrice" class="form-label">Giá tiền (VNĐ)</label>
+                    <input type="number" class="form-control" id="editProductPrice" name="price" min="0" step="1" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="editProductDescription" class="form-label">Mô tả (tùy chọn)</label>
+                <textarea class="form-control" id="editProductDescription" name="description" rows="3"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="button" class="btn btn-primary" onclick="saveProductChanges()">Lưu thay đổi</button>
           </div>
         </div>
       </div>
@@ -521,6 +594,102 @@ pageEncoding="UTF-8" %>
           button.innerHTML = '<i class="fas fa-shopping-cart"></i> Reorder';
         });
       }
+
+      // Function to open edit modal with product data
+      function openEditModal(row) {
+        const productId = row.getAttribute('data-id');
+        const productName = row.getAttribute('data-name');
+        const productCategory = row.getAttribute('data-category');
+        const productStock = row.getAttribute('data-stock');
+        const productPrice = row.getAttribute('data-price');
+        
+        // Populate modal fields
+        document.getElementById('editProductId').value = productId;
+        document.getElementById('editProductName').value = productName;
+        document.getElementById('editProductCategory').value = productCategory;
+        document.getElementById('editProductStock').value = productStock;
+        document.getElementById('editProductPrice').value = productPrice;
+        document.getElementById('editProductDescription').value = '';
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+        modal.show();
+      }
+
+      // Function to save product changes
+      function saveProductChanges() {
+        const form = document.getElementById('editProductForm');
+        const formData = new FormData(form);
+        
+        // Validate form
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        // Show loading state
+        const saveButton = document.querySelector('#editProductModal .btn-primary');
+        const originalText = saveButton.innerHTML;
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+        
+        // Convert FormData to URLSearchParams for proper encoding
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+          params.append(key, value);
+        }
+        
+        // Send AJAX request to update product
+        fetch('${pageContext.request.contextPath}/updateproduct', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params.toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Cập nhật sản phẩm thành công!');
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+            modal.hide();
+            // Reload page to show updated data
+            window.location.reload();
+          } else {
+            alert('Lỗi: ' + (data.message || 'Không thể cập nhật sản phẩm'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Có lỗi xảy ra khi cập nhật sản phẩm');
+        })
+        .finally(() => {
+          // Restore button state
+          saveButton.disabled = false;
+          saveButton.innerHTML = originalText;
+        });
+      }
+
+      // Add hover effect for product rows
+      document.addEventListener('DOMContentLoaded', function() {
+        const productRows = document.querySelectorAll('.product-row');
+        productRows.forEach(row => {
+          row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f8f9fa';
+          });
+          row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+          });
+        });
+      });
+
+      // Prevent modal from closing when clicking inside form
+      document.getElementById('editProductModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          // Only close if clicking on backdrop
+        }
+      });
     </script>
   </body>
 </html>
