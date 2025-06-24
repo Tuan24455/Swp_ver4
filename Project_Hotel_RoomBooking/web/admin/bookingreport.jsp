@@ -72,20 +72,7 @@
                   </ol>
                 </nav>
               </div>
-              <div class="btn-group">
-                <button
-                  class="btn btn-primary"
-                  onclick="exportReport('pdf')"
-                >
-                  <i class="fas fa-file-pdf me-2"></i>Xuất PDF
-                </button>
-                <button
-                  class="btn btn-success"
-                  onclick="exportReport('excel')"
-                >
-                  <i class="fas fa-file-excel me-2"></i>Xuất Excel
-                </button>
-              </div>
+
             </div>
           </div>
 
@@ -138,34 +125,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Tổng Đặt Phòng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">1,247</h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> 12% so với tháng trước
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Doanh Thu</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">$89,450</h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> 18% so với tháng trước
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">
-                    Thời Gian Lưu Trú TB
-                  </h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">2.8</h2>
+                  <h6 class="card-subtitle mb-2 text-muted">Tổng Phòng</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">150</h2>
                   <p class="card-text text-info">
-                    <i class="fas fa-calendar me-1"></i> ngày mỗi đặt phòng
+                    <i class="fas fa-building me-1"></i> Tổng số phòng khách sạn
                   </p>
                 </div>
               </div>
@@ -173,10 +136,32 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Tỷ Lệ Lấp Đầy</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">78%</h2>
+                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Dùng</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">117</h2>
+                  <p class="card-text text-success">
+                    <i class="fas fa-user-check me-1"></i> Phòng đang dùng
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card kpi-card shadow-sm">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Phòng Trống</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">28</h2>
+                  <p class="card-text text-primary">
+                    <i class="fas fa-door-open me-1"></i> Sẵn sàng cho khách
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card kpi-card shadow-sm">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Sửa Chữa</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">5</h2>
                   <p class="card-text text-warning">
-                    <i class="fas fa-minus me-1"></i> 2% so với tháng trước
+                    <i class="fas fa-tools me-1"></i> Đang bảo trì
                   </p>
                 </div>
               </div>
@@ -184,55 +169,10 @@
           </div>
 
           <!-- Charts Row -->
-          <div class="row g-4 mb-4">
-            <div class="col-lg-8">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Xu Hướng Đặt Phòng</h5>
-                </div>
-                <div class="card-body">
-                  <canvas
-                    id="bookingTrendsChart"
-                    style="height: 300px"
-                  ></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Phân Bổ Loại Phòng</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="roomTypeChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Revenue Analysis -->
-          <div class="row g-4 mb-4">
-            <div class="col-lg-6">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Doanh Thu Hàng Tháng</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="revenueChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Booking Status Distribution</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="statusChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Top Performing Rooms -->
           <div class="card shadow-sm mb-4">
