@@ -1,6 +1,6 @@
 <%-- 
-    Document   : promotions
-    Created on : May 27, 2025, 10:40:46 PM
+    Document   : serviceList
+    Created on : Jun 24, 2025, 3:54:48 PM
     Author     : Phạm Quốc Tuấn
 --%>
 
@@ -14,7 +14,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Promotions Management - Hotel Management System</title>
+        <title>Service Management - Hotel Management System</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link
             rel="stylesheet"
@@ -25,7 +25,7 @@
     <body>
         <div class="d-flex" id="wrapper">
             <jsp:include page="includes/sidebar.jsp">
-                <jsp:param name="activePage" value="promotion" />
+                <jsp:param name="activePage" value="service" />
             </jsp:include>
 
 
@@ -63,18 +63,18 @@
                     <nav aria-label="breadcrumb" class="mb-3">
                         <ol class="breadcrumb custom-breadcrumb">
                             <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Promotions</li>
+                            <li class="breadcrumb-item active" aria-current="page">Dịch Vụ</li>
                         </ol>
                     </nav>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Khuyến Mãi</h1>
+                        <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addPromotionModal"
                             >
-                            <i class="fas fa-plus me-2"></i>Thêm Khuyến Mãi
+                            <i class="fas fa-plus me-2"></i>Thêm Dịch Vụ
                         </button>
                     </div>
                 </div>
@@ -396,6 +396,3 @@
 
 </body>
 </html>
-
-
-
