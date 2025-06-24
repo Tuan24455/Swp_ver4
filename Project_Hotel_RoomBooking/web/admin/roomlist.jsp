@@ -19,6 +19,7 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
+        <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     </head>
     <body>
         <div class="d-flex" id="wrapper" >
@@ -145,7 +146,7 @@
                             </select>
                         </div>
 
-                            <div class="col-md-2 align-self-end">
+                        <div class="col-md-2 align-self-end">
                             <button type="submit" class="btn btn-primary w-100">Lọc</button>
                         </div>
                     </form>
@@ -310,7 +311,10 @@
 
                                                                     <div class="col-12">
                                                                         <label class="form-label">Description</label>
-                                                                        <textarea name="description" class="form-control" rows="3" required>${r.description}</textarea>
+                                                                        <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
+                                                                        <script>
+                                                                            CKEDITOR.replace('editDescription${r.id}');
+                                                                        </script>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -444,8 +448,11 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Room Description</label>
-                                        <textarea class="form-control" name="description" rows="3"
+                                        <textarea class="form-control" name="description" id="addDescription" rows="3"
                                                   placeholder="Enter room features and amenities..." required></textarea>
+                                        <script>
+                                            CKEDITOR.replace('addDescription');
+                                        </script>
                                     </div>
                                 </div>
                             </div>
@@ -465,14 +472,14 @@
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
             <script>
-                // Sidebar toggle functionality
-                document
-                        .getElementById("menu-toggle")
-                        .addEventListener("click", function () {
-                            document
-                                    .getElementById("sidebar-wrapper")
-                                    .classList.toggle("toggled");
-                        });
+                                            // Sidebar toggle functionality
+                                            document
+                                                    .getElementById("menu-toggle")
+                                                    .addEventListener("click", function () {
+                                                        document
+                                                                .getElementById("sidebar-wrapper")
+                                                                .classList.toggle("toggled");
+                                                    });
             </script>
         </body>
         <c:if test="${not empty error}">
