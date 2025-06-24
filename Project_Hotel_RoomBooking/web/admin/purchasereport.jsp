@@ -6,7 +6,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Báo Cáo Mua Hàng - Hệ Thống Quản Lý Khách Sạn</title>
+    <title>Báo Cáo Doanh Thu - Hệ Thống Quản Lý Khách Sạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
@@ -62,11 +62,11 @@
           <div class="page-header">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <h1 class="h2 mb-2">Báo Cáo Mua Hàng</h1>
+                <h1 class="h2 mb-2">Báo Cáo Doanh Thu</h1>
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
-                    <li class="breadcrumb-item active">Báo Cáo Mua Hàng</li>
+                    <li class="breadcrumb-item active">Báo Cáo Doanh Thu</li>
                   </ol>
                 </nav>
               </div>
@@ -78,21 +78,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Tổng Doanh Thu</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">$125,450</h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> +12.5% so với tháng trước
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Doanh Thu Phòng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">$89,320</h2>
+                  <h6 class="card-subtitle mb-2 text-muted">Tổng Phòng</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">150</h2>
                   <p class="card-text text-info">
-                    <i class="fas fa-bed me-1"></i> 71.2% tổng doanh thu
+                    <i class="fas fa-building me-1"></i> Tổng số phòng khách sạn
                   </p>
                 </div>
               </div>
@@ -100,13 +89,10 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">
-                    Dịch Vụ Bổ Sung
-                  </h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">$36,130</h2>
-                  <p class="card-text text-warning">
-                    <i class="fas fa-plus-circle me-1"></i> 28.8% tổng
-                    doanh thu
+                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Dùng</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">117</h2>
+                  <p class="card-text text-success">
+                    <i class="fas fa-user-check me-1"></i> 78% tỷ lệ lấp đầy
                   </p>
                 </div>
               </div>
@@ -114,42 +100,28 @@
             <div class="col-xl-3 col-md-6">
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Tổng Hóa Đơn</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">1,247</h2>
+                  <h6 class="card-subtitle mb-2 text-muted">Phòng Trống</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">28</h2>
                   <p class="card-text text-primary">
-                    <i class="fas fa-receipt me-1"></i> Tháng này
+                    <i class="fas fa-door-open me-1"></i> Sẵn sàng cho khách
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card kpi-card shadow-sm">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Sửa Chữa</h6>
+                  <h2 class="card-title display-6 fw-bold mb-1">5</h2>
+                  <p class="card-text text-warning">
+                    <i class="fas fa-tools me-1"></i> Đang bảo trì
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Charts Row -->
-          <div class="row g-4 mb-4">
-            <div class="col-lg-8">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Xu Hướng Doanh Thu</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="revenueChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Phân Bổ Doanh Thu</h5>
-                </div>
-                <div class="card-body">
-                  <canvas
-                    id="revenueDistributionChart"
-                    style="height: 300px"
-                  ></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Additional Services Analysis -->
           <div class="row g-4 mb-4">
@@ -209,10 +181,53 @@
             <div class="col-lg-6">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Sử Dụng Dịch Vụ Hàng Tháng</h5>
+                  <h5 class="mb-0">Doanh Thu Phòng</h5>
                 </div>
                 <div class="card-body">
-                  <canvas id="serviceUsageChart" style="height: 300px"></canvas>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Loại Phòng</th>
+                          <th>Số Đêm</th>
+                          <th>Doanh Thu</th>
+                          <th>Giá Trung Bình</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>Phòng Deluxe</strong></td>
+                          <td>245</td>
+                          <td>$49,000</td>
+                          <td>$200.00</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Phòng Standard</strong></td>
+                          <td>312</td>
+                          <td>$31,200</td>
+                          <td>$100.00</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Phòng Suite</strong></td>
+                          <td>89</td>
+                          <td>$35,600</td>
+                          <td>$400.00</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Phòng VIP</strong></td>
+                          <td>67</td>
+                          <td>$40,200</td>
+                          <td>$600.00</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Phòng Family</strong></td>
+                          <td>134</td>
+                          <td>$40,200</td>
+                          <td>$300.00</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
