@@ -6,7 +6,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Booking Reports - Hotel Management System</title>
+    <title>Báo Cáo Đặt Phòng - Hệ Thống Quản Lý Khách Sạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
@@ -44,6 +44,11 @@
         position: relative;
         height: 350px;
       }
+      .avatar-sm {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
@@ -58,31 +63,21 @@
         <jsp:include page="includes/navbar.jsp" />
 
         <div class="container-fluid py-4">
-          <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb custom-breadcrumb">
-              <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Booking Reports
-              </li>
-            </ol>
-          </nav>
+
 
           <!-- Page Header -->
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Booking Reports & Analytics</h1>
-            <div class="btn-group">
-              <button
-                class="btn btn-outline-primary"
-                onclick="exportReport('pdf')"
-              >
-                <i class="fas fa-file-pdf me-2"></i>Export PDF
-              </button>
-              <button
-                class="btn btn-outline-success"
-                onclick="exportReport('excel')"
-              >
-                <i class="fas fa-file-excel me-2"></i>Export Excel
-              </button>
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="h2 mb-2">Báo Cáo Đặt Phòng</h1>
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Báo Cáo Đặt Phòng</li>
+                  </ol>
+                </nav>
+              </div>
+
             </div>
           </div>
 
@@ -91,7 +86,7 @@
             <div class="card-body">
               <div class="row g-3 align-items-end">
                 <div class="col-md-3">
-                  <label class="form-label">From Date</label>
+                  <label class="form-label">Từ Ngày</label>
                   <input
                     type="date"
                     class="form-control"
@@ -100,7 +95,7 @@
                   />
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">To Date</label>
+                  <label class="form-label">Đến Ngày</label>
                   <input
                     type="date"
                     class="form-control"
@@ -109,13 +104,13 @@
                   />
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">Room Type</label>
+                  <label class="form-label">Loại Phòng</label>
                   <select class="form-select">
-                    <option value="">All Room Types</option>
-                    <option value="standard">Standard</option>
-                    <option value="deluxe">Deluxe</option>
-                    <option value="suite">Suite</option>
-                    <option value="presidential">Presidential</option>
+                    <option value="">Tất Cả Loại Phòng</option>
+                    <option value="standard">Tiêu Chuẩn</option>
+                    <option value="deluxe">Cao Cấp</option>
+                    <option value="suite">Phòng Suite</option>
+                    <option value="presidential">Tổng Thống</option>
                   </select>
                 </div>
                 <div class="col-md-3">
@@ -123,203 +118,225 @@
                     class="btn btn-primary w-100"
                     onclick="generateReport()"
                   >
-                    <i class="fas fa-chart-line me-2"></i>Generate Report
+                    <i class="fas fa-chart-line me-2"></i>Lọc
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Summary Cards -->
-          <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Total Bookings</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">1,247</h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> 12% vs last month
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Revenue</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">$89,450</h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-arrow-up me-1"></i> 18% vs last month
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">
-                    Avg. Stay Duration
-                  </h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">2.8</h2>
-                  <p class="card-text text-info">
-                    <i class="fas fa-calendar me-1"></i> days per booking
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Occupancy Rate</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">78%</h2>
-                  <p class="card-text text-warning">
-                    <i class="fas fa-minus me-1"></i> 2% vs last month
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Charts Row -->
-          <div class="row g-4 mb-4">
-            <div class="col-lg-8">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Booking Trends</h5>
-                </div>
-                <div class="card-body">
-                  <canvas
-                    id="bookingTrendsChart"
-                    style="height: 300px"
-                  ></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Room Type Distribution</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="roomTypeChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Revenue Analysis -->
-          <div class="row g-4 mb-4">
-            <div class="col-lg-6">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Monthly Revenue</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="revenueChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Booking Status Distribution</h5>
-                </div>
-                <div class="card-body">
-                  <canvas id="statusChart" style="height: 300px"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Top Performing Rooms -->
+          <!-- Room Status Details Table -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
-              <h5 class="mb-0">Top Performing Rooms</h5>
+              <h5 class="mb-0"><i class="fas fa-bed me-2"></i>Chi Tiết Thống Kê Phòng</h5>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle">
                   <thead class="table-light">
                     <tr>
-                      <th>Room Number</th>
-                      <th>Room Type</th>
-                      <th>Total Bookings</th>
-                      <th>Revenue Generated</th>
-                      <th>Occupancy Rate</th>
-                      <th>Avg. Rating</th>
+                      <th><i class="fas fa-info-circle me-1"></i>Trạng Thái Phòng</th>
+                      <th><i class="fas fa-hashtag me-1"></i>Số Lượng</th>
+
+                      <th><i class="fas fa-clipboard-list me-1"></i>Mô Tả</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><strong>301</strong></td>
-                      <td>Presidential Suite</td>
-                      <td>45</td>
-                      <td>$33,750</td>
-                      <td>89%</td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          4.8
+                        <span class="badge bg-info fs-6 px-3 py-2">
+                          <i class="fas fa-building me-1"></i>Tổng Phòng
                         </span>
                       </td>
+                      <td><strong class="fs-5 text-info">150</strong></td>
+
+                      <td><span class="text-muted">Tổng số phòng khách sạn</span></td>
                     </tr>
                     <tr>
-                      <td><strong>201</strong></td>
-                      <td>Suite</td>
-                      <td>67</td>
-                      <td>$23,450</td>
-                      <td>85%</td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="far fa-star"></i>
-                          4.6
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                          <i class="fas fa-user-check me-1"></i>Phòng Đang Dùng
                         </span>
                       </td>
+                      <td><strong class="fs-5 text-success">117</strong></td>
+
+                      <td><span class="text-muted">Phòng đang có khách sử dụng</span></td>
                     </tr>
                     <tr>
-                      <td><strong>102</strong></td>
-                      <td>Deluxe Room</td>
-                      <td>89</td>
-                      <td>$16,020</td>
-                      <td>82%</td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="far fa-star"></i>
-                          4.4
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                          <i class="fas fa-door-open me-1"></i>Phòng Trống
                         </span>
                       </td>
+                      <td><strong class="fs-5 text-primary">28</strong></td>
+
+                      <td><span class="text-muted">Sẵn sàng cho khách đặt phòng</span></td>
                     </tr>
                     <tr>
-                      <td><strong>101</strong></td>
-                      <td>Standard Room</td>
-                      <td>112</td>
-                      <td>$13,440</td>
-                      <td>78%</td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="far fa-star"></i>
-                          4.2
+                        <span class="badge bg-warning fs-6 px-3 py-2">
+                          <i class="fas fa-tools me-1"></i>Phòng Đang Sửa Chữa
                         </span>
                       </td>
+                      <td><strong class="fs-5 text-warning">5</strong></td>
+
+                      <td><span class="text-muted">Đang trong quá trình bảo trì</span></td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              
+
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+
+
+          <!-- Revenue Analysis -->
+
+
+          <!-- Current Guests List -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+              <h5 class="mb-0"><i class="fas fa-users me-2"></i>Danh Sách Khách Hàng Đang Thuê</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th><i class="fas fa-door-closed me-1"></i>Tên Phòng</th>
+                      <th><i class="fas fa-layer-group me-1"></i>Tầng</th>
+                      <th><i class="fas fa-bed me-1"></i>Loại Phòng</th>
+                      <th><i class="fas fa-users me-1"></i>Sức Chứa</th>
+                      <th><i class="fas fa-user me-1"></i>Tên Khách Hàng</th>
+                      <th><i class="fas fa-calendar-check me-1"></i>Ngày Đặt</th>
+                      <th><i class="fas fa-calendar-times me-1"></i>Ngày Trả</th>
+                      <th><i class="fas fa-money-bill-wave me-1"></i>Tổng Tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong class="text-primary">P301</strong></td>
+                      <td><span class="badge bg-info">Tầng 3</span></td>
+                      <td>Phòng Tổng Thống</td>
+                      <td><span class="text-muted">4 người</span></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Nguyễn Văn An</strong>
+                            <br><small class="text-muted">0901234567</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="text-success">15/01/2025</span></td>
+                      <td><span class="text-danger">18/01/2025</span></td>
+                      <td><strong class="text-success">2.250.000 đ</strong></td>
+                    </tr>
+                    <tr>
+                      <td><strong class="text-primary">P201</strong></td>
+                      <td><span class="badge bg-info">Tầng 2</span></td>
+                      <td>Phòng Suite</td>
+                      <td><span class="text-muted">3 người</span></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-success rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Trần Thị Bình</strong>
+                            <br><small class="text-muted">0912345678</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="text-success">14/01/2025</span></td>
+                      <td><span class="text-danger">20/01/2025</span></td>
+                      <td><strong class="text-success">1.800.000 đ</strong></td>
+                    </tr>
+                    <tr>
+                      <td><strong class="text-primary">P102</strong></td>
+                      <td><span class="badge bg-info">Tầng 1</span></td>
+                      <td>Phòng Cao Cấp</td>
+                      <td><span class="text-muted">2 người</span></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-warning rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Lê Minh Cường</strong>
+                            <br><small class="text-muted">0923456789</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="text-success">16/01/2025</span></td>
+                      <td><span class="text-danger">19/01/2025</span></td>
+                      <td><strong class="text-success">1.350.000 đ</strong></td>
+                    </tr>
+                    <tr>
+                      <td><strong class="text-primary">P105</strong></td>
+                      <td><span class="badge bg-info">Tầng 1</span></td>
+                      <td>Phòng Tiêu Chuẩn</td>
+                      <td><span class="text-muted">2 người</span></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-danger rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Phạm Thị Dung</strong>
+                            <br><small class="text-muted">0934567890</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="text-success">17/01/2025</span></td>
+                      <td><span class="text-danger">21/01/2025</span></td>
+                      <td><strong class="text-success">800.000 đ</strong></td>
+                    </tr>
+                    <tr>
+                      <td><strong class="text-primary">P203</strong></td>
+                      <td><span class="badge bg-info">Tầng 2</span></td>
+                      <td>Phòng Cao Cấp</td>
+                      <td><span class="text-muted">2 người</span></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-info rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Hoàng Văn Em</strong>
+                            <br><small class="text-muted">0945678901</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="text-success">15/01/2025</span></td>
+                      <td><span class="text-danger">22/01/2025</span></td>
+                      <td><strong class="text-success">1.575.000 đ</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Summary Footer -->
+              <div class="row mt-3 pt-3 border-top">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-users text-primary me-2"></i>
+                    <span class="text-muted">Tổng khách đang lưu trú: <strong class="text-primary">5 khách hàng</strong></span>
+                  </div>
+                </div>
+                <div class="col-md-6 text-end">
+                  <div class="d-flex align-items-center justify-content-end">
+                    <i class="fas fa-money-bill-wave text-success me-2"></i>
+                    <span class="text-muted">Tổng doanh thu dự kiến: <strong class="text-success">7.775.000 đ</strong></span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -403,7 +420,7 @@
       const roomTypeChart = new Chart(roomTypeCtx, {
         type: "doughnut",
         data: {
-          labels: ["Standard", "Deluxe", "Suite", "Presidential"],
+          labels: ["Tiêu Chuẩn", "Cao Cấp", "Suite", "Tổng Thống"],
           datasets: [
             {
               data: [45, 30, 20, 5],
@@ -438,7 +455,7 @@
           labels: ["Jan", "Feb", "Mar", "Apr", "May"],
           datasets: [
             {
-              label: "Revenue ($)",
+              label: "Doanh Thu ($)",
               data: [6800, 7400, 6200, 8400, 9600],
               backgroundColor: "rgba(75, 192, 192, 0.8)",
               borderColor: "rgba(75, 192, 192, 1)",

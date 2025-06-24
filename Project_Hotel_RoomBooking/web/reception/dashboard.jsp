@@ -33,16 +33,8 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
       <!-- Main Content -->
       <div id="page-content-wrapper" class="flex-fill">
-        <!-- Top Navigation -->
-        <nav
-          class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-        >
-          <div class="container-fluid">
-            <button class="btn btn-outline-secondary" id="menu-toggle">
-              <i class="fas fa-bars"></i>
-            </button>
-          </div>
-        </nav>
+        <!-- Include Top Navigation -->
+        <jsp:include page="includes/header.jsp" />
 
         <div class="container-fluid py-4">
           <!-- Page Header -->
@@ -433,7 +425,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                 <div class="card-body">
                   <div class="d-grid gap-3">
                     <a
-                      href="bookings.jsp"
+                      href="${pageContext.request.contextPath}/admin/bookings.jsp"
                       class="btn btn-outline-primary quick-action-btn"
                     >
                       <i class="fas fa-calendar-plus me-2"></i>New Booking

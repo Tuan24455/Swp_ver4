@@ -14,7 +14,7 @@ import model.StockItem;
 /**
  * Servlet hiển thị báo cáo tồn kho.
  */
-@WebServlet(name = "StockReportServlet", urlPatterns = {"/stockreport"})
+@WebServlet(name = "StockReportServlet", urlPatterns = {"/stockreport", "/admin/stockreport"})
 public class StockReportServlet extends HttpServlet {
 
     private final StockDao stockDao = new StockDao();
@@ -73,7 +73,7 @@ public class StockReportServlet extends HttpServlet {
             
             System.out.println("StockReportServlet: Low stock items count: " + lowStockItems.size());
             
-            request.getRequestDispatcher("admin/stockreport.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/stockreport.jsp").forward(request, response);
             
         } catch (Exception e) {
             System.err.println("Error in StockReportServlet: " + e.getMessage());
@@ -81,7 +81,7 @@ public class StockReportServlet extends HttpServlet {
             
             // Forward to JSP even with error, let JSP handle empty data
             request.setAttribute("error", "Có lỗi khi tải dữ liệu: " + e.getMessage());
-            request.getRequestDispatcher("admin/stockreport.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/stockreport.jsp").forward(request, response);
         }
     }
 }
