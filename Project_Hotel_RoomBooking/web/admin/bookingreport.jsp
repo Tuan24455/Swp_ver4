@@ -44,6 +44,11 @@
         position: relative;
         height: 350px;
       }
+      .avatar-sm {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
@@ -113,58 +118,77 @@
                     class="btn btn-primary w-100"
                     onclick="generateReport()"
                   >
-                    <i class="fas fa-chart-line me-2"></i>Tạo Báo Cáo
+                    <i class="fas fa-chart-line me-2"></i>Lọc
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Summary Cards -->
-          <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Tổng Phòng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">150</h2>
-                  <p class="card-text text-info">
-                    <i class="fas fa-building me-1"></i> Tổng số phòng khách sạn
-                  </p>
-                </div>
-              </div>
+
+
+          <!-- Room Status Details Table -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+              <h5 class="mb-0"><i class="fas fa-bed me-2"></i>Chi Tiết Thống Kê Phòng</h5>
             </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Dùng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">117</h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-user-check me-1"></i> Phòng đang dùng
-                  </p>
-                </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th><i class="fas fa-info-circle me-1"></i>Trạng Thái Phòng</th>
+                      <th><i class="fas fa-hashtag me-1"></i>Số Lượng</th>
+
+                      <th><i class="fas fa-clipboard-list me-1"></i>Mô Tả</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span class="badge bg-info fs-6 px-3 py-2">
+                          <i class="fas fa-building me-1"></i>Tổng Phòng
+                        </span>
+                      </td>
+                      <td><strong class="fs-5 text-info">150</strong></td>
+
+                      <td><span class="text-muted">Tổng số phòng khách sạn</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                          <i class="fas fa-user-check me-1"></i>Phòng Đang Dùng
+                        </span>
+                      </td>
+                      <td><strong class="fs-5 text-success">117</strong></td>
+
+                      <td><span class="text-muted">Phòng đang có khách sử dụng</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                          <i class="fas fa-door-open me-1"></i>Phòng Trống
+                        </span>
+                      </td>
+                      <td><strong class="fs-5 text-primary">28</strong></td>
+
+                      <td><span class="text-muted">Sẵn sàng cho khách đặt phòng</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="badge bg-warning fs-6 px-3 py-2">
+                          <i class="fas fa-tools me-1"></i>Phòng Đang Sửa Chữa
+                        </span>
+                      </td>
+                      <td><strong class="fs-5 text-warning">5</strong></td>
+
+                      <td><span class="text-muted">Đang trong quá trình bảo trì</span></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Phòng Trống</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">28</h2>
-                  <p class="card-text text-primary">
-                    <i class="fas fa-door-open me-1"></i> Sẵn sàng cho khách
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Sửa Chữa</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">5</h2>
-                  <p class="card-text text-warning">
-                    <i class="fas fa-tools me-1"></i> Đang bảo trì
-                  </p>
-                </div>
-              </div>
+              
+
             </div>
           </div>
 
@@ -174,95 +198,145 @@
           <!-- Revenue Analysis -->
 
 
-          <!-- Top Performing Rooms -->
+          <!-- Current Guests List -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
-              <h5 class="mb-0">Top Performing Rooms</h5>
+              <h5 class="mb-0"><i class="fas fa-users me-2"></i>Danh Sách Khách Hàng Đang Thuê</h5>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle">
                   <thead class="table-light">
                     <tr>
-                      <th>Số Phòng</th>
-                      <th>Loại Phòng</th>
-                      <th>Tổng Đặt Phòng</th>
-                      <th>Doanh Thu Tạo Ra</th>
-                      <th>Tỷ Lệ Lấp Đầy</th>
-                      <th>Đánh Giá TB</th>
+                      <th><i class="fas fa-door-closed me-1"></i>Tên Phòng</th>
+                      <th><i class="fas fa-layer-group me-1"></i>Tầng</th>
+                      <th><i class="fas fa-bed me-1"></i>Loại Phòng</th>
+                      <th><i class="fas fa-users me-1"></i>Sức Chứa</th>
+                      <th><i class="fas fa-user me-1"></i>Tên Khách Hàng</th>
+                      <th><i class="fas fa-calendar-check me-1"></i>Ngày Đặt</th>
+                      <th><i class="fas fa-calendar-times me-1"></i>Ngày Trả</th>
+                      <th><i class="fas fa-money-bill-wave me-1"></i>Tổng Tiền</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><strong>301</strong></td>
+                      <td><strong class="text-primary">P301</strong></td>
+                      <td><span class="badge bg-info">Tầng 3</span></td>
                       <td>Phòng Tổng Thống</td>
-                      <td>45</td>
-                      <td>$33,750</td>
-                      <td>89%</td>
+                      <td><span class="text-muted">4 người</span></td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          4.8
-                        </span>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Nguyễn Văn An</strong>
+                            <br><small class="text-muted">0901234567</small>
+                          </div>
+                        </div>
                       </td>
+                      <td><span class="text-success">15/01/2025</span></td>
+                      <td><span class="text-danger">18/01/2025</span></td>
+                      <td><strong class="text-success">2.250.000 đ</strong></td>
                     </tr>
                     <tr>
-                      <td><strong>201</strong></td>
+                      <td><strong class="text-primary">P201</strong></td>
+                      <td><span class="badge bg-info">Tầng 2</span></td>
                       <td>Phòng Suite</td>
-                      <td>67</td>
-                      <td>$23,450</td>
-                      <td>85%</td>
+                      <td><span class="text-muted">3 người</span></td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="far fa-star"></i>
-                          4.6
-                        </span>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-success rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Trần Thị Bình</strong>
+                            <br><small class="text-muted">0912345678</small>
+                          </div>
+                        </div>
                       </td>
+                      <td><span class="text-success">14/01/2025</span></td>
+                      <td><span class="text-danger">20/01/2025</span></td>
+                      <td><strong class="text-success">1.800.000 đ</strong></td>
                     </tr>
                     <tr>
-                      <td><strong>102</strong></td>
+                      <td><strong class="text-primary">P102</strong></td>
+                      <td><span class="badge bg-info">Tầng 1</span></td>
                       <td>Phòng Cao Cấp</td>
-                      <td>89</td>
-                      <td>$16,020</td>
-                      <td>82%</td>
+                      <td><span class="text-muted">2 người</span></td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="far fa-star"></i>
-                          4.4
-                        </span>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-warning rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Lê Minh Cường</strong>
+                            <br><small class="text-muted">0923456789</small>
+                          </div>
+                        </div>
                       </td>
+                      <td><span class="text-success">16/01/2025</span></td>
+                      <td><span class="text-danger">19/01/2025</span></td>
+                      <td><strong class="text-success">1.350.000 đ</strong></td>
                     </tr>
                     <tr>
-                      <td><strong>101</strong></td>
+                      <td><strong class="text-primary">P105</strong></td>
+                      <td><span class="badge bg-info">Tầng 1</span></td>
                       <td>Phòng Tiêu Chuẩn</td>
-                      <td>112</td>
-                      <td>$13,440</td>
-                      <td>78%</td>
+                      <td><span class="text-muted">2 người</span></td>
                       <td>
-                        <span class="text-warning">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="far fa-star"></i>
-                          4.2
-                        </span>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-danger rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Phạm Thị Dung</strong>
+                            <br><small class="text-muted">0934567890</small>
+                          </div>
+                        </div>
                       </td>
+                      <td><span class="text-success">17/01/2025</span></td>
+                      <td><span class="text-danger">21/01/2025</span></td>
+                      <td><strong class="text-success">800.000 đ</strong></td>
+                    </tr>
+                    <tr>
+                      <td><strong class="text-primary">P203</strong></td>
+                      <td><span class="badge bg-info">Tầng 2</span></td>
+                      <td>Phòng Cao Cấp</td>
+                      <td><span class="text-muted">2 người</span></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-info rounded-circle d-flex align-items-center justify-content-center me-2">
+                            <i class="fas fa-user text-white"></i>
+                          </div>
+                          <div>
+                            <strong>Hoàng Văn Em</strong>
+                            <br><small class="text-muted">0945678901</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="text-success">15/01/2025</span></td>
+                      <td><span class="text-danger">22/01/2025</span></td>
+                      <td><strong class="text-success">1.575.000 đ</strong></td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              
+              <!-- Summary Footer -->
+              <div class="row mt-3 pt-3 border-top">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-users text-primary me-2"></i>
+                    <span class="text-muted">Tổng khách đang lưu trú: <strong class="text-primary">5 khách hàng</strong></span>
+                  </div>
+                </div>
+                <div class="col-md-6 text-end">
+                  <div class="d-flex align-items-center justify-content-end">
+                    <i class="fas fa-money-bill-wave text-success me-2"></i>
+                    <span class="text-muted">Tổng doanh thu dự kiến: <strong class="text-success">7.775.000 đ</strong></span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
