@@ -141,7 +141,7 @@
                         href="http://localhost:8080/Project_Hotel_RoomBooking/admin/purchasereport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'purchasereport' ? 'active' : ''}"
                         >
-                        <i class="fas fa-shopping-cart me-2"></i> Báo cáo mua hàng
+                        <i class="fas fa-shopping-cart me-2"></i> Báo cáo doanh thu
                     </a>
                     <a
                         href="http://localhost:8080/Project_Hotel_RoomBooking/admin/stockreport"
