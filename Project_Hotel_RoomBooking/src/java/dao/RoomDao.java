@@ -53,9 +53,13 @@ public class RoomDao {
 
     // Lấy thông tin phòng theo ID
     public Room getRoomById(int id) {
-        String sql = "SELECT * FROM Rooms WHERE id = ? AND isDelete = 0";
+        String sql = "SELECT r.*, rt.room_type AS room_type_name " +
+                    "FROM Rooms r " +
+                    "JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+                    "WHERE r.id = ? AND r.isDelete = 0";
 
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -65,6 +69,7 @@ public class RoomDao {
                     room.setId(rs.getInt("id"));
                     room.setRoomNumber(rs.getString("room_number"));
                     room.setRoomTypeId(rs.getInt("room_type_id"));
+                    room.setRoomTypeName(rs.getString("room_type_name"));
                     room.setRoomPrice(rs.getDouble("room_price"));
                     room.setRoomStatus(rs.getString("room_status"));
                     room.setCapacity(rs.getInt("capacity"));
