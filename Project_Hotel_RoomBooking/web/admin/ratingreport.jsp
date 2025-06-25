@@ -21,6 +21,30 @@
       rel="stylesheet"
     />
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      .container-fluid {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+
+      .col-md-9.col-lg-10 {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        /*margin-left: 0 !important;*/
+      }
+      .main-content {
+        padding: 1rem;
+        width: 86%;
+        min-height: 100vh;
+        margin-left: 250px !important; /* Force margin */
+        padding-left: 1px !important;
+        padding-right: 1px !important;
+      }
       .kpi-card {
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         border: none;
@@ -33,9 +57,11 @@
       .page-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        border-radius: 12px;
-        padding: 2rem;
+        border-radius: 0;
+        padding: 2rem 1rem;
         margin-bottom: 2rem;
+        margin-left: 0;
+        margin-right: 0;
       }
       .breadcrumb {
         background: rgba(255,255,255,0.1);
@@ -56,6 +82,7 @@
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 0 1rem;
       }
       .table th {
         background-color: #f8f9fa;
@@ -64,9 +91,27 @@
       }
       .filter-card {
         background: #f8f9fa;
-        border-radius: 12px;
-        padding: 1.5rem;
+        border-radius: 0;
+        padding: 1.5rem 1rem;
         margin-bottom: 2rem;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .content-section {
+        padding: 0 1rem;
+      }
+      
+      @media (min-width: 576px) {
+        .ms-sm-auto {
+          margin-left: 250px !important;
+        }
+      }
+      
+      @media (min-width: 768px) {
+        .px-md-4 {
+          padding-right: 1px !important;
+          padding-left: 1px !important;
+        }
       }
     </style>
 </head>
@@ -77,7 +122,7 @@
             <jsp:include page="includes/sidebar.jsp" />
             
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
+            <div class="col-md-9 col-lg-10 ms-sm-auto main-content">
                 <!-- Page Header -->
                 <div class="page-header">
                     <div class="d-flex justify-content-between align-items-center">
