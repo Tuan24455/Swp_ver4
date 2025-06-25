@@ -49,8 +49,17 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
       <!-- Main Content -->
       <div id="page-content-wrapper" class="flex-fill">
-        <!-- Include Top Navigation -->
-        <jsp:include page="includes/header.jsp" />
+        <!-- Top Navigation -->
+        <nav
+          class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
+        >
+          <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3">
+              <span id="current-date" class="fw-semibold text-muted">Thứ Ba, 24 tháng 6, 2025</span>
+              <span id="current-time" class="fw-semibold">16:56:28</span>
+            </div>
+          </div>
+        </nav>
 
         <div class="container-fluid py-4">
           <nav aria-label="breadcrumb" class="mb-4">

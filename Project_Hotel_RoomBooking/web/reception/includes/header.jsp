@@ -5,22 +5,46 @@
   <div class="container-fluid">
 
     <div class="d-flex align-items-center gap-3">
-      <span id="current-date" class="fw-semibold text-muted"></span>
-      <span id="current-time" class="fw-semibold"></span>
+      <span id="current-date" class="fw-semibold text-muted">Thứ Ba, 24 tháng 6, 2025</span>
+      <span id="current-time" class="fw-semibold">16:46:00</span>
     </div>
   </div>
 </nav>
 
 <script>
-    // --- Clock --- 
-    function updateClock() {
-        const now = new Date();
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateElem = document.getElementById('current-date');
-        const timeElem = document.getElementById('current-time');
-        if(dateElem) dateElem.textContent = now.toLocaleDateString('vi-VN', dateOptions);
-        if(timeElem) timeElem.textContent = now.toLocaleTimeString('vi-VN');
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+// Update date and time
+function updateDateTime() {
+  const now = new Date();
+  
+  // Format date
+  const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+  const months = ['tháng 1', 'tháng 2', 'tháng 3', 'tháng 4', 'tháng 5', 'tháng 6', 'tháng 7', 'tháng 8', 'tháng 9', 'tháng 10', 'tháng 11', 'tháng 12'];
+  
+  const dayName = days[now.getDay()];
+  const day = now.getDate();
+  const month = months[now.getMonth()];
+  const year = now.getFullYear();
+  
+  const dateString = `${dayName}, ${day} ${month}, ${year}`;
+  
+  // Format time
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  const timeString = `${hours}:${minutes}:${seconds}`;
+  
+  // Update elements
+  const dateElement = document.getElementById('current-date');
+  const timeElement = document.getElementById('current-time');
+  
+  if (dateElement) dateElement.textContent = dateString;
+  if (timeElement) timeElement.textContent = timeString;
+}
+
+// Update time every second
+setInterval(updateDateTime, 1000);
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', updateDateTime);
 </script>
