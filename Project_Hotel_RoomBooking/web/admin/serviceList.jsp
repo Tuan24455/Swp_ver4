@@ -85,7 +85,7 @@
 
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">Loại Dịch Vụ</label>
                             <select class="form-select" name="status">
                                 <option value="" ${paramStatus == null ? 'selected' : ''}>All Status</option>
                                 <option value="active" ${paramStatus == 'active' ? 'selected' : ''}>Active</option>
