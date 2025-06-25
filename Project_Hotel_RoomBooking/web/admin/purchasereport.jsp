@@ -125,60 +125,8 @@
 
           <!-- Additional Services Analysis -->
           <div class="row g-4 mb-4">
-            <div class="col-lg-6">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Dịch Vụ Bổ Sung Hàng Đầu</h5>
-                </div>
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th>Dịch Vụ</th>
-                          <th>Số Lần Sử Dụng</th>
-                          <th>Doanh Thu</th>
-                          <th>Giá Trung Bình</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><strong>Dịch Vụ Phòng</strong></td>
-                          <td>342</td>
-                          <td>$15,480</td>
-                          <td>$45.26</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Dịch Vụ Giặt Ủi</strong></td>
-                          <td>198</td>
-                          <td>$7,920</td>
-                          <td>$40.00</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Dịch Vụ Spa</strong></td>
-                          <td>89</td>
-                          <td>$8,900</td>
-                          <td>$100.00</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Mini Bar</strong></td>
-                          <td>156</td>
-                          <td>$3,120</td>
-                          <td>$20.00</td>
-                        </tr>
-                        <tr>
-                          <td><strong>WiFi Cao Cấp</strong></td>
-                          <td>67</td>
-                          <td>$670</td>
-                          <td>$10.00</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
+
+            <div class="col-lg-12">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
                   <h5 class="mb-0">Doanh Thu Phòng</h5>
@@ -300,7 +248,7 @@
                       <th>Nhận Phòng</th>
                       <th>Trả Phòng</th>
                       <th>Phí Phòng</th>
-                      <th>Dịch Vụ Bổ Sung</th>
+
                       <th>Tổng Tiền</th>
                       <th>Trạng Thái</th>
                       <th>Thao Tác</th>
@@ -314,7 +262,7 @@
                       <td>2025-05-20</td>
                       <td>2025-05-23</td>
                       <td>$450.00</td>
-                      <td>$125.50</td>
+
                       <td><strong>$575.50</strong></td>
                       <td><span class="badge bg-success">Đã Thanh Toán</span></td>
                       <td>
@@ -350,7 +298,7 @@
                       <td>2025-05-21</td>
                       <td>2025-05-25</td>
                       <td>$800.00</td>
-                      <td>$245.75</td>
+
                       <td><strong>$1,045.75</strong></td>
                       <td><span class="badge bg-warning">Pending</span></td>
                       <td>
@@ -386,7 +334,7 @@
                       <td>2025-05-22</td>
                       <td>2025-05-24</td>
                       <td>$200.00</td>
-                      <td>$45.25</td>
+
                       <td><strong>$245.25</strong></td>
                       <td><span class="badge bg-success">Đã Thanh Toán</span></td>
                       <td>
@@ -422,7 +370,7 @@
                       <td>2025-05-23</td>
                       <td>2025-05-26</td>
                       <td>$1,200.00</td>
-                      <td>$380.90</td>
+
                       <td><strong>$1,580.90</strong></td>
                       <td><span class="badge bg-danger">Overdue</span></td>
                       <td>
