@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import model.User;
 
 public class UserDao {
@@ -22,7 +24,9 @@ public class UserDao {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM Users WHERE isDeleted = 0";
 
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 User user = new User();
@@ -48,13 +52,241 @@ public class UserDao {
         return list;
     }
 
+    // Lấy người dùng với phân trang
+    public List<User> getUsersWithPagination(int page, int pageSize) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM Users WHERE isDeleted = 0 ORDER BY id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, (page - 1) * pageSize);
+            ps.setInt(2, pageSize);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setPass(rs.getString("pass"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setBirth(rs.getDate("birth"));
+                    user.setGender(rs.getString("gender"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setAddress(rs.getString("address"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+                    user.setDeleted(rs.getBoolean("isDeleted"));
+                    list.add(user);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // Lấy thống kê người dùng theo vai trò
+    public Map<String, Integer> getUserStatistics() {
+        Map<String, Integer> stats = new HashMap<>();
+        String sql = "SELECT role, COUNT(*) as count FROM Users WHERE isDeleted = 0 GROUP BY role";
+
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
+
+            // Initialize with 0
+            stats.put("total", 0);
+            stats.put("admin", 0);
+            stats.put("manager", 0);
+            stats.put("staff", 0);
+            stats.put("customer", 0);
+
+            int total = 0;
+            while (rs.next()) {
+                String role = rs.getString("role");
+                int count = rs.getInt("count");
+                stats.put(role.toLowerCase(), count);
+                total += count;
+            }
+            stats.put("total", total);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stats;
+    }
+
+    // Tìm kiếm người dùng
+    public List<User> searchUsers(String keyword) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM Users WHERE isDeleted = 0 AND " +
+                    "(full_name LIKE ? OR user_name LIKE ? OR email LIKE ? OR phone LIKE ?) " +
+                    "ORDER BY id DESC";
+
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            String searchPattern = "%" + keyword + "%";
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+            ps.setString(3, searchPattern);
+            ps.setString(4, searchPattern);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setPass(rs.getString("pass"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setBirth(rs.getDate("birth"));
+                    user.setGender(rs.getString("gender"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setAddress(rs.getString("address"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+                    user.setDeleted(rs.getBoolean("isDeleted"));
+                    list.add(user);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // Lọc người dùng theo vai trò
+    public List<User> getUsersByRole(String role) {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM Users WHERE isDeleted = 0 AND role = ? ORDER BY id DESC";
+
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, role);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setPass(rs.getString("pass"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setBirth(rs.getDate("birth"));
+                    user.setGender(rs.getString("gender"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setAddress(rs.getString("address"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+                    user.setDeleted(rs.getBoolean("isDeleted"));
+                    list.add(user);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // Đếm tổng số người dùng
+    public int getTotalUsers() {
+        String sql = "SELECT COUNT(*) FROM Users WHERE isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Lấy người dùng theo ID
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM Users WHERE id = ? AND isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, id);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setPass(rs.getString("pass"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setBirth(rs.getDate("birth"));
+                    user.setGender(rs.getString("gender"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setAddress(rs.getString("address"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+                    user.setDeleted(rs.getBoolean("isDeleted"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Xóa mềm người dùng
+    public boolean softDelete(int id) {
+        String sql = "UPDATE Users SET isDeleted = 1 WHERE id = ?";
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Cập nhật vai trò người dùng
+    public boolean updateUserRole(int id, String role) {
+        String sql = "UPDATE Users SET role = ? WHERE id = ?";
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, role);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Login bằng username
     public User loginByUsername(String username, String password) {
         String sql = "SELECT * FROM Users WHERE user_name = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username); // Set parameter 1
-            ps.setString(2, password); // Set parameter 2
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
 
-            try (ResultSet rs = ps.executeQuery()) { // Execute query AFTER setting parameters
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
                     user.setId(rs.getInt("id"));
@@ -81,11 +313,12 @@ public class UserDao {
 
     public User loginByEmail(String email, String password) {
         String sql = "SELECT * FROM Users WHERE email = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, email); // Set parameter 1
-            ps.setString(2, password); // Set parameter 2
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, password);
 
-            try (ResultSet rs = ps.executeQuery()) { // Execute query AFTER setting parameters
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
                     user.setId(rs.getInt("id"));
@@ -112,11 +345,12 @@ public class UserDao {
 
     public User loginByPhone(String phone, String password) {
         String sql = "SELECT * FROM Users WHERE phone = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, phone); // Set parameter 1
-            ps.setString(2, password); // Set parameter 2
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ps.setString(2, password);
 
-            try (ResultSet rs = ps.executeQuery()) { // Execute query AFTER setting parameters
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
                     user.setId(rs.getInt("id"));
@@ -143,12 +377,13 @@ public class UserDao {
 
     public boolean isExist(String username) {
         String sql = "SELECT 1 FROM Users WHERE user_name = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // Trả về true nếu có bản ghi
+                return rs.next();
             }
         } catch (SQLException e) {
             System.err.println("Error checking user existence: " + e.getMessage());
@@ -157,10 +392,10 @@ public class UserDao {
         return false;
     }
 
-    // Kiểm tra email đã tồn tại
     public boolean isEmailExist(String email) {
         String sql = "SELECT 1 FROM Users WHERE email = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -172,10 +407,10 @@ public class UserDao {
         return false;
     }
 
-// Kiểm tra số điện thoại đã tồn tại
     public boolean isPhoneExist(String phone) {
         String sql = "SELECT 1 FROM Users WHERE phone = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, phone);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -191,7 +426,8 @@ public class UserDao {
         String sql = "INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url, isDeleted) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUserName());
             ps.setString(2, user.getPass());
@@ -208,14 +444,15 @@ public class UserDao {
             ps.executeUpdate();
 
         } catch (Exception e) {
-            e.printStackTrace(); // Có thể log ra logger thực tế
+            e.printStackTrace();
         }
     }
 
     public void update(User user) {
         String sql = "UPDATE Users SET full_name = ?, birth = ?, gender = ?, email = ?, phone = ?, address = ?, avatar_url = ? WHERE id = ?";
 
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setDate(2, new java.sql.Date(user.getBirth().getTime()));
             ps.setString(3, user.getGender());
@@ -233,26 +470,23 @@ public class UserDao {
 
     public static void main(String[] args) {
         try {
-            // Tạo ngày sinh từ chuỗi
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date birth = sdf.parse("2001-09-15");
 
-            // Tạo user giả lập
             User testUser = new User(
-                    "newuser123", // username
-                    "123456", // password
-                    "Nguyễn Văn A", // full name
+                    "newuser123",
+                    "123456",
+                    "Nguyễn Văn A",
                     birth,
                     "Nam",
                     "newuser123@gmail.com",
                     "0987654321",
                     "Hà Nội",
                     "Customer",
-                    "", // avatar URL
-                    false // isDeleted
+                    "",
+                    false
             );
 
-            // Gọi DAO để insert
             UserDao dao = new UserDao();
             dao.insert(testUser);
 
