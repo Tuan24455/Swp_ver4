@@ -247,7 +247,7 @@
                                             </div>
 
                                             <div class="room-actions">
-                                                <a href="roomdetail?id=${room.getId()}" class="btn btn-view-detail">
+                                                <a href="room-detail?id=${room.getId()}" class="btn btn-view-detail">
                                                     <i class="fas fa-eye me-2"></i>Xem chi tiết
                                                 </a>
                                             </div>
@@ -268,6 +268,43 @@
                                 </div>
                             </c:otherwise>
                         </c:choose>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Room List Section -->
+            <section class="room-list-section">
+                <div class="container">
+                    <div class="room-grid">
+                        <c:forEach var="room" items="${roomlist}">
+                            <div class="room-card animate__animated animate__fadeIn">
+                                <div class="room-image-container">
+                                    <img src="${room.imageUrl}" alt="${room.roomTypeName}" class="room-image">
+                                    <div class="room-overlay">
+                                        <span class="room-type">${room.roomTypeName}</span>
+                                    </div>
+                                </div>
+                                <div class="room-content">
+                                    <div class="room-header">
+                                        <h3 class="room-title">Phòng ${room.roomNumber}</h3>
+                                        <span class="room-price"><fmt:formatNumber value="${room.roomPrice}" type="currency" currencySymbol="VND"/>/đêm</span>
+                                    </div>
+                                    <div class="room-info">
+                                        <p><i class="fas fa-user-friends"></i> ${room.capacity} người</p>
+                                        <p><i class="fas fa-bed"></i> ${room.roomTypeName}</p>
+                                        <p><i class="fas fa-building"></i> Tầng ${room.floor}</p>
+                                    </div>
+                                    <div class="room-description">
+                                        <p>${room.description}</p>
+                                    </div>
+                                    <div class="room-actions">
+                                        <a href="room-detail?id=${room.id}" class="btn-view-detail">
+                                            <i class="fas fa-info-circle"></i> Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
             </section>
