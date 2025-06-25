@@ -143,7 +143,12 @@
                         >
                         <i class="fas fa-shopping-cart me-2"></i> Báo cáo doanh thu
                     </a>
-
+                    <a
+                        href="http://localhost:8080/Project_Hotel_RoomBooking/admin/stockreport"
+                        class="list-group-item list-group-item-action py-2 ${param.activePage == 'stockreport' ? 'active' : ''}"
+                        >
+                        <i class="fas fa-boxes me-2"></i> Báo cáo tồn kho
+                    </a>
                     <a
                         href="http://localhost:8080/Project_Hotel_RoomBooking/admin/bookingreport"
                         class="list-group-item list-group-item-action py-2 ${param.activePage == 'bookingreport' ? 'active' : ''}"
@@ -156,7 +161,6 @@
                         >
                         <i class="fas fa-star me-2"></i> Đánh Giá Xếp Hạng
                     </a>
-
                 </div>
             </div>
         </div>
