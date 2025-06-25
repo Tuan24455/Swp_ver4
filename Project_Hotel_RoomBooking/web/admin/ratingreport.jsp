@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
 
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đánh Giá Xếp Hạng - Hotel Management System</title>
+    <title>Báo Cáo Đánh Giá - Hotel Management System</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -49,199 +49,333 @@
       .breadcrumb-item.active {
         color: white;
       }
-      .star {
-        color: #ffd200;
+      .star-rating {
+        color: #ffc107;
+      }
+      .table-responsive {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+      }
+      .filter-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
       }
     </style>
 </head>
-
 <body>
-<div class="d-flex" id="wrapper">
-
-    <jsp:include page="/admin/includes/sidebar.jsp">
-        <jsp:param name="activePage" value="ratingreport" />
-    </jsp:include>
-
-    <div id="page-content-wrapper" class="flex-fill">
-        <!-- Top Navigation -->
-        <jsp:include page="includes/navbar.jsp" />
-
-        <div class="container-fluid py-4">
-            <!-- Page Header -->
-            <div class="page-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h2 mb-2">Đánh Giá Xếp Hạng</h1>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="dashboard.jsp"><i class="fas fa-home me-1"></i>Home</a></li>
-                                <li class="breadcrumb-item active">Đánh Giá Xếp Hạng</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Summary Cards -->
-            <div class="row g-4 mb-4">
-                <div class="col-xl-4 col-md-4">
-                    <div class="card kpi-card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">Điểm Trung Bình</h6>
-                            <h2 class="card-title display-6 fw-bold mb-1">
-                                4.5/5
-                            </h2>
-                            <p class="card-text text-warning">
-                                <i class="fas fa-star star me-1"></i> Trung bình từ khách hàng
-                            </p>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <jsp:include page="includes/sidebar.jsp" />
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="h2 mb-2">
+                                <i class="fas fa-star me-2"></i>Báo Cáo Đánh Giá
+                            </h1>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item">
+                                        <a href="${pageContext.request.contextPath}/admin/dashboard">
+                                            <i class="fas fa-home"></i> Dashboard
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        Báo Cáo Đánh Giá
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="text-end">
+                            <small class="opacity-75">
+                                <i class="fas fa-clock me-1"></i>
+                                Cập nhật: <fmt:formatDate value="${now}" pattern="dd/MM/yyyy HH:mm" />
+                            </small>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-md-4">
-                    <div class="card kpi-card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">Tổng Đánh Giá</h6>
-                            <h2 class="card-title display-6 fw-bold mb-1">
-                                256
-                            </h2>
-                            <p class="card-text text-success">
-                                <i class="fas fa-comment me-1"></i> Lượt đánh giá
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Rating Distribution & Recent Reviews -->
-            <div class="row g-4 mb-4">
-                <div class="col-lg-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white border-bottom py-3">
-                            <h5 class="mb-0">Review về Phòng</h5>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li class="mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar">
-                                            <img src="${pageContext.request.contextPath}/web/images/default-avatar.png" alt="Circle Image" class="img-fluid rounded-circle" style="width: 50px;" />
-                                        </div>
-                                        <div class="ms-3">
-                                            <h6 class="mb-1">Nguyễn Văn A</h6>
-                                            <span class="text-muted">
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="far fa-star star"></i>
-                                            </span>
-                                            <p class="text-muted mb-0">Phòng rất sạch sẽ và thoải mái</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white border-bottom py-3">
-                            <h5 class="mb-0">Review về Chất Lượng Dịch Vụ</h5>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar">
-                                            <img src="${pageContext.request.contextPath}/web/images/default-avatar.png" alt="Circle Image" class="img-fluid rounded-circle" style="width: 50px;" />
-                                        </div>
-                                        <div class="ms-3">
-                                            <h6 class="mb-1">Trần Thị B</h6>
-                                            <span class="text-muted">
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="far fa-star star"></i>
-                                                <i class="far fa-star star"></i>
-                                            </span>
-                                            <p class="text-muted mb-0">Dịch vụ khá tốt, nhân viên thân thiện</p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Detailed Reviews Table -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Chi Tiết Đánh Giá</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Khách Hàng</th>
-                                            <th>Phòng</th>
-                                            <th>Điểm</th>
-                                            <th>Nhận Xét</th>
-                                            <th>Ngày</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Nguyễn Văn A</td>
-                                            <td>Deluxe Room</td>
-                                            <td>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="far fa-star star"></i>
-                                            </td>
-                                            <td>Phòng rất sạch sẽ và thoải mái</td>
-                                            <td>15/06/2023</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Trần Thị B</td>
-                                            <td>Standard Room</td>
-                                            <td>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="fas fa-star star"></i>
-                                                <i class="far fa-star star"></i>
-                                                <i class="far fa-star star"></i>
-                                            </td>
-                                            <td>Dịch vụ khá tốt, nhân viên thân thiện</td>
-                                            <td>10/06/2023</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                <!-- Filter Section -->
+                <div class="filter-card">
+                    <form method="get" action="${pageContext.request.contextPath}/reviewreport">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="filterType" class="form-label">Loại Đánh Giá</label>
+                                <select class="form-select" id="filterType" name="filterType">
+                                    <option value="all" ${currentFilterType == 'all' || empty currentFilterType ? 'selected' : ''}>Tất Cả</option>
+                                    <option value="room" ${currentFilterType == 'room' ? 'selected' : ''}>Đánh Giá Phòng</option>
+                                    <option value="service" ${currentFilterType == 'service' ? 'selected' : ''}>Đánh Giá Dịch Vụ</option>
+                                </select>
                             </div>
+                            <div class="col-md-4">
+                                <label for="quality" class="form-label">Mức Chất Lượng</label>
+                                <select class="form-select" id="quality" name="quality">
+                                    <option value="">Tất Cả Mức</option>
+                                    <option value="5" ${currentQuality == '5' ? 'selected' : ''}>5 Sao - Xuất Sắc</option>
+                                    <option value="4" ${currentQuality == '4' ? 'selected' : ''}>4 Sao - Tốt</option>
+                                    <option value="3" ${currentQuality == '3' ? 'selected' : ''}>3 Sao - Trung Bình</option>
+                                    <option value="2" ${currentQuality == '2' ? 'selected' : ''}>2 Sao - Kém</option>
+                                    <option value="1" ${currentQuality == '1' ? 'selected' : ''}>1 Sao - Rất Kém</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="fas fa-filter me-1"></i>Lọc
+                                </button>
+                                <a href="${pageContext.request.contextPath}/reviewreport" class="btn btn-outline-secondary">
+                                    <i class="fas fa-refresh me-1"></i>Đặt Lại
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card kpi-card shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                        <i class="fas fa-star text-primary fs-4"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title text-primary mb-1">
+                                    <fmt:formatNumber value="${summary.avgRating}" pattern="#.##" />
+                                </h3>
+                                <p class="card-text text-muted mb-0">Điểm Trung Bình</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card kpi-card shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                        <i class="fas fa-comments text-success fs-4"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title text-success mb-1">${summary.totalReviews}</h3>
+                                <p class="card-text text-muted mb-0">Tổng Đánh Giá</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card kpi-card shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                    <div class="rounded-circle bg-info bg-opacity-10 p-3">
+                                        <i class="fas fa-bed text-info fs-4"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title text-info mb-1">${summary.totalRoomReviews}</h3>
+                                <p class="card-text text-muted mb-0">Đánh Giá Phòng</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card kpi-card shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                    <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                                        <i class="fas fa-concierge-bell text-warning fs-4"></i>
+                                    </div>
+                                </div>
+                                <h3 class="card-title text-warning mb-1">${summary.totalServiceReviews}</h3>
+                                <p class="card-text text-muted mb-0">Đánh Giá Dịch Vụ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Reviews Table -->
+                <c:if test="${currentFilterType == 'all' || currentFilterType == 'room' || empty currentFilterType}">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bed me-2"></i>Đánh Giá Phòng
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Phòng</th>
+                                        <th>Chất Lượng</th>
+                                        <th>Bình Luận</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty roomReviews}">
+                                            <c:forEach var="review" items="${roomReviews}">
+                                                <tr>
+                                                    <td>${review.id}</td>
+                                                    <td>
+                                                        <span class="badge bg-info">Phòng ${review.roomId}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="star-rating">
+                                                            <c:forEach begin="1" end="5" var="i">
+                                                                <i class="fas fa-star ${i <= review.quality ? '' : 'text-muted'}"></i>
+                                                            </c:forEach>
+                                                            <span class="ms-1">(${review.quality}/5)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${not empty review.comment}">
+                                                                ${review.comment}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span class="text-muted fst-italic">Không có bình luận</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted py-4">
+                                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                                    Không có đánh giá phòng nào
+                                                </td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </c:if>
+
+                <!-- Service Reviews Table -->
+                <c:if test="${currentFilterType == 'all' || currentFilterType == 'service' || empty currentFilterType}">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-concierge-bell me-2"></i>Đánh Giá Dịch Vụ
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Dịch Vụ</th>
+                                        <th>Chất Lượng</th>
+                                        <th>Bình Luận</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty serviceReviews}">
+                                            <c:forEach var="review" items="${serviceReviews}">
+                                                <tr>
+                                                    <td>${review.id}</td>
+                                                    <td>
+                                                        <span class="badge bg-warning text-dark">Dịch Vụ ${review.serviceId}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="star-rating">
+                                                            <c:forEach begin="1" end="5" var="i">
+                                                                <i class="fas fa-star ${i <= review.quality ? '' : 'text-muted'}"></i>
+                                                            </c:forEach>
+                                                            <span class="ms-1">(${review.quality}/5)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${not empty review.comment}">
+                                                                ${review.comment}
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span class="text-muted fst-italic">Không có bình luận</span>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted py-4">
+                                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                                    Không có đánh giá dịch vụ nào
+                                                </td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </c:if>
+
+                <!-- Rating Distribution -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Phân Phối Đánh Giá
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <c:forEach begin="1" end="5" var="star">
+                                 <div class="col-md-2 text-center mb-3">
+                                     <div class="star-rating mb-2">
+                                         <c:forEach begin="1" end="${star}" var="i">
+                                             <i class="fas fa-star"></i>
+                                         </c:forEach>
+                                         <c:forEach begin="${star + 1}" end="5" var="i">
+                                             <i class="fas fa-star text-muted"></i>
+                                         </c:forEach>
+                                     </div>
+                                     <h4 class="text-primary">${ratingDistribution.ratingMap[star]}</h4>
+                                     <small class="text-muted">${star} Sao</small>
+                                 </div>
+                             </c:forEach>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Bundle JS (Popper + Bootstrap) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Sidebar toggle functionality
-    document
-        .getElementById("menu-toggle")
-        .addEventListener("click", function () {
-            document
-                .getElementById("sidebar-wrapper")
-                .classList.toggle("toggled");
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                });
+            }
         });
-</script>
+    </script>
 </body>
 </html>
