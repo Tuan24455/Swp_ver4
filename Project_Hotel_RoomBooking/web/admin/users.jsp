@@ -573,95 +573,115 @@
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Avatar preview function
-            function previewAvatar(input) {
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('avatarPreview').src = e.target.result;
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
+            const contextPath = '<%= request.getContextPath() %>'; 
+// Avatar preview function
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Form validation
+        document.getElementById('addUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const form = this;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Check password match
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPassword').setCustomValidity('Mật khẩu xác nhận không khớp');
+            } else {
+                document.getElementById('confirmPassword').setCustomValidity('');
             }
 
-            // Toggle password visibility
-            function togglePassword(inputId) {
-                const input = document.getElementById(inputId);
-                const button = input.nextElementSibling;
-                const icon = button.querySelector('i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            }
+            if (form.checkValidity()) {
+                // Show loading state
+                const saveBtn = document.getElementById('saveUserBtn');
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
+                saveBtn.disabled = true;
 
-            // Form validation
-            document.getElementById('addUserForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const form = this;
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                
-                // Check password match
-                if (password !== confirmPassword) {
-                    document.getElementById('confirmPassword').setCustomValidity('Mật khẩu xác nhận không khớp');
-                } else {
-                    document.getElementById('confirmPassword').setCustomValidity('');
-                }
-                
-                if (form.checkValidity()) {
-                    // Show loading state
-                    const saveBtn = document.getElementById('saveUserBtn');
-                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
-                    saveBtn.disabled = true;
-                    
-                    // Submit form
-                    form.submit();
-                } else {
-                    form.classList.add('was-validated');
-                }
-            });
-
-            // User management functions
-            function viewUser(userId) {
-                // Fetch user details via AJAX
-                fetch('userList?action=getUserDetails&id=' + userId)
-                        .then(response => response.json())
-                        .then(user => {
-                            document.getElementById('userDetails').innerHTML = `
-                            <div class="row">
-                                <div class="col-md-4 text-center">
-                                    <img src="${user.avatarUrl || '${pageContext.request.contextPath}/images/default-avatar.png'}" 
-                                         class="rounded-circle mb-3" alt="User Avatar" width="100" height="100">
-                                    <h5>${user.fullName}</h5>
-                                    <p class="text-muted">@${user.userName}</p>
-                                </div>
-                                <div class="col-md-8">
-                                    <table class="table table-borderless">
-                                        <tr><td><strong>ID:</strong></td><td>#${user.id}</td></tr>
-                                        <tr><td><strong>Email:</strong></td><td>${user.email}</td></tr>
-                                        <tr><td><strong>Số điện thoại:</strong></td><td>${user.phone || 'Chưa cập nhật'}</td></tr>
-                                        <tr><td><strong>Vai trò:</strong></td><td>${user.role}</td></tr>
-                                        <tr><td><strong>Giới tính:</strong></td><td>${user.gender}</td></tr>
-                                        <tr><td><strong>Địa chỉ:</strong></td><td>${user.address || 'Chưa cập nhật'}</td></tr>
-                                    </table>
-                                </div>
-                            </div>
-                        `;
-                            new bootstrap.Modal(document.getElementById('viewUserModal')).show();
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Không thể tải thông tin người dùng');
-                        });
+                // Submit form
+                form.submit();
+            } else {
+                form.classList.add('was-validated');
             }
+        });
+
+        // User management functions
+// Hàm viewUser gốc của bạn
+function viewUser(userId) {
+    const contextPath = '<%= request.getContextPath() %>'; 
+
+    fetch(contextPath + '/userList?action=getUserDetails&id=' + userId)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.error || `Lỗi HTTP: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(userData => { 
+            console.log("📦 Dữ liệu JSON nhận được (biến userData):", userData);
+            // ... (các console.log kiểm tra dữ liệu khác nếu cần)
+
+            const avatarUrl = (userData.avatarUrl && userData.avatarUrl !== "false")
+                ? contextPath + '/' + userData.avatarUrl // Sử dụng nối chuỗi
+                : contextPath + '/images/user/default-avatar.png';
+
+            // ***** ÁP DỤNG PHƯƠNG PHÁP NỐI CHUỖI ĐÃ THÀNH CÔNG *****
+            const userDetailsHtml = 
+                '<div class="row">' +
+                '    <div class="col-md-4 text-center">' +
+                '        <img src="' + avatarUrl + '" class="rounded-circle mb-3" alt="User Avatar" width="100" height="100">' +
+                '        <h5>' + (userData.fullName || 'Không có tên') + '</h5>' +
+                '        <p class="text-muted">@' + (userData.userName || '') + '</p>' +
+                '    </div>' +
+                '    <div class="col-md-8">' +
+                '        <table class="table table-borderless">' +
+                '            <tr><td><strong>ID:</strong></td><td>#' + (userData.id || 'N/A') + '</td></tr>' +
+                '            <tr><td><strong>Email:</strong></td><td>' + (userData.email || 'Chưa cập nhật') + '</td></tr>' +
+                '            <tr><td><strong>Số điện thoại:</strong></td><td>' + (userData.phone || 'Chưa cập nhật') + '</td></tr>' +
+                '            <tr><td><strong>Vai trò:</strong></td><td>' + (userData.role || 'Không xác định') + '</td></tr>' +
+                '            <tr><td><strong>Giới tính:</strong></td><td>' + (userData.gender || 'Chưa cập nhật') + '</td></tr>' +
+                '            <tr><td><strong>Địa chỉ:</strong></td><td>' + (userData.address || 'Chưa cập nhật') + '</td></tr>' +
+                '        </table>' +
+                '    </div>' +
+                '</div>';
+
+            console.log("📝 Chuỗi HTML được tạo ra (nối chuỗi):", userDetailsHtml);
+
+            document.getElementById('userDetails').innerHTML = userDetailsHtml;
+            new bootstrap.Modal(document.getElementById('viewUserModal')).show();
+        })
+        .catch(error => {
+            console.error('❌ Error khi lấy dữ liệu:', error);
+            alert(`Lỗi: ${error.message || 'Không thể tải thông tin người dùng.'}`);
+        });
+}
 
             function editUser(userId) {
                 window.location.href = 'editUser?id=' + userId;
@@ -700,7 +720,7 @@
                 form.reset();
                 form.classList.remove('was-validated');
                 document.getElementById('avatarPreview').src = '${pageContext.request.contextPath}/images/default-avatar.png';
-                
+
                 // Reset save button
                 const saveBtn = document.getElementById('saveUserBtn');
                 saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Lưu người dùng';

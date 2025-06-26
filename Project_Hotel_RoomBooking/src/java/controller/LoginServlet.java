@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import valid.InputValidator;
+import valid.Encrypt;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,16 +38,17 @@ public class LoginServlet extends HttpServlet {
         String rememberMe = request.getParameter("rememberMe");
 
         UserDao userdao = new UserDao();
-        User user;
+        User user = null;
 
-        if (stringlog != null && !stringlog.trim().isEmpty()) {
+        if (stringlog != null && !stringlog.trim().isEmpty() && password != null) {
+            String encryptedPassword = Encrypt.encrypt(password); // 🔐 mã hóa mật khẩu nhập vào
 
             if (InputValidator.isValidPhone(stringlog)) {
-                user = userdao.loginByPhone(stringlog, password);
+                user = userdao.loginByPhone(stringlog, encryptedPassword);
             } else if (InputValidator.isValidEmail(stringlog)) {
-                user = userdao.loginByEmail(stringlog, password);
+                user = userdao.loginByEmail(stringlog, encryptedPassword);
             } else {
-                user = userdao.loginByUsername(stringlog, password);
+                user = userdao.loginByUsername(stringlog, encryptedPassword);
             }
 
             if (user != null) {

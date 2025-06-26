@@ -4,6 +4,7 @@
  */
 package controller.admin;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,10 +16,6 @@ import java.util.Map;
 import dao.UserDao;
 import model.User;
 
-/**
- *
- * @author Phạm Quốc Tuấn
- */
 @WebServlet(name = "userList", urlPatterns = {"/userList"})
 public class userList extends HttpServlet {
 
@@ -58,6 +55,43 @@ public class userList extends HttpServlet {
             }
 
             request.setAttribute("userList", userList);
+        } else if ("getUserDetails".equals(action)) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                User userData = userDao.getUserById(id);
+
+                if (userData == null) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("{\"error\": \"Không tìm thấy người dùng.\"}");
+                    return; // ❗ BẮT BUỘC
+                }
+
+                // Xóa dữ liệu nhạy cảm
+                userData.setPass(null);
+                userData.setDeleted(false);
+                userData.setBirth(null);
+
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                new Gson().toJson(userData, response.getWriter());
+
+                return; // ❗ BẮT BUỘC
+
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"error\": \"ID không hợp lệ.\"}");
+                return; // ❗ BẮT BUỘC
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"error\": \"Đã xảy ra lỗi khi lấy thông tin người dùng.\"}");
+                return; // ❗ BẮT BUỘC
+            }
 
         } else if ("delete".equals(action)) {
             // Xóa người dùng
@@ -143,10 +177,13 @@ public class userList extends HttpServlet {
 
         // Lấy thống kê cho tất cả các trường hợp
         Map<String, Integer> userStats = userDao.getUserStatistics();
-        request.setAttribute("userStats", userStats);
+
+        request.setAttribute(
+                "userStats", userStats);
 
         // Chuyển tiếp tới trang JSP để hiển thị
-        request.getRequestDispatcher("admin/users.jsp").forward(request, response);
+        request.getRequestDispatcher(
+                "admin/users.jsp").forward(request, response);
     }
 
     @Override
