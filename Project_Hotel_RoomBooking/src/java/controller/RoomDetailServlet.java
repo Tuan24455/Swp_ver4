@@ -2,7 +2,7 @@ package controller;
 
 import dao.RoomDao;
 import java.io.IOException;
-import java.util.List;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,31 +16,29 @@ public class RoomDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//        PrintWriter out = response.getWriter();
+        String sid = request.getParameter("id");
+        if (sid == null || sid.trim().isEmpty()) {
+            response.sendRedirect("home");
+            return;
+        }
         try {
-            // Get room ID from request parameter
-            String roomId = request.getParameter("id");
-            if (roomId == null || roomId.trim().isEmpty()) {
-                response.sendRedirect("home");
-                return;
-            }
-
+            int id = Integer.parseInt(sid);
             RoomDao roomDAO = new RoomDao();
-            Room room = roomDAO.getRoomById(Integer.parseInt(roomId));
-            
+            Room room = roomDAO.getRoomById(id);
+
             if (room == null) {
-                response.sendRedirect("home");
+                response.sendRedirect("error.jsp?message=Room not found");
                 return;
             }
 
             request.setAttribute("room", room);
-            request.getRequestDispatcher("/customer/room-detail.jsp").forward(request, response);
-            
+            request.getRequestDispatcher("room-detail.jsp").forward(request, response);
         } catch (NumberFormatException e) {
-            response.sendRedirect("home");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("error.jsp?message=Invalid room ID");
+            return;
         }
+
     }
 
     @Override
@@ -50,7 +48,7 @@ public class RoomDetailServlet extends HttpServlet {
         String roomId = request.getParameter("roomId");
         String checkIn = request.getParameter("checkIn");
         String checkOut = request.getParameter("checkOut");
-        
+
         // TODO: Add booking logic here
         // For now, redirect back to the room detail page
         response.sendRedirect("room-detail?id=" + roomId);

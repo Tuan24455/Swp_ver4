@@ -269,6 +269,8 @@ public class RoomDao {
             str += (char) (fstr.charAt(i) - (fstr.length() - i));
         }
         System.out.println(str);
+        
+        System.out.println(dao.getRoomById(2).toString());
     }
 
     public List<Room> filterRoomsAdvanced(List<Integer> typeIds, Double priceFrom, Double priceTo, Integer capacity, String sortOrder) {
