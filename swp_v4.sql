@@ -167,13 +167,13 @@ CREATE TABLE Transactions (
 INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url) 
 VALUES 
 -- password gốc: password123
-('nguyenminhquan', 'q5tcb63SSYLuZb5eX0ltbA==', N'Nguyễn Minh Quân', '1990-05-15', 'Male', 'quan.nguyen@email.com', '0123456789', N'123 Đường ABC, Hà Nội', 'Customer', 'https://avatar.url'),
+('nguyenminhquan', 'q5tcb63SSYLuZb5eX0ltbA==', N'Nguyễn Minh Quân', '1990-05-15', 'Male', 'quan.nguyen@email.com', '0123456789', N'123 Đường ABC, Hà Nội', 'Customer', 'images/user/default_avatar.png'),
 
 -- password gốc: password456
-('tranthithuy', 'OFvwS0UtlUn9k2qYqH/8gQ==', N'Trần Thị Thúy', '1985-08-25', 'Female', 'thuy.tran@email.com', '0123456780', N'456 Đường XYZ, TP.HCM', 'Admin', 'https://avatar.url'),
+('tranthithuy', 'OFvwS0UtlUn9k2qYqH/8gQ==', N'Trần Thị Thúy', '1985-08-25', 'Female', 'thuy.tran@email.com', '0123456780', N'456 Đường XYZ, TP.HCM', 'Admin', 'images/user/default_avatar.png'),
 
 -- password gốc: password123
-('lequangthang', 'q5tcb63SSYLuZb5eX0ltbA==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'https://avatar.url');
+('lequangthang', 'q5tcb63SSYLuZb5eX0ltbA==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'images/user/default_avatar.png');
 
 -- Dữ liệu cho bảng RoomTypes
 INSERT INTO RoomTypes (room_type) 
