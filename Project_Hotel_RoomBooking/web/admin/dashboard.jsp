@@ -493,7 +493,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <i class="fas fa-chart-bar me-2"></i>Báo Cáo & Phân Tích
                     </a>
                     <a
-                      href="stockreport.jsp"
+                      href="#"
                       class="btn btn-outline-secondary quick-action-btn"
                     >
                       <i class="fas fa-box me-2"></i>Kiểm Tra Kho

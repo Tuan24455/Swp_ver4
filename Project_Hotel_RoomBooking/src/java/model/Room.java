@@ -9,6 +9,7 @@ package model;
  * @author Phạm Quốc Tuấn
  */
 public class Room {
+
     private int id;
     private String roomNumber;
     private int roomTypeId;
@@ -34,9 +35,6 @@ public class Room {
         this.imageUrl = imageUrl;
         this.floor = floor;
     }
-    
-
-    
 
     public int getId() {
         return id;
@@ -125,4 +123,10 @@ public class Room {
     public void setRoomTypeName(String roomTypeName) {
         this.roomTypeName = roomTypeName;
     }
+
+    @Override
+    public String toString() {
+        return "Room{" + "id=" + id + ", roomNumber=" + roomNumber + ", roomTypeId=" + roomTypeId + ", roomTypeName=" + roomTypeName + ", roomPrice=" + roomPrice + ", roomStatus=" + roomStatus + ", capacity=" + capacity + ", description=" + description + ", imageUrl=" + imageUrl + ", floor=" + floor + ", isDeleted=" + isDeleted + '}';
+    }
+
 }

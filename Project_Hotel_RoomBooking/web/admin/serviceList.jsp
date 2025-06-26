@@ -87,10 +87,11 @@
                         <div class="col-md-3">
                             <label class="form-label">Loại Dịch Vụ</label>
                             <select class="form-select" name="status">
-                                <option value="" ${paramStatus == null ? 'selected' : ''}>All Status</option>
-                                <option value="active" ${paramStatus == 'active' ? 'selected' : ''}>Active</option>
-                                <option value="expired" ${paramStatus == 'expired' ? 'selected' : ''}>Expired</option>
-                                <option value="upcoming" ${paramStatus == 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                                <option value="" ${paramStatus == null ? 'selected' : ''}>Tất Cả</option>
+                                <option value="Restaurant"${paramStatus == 'active' ? 'selected' : ''}>Nhà Hàng</option>
+                                <option value="Spa" ${paramStatus == 'expired' ? 'selected' : ''}>Spa</option>
+                                <option value="Gym" ${paramStatus == 'upcoming' ? 'selected' : ''}>Gym</option>
+                                <option value="Shuttle" ${paramStatus == 'upcoming' ? 'selected' : ''}>Di Chuyển</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -151,10 +152,10 @@
                             <table class="table table-striped table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>Percentage (%)</th>
-                                        <th>Start Date</th>
+                                        <th>Loại Dịch Vụ</th>
+                                        <th>Tên Dịch Vụ</th>
+                                        <th>Ảnh (%)</th>
+                                        <th>Giá</th>
                                         <th>End Date</th>
                                         <th>Description</th>
                                         <th>Actions</th>
