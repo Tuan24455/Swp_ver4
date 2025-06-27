@@ -302,19 +302,24 @@ body {
 
 .amenities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
   margin-top: 25px;
+  max-width: 100%;
 }
 
 .amenity-item {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 12px;
   background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
   border-radius: var(--border-radius);
   transition: var(--transition);
   cursor: pointer;
+  height: 70px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .amenity-item:hover {
@@ -322,11 +327,31 @@ body {
   box-shadow: var(--shadow-hover);
 }
 
+.amenity-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 45px;
+  width: 45px;
+  height: 45px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
 .amenity-item i {
   font-size: 1.8rem;
-  margin-right: 15px;
   color: var(--success-color);
   animation: pulse 2s infinite;
+}
+
+.amenity-item span {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  color: var(--dark-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @keyframes pulse {
