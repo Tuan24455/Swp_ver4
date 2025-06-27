@@ -138,7 +138,7 @@
                 <div class="col-12">
                     <div class="room-description">
                         <h2 class="section-title">Mô tả phòng</h2>
-                        <p class="description-text">${room.description}</p>
+                        <p class="description-text">${room.description}</p> <!-- Tuấn: dùng thẻ C để mở > -->
                     </div>
                 </div>
             </div>
