@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,13 +54,12 @@ public class RoomDao {
 
     // Lấy thông tin phòng theo ID
     public Room getRoomById(int id) {
-        String sql = "SELECT r.*, rt.room_type AS room_type_name " +
-                    "FROM Rooms r " +
-                    "JOIN RoomTypes rt ON r.room_type_id = rt.id " +
-                    "WHERE r.id = ? AND r.isDelete = 0";
+        String sql = "SELECT r.*, rt.room_type AS room_type_name "
+                + "FROM Rooms r "
+                + "JOIN RoomTypes rt ON r.room_type_id = rt.id "
+                + "WHERE r.id = ? AND r.isDelete = 0";
 
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -269,19 +269,19 @@ public class RoomDao {
             str += (char) (fstr.charAt(i) - (fstr.length() - i));
         }
         System.out.println(str);
-        
+
         System.out.println(dao.getRoomById(2).toString());
     }
 
-    public List<Room> filterRoomsAdvanced(List<Integer> typeIds, Double priceFrom, Double priceTo, Integer capacity, String sortOrder) {
+    public List<Room> filterRoomsAdvanced(List<Integer> typeIds, Double priceFrom, Double priceTo, Integer capacity,
+            String sortOrder, Date fromDate, Date toDate) {
         List<Room> rooms = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT r.*, rt.room_type AS room_type_name "
                 + "FROM Rooms r JOIN RoomTypes rt ON r.room_type_id = rt.id "
-                + "WHERE r.isDelete = 0 "
+                + "WHERE r.isDelete = 0 AND r.room_status != N'Maintenance' "
         );
 
-        // Tạo danh sách điều kiện
         List<Object> params = new ArrayList<>();
 
         if (typeIds != null && !typeIds.isEmpty()) {
@@ -311,11 +311,25 @@ public class RoomDao {
             params.add(capacity);
         }
 
-        // Sắp xếp
+        // Lọc theo ngày nếu có
+        if (fromDate != null && toDate != null) {
+            sql.append(
+                    "AND NOT EXISTS ( "
+                    + "SELECT 1 FROM BookingRoomDetails brd "
+                    + "JOIN Bookings b ON brd.booking_id = b.id "
+                    + "WHERE brd.room_id = r.id "
+                    + "AND b.status IN (N'Pending', N'Confirmed') "
+                    + "AND (? < brd.check_out_date AND ? > brd.check_in_date) "
+                    + ") "
+            );
+            params.add(fromDate);
+            params.add(toDate);
+        }
+
         if ("asc".equalsIgnoreCase(sortOrder)) {
-            sql.append("ORDER BY r.room_price ASC");
+            sql.append("ORDER BY r.room_price ASC ");
         } else if ("desc".equalsIgnoreCase(sortOrder)) {
-            sql.append("ORDER BY r.room_price DESC");
+            sql.append("ORDER BY r.room_price DESC ");
         }
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {

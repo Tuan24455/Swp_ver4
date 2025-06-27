@@ -50,7 +50,7 @@
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-light btn-enhanced" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                                    <i class="fas fa-plus me-2"></i>Thêm người dùng mới
+                                    <i class="fas fa-plus me-2"></i>Thêm nhân viên mới
                                 </button>
                                 <button class="btn btn-outline-light btn-enhanced" onclick="exportUsers()">
                                     <i class="fas fa-download me-2"></i>Xuất Excel
@@ -328,7 +328,7 @@
                                                         <div class="no-data">
                                                             <i class="fas fa-users fa-3x text-muted mb-3"></i>
                                                             <h5 class="text-muted">Không có người dùng nào</h5>
-                                                            <p class="text-muted">Hãy thêm người dùng mới hoặc thay đổi bộ lọc</p>
+                                                            <p class="text-muted">Hãy thêm nhân viên hoặc thay đổi bộ lọc</p>
                                                         </div>
                                                     </td>
                                                 </tr>

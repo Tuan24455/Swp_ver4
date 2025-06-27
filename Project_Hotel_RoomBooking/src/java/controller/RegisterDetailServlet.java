@@ -87,7 +87,7 @@ public class RegisterDetailServlet extends HttpServlet {
                 phone,
                 address,
                 "Customer",
-                "",
+                "images/user/default_avatar.png",
                 false
         );
 
