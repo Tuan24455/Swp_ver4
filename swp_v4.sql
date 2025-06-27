@@ -265,32 +265,42 @@ VALUES
 (4, 4, 3500000, N'Pending', 3, 3),
 (5, 5, 6000000, N'Confirmed', 4, 4);
 
--- Dữ liệu cho bảng BookingRoomDetails
+-- Cập nhật dữ liệu BookingRoomDetails phù hợp và đa dạng hơn
 INSERT INTO BookingRoomDetails (booking_id, room_id, check_in_date, check_out_date, quantity, prices) 
 VALUES 
-(1, 1, '2025-06-05', '2025-06-07', 1, 1000000),
-(2, 2, '2025-06-06', '2025-06-08', 1, 1200000),
-(3, 3, '2025-06-07', '2025-06-09', 2, 1500000),
-(4, 4, '2025-06-10', '2025-06-12', 1, 1600000),
-(5, 5, '2025-06-12', '2025-06-14', 1, 2000000);
+-- Booking 1: Phòng Standard 101
+(5, 1, '2025-06-06', '2025-06-08', 1, 1000000),
+
+-- Booking 2: Phòng Deluxe 102
+(6, 2, '2025-06-08', '2025-06-10', 1, 1200000),
+
+-- Booking 3: Phòng Standard 201 x2
+(7, 3, '2025-06-10', '2025-06-12', 2, 1100000),
+
+-- Booking 4: Phòng Suite 301
+(8, 5, '2025-06-12', '2025-06-14', 1, 1500000),
+
+-- Booking 5: Phòng Tổng thống 401
+(9, 7, '2025-06-15', '2025-06-17', 1, 2000000);
+
 
 -- Dữ liệu cho bảng BookingServiceDetail
 INSERT INTO BookingServiceDetail (booking_id, service_id, quantity, prices) 
 VALUES 
-(1, 1, 1, 200000),
-(2, 2, 1, 500000),
-(3, 3, 1, 150000),
-(4, 4, 1, 300000),
-(5, 5, 1, 80000);
+(5, 1, 1, 200000),
+(6, 2, 1, 500000),
+(7, 3, 1, 150000),
+(8, 4, 1, 300000),
+(9, 5, 1, 80000);
 
 -- Dữ liệu cho bảng Transactions
 INSERT INTO Transactions (booking_id, transaction_date, amount, payment_method, status) 
 VALUES 
-(1, '2025-06-05', 4500000, N'Credit Card', N'Paid'),
-(2, '2025-06-06', 3000000, N'Cash', N'Paid'),
-(3, '2025-06-07', 5000000, N'Credit Card', N'Paid'),
-(4, '2025-06-08', 3500000, N'Cash', N'Pending'),
-(5, '2025-06-09', 6000000, N'Credit Card', N'Paid');
+(5, '2025-06-05', 4500000, N'Credit Card', N'Paid'),
+(6, '2025-06-06', 3000000, N'Cash', N'Paid'),
+(7, '2025-06-07', 5000000, N'Credit Card', N'Paid'),
+(8, '2025-06-08', 3500000, N'Cash', N'Pending'),
+(9, '2025-06-09', 6000000, N'Credit Card', N'Paid');
 
 USE BookingHotel_v4;
 GO

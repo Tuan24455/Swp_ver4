@@ -91,14 +91,14 @@ public class HomeServlet extends HttpServlet {
         }
 
         //VALIDATION ngày nếu có lọc theo ngày
-         Date fromDate = InputValidator.parseDateOrNull(request.getParameter("checkin"));
-         Date toDate = InputValidator.parseDateOrNull(request.getParameter("checkout"));
-         if (!InputValidator.isValidDateRange(fromDate, toDate)) {
-             request.setAttribute("error", "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
-             request.getRequestDispatcher("home.jsp").forward(request, response);
-             return;
-         }
-        List<Room> filteredRooms = dao.filterRoomsAdvanced(typeIds, priceFrom, priceTo, capacity, sortOrder);
+        Date fromDate = InputValidator.parseDateOrNull(request.getParameter("checkin"));
+        Date toDate = InputValidator.parseDateOrNull(request.getParameter("checkout"));
+        if (!InputValidator.isValidDateRange(fromDate, toDate)) {
+            request.setAttribute("error", "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
+            request.getRequestDispatcher("home.jsp").forward(request, response);
+            return;
+        }
+        List<Room> filteredRooms = dao.filterRoomsAdvanced(typeIds, priceFrom, priceTo, capacity, sortOrder, fromDate, toDate);
 
         int pageSize = 9;
         int page = InputValidator.parseIntegerOrDefault(request.getParameter("page"), 1);
