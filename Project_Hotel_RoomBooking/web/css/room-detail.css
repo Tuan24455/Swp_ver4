@@ -26,6 +26,7 @@ body {
   color: var(--dark-text);
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Container Enhancements */
@@ -82,6 +83,7 @@ body {
   border-radius: var(--border-radius);
   height: 450px;
   box-shadow: var(--shadow);
+  max-width: 100%;
 }
 
 .carousel-inner {
@@ -101,15 +103,15 @@ body {
 
 .carousel-control-prev,
 .carousel-control-next {
-  width: 50px;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.9);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
-  border: none;
-  box-shadow: var(--shadow);
-  transition: var(--transition);
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--light-text);
+  z-index: 10;
+  overflow: hidden;
 }
 
 .carousel-control-prev {
@@ -430,6 +432,7 @@ body {
 
 .btn-book {
   width: 100%;
+  max-width: 100%;
   padding: 18px;
   background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
   color: white;
@@ -494,6 +497,20 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .room-detail-section {
+    padding: 20px 10px;
+  }
+
+  .carousel-container {
+    height: auto;
+  }
+
+  .btn-book {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 576px) {
   .carousel-container {
     height: 250px;
@@ -510,6 +527,15 @@ body {
   .detail-item span {
     font-size: 1rem;
   }
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+.row {
+  margin: 0 auto;
 }
 
 /* Loading Animation */
