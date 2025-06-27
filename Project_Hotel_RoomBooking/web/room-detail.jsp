@@ -46,8 +46,14 @@
                 <div class="col-lg-5 col-md-12">
                     <div class="booking-section">
                         <h3 class="booking-title">Đặt phòng ngay</h3>
-                        <form action="booking" method="POST" class="booking-form" novalidate>
+                        <form action="${pageContext.request.contextPath}/bookingDetail.jsp" method="POST" class="booking-form" novalidate>
                             <input type="hidden" name="roomId" value="${room.id}">
+                            <input type="hidden" name="roomNumber" value="${room.roomNumber}">
+                            <input type="hidden" name="roomType" value="${room.roomTypeName}">
+                            <input type="hidden" name="maxGuests" value="${room.capacity}">
+                            <input type="hidden" name="floor" value="${room.floor}">
+                            <input type="hidden" name="pricePerNight" value="${room.roomPrice}">
+                            <input type="hidden" name="imageUrl" value="${room.imageUrl}">
                             <div class="form-group mb-3">
                                 <label for="checkIn" class="form-label">Ngày nhận phòng</label>
                                 <input type="date" class="form-control" id="checkIn" name="checkIn" required>
@@ -97,35 +103,51 @@
                         <h2 class="section-title">Tiện nghi cao cấp</h2>
                         <div class="amenities-grid">
                             <div class="amenity-item">
-                                <i class="fas fa-wifi" aria-hidden="true"></i>
-                                <span>Wifi tốc độ cao miễn phí</span>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-wifi" aria-hidden="true"></i>
+                                </div>
+                                <span>Wifi miễn phí</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-tv" aria-hidden="true"></i>
-                                <span>Smart TV màn hình phẳng</span>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-tv" aria-hidden="true"></i>
+                                </div>
+                                <span>Smart TV</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-snowflake" aria-hidden="true"></i>
-                                <span>Điều hòa nhiệt độ thông minh</span>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-snowflake" aria-hidden="true"></i>
+                                </div>
+                                <span>Điều hòa nhiệt độ</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-bath" aria-hidden="true"></i>
-                                <span>Phòng tắm riêng sang trọng</span>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-bath" aria-hidden="true"></i>
+                                </div>
+                                <span>Phòng tắm riêng</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-coffee" aria-hidden="true"></i>
-                                <span>Mini bar & Máy pha cà phê</span>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-coffee" aria-hidden="true"></i>
+                                </div>
+                                <span>Mini bar & Cà phê</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                                </div>
                                 <span>Dịch vụ phòng 24/7</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-bed" aria-hidden="true"></i>
-                                <span>Nệm cao cấp êm ái</span>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-bed" aria-hidden="true"></i>
+                                </div>
+                                <span>Nệm cao cấp</span>
                             </div>
                             <div class="amenity-item">
-                                <i class="fas fa-door-closed" aria-hidden="true"></i>
+                                <div class="amenity-icon">
+                                    <i class="fas fa-door-closed" aria-hidden="true"></i>
+                                </div>
                                 <span>Két sắt an toàn</span>
                             </div>
                         </div>
@@ -142,69 +164,6 @@
                     </div>
                 </div>
             </div>
-
-                        <div class="room-description">
-                            <h4><i class="fas fa-info-circle"></i> Mô tả phòng</h4>
-                            <p>${room.description}</p>
-                        </div>
-
-                        <div class="room-amenities">
-                            <h4><i class="fas fa-star"></i> Tiện nghi cao cấp</h4>
-                            <div class="amenities-grid">
-                                <div class="amenity-item">
-                                    <i class="fas fa-wifi" aria-hidden="true"></i>
-                                    <span>Wifi tốc độ cao miễn phí</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <i class="fas fa-tv" aria-hidden="true"></i>
-                                    <span>Smart TV màn hình phẳng</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <i class="fas fa-snowflake" aria-hidden="true"></i>
-                                    <span>Điều hòa nhiệt độ thông minh</span>
-                                </div>
-                                <div class="amenity-item">
-                                    <i class="fas fa-bath" aria-hidden="true"></i>
-                                    <span>Phòng tắm riêng sang trọng</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="booking-section">
-                            <h3 class="booking-title"><i class="fas fa-calendar-check"></i> Đặt phòng ngay</h3>
-                            <form action="booking" method="POST" class="booking-form" novalidate>
-                                <input type="hidden" name="roomId" value="${room.id}">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="checkIn" class="form-label">
-                                                <i class="fas fa-calendar-plus"></i> Ngày nhận phòng
-                                            </label>
-                                            <input type="date" class="form-control" id="checkIn" name="checkIn" required aria-describedby="checkInHelp">
-                                            <small id="checkInHelp" class="form-text text-muted">Chọn ngày bạn muốn nhận phòng</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="checkOut" class="form-label">
-                                                <i class="fas fa-calendar-minus"></i> Ngày trả phòng
-                                            </label>
-                                            <input type="date" class="form-control" id="checkOut" name="checkOut" required aria-describedby="checkOutHelp">
-                                            <small id="checkOutHelp" class="form-text text-muted">Chọn ngày bạn muốn trả phòng</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn-book">
-                                    <i class="fas fa-bed"></i> Đặt phòng ngay
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Include Footer -->
     <jsp:include page="customer/includes/footer.jsp" />
 
