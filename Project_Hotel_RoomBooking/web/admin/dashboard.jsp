@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -32,6 +31,14 @@
             <jsp:include page="includes/navbar.jsp" />
 
             <div class="container-fluid py-4">
+                <!-- Error Message -->
+                <c:if test="${not empty errorMessage}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> ${errorMessage}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
+                
                 <!-- Dashboard Header -->
                 <div class="dashboard-header">
                     <div class="row align-items-center">
@@ -41,7 +48,12 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="d-flex justify-content-end gap-2">
-
+                                <button class="btn btn-primary btn-sm" onclick="refreshData()">
+                                    <i class="fas fa-sync-alt"></i> Làm mới
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="exportReport()">
+                                    <i class="fas fa-download"></i> Xuất báo cáo
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -57,10 +69,12 @@
                                     <div class="kpi-icon bg-primary bg-opacity-10">
                                         <i class="fas fa-dollar-sign text-primary"></i>
                                     </div>
-                                    <h3 class="h4 mb-1">15.8 tỷ VND</h3>
+                                    <h3 class="h4 mb-1">${totalRevenue}</h3>
                                     <p class="text-muted mb-2">Tổng Doanh Thu</p>
                                     <div class="d-flex align-items-center">
-
+                                        <c:if test="${dashboardLoaded}">
+                                            <small class="text-success"><i class="fas fa-arrow-up"></i> Đã cập nhật</small>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -75,30 +89,29 @@
                                     <div class="kpi-icon bg-success bg-opacity-10">
                                         <i class="fas fa-bed text-success"></i>
                                     </div>
-                                    <h3 class="h4 mb-1">120/153 phòng</h3>
+                                    <h3 class="h4 mb-1">${occupancyRate}%</h3>
                                     <p class="text-muted mb-2">Tỷ Lệ Lấp Đầy</p>
                                     <div class="d-flex align-items-center">
-                                        <small class="text-success">
-                                            <i class="fas fa-arrow-up me-1"></i>85.2%
-                                        </small>
+                                        <small class="text-muted">${occupiedRooms}/${occupiedRooms + vacantRooms} phòng</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tổng Đặt Phòng -->
+                    <!-- Tổng Phòng -->
                     <div class="col-xl-3 col-md-6">
                         <div class="kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <div class="kpi-icon bg-info bg-opacity-10">
-                                        <i class="fas fa-calendar-check text-info"></i>
+                                        <i class="fas fa-door-open text-info"></i>
                                     </div>
-                                    <h3 class="h4 mb-1">3,650</h3>
-                                    <p class="text-muted mb-2">Đặt Phòng Tháng</p>
+                                    <h3 class="h4 mb-1">${totalRooms}</h3>
+                                    <p class="text-muted mb-2">Tổng Số Phòng</p>
                                     <div class="d-flex align-items-center">
-
+                                        <small class="text-success me-2">${occupiedRooms} đang sử dụng</small>
+                                        <small class="text-warning">${vacantRooms} trống</small>
                                     </div>
                                 </div>
                             </div>
@@ -113,10 +126,12 @@
                                     <div class="kpi-icon bg-warning bg-opacity-10">
                                         <i class="fas fa-star text-warning"></i>
                                     </div>
-                                    <h3 class="h4 mb-1">4.8/5</h3>
+                                    <h3 class="h4 mb-1">${averageRating}</h3>
                                     <p class="text-muted mb-2">Đánh Giá Trung Bình</p>
                                     <div class="d-flex align-items-center">
-
+                                        <c:if test="${dashboardLoaded}">
+                                            <small class="text-success"><i class="fas fa-check-circle"></i> Cập nhật</small>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -160,19 +175,19 @@
                                 <div class="row text-center">
                                     <div class="col-4">
                                         <div class="text-success">
-                                            <strong>120</strong>
+                                            <strong>${occupiedRooms}</strong>
                                             <small class="d-block text-muted">Đã Đặt</small>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="text-primary">
-                                            <strong>25</strong>
+                                            <strong>${vacantRooms}</strong>
                                             <small class="d-block text-muted">Trống</small>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="text-warning">
-                                            <strong>8</strong>
+                                            <strong>${maintenanceRooms}</strong>
                                             <small class="d-block text-muted">Bảo Trì</small>
                                         </div>
                                     </div>
@@ -362,6 +377,29 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Additional Stats Row -->
+                <div class="row g-4">
+                    <!-- Monthly Performance -->
+                    <div class="col-xl-6">
+                        <div class="chart-card">
+                            <h5 class="card-title mb-3">Hiệu Suất Theo Tháng</h5>
+                            <div class="chart-container" style="height: 250px;">
+                                <canvas id="monthlyPerformanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Services -->
+                    <div class="col-xl-6">
+                        <div class="chart-card">
+                            <h5 class="card-title mb-3">Dịch Vụ Phổ Biến</h5>
+                            <div class="chart-container" style="height: 250px;">
+                                <canvas id="servicesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -382,7 +420,21 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom Dashboard JavaScript -->
-    <script src="${pageContext.request.contextPath}/admin/js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+    
+    <script>
+        // Initialize room status chart with server data after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for dashboard.js to initialize charts, then update with server data
+            setTimeout(() => {
+                if (window.initRoomStatusWithServerData) {
+                    window.initRoomStatusWithServerData(${occupiedRooms}, ${vacantRooms}, ${maintenanceRooms});
+                }
+            }, 500);
+        });
+
+
+    </script>
 </body>
 </html>
