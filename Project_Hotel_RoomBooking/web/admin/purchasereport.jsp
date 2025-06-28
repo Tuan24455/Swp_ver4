@@ -46,7 +46,7 @@
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Tổng Phòng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">150</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${totalRooms}</h2>
                   <p class="card-text text-info">
                     <i class="fas fa-building me-1"></i> Tổng số phòng khách sạn
                   </p>
@@ -57,9 +57,12 @@
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Dùng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">117</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${occupiedRooms}</h2>
                   <p class="card-text text-success">
-                    <i class="fas fa-user-check me-1"></i> 78% tỷ lệ lấp đầy
+                    <i class="fas fa-user-check me-1"></i> 
+                    <c:if test="${totalRooms > 0}">
+                      <fmt:formatNumber value="${(occupiedRooms / totalRooms) * 100}" maxFractionDigits="0"/>% tỷ lệ lấp đầy
+                    </c:if>
                   </p>
                 </div>
               </div>
@@ -68,7 +71,7 @@
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Phòng Trống</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">28</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${availableRooms}</h2>
                   <p class="card-text text-primary">
                     <i class="fas fa-door-open me-1"></i> Sẵn sàng cho khách
                   </p>
@@ -79,7 +82,7 @@
               <div class="card kpi-card shadow-sm">
                 <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Sửa Chữa</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">5</h2>
+                  <h2 class="card-title display-6 fw-bold mb-1">${maintenanceRooms}</h2>
                   <p class="card-text text-warning">
                     <i class="fas fa-tools me-1"></i> Đang bảo trì
                   </p>
@@ -87,6 +90,8 @@
               </div>
             </div>
           </div>
+
+          <!-- Additional Services Analysis -->
 
           <!-- Additional Services Analysis -->
           <div class="row g-4 mb-4">
