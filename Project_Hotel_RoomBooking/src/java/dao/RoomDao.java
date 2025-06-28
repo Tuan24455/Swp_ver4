@@ -180,6 +180,47 @@ public class RoomDao {
         return statusCounts;
     }
 
+    // Lấy tổng số phòng (không bao gồm phòng đã xóa)
+    public int getTotalRooms() {
+        String sql = "SELECT COUNT(*) AS total FROM Rooms WHERE isDelete = 0";
+        
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+
+    // Lấy số phòng theo trạng thái cụ thể
+    public int getRoomCountByStatus(String status) {
+        String sql = "SELECT COUNT(*) AS total FROM Rooms WHERE room_status = ? AND isDelete = 0";
+        
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, status);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("total");
+                }
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+
     public List<RoomType> getAllRoomTypes() {
         List<RoomType> roomTypes = new ArrayList<>();
         // Câu lệnh SQL để chọn ID và tên loại phòng từ bảng RoomTypes
