@@ -1,748 +1,388 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
-prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bảng Điều Khiển - Hệ Thống Quản Lý Khách Sạn</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      href="${pageContext.request.contextPath}/css/style.css"
-      rel="stylesheet"
-    />
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hệ Thống Quản Lý Khách Sạn</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-      .kpi-card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        border: none;
-        border-radius: 12px;
-      }
-      .kpi-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-      }
-      .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-      }
-      .chart-container {
-        position: relative;
-        height: 350px;
-      }
-      .table-actions .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-      }
-      .status-badge {
-        font-size: 0.75rem;
-        padding: 0.35rem 0.65rem;
-      }
-      .quick-action-btn {
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        transition: all 0.2s ease;
-      }
-      .quick-action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-      .page-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-      }
-      .breadcrumb {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-      }
-      .breadcrumb-item a {
-        color: rgba(255, 255, 255, 0.8);
-        text-decoration: none;
-      }
-      .breadcrumb-item.active {
-        color: white;
-      }
-    </style>
-  </head>
-  <body>
+    <!-- Custom CSS -->
+    <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/admin-dashboard.css" rel="stylesheet">
+</head>
+<body>
     <div class="d-flex" id="wrapper">
-      <jsp:include page="includes/sidebar.jsp">
-        <jsp:param name="activePage" value="dashboard" />
-      </jsp:include>
+        <!-- Sidebar -->
+        <jsp:include page="includes/sidebar.jsp">
+            <jsp:param name="activePage" value="dashboard" />
+        </jsp:include>
 
-      <!-- Main Content -->
-      <div id="page-content-wrapper" class="flex-fill">
-        <!-- Top Navigation -->
-        <jsp:include page="includes/navbar.jsp" />
+        <!-- Main Content -->
+        <div id="page-content-wrapper" class="flex-fill">
+            <!-- Top Navigation -->
+            <jsp:include page="includes/navbar.jsp" />
 
-        <div class="container-fluid py-4">
-          <!-- Page Header -->
-          <div class="page-header">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h1 class="h2 mb-2">Tổng Quan Bảng Điều Khiển</h1>
-                <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                      <a href="#"><i class="fas fa-home me-1"></i>Trang Chủ</a>
-                    </li>
-                    <li class="breadcrumb-item active">Bảng Điều Khiển</li>
-                  </ol>
-                </nav>
-              </div>
-              <div class="btn-group">
-                <button class="btn btn-light" onclick="exportReport()">
-                  <i class="fas fa-download me-2"></i>Xuất Báo Cáo
-                </button>
-                <button class="btn btn-light" onclick="refreshData()">
-                  <i class="fas fa-sync-alt me-2"></i>Làm Mới
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Summary Cards -->
-          <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm h-100">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="card-subtitle text-muted mb-2">
-                        Tổng Doanh Thu
-                      </h6>
-                      <h2 class="display-6 fw-bold mb-1">$125,000</h2>
-                      <p class="text-success mb-0">
-                        <i class="fas fa-arrow-up me-1"></i>15.3%
-                        <span class="text-muted ms-1">so với tháng trước</span>
-                      </p>
-                    </div>
-                    <div class="stat-icon bg-primary bg-opacity-10">
-                      <i class="fas fa-dollar-sign text-primary"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm h-100">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="card-subtitle text-muted mb-2">
-                        Tỷ Lệ Lấp Đầy
-                      </h6>
-                      <h2 class="display-6 fw-bold mb-1">80%</h2>
-                      <p class="text-success mb-0">
-                        <i class="fas fa-arrow-up me-1"></i>5.2%
-                        <span class="text-muted ms-1">so với tuần trước</span>
-                      </p>
-                    </div>
-                    <div class="stat-icon bg-success bg-opacity-10">
-                      <i class="fas fa-bed text-success"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm h-100">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="card-subtitle text-muted mb-2">
-                        Đặt Phòng Mới
-                      </h6>
-                      <h2 class="display-6 fw-bold mb-1">385</h2>
-                      <p class="text-success mb-0">
-                        <i class="fas fa-arrow-up me-1"></i>8.1%
-                        <span class="text-muted ms-1">so với hôm qua</span>
-                      </p>
-                    </div>
-                    <div class="stat-icon bg-info bg-opacity-10">
-                      <i class="fas fa-calendar-check text-info"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm h-100">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <h6 class="card-subtitle text-muted mb-2">
-                        Đánh Giá Của Khách
-                      </h6>
-                      <h2 class="display-6 fw-bold mb-1">4.8/5</h2>
-                      <p class="text-success mb-0">
-                        <i class="fas fa-arrow-up me-1"></i>0.3
-                        <span class="text-muted ms-1">so với tháng trước</span>
-                      </p>
-                    </div>
-                    <div class="stat-icon bg-warning bg-opacity-10">
-                      <i class="fas fa-star text-warning"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Charts Row -->
-          <div class="row g-4 mb-4">
-            <div class="col-lg-8">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <h5 class="mb-0">
-                      <i class="fas fa-chart-line me-2 text-primary"></i>Phân Tích Doanh Thu
-                    </h5>
-                    <div class="btn-group btn-group-sm">
-                      <button
-                        class="btn btn-outline-secondary"
-                        onclick="updateChart('weekly')"
-                      >
-                        Hàng Tuần
-                      </button>
-                      <button
-                        class="btn btn-outline-secondary active"
-                        onclick="updateChart('monthly')"
-                      >
-                        Hàng Tháng
-                      </button>
-                      <button
-                        class="btn btn-outline-secondary"
-                        onclick="updateChart('yearly')"
-                      >
-                        Hàng Năm
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="chart-container">
-                    <canvas id="revenueChart"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-chart-pie me-2 text-success"></i>Tổng Quan Trạng Thái Phòng
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="chart-container">
-                    <canvas id="roomStatusChart"></canvas>
-                  </div>
-                  <div class="mt-3">
-                    <div class="row text-center">
-                      <div class="col-6">
-                        <div class="border-end">
-                          <h6 class="text-success mb-1">120</h6>
-                          <small class="text-muted">Đã có khách</small>
+            <div class="container-fluid py-4">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h2 mb-2">Dashboard Quản Lý Khách Sạn</h1>
+                            <p class="mb-0 opacity-75">Tổng quan hoạt động kinh doanh và vận hành khách sạn</p>
                         </div>
-                      </div>
-                      <div class="col-6">
-                        <h6 class="text-primary mb-1">30</h6>
-                        <small class="text-muted">Phòng trống</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                        <div class="col-md-4 text-end">
+                            <div class="d-flex justify-content-end gap-2">
 
-          <!-- Recent Bookings and Quick Actions -->
-          <div class="row g-4">
-            <div class="col-lg-8">
-              <div class="card shadow-sm">
-                <div class="card-header bg-white border-bottom py-3">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <h5 class="mb-0">
-                      <i class="fas fa-calendar-alt me-2 text-info"></i>Đặt Phòng Gần Đây
-                    </h5>
-                    <a href="${pageContext.request.contextPath}/admin/bookings.jsp" class="btn btn-sm btn-primary">
-                      <i class="fas fa-eye me-1"></i>Xem Tất Cả
-                    </a>
-                  </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                      <thead class="table-light">
-                        <tr>
-                          <th>Khách</th>
-                          <th>Loại Phòng</th>
-                          <th>Nhận Phòng</th>
-                          <th>Trả Phòng</th>
-                          <th>Trạng Thái</th>
-                          <th>Hành Động</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div
-                                class="bg-primary bg-opacity-10 rounded-circle p-2 me-3"
-                              >
-                                <i class="fas fa-user text-primary"></i>
-                              </div>
-                              <div>
-                                <h6 class="mb-0">John Smith</h6>
-                                <small class="text-muted">ID: #12345</small>
-                              </div>
+
+                <!-- KPI Cards -->
+                <div class="row g-4 mb-4">
+                    <!-- Tổng Doanh Thu -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="kpi-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="kpi-icon bg-primary bg-opacity-10">
+                                        <i class="fas fa-dollar-sign text-primary"></i>
+                                    </div>
+                                    <h3 class="h4 mb-1">15.8 tỷ VND</h3>
+                                    <p class="text-muted mb-2">Tổng Doanh Thu</p>
+                                    <div class="d-flex align-items-center">
+
+                                    </div>
+                                </div>
                             </div>
-                          </td>
-                          <td>
-                            <span class="badge bg-light text-dark"
-                              >Deluxe Room</span
-                            >
-                          </td>
-                          <td>25/05/2025</td>
-                          <td>28/05/2025</td>
-                          <td>
-                            <span class="badge bg-success status-badge"
-                              >Đã xác nhận</span
-                            >
-                          </td>
-                          <td>
-                            <div class="table-actions">
-                              <button
-                                class="btn btn-sm btn-outline-primary me-1"
-                                title="Xem chi tiết"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-warning me-1"
-                                title="Chỉnh sửa"
-                              >
-                                <i class="fas fa-edit"></i>
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-danger"
-                                title="Hủy bỏ"
-                              >
-                                <i class="fas fa-times"></i>
-                              </button>
+                        </div>
+                    </div>
+
+                    <!-- Tỷ Lệ Lấp Đầy -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="kpi-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="kpi-icon bg-success bg-opacity-10">
+                                        <i class="fas fa-bed text-success"></i>
+                                    </div>
+                                    <h3 class="h4 mb-1">120/153 phòng</h3>
+                                    <p class="text-muted mb-2">Tỷ Lệ Lấp Đầy</p>
+                                    <div class="d-flex align-items-center">
+                                        <small class="text-success">
+                                            <i class="fas fa-arrow-up me-1"></i>85.2%
+                                        </small>
+                                    </div>
+                                </div>
                             </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div
-                                class="bg-primary bg-opacity-10 rounded-circle p-2 me-3"
-                              >
-                                <i class="fas fa-user text-primary"></i>
-                              </div>
-                              <div>
-                                <h6 class="mb-0">Maria Garcia</h6>
-                                <small class="text-muted">ID: #12346</small>
-                              </div>
+                        </div>
+                    </div>
+
+                    <!-- Tổng Đặt Phòng -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="kpi-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="kpi-icon bg-info bg-opacity-10">
+                                        <i class="fas fa-calendar-check text-info"></i>
+                                    </div>
+                                    <h3 class="h4 mb-1">3,650</h3>
+                                    <p class="text-muted mb-2">Đặt Phòng Tháng</p>
+                                    <div class="d-flex align-items-center">
+
+                                    </div>
+                                </div>
                             </div>
-                          </td>
-                          <td>
-                            <span class="badge bg-light text-dark"
-                              >Phòng Suite</span
-                            >
-                          </td>
-                          <td>26/05/2025</td>
-                          <td>30/05/2025</td>
-                          <td>
-                            <span class="badge bg-warning status-badge"
-                              >Đang chờ</span
-                            >
-                          </td>
-                          <td>
-                            <div class="table-actions">
-                              <button
-                                class="btn btn-sm btn-outline-primary me-1"
-                                title="Xem chi tiết"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-warning me-1"
-                                title="Chỉnh sửa"
-                              >
-                                <i class="fas fa-edit"></i>
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-danger"
-                                title="Hủy bỏ"
-                              >
-                                <i class="fas fa-times"></i>
-                              </button>
+                        </div>
+                    </div>
+
+                    <!-- Đánh Giá Trung Bình -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="kpi-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="kpi-icon bg-warning bg-opacity-10">
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                    <h3 class="h4 mb-1">4.8/5</h3>
+                                    <p class="text-muted mb-2">Đánh Giá Trung Bình</p>
+                                    <div class="d-flex align-items-center">
+
+                                    </div>
+                                </div>
                             </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <div
-                                class="bg-primary bg-opacity-10 rounded-circle p-2 me-3"
-                              >
-                                <i class="fas fa-user text-primary"></i>
-                              </div>
-                              <div>
-                                <h6 class="mb-0">David Johnson</h6>
-                                <small class="text-muted">ID: #12347</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="badge bg-light text-dark"
-                              >Phòng Standard</span
-                            >
-                          </td>
-                          <td>27/05/2025</td>
-                          <td>29/05/2025</td>
-                          <td>
-                            <span class="badge bg-success status-badge"
-                              >Đã xác nhận</span
-                            >
-                          </td>
-                          <td>
-                            <div class="table-actions">
-                              <button
-                                class="btn btn-sm btn-outline-primary me-1"
-                                title="Xem chi tiết"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-warning me-1"
-                                title="Chỉnh sửa"
-                              >
-                                <i class="fas fa-edit"></i>
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-danger"
-                                title="Hủy bỏ"
-                              >
-                                <i class="fas fa-times"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+
+                <!-- Charts Row -->
+                <div class="row g-4 mb-4">
+                    <!-- Revenue Chart -->
+                    <div class="col-xl-8">
+                        <div class="chart-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Phân Tích Doanh Thu & Đặt Phòng</h5>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary btn-period active" onclick="updateChart('weekly')">
+                                        Tuần
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary btn-period" onclick="updateChart('monthly')">
+                                        Tháng
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary btn-period" onclick="updateChart('yearly')">
+                                        Năm
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room Status Chart -->
+                    <div class="col-xl-4">
+                        <div class="chart-card">
+                            <h5 class="card-title mb-3">Trạng Thái Phòng</h5>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="roomStatusChart"></canvas>
+                            </div>
+                            <div class="mt-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="text-success">
+                                            <strong>120</strong>
+                                            <small class="d-block text-muted">Đã Đặt</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-primary">
+                                            <strong>25</strong>
+                                            <small class="d-block text-muted">Trống</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-warning">
+                                            <strong>8</strong>
+                                            <small class="d-block text-muted">Bảo Trì</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats & Recent Activity -->
+                <div class="row g-4 mb-4">
+                    <!-- Quick Stats -->
+                    <div class="col-xl-4">
+                        <div class="quick-stats">
+                            <h5 class="mb-3">Thống Kê Nhanh</h5>
+                            
+                            <!-- Check-in Today -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="mb-1">Check-in Hôm Nay</h6>
+                                    <small class="text-muted">45 khách</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-primary">45</span>
+                                </div>
+                            </div>
+                            <div class="progress progress-custom mb-3">
+                                <div class="progress-bar bg-primary" style="width: 75%"></div>
+                            </div>
+
+                            <!-- Check-out Today -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="mb-1">Check-out Hôm Nay</h6>
+                                    <small class="text-muted">38 khách</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-success">38</span>
+                                </div>
+                            </div>
+                            <div class="progress progress-custom mb-3">
+                                <div class="progress-bar bg-success" style="width: 63%"></div>
+                            </div>
+
+                            <!-- Pending Requests -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="mb-1">Yêu Cầu Chờ Xử Lý</h6>
+                                    <small class="text-muted">12 yêu cầu</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-warning">12</span>
+                                </div>
+                            </div>
+                            <div class="progress progress-custom mb-3">
+                                <div class="progress-bar bg-warning" style="width: 20%"></div>
+                            </div>
+
+                            <!-- Staff on Duty -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Nhân Viên Trực</h6>
+                                    <small class="text-muted">28/32 nhân viên</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-info">28</span>
+                                </div>
+                            </div>
+                            <div class="progress progress-custom">
+                                <div class="progress-bar bg-info" style="width: 87.5%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings -->
+                    <div class="col-xl-8">
+                        <div class="table-card">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Đặt Phòng Gần Đây</h5>
+                                    <a href="bookings.jsp" class="btn btn-sm btn-outline-primary">Xem Tất Cả</a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Mã Đặt</th>
+                                                <th>Khách Hàng</th>
+                                                <th>Phòng</th>
+                                                <th>Check-in</th>
+                                                <th>Trạng Thái</th>
+                                                <th>Tổng Tiền</th>
+                                                <th>Thao Tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>#BK001</strong></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-user text-primary"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="fw-semibold">Nguyễn Văn A</div>
+                                                            <small class="text-muted">nguyenvana@email.com</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Deluxe 101</td>
+                                                <td>25/12/2024</td>
+                                                <td><span class="status-badge bg-success text-white">Đã Xác Nhận</span></td>
+                                                <td><strong>2,500,000 VND</strong></td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="Xem Chi Tiết">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success" title="Check-in">
+                                                            <i class="fas fa-sign-in-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>#BK002</strong></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-info bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-user text-info"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="fw-semibold">Trần Thị B</div>
+                                                            <small class="text-muted">tranthib@email.com</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Standard 205</td>
+                                                <td>26/12/2024</td>
+                                                <td><span class="status-badge bg-warning text-dark">Chờ Xác Nhận</span></td>
+                                                <td><strong>1,800,000 VND</strong></td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="Xem Chi Tiết">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success" title="Xác Nhận">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>#BK003</strong></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-success bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="fas fa-user text-success"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="fw-semibold">Lê Văn C</div>
+                                                            <small class="text-muted">levanc@email.com</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Suite 301</td>
+                                                <td>24/12/2024</td>
+                                                <td><span class="status-badge bg-primary text-white">Đang Ở</span></td>
+                                                <td><strong>4,200,000 VND</strong></td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="Xem Chi Tiết">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger" title="Check-out">
+                                                            <i class="fas fa-sign-out-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4">
-              <div class="card shadow-sm">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2 text-warning"></i>Tác Vụ Nhanh
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="d-grid gap-3">
-                    <a
-                      href="${pageContext.request.contextPath}/admin/bookings.jsp"
-                      class="btn btn-outline-primary quick-action-btn"
-                    >
-                      <i class="fas fa-calendar-plus me-2"></i>Tạo Đặt Phòng Mới
-                    </a>
-                    <a
-                      href="roomstatus.jsp"
-                      class="btn btn-outline-info quick-action-btn"
-                    >
-                      <i class="fas fa-door-open me-2"></i>Quản Lý Phòng
-                    </a>
-                    <a
-                      href="users.jsp"
-                      class="btn btn-outline-success quick-action-btn"
-                    >
-                      <i class="fas fa-users-cog me-2"></i>Quản Lý Nhân Viên
-                    </a>
-                    <a
-                      href="purchasereport"
-                      class="btn btn-outline-warning quick-action-btn"
-                    >
-                      <i class="fas fa-chart-bar me-2"></i>Báo Cáo & Phân Tích
-                    </a>
-                    <a
-                      href="#"
-                      class="btn btn-outline-secondary quick-action-btn"
-                    >
-                      <i class="fas fa-box me-2"></i>Kiểm Tra Kho
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="notificationToast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-bell text-primary me-2"></i>
+                <strong class="me-auto">Thông Báo</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                <!-- Toast message will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Sidebar toggle
-      document
-        .getElementById("menu-toggle")
-        .addEventListener("click", function () {
-          document
-            .getElementById("sidebar-wrapper")
-            .classList.toggle("toggled");
-        });
-
-      // Chart data
-      const chartData = {
-        weekly: {
-          labels: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
-          data: [15000, 18000, 22000, 19000, 25000, 28000, 24000],
-        },
-        monthly: {
-          labels: [
-            "Thg 1",
-            "Thg 2",
-            "Thg 3",
-            "Thg 4",
-            "Thg 5",
-            "Thg 6",
-            "Thg 7",
-            "Thg 8",
-            "Thg 9",
-            "Thg 10",
-            "Thg 11",
-            "Thg 12",
-          ],
-          data: [
-            65000, 75000, 88000, 85000, 92000, 95000, 98000, 105000, 115000,
-            118000, 120000, 125000,
-          ],
-        },
-        yearly: {
-          labels: ["2020", "2021", "2022", "2023", "2024", "2025"],
-          data: [850000, 920000, 1050000, 1180000, 1350000, 1500000],
-        },
-      };
-
-      // Revenue Chart
-      const revenueCtx = document
-        .getElementById("revenueChart")
-        .getContext("2d");
-      let revenueChart = new Chart(revenueCtx, {
-        type: "line",
-        data: {
-          labels: chartData.monthly.labels,
-          datasets: [
-            {
-              label: "Doanh thu (VND)",
-              data: chartData.monthly.data,
-              borderColor: "rgb(54, 162, 235)",
-              backgroundColor: "rgba(54, 162, 235, 0.1)",
-              tension: 0.4,
-              fill: true,
-              pointBackgroundColor: "rgb(54, 162, 235)",
-              pointBorderColor: "#fff",
-              pointBorderWidth: 2,
-              pointRadius: 5,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: "rgba(0,0,0,0.8)",
-              titleColor: "white",
-              bodyColor: "white",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 1,
-            },
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: {
-                color: "rgba(0,0,0,0.1)",
-              },
-              ticks: {
-                callback: function (value) {
-                  return "$" + value.toLocaleString();
-                },
-              },
-            },
-            x: {
-              grid: {
-                color: "rgba(0,0,0,0.1)",
-              },
-            },
-          },
-        },
-      });
-
-      // Room Status Chart
-      const roomStatusCtx = document
-        .getElementById("roomStatusChart")
-        .getContext("2d");
-      const roomStatusChart = new Chart(roomStatusCtx, {
-        type: "doughnut",
-        data: {
-          labels: ["Có khách", "Phòng trống", "Đang dọn", "Bảo trì"],
-          datasets: [
-            {
-              data: [120, 20, 8, 2],
-              backgroundColor: [
-                "rgba(40, 167, 69, 0.8)",
-                "rgba(13, 110, 253, 0.8)",
-                "rgba(255, 193, 7, 0.8)",
-                "rgba(220, 53, 69, 0.8)",
-              ],
-              borderWidth: 3,
-              borderColor: "#fff",
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: {
-                padding: 20,
-                usePointStyle: true,
-              },
-            },
-            tooltip: {
-              backgroundColor: "rgba(0,0,0,0.8)",
-              titleColor: "white",
-              bodyColor: "white",
-            },
-          },
-        },
-      });
-
-      // Functions
-      function updateChart(period) {
-        // Update active button
-        document
-          .querySelectorAll(".btn-group .btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        event.target.classList.add("active");
-
-        // Update chart data
-        revenueChart.data.labels = chartData[period].labels;
-        revenueChart.data.datasets[0].data = chartData[period].data;
-        revenueChart.update();
-      }
-
-      function exportReport() {
-        // Show loading state
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.innerHTML =
-          '<i class="fas fa-spinner fa-spin me-2"></i>Đang xuất báo cáo...';
-        btn.disabled = true;
-
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-          alert("Đã xuất báo cáo thành công!");
-        }, 2000);
-      }
-
-      function refreshData() {
-        // Show loading state
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.innerHTML =
-          '<i class="fas fa-spinner fa-spin me-2"></i>Đang làm mới...';
-        btn.disabled = true;
-
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-          location.reload();
-        }, 1500);
-      }
-
-      // Auto-refresh data every 5 minutes
-      setInterval(() => {
-        console.log("Auto-refreshing dashboard data...");
-        // Add actual data refresh logic here
-      }, 300000);
-
-      // Initialize tooltips
-      var tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      );
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-      });
-    </script>
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const wrapper = document.getElementById('wrapper');
-    const sidebar = document.getElementById('sidebar-wrapper');
-    const showBtn = document.getElementById('showSidebarBtn');
-    document.querySelectorAll('#menu-toggle').forEach(btn => {
-      if (btn) {
-        btn.addEventListener('click', e => {
-          e.preventDefault();
-          wrapper.classList.toggle('toggled');
-          if(showBtn){
-            showBtn.style.display = wrapper.classList.contains('toggled') ? 'block' : 'none';
-          }
-          sidebar.classList.toggle('toggled');
-        });
-      }
-    });
-    if(showBtn){
-      showBtn.addEventListener('click', e=>{
-        e.preventDefault();
-        wrapper.classList.remove('toggled');
-        sidebar.classList.remove('toggled');
-        showBtn.style.display='none';
-      });
-    }
-  });
-
-
-
-</script>
-<style>
-  #showSidebarBtn{display:none;position:fixed;top:10px;left:10px;z-index:1101;}
-  #wrapper.toggled #showSidebarBtn{display:block;}
-</style>
-<button id="showSidebarBtn" class="btn btn-sm btn-outline-secondary">
-  <i class="fas fa-bars"></i>
-</button>
+    <!-- Custom Dashboard JavaScript -->
+    <script src="${pageContext.request.contextPath}/admin/js/dashboard.js"></script>
 </body>
 </html>
