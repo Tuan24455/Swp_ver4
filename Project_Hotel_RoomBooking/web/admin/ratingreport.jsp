@@ -20,106 +20,10 @@
       href="${pageContext.request.contextPath}/css/style.css"
       rel="stylesheet"
     />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-      }
-      .container-fluid {
-        padding: 0 !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-      }
-
-      .col-md-9.col-lg-10 {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        /*margin-left: 0 !important;*/
-      }
-      .main-content {
-        padding: 1rem;
-        width: 86%;
-        min-height: 100vh;
-        margin-left: 250px !important; /* Force margin */
-        padding-left: 1px !important;
-        padding-right: 1px !important;
-      }
-      .kpi-card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        border: none;
-        border-radius: 12px;
-      }
-      .kpi-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-      }
-      .page-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 0;
-        padding: 2rem 1rem;
-        margin-bottom: 2rem;
-        margin-left: 0;
-        margin-right: 0;
-      }
-      .breadcrumb {
-        background: rgba(255,255,255,0.1);
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-      }
-      .breadcrumb-item a {
-        color: rgba(255,255,255,0.8);
-        text-decoration: none;
-      }
-      .breadcrumb-item.active {
-        color: white;
-      }
-      .star-rating {
-        color: #ffc107;
-      }
-      .table-responsive {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin: 0 1rem;
-      }
-      .table th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-      }
-      .filter-card {
-        background: #f8f9fa;
-        border-radius: 0;
-        padding: 1.5rem 1rem;
-        margin-bottom: 2rem;
-        margin-left: 0;
-        margin-right: 0;
-      }
-      .content-section {
-        padding: 0 1rem;
-      }
-      
-      @media (min-width: 576px) {
-        .ms-sm-auto {
-          margin-left: 250px !important;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .px-md-4 {
-          padding-right: 1px !important;
-          padding-left: 1px !important;
-        }
-      }
-      
-      /* Navbar positioning */
-      .navbar {
-        margin-left: 257px !important;
-        width: calc(100% - 250px) !important;
-      }
-    </style>
+    <link
+      href="${pageContext.request.contextPath}/css/rating-report.css"
+      rel="stylesheet"
+    />
 </head>
 <body>
     <div class="container-fluid">
@@ -402,27 +306,13 @@
                 </div>
                 </c:if>
 
-
             </div>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- Custom JS -->
-    <script>
-        // Sidebar toggle functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.sidebar');
-            
-            if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('collapsed');
-                });
-            }
-        });
-    </script>
+    <script src="${pageContext.request.contextPath}/admin/js/rating-report.js"></script>
 </body>
 </html>
