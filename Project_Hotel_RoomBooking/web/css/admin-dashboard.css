@@ -1,0 +1,183 @@
+/* Dashboard CSS - Hotel Management System */
+
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #06b6d4;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --dark-color: #1f2937;
+    --light-color: #f8fafc;
+}
+
+body {
+    background-color: var(--light-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.2);
+}
+
+.kpi-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+    margin-bottom: 2rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+}
+
+.table-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+    overflow: hidden;
+}
+
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.btn-period {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-period.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.quick-stats {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.progress-custom {
+    height: 8px;
+    border-radius: 4px;
+}
+
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+/* Additional styles for better dashboard appearance */
+.card-title {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.text-success-custom {
+    color: var(--success-color) !important;
+}
+
+.text-warning-custom {
+    color: var(--warning-color) !important;
+}
+
+.text-danger-custom {
+    color: var(--danger-color) !important;
+}
+
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-success-custom {
+    background-color: var(--success-color) !important;
+}
+
+.bg-warning-custom {
+    background-color: var(--warning-color) !important;
+}
+
+.bg-danger-custom {
+    background-color: var(--danger-color) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .kpi-card {
+        margin-bottom: 1rem;
+    }
+    
+    .chart-container {
+        height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-header {
+        padding: 1rem;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+    
+    .btn-period {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.875rem;
+    }
+}
