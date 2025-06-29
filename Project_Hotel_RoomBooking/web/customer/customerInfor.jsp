@@ -8,6 +8,8 @@
         response.sendRedirect("login.jsp");
         return;
     }
+    // Định nghĩa biến JavaScript CONTEXT_PATH
+    String contextPath = request.getContextPath();
 %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -24,6 +26,11 @@
         <!-- Custom CSS -->
         <!--<link rel="stylesheet" href="customer/includes/component.css"/>-->
         <link rel="stylesheet" href="css/profile-enhanced.css"/>
+
+        <script>
+            // Biến JavaScript để lưu context path của ứng dụng
+            const CONTEXT_PATH = "<%= contextPath %>";
+        </script>
     </head>
     <body>
         <!-- Background overlay -->
@@ -50,8 +57,11 @@
                         </div>
                         <div class="col-md-4 text-end">
                             <div class="user-status-badge">
+
                                 <i class="fas fa-shield-alt me-2"></i>
                                 <span class="status-text">${user.role}</span>
+                                <button type="button" class="btn btn-remove" onclick="window.profileManager.removeProfilePictureAndNotifyServer()">Xóa tài khoản
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -83,6 +93,8 @@
                                     <div class="avatar-info">
                                         <h6 class="user-name">${user.fullName}</h6>
                                         <p class="user-email">${user.email}</p>
+                                        <input type="hidden" id="currentUsername" value="${user.userName}">
+                                        <input type="hidden" id="currentUserId" value="${user.id}">
                                     </div>
                                 </div>
 
@@ -92,12 +104,11 @@
                                         class="d-none"
                                         id="profilePictureInput"
                                         accept="image/*"
-                                        onchange="previewImage(this)"
-                                        />
+                                        onchange="window.profileManager.handleAvatarFileSelect(this)" />
                                     <button type="button" class="btn btn-upload" onclick="document.getElementById('profilePictureInput').click()">
                                         <i class="fas fa-upload me-2"></i>Tải ảnh lên
                                     </button>
-                                    <button type="button" class="btn btn-remove" onclick="removeProfilePicture()">
+                                    <button type="button" class="btn btn-remove"">
                                         <i class="fas fa-trash me-2"></i>Xóa ảnh
                                     </button>
                                 </div>
@@ -140,7 +151,7 @@
                                     <h5 class="card-title">
                                         <i class="fas fa-user me-2"></i>Thông tin cá nhân
                                     </h5>
-                                    <button type="button" class="btn btn-edit" id="editToggleBtn" onclick="toggleEditMode()">
+                                    <button type="button" class="btn btn-edit" id="editToggleBtn" onclick="window.profileManager.toggleEditMode()">
                                         <i class="fas fa-pen me-2"></i>Chỉnh sửa
                                     </button>
                                 </div>
@@ -155,6 +166,7 @@
                                             </label>
                                             <input type="text" class="form-control info-input" name="fullName" 
                                                    value="${user.fullName}" readonly />
+                                            <div class="invalid-feedback"></div>
                                         </div>
 
                                         <!-- Username -->
@@ -173,6 +185,11 @@
                                             </label>
                                             <input type="email" class="form-control info-input" name="email"
                                                    value="${user.email}" readonly />
+                                            <div class="invalid-feedback"></div>
+                                            <%
+                                                String mess = (String) request.getAttribute("error");
+                                            %>
+                                            <i id="errorMessage" style="color: red"><%= (mess != null && !mess.isEmpty()) ? mess : "" %></i>
                                         </div>
 
                                         <!-- Phone -->
@@ -182,6 +199,7 @@
                                             </label>
                                             <input type="text" class="form-control info-input" name="phone"
                                                    value="${user.phone}" readonly />
+                                            <div class="invalid-feedback"></div>
                                         </div>
 
                                         <!-- Birth Date -->
@@ -192,6 +210,7 @@
                                             <fmt:formatDate value="${user.birth}" pattern="yyyy-MM-dd" var="birthFormatted" />
                                             <input type="date" class="form-control info-input" name="birth"
                                                    value="${birthFormatted}" readonly />
+                                            <div class="invalid-feedback"></div>
                                         </div>
 
                                         <!-- Gender -->
@@ -199,11 +218,12 @@
                                             <label class="info-label">
                                                 <i class="fas fa-venus-mars me-2"></i>Giới tính
                                             </label>
-                                            <select class="form-select info-input" name="gender" disabled>
+                                            <select class="form-select info-input" name="gender" readonly>
                                                 <option value="Nam" ${user.gender == 'Nam' || user.gender == 'Male' ? 'selected' : ''}>Nam</option>
                                                 <option value="Nữ" ${user.gender == 'Nữ' || user.gender == 'Female' ? 'selected' : ''}>Nữ</option>
                                                 <option value="Khác" ${user.gender == 'Khác' || user.gender == 'Other' ? 'selected' : ''}>Khác</option>
                                             </select>
+                                            <div class="invalid-feedback"></div>
                                         </div>
 
                                         <!-- Address -->
@@ -217,7 +237,7 @@
 
                                     <!-- Form Actions -->
                                     <div class="form-actions" id="formActions" style="display: none;">
-                                        <button type="button" class="btn btn-cancel" onclick="cancelEdit()">
+                                        <button type="button" class="btn btn-cancel" id="cancelBtn">
                                             <i class="fas fa-times me-2"></i>Hủy
                                         </button>
                                         <button type="submit" class="btn btn-save">

@@ -8,8 +8,11 @@ import jakarta.servlet.http.*;
 import valid.InputValidator;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "RegisterDetailServlet", urlPatterns = {"/registerDetail"})
 public class RegisterDetailServlet extends HttpServlet {
@@ -91,8 +94,12 @@ public class RegisterDetailServlet extends HttpServlet {
                 false
         );
 
-        // Lưu vào DB
-        dao.insert(user);
+        try {
+            // Lưu vào DB
+            boolean up = dao.insert(user);
+        } catch (SQLException ex) {
+            Logger.getLogger(RegisterDetailServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         response.sendRedirect("login.jsp");
     }

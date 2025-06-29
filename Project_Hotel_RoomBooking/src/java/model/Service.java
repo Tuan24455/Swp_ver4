@@ -6,7 +6,7 @@ package model;
 
 /**
  *
- * @author Phạm Quốc Tuấn
+ * @author Mai Tien Dung
  */
 public class Service {
 

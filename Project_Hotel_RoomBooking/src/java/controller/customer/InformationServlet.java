@@ -8,8 +8,11 @@ import model.User;
 import valid.InputValidator;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "InformationServlet", urlPatterns = {"/information"})
 public class InformationServlet extends HttpServlet {
@@ -26,7 +29,7 @@ public class InformationServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-
+        UserDao dao = new UserDao();
         if (user == null) {
             response.sendRedirect("login");
             return;
@@ -36,6 +39,11 @@ public class InformationServlet extends HttpServlet {
             // Lấy dữ liệu từ form
             String fullName = request.getParameter("fullName");
             String email = request.getParameter("email");
+            if(!email.equals(user.getEmail()) && dao.isEmailExist(email)){
+                request.setAttribute("error", "Email đã tồn tại");
+                request.getRequestDispatcher("/customer/customerInfor.jsp").forward(request, response);
+                return;
+            }
             String phone = request.getParameter("phone");
             String address = request.getParameter("address");
             String birthStr = request.getParameter("birth");
@@ -52,8 +60,12 @@ public class InformationServlet extends HttpServlet {
             user.setBirth(birth);
             user.setGender(gender);
 
-            // Cập nhật DB
-            new UserDao().update(user);
+            try {
+                // Cập nhật DB
+                boolean up = dao.update(user);
+            } catch (SQLException ex) {
+                Logger.getLogger(InformationServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             // Cập nhật session và thông báo
             session.setAttribute("user", user);
