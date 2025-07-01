@@ -42,7 +42,8 @@ class RoomFilterManager {
     }
 
     showFilter() {
-        if (!this.filterModal) return;
+        if (!this.filterModal)
+            return;
 
         this.filterModal.style.display = "flex";
         this.filterModal.classList.add("show");
@@ -61,7 +62,8 @@ class RoomFilterManager {
     }
 
     hideFilter() {
-        if (!this.filterModal) return;
+        if (!this.filterModal)
+            return;
 
         const modalContent = this.filterModal.querySelector(".filter-modal-content");
         modalContent.classList.remove("animate__fadeInDown");
@@ -111,17 +113,43 @@ class RoomFilterManager {
         }
 
         if (checkinInput && checkoutInput) {
+            // Đặt min cho checkin là hôm nay
+            const today = new Date();
+            checkinInput.min = today.toISOString().split('T')[0];
+
             checkinInput.addEventListener("change", () => {
-                if (checkinInput.value && checkoutInput.value && new Date(checkinInput.value) > new Date(checkoutInput.value)) {
-                    checkoutInput.value = "";
-                    this.showToast("Ngày nhận phòng phải trước hoặc bằng ngày trả phòng", "warning");
+                if (checkinInput.value) {
+                    const checkinDate = new Date(checkinInput.value);
+
+                    // Cộng 1 ngày cho checkout
+                    const nextDay = new Date(checkinDate);
+                    nextDay.setDate(checkinDate.getDate() + 1);
+                    const minCheckout = nextDay.toISOString().split('T')[0];
+
+                    checkoutInput.min = minCheckout;
+                    // Gợi ý ngày checkout mặc định nếu chưa có
+                    if (!checkoutInput.value) {
+                        checkoutInput.value = minCheckout;
+                    }
+
+                    // Nếu checkout đang < min → reset
+                    if (checkoutInput.value && new Date(checkoutInput.value) < nextDay) {
+                        checkoutInput.value = "";
+                        this.showToast("Ngày trả phòng phải ít nhất sau ngày nhận phòng 1 ngày", "warning");
+                    }
                 }
             });
 
             checkoutInput.addEventListener("change", () => {
-                if (checkinInput.value && checkoutInput.value && new Date(checkinInput.value) > new Date(checkoutInput.value)) {
-                    checkoutInput.value = "";
-                    this.showToast("Ngày nhận phòng phải trước hoặc bằng ngày trả phòng", "warning");
+                if (checkinInput.value && checkoutInput.value) {
+                    const checkinDate = new Date(checkinInput.value);
+                    const checkoutDate = new Date(checkoutInput.value);
+
+                    // Kiểm tra nếu checkout <= checkin → không hợp lệ
+                    if (checkoutDate <= checkinDate) {
+                        checkoutInput.value = "";
+                        this.showToast("Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 ngày", "warning");
+                    }
                 }
             });
         }
@@ -152,7 +180,7 @@ class RoomFilterManager {
     initSmoothScrolling() {
         const originalGoToPage = window.goToPage?.bind(window);
         window.goToPage = (pageNumber) => {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({top: 0, behavior: "smooth"});
             setTimeout(() => {
                 if (originalGoToPage) {
                     originalGoToPage(pageNumber);
@@ -164,7 +192,8 @@ class RoomFilterManager {
     }
 
     goToPage(pageNumber) {
-        if (!this.paginationForm) return;
+        if (!this.paginationForm)
+            return;
         const pageInput = document.getElementById("paginationPage");
         if (pageInput) {
             pageInput.value = pageNumber;
@@ -174,7 +203,18 @@ class RoomFilterManager {
 
     resetFilter() {
         if (confirm("Bạn có chắc chắn muốn xóa tất cả bộ lọc?")) {
-            window.location.href = "home";
+            // Get the current path
+            const currentPath = window.location.pathname;
+
+            // Check if the current path is "home" or "dich-vu" (service)
+            if (currentPath.includes("home")) {
+                window.location.href = "home";
+            } else if (currentPath.includes("service") || currentPath.includes("service")) { // Added "service" for flexibility
+                window.location.href = "service"; // Or "service" depending on your actual path
+            } else {
+                // Default redirection if neither "home" nor "dich-vu" is found
+                window.location.href = "home";
+            }
         }
     }
 

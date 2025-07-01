@@ -306,7 +306,7 @@ USE BookingHotel_v4;
 GO
 
 DECLARE @check_in DATE = '2025-06-06';
-DECLARE @check_out DATE = '2025-06-20';
+DECLARE @check_out DATE = '2025-06-06';
 
 SELECT *
 FROM Rooms r
@@ -317,7 +317,7 @@ WHERE r.room_status != N'Maintenance'
       FROM BookingRoomDetails brd
       JOIN Bookings b ON brd.booking_id = b.id
       WHERE brd.room_id = r.id
-        AND b.status IN (N'Pending', N'Confirmed') -- trạng thái giữ phòng
+        --AND b.status IN (N'Pending', N'Confirmed') -- trạng thái giữ phòng
         AND (
             @check_in < brd.check_out_date AND @check_out > brd.check_in_date
         )

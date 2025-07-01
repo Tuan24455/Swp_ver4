@@ -34,7 +34,7 @@
                                     </a>
                                 </li>
                                 <li class="mb-1">
-                                    <a href="#!" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
+                                    <a href="contact.jsp" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
                                         Contact Us
                                     </a>
                                 </li>
@@ -46,13 +46,13 @@
                             <h4 class="mb-2 fs-10 fw-light text-secondary text-uppercase bsb-ls-1">Products</h4>
                             <ul class="m-0 list-unstyled">
                                 <li class="mb-1">
-                                    <a href="#!" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
+                                    <a href="home" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
                                         Product Catalog
                                     </a>
                                 </li>
 
                                 <li class="mb-1">
-                                    <a href="#!" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
+                                    <a href="home" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
                                         Best Sellers
                                     </a>
                                 </li>
@@ -83,12 +83,12 @@
                             <h4 class="mb-2 fs-10 fw-light text-secondary text-uppercase bsb-ls-1">Support</h4>
                             <ul class="m-0 list-unstyled">
                                 <li class="mb-1">
-                                    <a href="#!" class="link-underline-opacity-0 link-opacity-50-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
+                                    <a href="contact.jsp" class="link-underline-opacity-0 link-opacity-50-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
                                         Feedback
                                     </a>
                                 </li>
                                 <li class="mb-1">
-                                    <a href="#!" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
+                                    <a href="contact.jsp" class="link-underline-opacity-0 link-opacity-75-hover link-underline-opacity-100-hover link-offset-1 link-dark fw-medium">
                                         Help Desk
                                     </a>
                                 </li>

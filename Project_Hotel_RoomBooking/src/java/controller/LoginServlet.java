@@ -43,9 +43,7 @@ public class LoginServlet extends HttpServlet {
         if (stringlog != null && !stringlog.trim().isEmpty() && password != null) {
             String encryptedPassword = Encrypt.encrypt(password); // 🔐 mã hóa mật khẩu nhập vào
 
-            if (InputValidator.isValidPhone(stringlog)) {
-                user = userdao.loginByPhone(stringlog, encryptedPassword);
-            } else if (InputValidator.isValidEmail(stringlog)) {
+            if (InputValidator.isValidEmail(stringlog)) {
                 user = userdao.loginByEmail(stringlog, encryptedPassword);
             } else {
                 user = userdao.loginByUsername(stringlog, encryptedPassword);

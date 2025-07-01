@@ -113,6 +113,12 @@
           padding-left: 1px !important;
         }
       }
+      
+      /* Navbar positioning */
+      .navbar {
+        margin-left: 257px !important;
+        width: calc(100% - 250px) !important;
+      }
     </style>
 </head>
 <body>
@@ -120,6 +126,9 @@
         <div class="row">
             <!-- Sidebar -->
             <jsp:include page="includes/sidebar.jsp" />
+            
+            <!-- Navbar -->
+            <jsp:include page="includes/navbar.jsp" />
             
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 ms-sm-auto main-content">
@@ -154,7 +163,7 @@
 
                 <!-- Filter Section -->
                 <div class="filter-card">
-                    <form method="get" action="${pageContext.request.contextPath}/reviewreport">
+                    <form method="get" action="${pageContext.request.contextPath}/admin/ratingreport">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="filterType" class="form-label">Loại Đánh Giá</label>
@@ -179,7 +188,7 @@
                                 <button type="submit" class="btn btn-primary me-2">
                                     <i class="fas fa-filter me-1"></i>Lọc
                                 </button>
-                                <a href="${pageContext.request.contextPath}/reviewreport" class="btn btn-outline-secondary">
+                                <a href="${pageContext.request.contextPath}/admin/ratingreport" class="btn btn-outline-secondary">
                                     <i class="fas fa-refresh me-1"></i>Đặt Lại
                                 </a>
                             </div>
@@ -271,7 +280,16 @@
                                                 <tr>
                                                     <td>${review.id}</td>
                                                     <td>
-                                                        <span class="badge bg-info">Phòng ${review.roomId}</span>
+                                                        <span class="badge bg-info">
+                                                            <c:choose>
+                                                                <c:when test="${not empty roomMap[review.roomId]}">
+                                                                    Phòng ${roomMap[review.roomId]}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    Phòng ${review.roomId}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </span>
                                                     </td>
                                                     <td>
                                                         <div class="star-rating">
@@ -336,7 +354,16 @@
                                                 <tr>
                                                     <td>${review.id}</td>
                                                     <td>
-                                                        <span class="badge bg-warning text-dark">Dịch Vụ ${review.serviceId}</span>
+                                                        <span class="badge bg-warning text-dark">
+                                                            <c:choose>
+                                                                <c:when test="${not empty serviceMap[review.serviceId]}">
+                                                                    ${serviceMap[review.serviceId]}
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    Dịch Vụ ${review.serviceId}
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </span>
                                                     </td>
                                                     <td>
                                                         <div class="star-rating">
@@ -375,32 +402,7 @@
                 </div>
                 </c:if>
 
-                <!-- Rating Distribution -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-bar me-2"></i>Phân Phối Đánh Giá
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <c:forEach begin="1" end="5" var="star">
-                                 <div class="col-md-2 text-center mb-3">
-                                     <div class="star-rating mb-2">
-                                         <c:forEach begin="1" end="${star}" var="i">
-                                             <i class="fas fa-star"></i>
-                                         </c:forEach>
-                                         <c:forEach begin="${star + 1}" end="5" var="i">
-                                             <i class="fas fa-star text-muted"></i>
-                                         </c:forEach>
-                                     </div>
-                                     <h4 class="text-primary">${ratingDistribution.ratingMap[star]}</h4>
-                                     <small class="text-muted">${star} Sao</small>
-                                 </div>
-                             </c:forEach>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>

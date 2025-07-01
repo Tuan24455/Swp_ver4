@@ -217,7 +217,6 @@ function showBookingConfirmation(checkIn, checkOut, duration, totalPrice) {
             <p><strong>Ngày nhận phòng:</strong> ${formatDate(checkIn)}</p>
             <p><strong>Ngày trả phòng:</strong> ${formatDate(checkOut)}</p>
             <p><strong>Số đêm:</strong> ${duration} đêm</p>
-            <p><strong>Tổng tiền:</strong> ${formatPrice(totalPrice)}đ</p>
         </div>
     `
 

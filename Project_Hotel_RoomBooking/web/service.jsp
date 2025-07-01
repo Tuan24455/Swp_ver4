@@ -52,7 +52,7 @@
                             </button>
                         </div>
 
-                        <form method="get" action="service" class="filter-form">
+                        <form method="post" action="service" class="filter-form">
                             <div class="filter-grid">
                                 <!-- Dịch vụ loại -->
                                 <div class="filter-group">
@@ -61,11 +61,14 @@
                                         <label>Loại dịch vụ</label>
                                     </div>
                                     <div class="checkbox-container">
-                                        <c:forEach var="type" items="${serviceTypes}">
+                                        <c:forEach var="entry" items="${serviceTypes}">
+                                            <c:set var="typeId" value="${entry.key}" />
+                                            <c:set var="typeName" value="${entry.value}" />
                                             <div class="checkbox-item">
-                                                <input type="checkbox" id="type_${type.id}" name="typeId"
-                                                       value="${type.id}" ${selectedTypes != null && selectedTypes.contains(type.id) ? 'checked' : ''}/>
-                                                <label for="type_${type.id}" class="checkbox-label">${type.name}</label>
+                                                <input type="checkbox" id="type_${typeId}" name="typeId"
+                                                       value="${typeId}" 
+                                                       ${selectedTypes != null && selectedTypes.contains(typeId) ? 'checked' : ''}/>
+                                                <label for="type_${typeId}" class="checkbox-label">${typeName}</label>
                                             </div>
                                         </c:forEach>
                                     </div>
@@ -129,6 +132,15 @@
                                         <h5 class="room-number">
                                             <i class="fas fa-concierge-bell me-2"></i>${service.serviceName}
                                         </h5>
+                                        <div class="room-type-badge">${service.serviceTypeName}</div>
+                                    </div>
+                                    <div class="room-details">
+                                        <div class="room-detail-item">
+                                            <i class="fas fa-tag text-success"></i>
+                                            <span class="room-price">
+                                                <fmt:formatNumber value="${service.servicePrice}" type="number" groupingUsed="true"/> VND
+                                            </span>
+                                        </div>
                                     </div>
                                     <div class="room-description">
                                         <c:choose>

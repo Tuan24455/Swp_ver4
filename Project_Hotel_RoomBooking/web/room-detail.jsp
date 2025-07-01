@@ -20,7 +20,7 @@
     <div class="room-detail-section">
         <div class="container">
             <!-- Top Row: Room Image and Booking Form -->
-            <div class="row mb-4">
+            <div class="row mb-4 container-fluid">
                 <!-- Room Images -->
                 <div class="col-lg-7 col-md-12">
                     <div class="room-detail-card">
@@ -46,7 +46,7 @@
                 <div class="col-lg-5 col-md-12">
                     <div class="booking-section">
                         <h3 class="booking-title">Đặt phòng ngay</h3>
-                        <form action="${pageContext.request.contextPath}/bookingDetail.jsp" method="POST" class="booking-form" novalidate>
+                        <form action="${pageContext.request.contextPath}/customer/bookingDetail.jsp" method="POST" class="booking-form" novalidate>
                             <input type="hidden" name="roomId" value="${room.id}">
                             <input type="hidden" name="roomNumber" value="${room.roomNumber}">
                             <input type="hidden" name="roomType" value="${room.roomTypeName}">
@@ -156,7 +156,7 @@
             </div>
 
             <!-- Bottom Row: Room Description -->
-            <div class="row">
+            <div class="row container-fluid">
                 <div class="col-12">
                     <div class="room-description">
                         <h2 class="section-title">Mô tả phòng</h2>
