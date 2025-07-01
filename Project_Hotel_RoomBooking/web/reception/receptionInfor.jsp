@@ -1,40 +1,21 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page import="model.User" %>
-<%
-    User user = (User) session.getAttribute("user");
-    if (user == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-    // Định nghĩa biến JavaScript CONTEXT_PATH
-    String contextPath = request.getContextPath();
-%>
+<%-- 
+    Document   : receptionInfor
+    Created on : Jun 29, 2025, 10:19:17 AM
+    Author     : ADMIN
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Account Settings - Hotel Management System</title>
-        <!-- CSS Libraries -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-        <!-- Custom CSS -->
-        <!--<link rel="stylesheet" href="customer/includes/component.css"/>-->
-        <link rel="stylesheet" href="css/profile-enhanced.css"/>
-
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
     </head>
     <body>
-        <!-- Background overlay -->
-        <div class="profile-background"></div>
         <div class="d-flex" id="wrapper">
             <jsp:include page="includes/sidebar.jsp">
-                <jsp:param name="activePage" value="account-settings" />
+                <jsp:param name="activePage" value="dashboard" />
             </jsp:include>
-
 
             <!-- Main Content -->
             <div class="profile-container">
@@ -355,23 +336,5 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="js/profile-enhanced.js"></script>
         </div>
-    </div>
-
-    <!-- Success Toast -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="fas fa-check-circle text-success me-2"></i>
-                <strong class="me-auto">Success</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="toastMessage">
-                Settings updated successfully!
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
+    </body>
 </html>

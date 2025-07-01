@@ -534,3 +534,70 @@ select {
 .room-info strong {
     color: #222;
 }
+
+.room-details .detail-item {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.room-details .detail-item i {
+    width: 25px;
+    color: #4a69bd;
+    margin-right: 10px;
+}
+
+.carousel-item img {
+    height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.room-description {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.room-amenities {
+    margin: 20px 0;
+}
+
+.room-amenities ul li {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.room-amenities ul li i {
+    color: #28a745;
+    margin-right: 10px;
+}
+
+.booking-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.booking-section .btn-primary {
+    padding: 12px;
+    font-size: 1.1rem;
+    background-color: #4a69bd;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.booking-section .btn-primary:hover {
+    background-color: #1e3799;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .carousel-item img {
+        height: 300px;
+    }
+}
