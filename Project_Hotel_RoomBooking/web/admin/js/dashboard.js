@@ -17,7 +17,7 @@ const chartData = {
     }
 };
 
-let revenueChart, roomStatusChart, monthlyPerformanceChart, servicesChart;
+let revenueChart, roomStatusChart;
 let currentPeriod = 'weekly';
 
 // Initialize Charts
@@ -131,70 +131,7 @@ function initializeCharts() {
         }
     });
 
-    // Monthly Performance Chart
-    const monthlyCtx = document.getElementById('monthlyPerformanceChart').getContext('2d');
-    monthlyPerformanceChart = new Chart(monthlyCtx, {
-        type: 'bar',
-        data: {
-            labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
-            datasets: [{
-                label: 'Doanh Thu',
-                data: [85, 92, 78, 95, 88, 90],
-                backgroundColor: '#4f46e5',
-                borderRadius: 4
-            }, {
-                label: 'Lấp Đầy',
-                data: [78, 85, 72, 88, 82, 86],
-                backgroundColor: '#06b6d4',
-                borderRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: {
-                        callback: function(value) {
-                            return value + '%';
-                        }
-                    }
-                }
-            }
-        }
-    });
 
-    // Services Chart
-    const servicesCtx = document.getElementById('servicesChart').getContext('2d');
-    servicesChart = new Chart(servicesCtx, {
-        type: 'horizontalBar',
-        data: {
-            labels: ['Spa', 'Nhà Hàng', 'Gym', 'Hồ Bơi', 'Karaoke'],
-            datasets: [{
-                label: 'Lượt Sử Dụng',
-                data: [450, 380, 290, 520, 180],
-                backgroundColor: ['#ef4444', '#f59e0b', '#10b981', '#06b6d4', '#8b5cf6'],
-                borderRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y',
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
 }
 
 // Function to update room status chart with server data
