@@ -364,7 +364,7 @@ public class ReviewDao {
 
     // Đếm số lượng đánh giá cho phòng
     public int getRoomReviewCount(int roomId) {
-        String sql = "SELECT COUNT(*) as review_count FROM RoomReviews WHERE room_id = ?";
+        String sql = "SELECT COUNT(*) FROM RoomReviews WHERE room_id = ?";
 
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -373,7 +373,7 @@ public class ReviewDao {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt("review_count");
+                return rs.getInt(1);
             }
 
         } catch (SQLException e) {
@@ -381,5 +381,35 @@ public class ReviewDao {
         }
 
         return 0;
+    }
+
+    // Get average rating for all rooms
+    public double getAverageRoomRating() {
+        String sql = "SELECT AVG(CAST(quality AS FLOAT)) FROM RoomReviews";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    // Get average rating for all services
+    public double getAverageServiceRating() {
+        String sql = "SELECT AVG(CAST(quality AS FLOAT)) FROM ServiceReviews";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
     }
 }

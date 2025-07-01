@@ -1,8 +1,7 @@
 package controller.admin;
 
-import dao.UserDao;
-import model.Booking;
-import model.User;
+import dao.BookingRoomDetailsDao;
+import dao.RoomDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,18 +12,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import model.RoomType;
 
 @WebServlet(name = "BookingReportServlet", urlPatterns = {"/bookingreport", "/admin/bookingreport"})
 public class BookingReportServlet extends HttpServlet {
     
-    private UserDao userDao;
+    private BookingRoomDetailsDao bookingDao;
+    private RoomDao roomDao;
     
     @Override
     public void init() throws ServletException {
-        userDao = new UserDao();
+        bookingDao = new BookingRoomDetailsDao();
+        roomDao = new RoomDao();
     }
     
     @Override
@@ -35,6 +38,18 @@ public class BookingReportServlet extends HttpServlet {
             // Get date range parameters
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
+            String roomTypeParam = request.getParameter("roomType");
+            Integer roomTypeId = null;
+            
+            // Chuyển đổi roomType từ String sang Integer nếu có
+            if (roomTypeParam != null && !roomTypeParam.isEmpty()) {
+                try {
+                    roomTypeId = Integer.parseInt(roomTypeParam);
+                } catch (NumberFormatException e) {
+                    // Xử lý lỗi nếu không thể chuyển đổi
+                    e.printStackTrace();
+                }
+            }
             
             // Set default date range if not provided (last 30 days)
             if (startDate == null || startDate.isEmpty()) {
@@ -44,19 +59,68 @@ public class BookingReportServlet extends HttpServlet {
                 endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             }
             
-            // Get booking data (using available data)
-            List<User> users = userDao.getAllUsers();
-            List<Booking> bookings = new ArrayList<>(); // Placeholder for booking data
+            // Get booking data from view with filter
+            List<Map<String, Object>> currentBookings;
+            Map<String, Object> bookingSummary;
             
-            // Calculate summary statistics
-            Map<String, Object> summary = calculateSummary(bookings, users);
+            if (roomTypeId != null || (startDate != null && !startDate.isEmpty()) || (endDate != null && !endDate.isEmpty())) {
+                // Sử dụng phương thức lọc nếu có tham số lọc
+                currentBookings = bookingDao.getFilteredBookings(startDate, endDate, roomTypeId);
+                bookingSummary = bookingDao.getFilteredBookingSummary(startDate, endDate, roomTypeId);
+            } else {
+                // Sử dụng phương thức mặc định nếu không có tham số lọc
+                currentBookings = bookingDao.getCurrentBookings();
+                bookingSummary = bookingDao.getBookingSummary();
+            }
+            
+            // Lấy thống kê phòng
+            Map<String, Object> roomStatistics = new LinkedHashMap<>();
+            int totalRooms, occupiedRooms, maintenanceRooms, vacantRooms;
+            
+            // Nếu có lọc theo loại phòng
+            if (roomTypeId != null) {
+                totalRooms = roomDao.getTotalRoomsByType(roomTypeId);
+                occupiedRooms = roomDao.getRoomCountByStatusAndType("occupied", roomTypeId);
+                if (occupiedRooms == 0) {
+                    occupiedRooms = roomDao.getRoomCountByStatusAndType("Occupied", roomTypeId);
+                }
+                maintenanceRooms = roomDao.getRoomCountByStatusAndType("maintenance", roomTypeId);
+                if (maintenanceRooms == 0) {
+                    maintenanceRooms = roomDao.getRoomCountByStatusAndType("Maintenance", roomTypeId);
+                }
+            } else {
+                // Không lọc theo loại phòng
+                totalRooms = roomDao.getTotalRooms();
+                occupiedRooms = roomDao.getRoomCountByStatus("occupied");
+                if (occupiedRooms == 0) {
+                    occupiedRooms = roomDao.getRoomCountByStatus("Occupied");
+                }
+                maintenanceRooms = roomDao.getRoomCountByStatus("maintenance");
+                if (maintenanceRooms == 0) {
+                    maintenanceRooms = roomDao.getRoomCountByStatus("Maintenance");
+                }
+            }
+            
+            vacantRooms = totalRooms - occupiedRooms - maintenanceRooms;
+            
+            roomStatistics.put("Tổng số phòng", Map.of("count", totalRooms, "description", "Tổng số phòng trong khách sạn"));
+            roomStatistics.put("Phòng đã đặt", Map.of("count", occupiedRooms, "description", "Số phòng hiện đang có khách"));
+            roomStatistics.put("Phòng trống", Map.of("count", vacantRooms, "description", "Số phòng sẵn sàng cho khách đặt"));
+            roomStatistics.put("Phòng bảo trì", Map.of("count", maintenanceRooms, "description", "Số phòng đang được bảo trì"));
+            
+            // Đã thêm dữ liệu vào roomStatistics ở trên
+            
+            // Lấy danh sách loại phòng
+            List<RoomType> roomTypes = roomDao.getAllRoomTypes();
             
             // Set attributes for JSP
-            request.setAttribute("bookings", bookings);
-            request.setAttribute("users", users);
-            request.setAttribute("summary", summary);
+            request.setAttribute("currentBookings", currentBookings);
+            request.setAttribute("bookingSummary", bookingSummary);
+            request.setAttribute("roomStatistics", roomStatistics);
+            request.setAttribute("roomTypes", roomTypes);
             request.setAttribute("startDate", startDate);
             request.setAttribute("endDate", endDate);
+            request.setAttribute("selectedRoomType", roomTypeId); // Lưu loại phòng đã chọn
             
             // Forward to JSP
             request.getRequestDispatcher("/admin/bookingreport.jsp").forward(request, response);
@@ -74,34 +138,4 @@ public class BookingReportServlet extends HttpServlet {
         doGet(request, response);
     }
     
-    private Map<String, Object> calculateSummary(List<Booking> bookings, List<User> users) {
-        Map<String, Object> summary = new HashMap<>();
-        
-        int totalBookings = bookings.size();
-        int totalUsers = users.size();
-        int customerCount = 0;
-        int adminCount = 0;
-        int receptionCount = 0;
-        
-        // Count users by role
-        for (User user : users) {
-            String role = user.getRole();
-            if ("customer".equalsIgnoreCase(role)) {
-                customerCount++;
-            } else if ("admin".equalsIgnoreCase(role)) {
-                adminCount++;
-            } else if ("reception".equalsIgnoreCase(role)) {
-                receptionCount++;
-            }
-        }
-        
-        summary.put("totalBookings", totalBookings);
-        summary.put("totalUsers", totalUsers);
-        summary.put("customerCount", customerCount);
-        summary.put("adminCount", adminCount);
-        summary.put("receptionCount", receptionCount);
-        summary.put("averageBookingsPerUser", totalUsers > 0 ? (double)totalBookings / totalUsers : 0);
-        
-        return summary;
-    }
 }
