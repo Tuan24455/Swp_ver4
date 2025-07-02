@@ -57,7 +57,7 @@
                 </div>
             </c:if>
             <c:if test="${sessionScope.user != null}">
-                <form id="bookingForm" action="${pageContext.request.contextPath}/booking" method="POST">
+                <form id="bookingForm" onsubmit="submitBooking(event)">
                     <div class="form-group">
                         <label>Tên đầy đủ</label>
                         <input type="text" name="fullName" value="${sessionScope.user.fullName}" class="form-control" required>
@@ -195,5 +195,54 @@
             document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + formatPrice(finalTotal) + 'đ';
         }
     </script>
+<script>
+function submitBooking(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('bookingForm');
+    const formData = new FormData(form);
+    
+    // Convert FormData to URL-encoded string
+    const data = new URLSearchParams(formData);
+    
+    fetch('${pageContext.request.contextPath}/booking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Thành công!',
+                text: data.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '${pageContext.request.contextPath}/home';
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Đã xảy ra lỗi khi xử lý yêu cầu',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    });
+}
+</script>
 </body>
 </html>
