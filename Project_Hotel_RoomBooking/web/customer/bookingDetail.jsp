@@ -23,6 +23,27 @@
     <title>Booking Detail</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/booking-detail.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            font-size: 0.9em;
+        }
+        .checkbox-group {
+            margin-bottom: 5px;
+        }
+        .checkbox-group label {
+            font-size: 0.9em;
+            color: #333;
+        }
+        .requirements h3 {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
     
@@ -36,7 +57,7 @@
                 </div>
             </c:if>
             <c:if test="${sessionScope.user != null}">
-                <form action="BookingServlet" method="POST">
+                <form id="bookingForm" action="${pageContext.request.contextPath}/booking" method="POST">
                     <div class="form-group">
                         <label>Tên đầy đủ</label>
                         <input type="text" name="fullName" value="${sessionScope.user.fullName}" class="form-control" required>
@@ -52,29 +73,25 @@
                     
 
                     <div class="requirements">
-                        <h3>Bạn yêu cầu nào không?</h3>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="noSmoke" name="requirements" value="noSmoke">
-                            <label for="noSmoke">Phòng không hút thuốc</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="highFloor" name="requirements" value="highFloor">
-                            <label for="highFloor">Tầng lầu</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="earlyCheckin" name="requirements" value="earlyCheckin">
-                            <label for="earlyCheckin">Giờ nhận phòng</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="lateCheckout" name="requirements" value="lateCheckout">
-                            <label for="lateCheckout">Giờ trả phòng</label>
+                        <h3>Bạn có muốn sử dụng thêm dịch vụ gì không?</h3>
+                        <jsp:useBean id="serviceDao" class="dao.ServiceDao" />
+                        <div class="services-grid">
+                            <c:forEach var="service" items="${serviceDao.allServices}">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="service_${service.id}" name="selectedServices" value="${service.id}" data-price="${service.servicePrice}" onchange="updateTotalPrice()">
+                                    <label for="service_${service.id}">
+                                        ${service.serviceName} - <fmt:formatNumber value="${service.servicePrice}" pattern="#,###"/>đ
+                                    </label>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                     
-                    <input type="hidden" name="roomId" value="${room.id}">
+                    <input type="hidden" name="roomId" value="${param.roomId}">
                     <input type="hidden" name="checkIn" value="${param.checkIn}">
                     <input type="hidden" name="checkOut" value="${param.checkOut}">
                     <input type="hidden" name="nights" value="${param.nights}">
+                    <input type="hidden" name="pricePerNight" value="${param.pricePerNight}">
                     <button type="submit" class="submit-btn">Xác nhận đặt phòng</button>
                 </form>
             </c:if>
@@ -107,17 +124,76 @@
         </div>
     </div>
     <script>
+        let basePrice = 0;
+        let selectedServicesTotal = 0;
+
         document.addEventListener('DOMContentLoaded', function() {
             var stayNights = parseInt('${nights}', 10);
             var pricePerNight = parseInt('${param.pricePerNight}', 10);
-            var totalPrice = pricePerNight * stayNights;
-            
-            function formatPrice(price) {
-                return new Intl.NumberFormat('vi-VN').format(price);
-            }
-            
-            document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + formatPrice(totalPrice) + 'đ';
+            basePrice = pricePerNight * stayNights;
+            updateTotalPrice();
+
+            // Handle form submission
+            document.getElementById('bookingForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Log form data before sending
+                const formData = new FormData(this);
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+
+                fetch(this.action, {
+                    method: 'POST',
+                    body: new FormData(this)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Thành công!',
+                            text: data.message,
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '${pageContext.request.contextPath}/home.jsp';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Lỗi!',
+                            text: data.message,
+                            icon: 'error'
+                        });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: 'Có lỗi xảy ra. Vui lòng thử lại!',
+                        icon: 'error'
+                    });
+                });
+            });
         });
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
+        }
+
+        function updateTotalPrice() {
+            selectedServicesTotal = 0;
+            const checkboxes = document.querySelectorAll('input[name="selectedServices"]');
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedServicesTotal += parseFloat(checkbox.dataset.price);
+                }
+            });
+
+            const finalTotal = basePrice + selectedServicesTotal;
+            document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + formatPrice(finalTotal) + 'đ';
+        }
     </script>
 </body>
 </html>

@@ -46,7 +46,17 @@
                 <div class="col-lg-5 col-md-12">
                     <div class="booking-section">
                         <h3 class="booking-title">Đặt phòng ngay</h3>
-                        <form action="${pageContext.request.contextPath}/customer/bookingDetail.jsp" method="POST" class="booking-form" novalidate>
+                        <c:if test="${param.error eq 'unavailable'}">                            
+                            <div class="alert alert-danger mb-3">
+                                Rất tiếc, phòng này đã được đặt trong khoảng thời gian bạn chọn. Vui lòng chọn phòng khác hoặc thay đổi ngày đặt.
+                            </div>
+                        </c:if>
+                        <c:if test="${param.error eq 'invalid'}">                            
+                            <div class="alert alert-danger mb-3">
+                                Vui lòng chọn ngày nhận phòng và trả phòng hợp lệ.
+                            </div>
+                        </c:if>
+                        <form action="${pageContext.request.contextPath}/check-availability" method="POST" class="booking-form" novalidate>
                             <input type="hidden" name="roomId" value="${room.id}">
                             <input type="hidden" name="roomNumber" value="${room.roomNumber}">
                             <input type="hidden" name="roomType" value="${room.roomTypeName}">
@@ -56,11 +66,11 @@
                             <input type="hidden" name="imageUrl" value="${room.imageUrl}">
                             <div class="form-group mb-3">
                                 <label for="checkIn" class="form-label">Ngày nhận phòng</label>
-                                <input type="date" class="form-control" id="checkIn" name="checkIn" required>
+                                <input type="date" class="form-control" id="checkIn" name="checkIn" value="${param.checkIn}" required>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="checkOut" class="form-label">Ngày trả phòng</label>
-                                <input type="date" class="form-control" id="checkOut" name="checkOut" required>
+                                <input type="date" class="form-control" id="checkOut" name="checkOut" value="${param.checkOut}" required>
                             </div>
                             <button type="submit" class="btn-book">Đặt phòng ngay</button>
                         </form>

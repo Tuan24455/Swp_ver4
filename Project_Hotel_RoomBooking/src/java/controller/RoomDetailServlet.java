@@ -16,12 +16,15 @@ public class RoomDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        PrintWriter out = response.getWriter();
         String sid = request.getParameter("id");
+        String checkIn = request.getParameter("checkIn");
+        String checkOut = request.getParameter("checkOut");
+
         if (sid == null || sid.trim().isEmpty()) {
             response.sendRedirect("home");
             return;
         }
+
         try {
             int id = Integer.parseInt(sid);
             RoomDao roomDAO = new RoomDao();
@@ -31,6 +34,36 @@ public class RoomDetailServlet extends HttpServlet {
                 response.sendRedirect("error.jsp?message=Room not found");
                 return;
             }
+
+            // Set room as available by default when no dates are selected
+            boolean isRoomAvailable = true;
+            
+            // Only check availability if dates are provided
+            if (checkIn != null && !checkIn.isEmpty() && checkOut != null && !checkOut.isEmpty()) {
+                try {
+                    java.sql.Date checkInDate = java.sql.Date.valueOf(checkIn);
+                    java.sql.Date checkOutDate = java.sql.Date.valueOf(checkOut);
+
+                    // Get available rooms for the selected dates
+                    java.util.List<Room> availableRooms = roomDAO.filterRoomsAdvanced(null, null, null, null, null, checkInDate, checkOutDate);
+                    
+                    // Check if the current room is in the available rooms list
+                    isRoomAvailable = false; // Reset to false when checking dates
+                    for (Room availableRoom : availableRooms) {
+                        if (availableRoom.getId() == id) {
+                            isRoomAvailable = true;
+                            break;
+                        }
+                    }
+                    
+                    request.setAttribute("checkIn", checkIn);
+                    request.setAttribute("checkOut", checkOut);
+                } catch (IllegalArgumentException e) {
+                    request.setAttribute("error", "Invalid date format");
+                }
+            }
+            
+            request.setAttribute("isRoomAvailable", isRoomAvailable);
 
             request.setAttribute("room", room);
             request.getRequestDispatcher("room-detail.jsp").forward(request, response);
