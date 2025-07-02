@@ -1,4 +1,20 @@
-﻿Create database BookingHotel_v4;
+﻿﻿SELECT
+    session_id,
+    login_name,
+    host_name,
+    program_name
+FROM
+    sys.dm_exec_sessions
+WHERE
+    database_id = DB_ID('BookingHotel_v4');
+
+KILL 62;
+
+ALTER DATABASE BookingHotel_v4
+SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
+DROP DATABASE BookingHotel_v4;
+Create database BookingHotel_v4;
 USE BookingHotel_v4;
 
 -- Bảng người dùng
@@ -46,21 +62,6 @@ CREATE TABLE RoomReviews (
     comment NVARCHAR(MAX),
     FOREIGN KEY (room_id) REFERENCES Rooms(id)
 );
-
--- Tạo bảng Categories
-CREATE TABLE dbo.Categories
-(
-    -- Khóa chính tự tăng
-    id INT IDENTITY(1,1) NOT NULL
-        CONSTRAINT PK_Categories PRIMARY KEY,
-
-    -- Tên danh mục (có dấu Unicode)
-    category_name NVARCHAR(100) NOT NULL,
-
-    -- Phân hệ (warehouse, room, …)
-    module NVARCHAR(50) NOT NULL
-);
-GO
 
 -- Bảng loại dịch vụ
 CREATE TABLE ServiceTypes (
@@ -150,20 +151,15 @@ CREATE TABLE Transactions (
 -- Dữ liệu cho bảng Users
 INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url) 
 VALUES 
-('nguyenminhquan', 'password123', N'Nguyễn Minh Quân', '1990-05-15', 'Male', 'quan.nguyen@email.com', '0123456789', N'123 Đường ABC, Hà Nội', 'Customer', 'https://avatar.url'),
-('tranthithuy', 'password456', N'Trần Thị Thúy', '1985-08-25', 'Female', 'thuy.tran@email.com', '0123456780', N'456 Đường XYZ, TP.HCM', 'Admin', 'https://avatar.url'),
-('hoangvanson', 'password789', N'Hoàng Văn Sơn', '1992-10-10', 'Male', 'son.hoang@email.com', '0123456781', N'789 Đường DEF, Đà Nẵng', 'Customer', 'https://avatar.url'),
-('lethuylinh', 'password321', N'Lê Thùy Linh', '1995-02-20', 'Female', 'linh.le@email.com', '0123456782', N'101 Đường GHI, Hà Nội', 'Customer', 'https://avatar.url'),
-('phamquanghieu', 'password654', N'Phạm Quang Hiếu', '1987-12-05', 'Male', 'hieu.pham@email.com', '0123456783', N'202 Đường JKL, TP.HCM', 'Admin', 'https://avatar.url'),
-('ngocanh', 'password987', N'Ngọc Anh', '1993-06-18', 'Female', 'anh.ngoc@email.com', '0123456784', N'303 Đường MNO, Hà Nội', 'Customer', 'https://avatar.url'),
-('vothithu', 'password555', N'Võ Thị Thu', '1996-07-28', 'Female', 'thu.vo@email.com', '0123456785', N'404 Đường PQR, Đà Nẵng', 'Customer', 'https://avatar.url'),
-('dinhtronghieu', 'password222', N'Dinh Trọng Hiếu', '1991-09-13', 'Male', 'hieu.dinh@email.com', '0123456786', N'505 Đường STU, TP.HCM', 'Admin', 'https://avatar.url'),
-('nguyenthiduyen', 'password888', N'Nguyễn Thị Duyên', '1994-01-01', 'Female', 'duyen.nguyen@email.com', '0123456787', N'606 Đường VWX, Hà Nội', 'Customer', 'https://avatar.url'),
-('leminhphat', 'password777', N'Lê Minh Phát', '1989-03-12', 'Male', 'phat.le@email.com', '0123456788', N'707 Đường YZ, TP.HCM', 'Customer', 'https://avatar.url'),
-('lequangthang', 'password123', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'https://avatar.url'),
-('phamngocbao', 'password456', N'Phạm Ngọc Bảo', '1992-01-01', 'Female', 'bao.pham@email.com', '0123456790', N'555 Đường ABC, Hà Nội', 'Reception', 'https://avatar.url'),
-('nguyenhoangminh', 'password789', N'Nguyễn Hoàng Minh', '1994-06-21', 'Male', 'minh.nguyen@email.com', '0123456791', N'123 Đường PQR, Đà Nẵng', 'Reception', 'https://avatar.url'),
-('tranngocmau', 'password321', N'Trần Ngọc Mẫu', '1995-04-15', 'Female', 'mau.tran@email.com', '0123456792', N'333 Đường STU, TP.HCM', 'Reception', 'https://avatar.url');
+-- password gốc: password123
+('nguyenminhquan', 'q5tcb63SSYLuZb5eX0ltbA==', N'Nguyễn Minh Quân', '1990-05-15', 'Male', 'quan.nguyen@email.com', '0123456789', N'123 Đường ABC, Hà Nội', 'Customer', 'images/user/default_avatar.png'),
+
+-- password gốc: password456
+('tranthithuy', 'OFvwS0UtlUn9k2qYqH/8gQ==', N'Trần Thị Thúy', '1985-08-25', 'Female', 'thuy.tran@email.com', '0123456780', N'456 Đường XYZ, TP.HCM', 'Admin', 'images/user/default_avatar.png'),
+
+-- password gốc: password123
+('lequangthang', 'q5tcb63SSYLuZb5eX0ltbA==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'images/user/default_avatar.png');
+
 -- Dữ liệu cho bảng RoomTypes
 INSERT INTO RoomTypes (room_type) 
 VALUES 
@@ -254,29 +250,60 @@ VALUES
 (4, 4, 3500000, N'Pending', 3, 3),
 (5, 5, 6000000, N'Confirmed', 4, 4);
 
--- Dữ liệu cho bảng BookingRoomDetails
+-- Cập nhật dữ liệu BookingRoomDetails phù hợp và đa dạng hơn
 INSERT INTO BookingRoomDetails (booking_id, room_id, check_in_date, check_out_date, quantity, prices) 
 VALUES 
-(1, 1, '2025-06-05', '2025-06-07', 1, 1000000),
-(2, 2, '2025-06-06', '2025-06-08', 1, 1200000),
-(3, 3, '2025-06-07', '2025-06-09', 2, 1500000),
-(4, 4, '2025-06-10', '2025-06-12', 1, 1600000),
-(5, 5, '2025-06-12', '2025-06-14', 1, 2000000);
+-- Booking 1: Phòng Standard 101
+(5, 1, '2025-06-06', '2025-06-08', 1, 1000000),
+
+-- Booking 2: Phòng Deluxe 102
+(6, 2, '2025-06-08', '2025-06-10', 1, 1200000),
+
+-- Booking 3: Phòng Standard 201 x2
+(7, 3, '2025-06-10', '2025-06-12', 2, 1100000),
+
+-- Booking 4: Phòng Suite 301
+(8, 5, '2025-06-12', '2025-06-14', 1, 1500000),
+
+-- Booking 5: Phòng Tổng thống 401
+(9, 7, '2025-06-15', '2025-06-17', 1, 2000000);
+
 
 -- Dữ liệu cho bảng BookingServiceDetail
 INSERT INTO BookingServiceDetail (booking_id, service_id, quantity, prices) 
 VALUES 
-(1, 1, 1, 200000),
-(2, 2, 1, 500000),
-(3, 3, 1, 150000),
-(4, 4, 1, 300000),
-(5, 5, 1, 80000);
+(5, 1, 1, 200000),
+(6, 2, 1, 500000),
+(7, 3, 1, 150000),
+(8, 4, 1, 300000),
+(9, 5, 1, 80000);
 
 -- Dữ liệu cho bảng Transactions
 INSERT INTO Transactions (booking_id, transaction_date, amount, payment_method, status) 
 VALUES 
-(1, '2025-06-05', 4500000, N'Credit Card', N'Paid'),
-(2, '2025-06-06', 3000000, N'Cash', N'Paid'),
-(3, '2025-06-07', 5000000, N'Credit Card', N'Paid'),
-(4, '2025-06-08', 3500000, N'Cash', N'Pending'),
-(5, '2025-06-09', 6000000, N'Credit Card', N'Paid');
+(5, '2025-06-05', 4500000, N'Credit Card', N'Paid'),
+(6, '2025-06-06', 3000000, N'Cash', N'Paid'),
+(7, '2025-06-07', 5000000, N'Credit Card', N'Paid'),
+(8, '2025-06-08', 3500000, N'Cash', N'Pending'),
+(9, '2025-06-09', 6000000, N'Credit Card', N'Paid');
+
+USE BookingHotel_v4;
+GO
+
+DECLARE @check_in DATE = '2025-06-06';
+DECLARE @check_out DATE = '2025-06-06';
+
+SELECT *
+FROM Rooms r
+WHERE r.room_status != N'Maintenance'
+  AND r.isDelete = 0
+  AND NOT EXISTS (
+      SELECT 1
+      FROM BookingRoomDetails brd
+      JOIN Bookings b ON brd.booking_id = b.id
+      WHERE brd.room_id = r.id
+        --AND b.status IN (N'Pending', N'Confirmed') -- trạng thái giữ phòng
+        AND (
+            @check_in < brd.check_out_date AND @check_out > brd.check_in_date
+        )
+  );
