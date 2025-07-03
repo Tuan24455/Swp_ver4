@@ -106,4 +106,22 @@ public class BookingDao extends DBContext {
         
         return bookings;
     }
+    
+    public boolean updateBookingStatus(int bookingId, String status) {
+        String sql = "UPDATE Bookings SET status = ? WHERE id = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, status);
+            ps.setInt(2, bookingId);
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

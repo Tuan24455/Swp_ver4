@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
 import model.Booking;
+import service.VNPayService;
 
 @WebServlet(name = "BookingServlet", urlPatterns = {"/booking"})
 public class BookingServlet extends HttpServlet {
@@ -47,17 +48,18 @@ public class BookingServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             
             if (bookingId > 0) {
-                // Booking successful
-                response.getWriter().write("{\"success\": true, \"message\": \"Đặt phòng thành công!\"}");
+                // Booking successful, redirect to VNPay payment
+                double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
+                String paymentUrl = VNPayService.createPaymentUrl(request, bookingId, (long)totalAmount);
+                response.sendRedirect(paymentUrl);
             } else {
                 // Booking failed
-                response.getWriter().write("{\"success\": false, \"message\": \"Đặt phòng không thành công\"}");
+                response.sendRedirect(request.getContextPath() + "/error.jsp?message=Booking failed");
             }
             
         } catch (Exception e) {
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"success\": false, \"message\": \"Có lỗi xảy ra\"}");
+            e.printStackTrace(); // In lỗi ra console
+            response.sendRedirect(request.getContextPath() + "/error.jsp?message=" + e.getMessage());
         }
     }
 }
