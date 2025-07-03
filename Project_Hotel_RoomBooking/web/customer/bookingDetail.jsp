@@ -92,7 +92,10 @@
                     <input type="hidden" name="checkOut" value="${param.checkOut}">
                     <input type="hidden" name="nights" value="${param.nights}">
                     <input type="hidden" name="pricePerNight" value="${param.pricePerNight}">
-                    <button type="submit" class="submit-btn">Xác nhận đặt phòng</button>
+                    <input type="hidden" name="totalAmount" id="totalAmountInput" value="0">
+                    
+                    <button type="submit" class="btn btn-primary">Xác nhận và Thanh toán</button>
+
                 </form>
             </c:if>
         </div>
@@ -133,48 +136,8 @@
             basePrice = pricePerNight * stayNights;
             updateTotalPrice();
 
-            // Handle form submission
-            document.getElementById('bookingForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Log form data before sending
-                const formData = new FormData(this);
-                for (let pair of formData.entries()) {
-                    console.log(pair[0] + ': ' + pair[1]);
-                }
-
-                fetch(this.action, {
-                    method: 'POST',
-                    body: new FormData(this)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Thành công!',
-                            text: data.message,
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            window.location.href = '${pageContext.request.contextPath}/home.jsp';
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Lỗi!',
-                            text: data.message,
-                            icon: 'error'
-                        });
-                    }
-                })
-                .catch(() => {
-                    Swal.fire({
-                        title: 'Lỗi!',
-                        text: 'Có lỗi xảy ra. Vui lòng thử lại!',
-                        icon: 'error'
-                    });
-                });
-            });
+            // Calculate initial total price
+            updateTotalPrice();
         });
 
         function formatPrice(price) {
@@ -193,7 +156,9 @@
 
             const finalTotal = basePrice + selectedServicesTotal;
             document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + formatPrice(finalTotal) + 'đ';
+            document.getElementById('totalAmountInput').value = finalTotal;
         }
     </script>
+
 </body>
 </html>
