@@ -116,7 +116,7 @@ prefix="c" %>
         <i class="fas fa-hotel me-2"></i> Quản lý khuyến mãi
       </a>
       <a
-        href="${pageContext.request.contextPath}/admin/bookings.jsp"
+        href="${pageContext.request.contextPath}/serviceList"
         class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}"
       >
         <i class="fas fa-calendar-check me-2"></i> Quản lí dịch vụ

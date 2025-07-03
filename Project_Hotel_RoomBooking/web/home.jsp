@@ -337,6 +337,21 @@
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="js/home-enhanced.js"></script>
+        
+        <!-- Show payment result message if exists -->
+        <c:if test="${not empty param.message}">    
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '${param.status == "success" ? "Thành công!" : "Thất bại!"}',
+                        text: '${param.message}',
+                        icon: '${param.status}',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            </script>
+        </c:if>
     </body>
 </html>

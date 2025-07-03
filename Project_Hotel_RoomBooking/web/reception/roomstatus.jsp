@@ -74,14 +74,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           <!-- Page Header -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0">Danh sách phòng</h1>
-            <div class="btn-group">
-              <button class="btn btn-outline-primary" onclick="refreshStatus()">
-                <i class="fas fa-sync-alt me-2"></i>Refresh
-              </button>
-              <button class="btn btn-outline-success" onclick="bulkUpdate()">
-                <i class="fas fa-edit me-2"></i>Bulk Update
-              </button>
-            </div>
           </div>
 
           <!-- Status Legend -->

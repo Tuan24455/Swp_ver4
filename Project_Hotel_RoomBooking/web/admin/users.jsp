@@ -229,7 +229,7 @@
                                                                              alt="Avatar" onerror="this.src='${pageContext.request.contextPath}/images/default-avatar.png'" />
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <img src="${pageContext.request.contextPath}/images/default-avatar.png" alt="Default Avatar" />
+                                                                        <img src="${pageContext.request.contextPath}/images/user/default_avatar.png" alt="Default Avatar" />
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                                 <div class="status-indicator ${user.deleted ? 'offline' : 'online'}"></div>
@@ -426,7 +426,7 @@
                                     </label>
                                     <input type="text" class="form-control" id="userName" name="userName" required>
                                     <div class="invalid-feedback">Vui lòng nhập tên đăng nhập</div>
-                                    <small class="form-text text-muted">Chỉ chứa chữ cái, số và dấu gạch dưới</small>
+                                    <small class="form-text text-muted">Chỉ chứa chữ cái và số</small>
                                 </div>
 
                                 <div class="col-md-6">
@@ -442,7 +442,7 @@
                                         <i class="fas fa-phone me-1"></i>Số điện thoại
                                     </label>
                                     <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10,11}">
-                                    <div class="invalid-feedback">Số điện thoại phải có 10-11 chữ số</div>
+                                    <div class="invalid-feedback">Số điện thoại phải có 10 chữ số</div>
                                 </div>
 
                                 <!-- Password Section -->
@@ -607,23 +607,80 @@
             e.preventDefault();
 
             const form = this;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            let isValid = true;
 
-            // Check password match
-            if (password !== confirmPassword) {
-                document.getElementById('confirmPassword').setCustomValidity('Mật khẩu xác nhận không khớp');
-            } else {
-                document.getElementById('confirmPassword').setCustomValidity('');
+            const fullName = document.getElementById('fullName');
+            const userName = document.getElementById('userName');
+            const birth = document.getElementById('birth');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+
+            // Reset custom validity
+            [fullName, userName, birth, email, phone, confirmPassword].forEach(input => input.setCustomValidity(''));
+
+            // 1. Full name: required
+            if (!fullName.value.trim()) {
+                fullName.setCustomValidity('Vui lòng nhập họ và tên');
+                isValid = false;
             }
 
-            if (form.checkValidity()) {
-                // Show loading state
+            // 2. Username: required and only letters, numbers, underscores
+            const usernameRegex = /^\w+$/;
+            if (!userName.value.trim()) {
+                userName.setCustomValidity('Vui lòng nhập tên đăng nhập');
+                isValid = false;
+            } else if (!usernameRegex.test(userName.value.trim())) {
+                userName.setCustomValidity('Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới');
+                isValid = false;
+            }
+
+            // 3. Birthdate: required and must be at least 18 years old
+            if (!birth.value) {
+                birth.setCustomValidity('Vui lòng chọn ngày sinh');
+                isValid = false;
+            } else {
+                const birthDate = new Date(birth.value);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                const dayDiff = today.getDate() - birthDate.getDate();
+                const isBirthdayPassed = monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0);
+
+                if (age < 18 || (age === 18 && !isBirthdayPassed)) {
+                    birth.setCustomValidity('Người dùng phải đủ 18 tuổi');
+                    isValid = false;
+                }
+            }
+
+            // 4. Email: required and valid format
+            if (!email.value.trim()) {
+                email.setCustomValidity('Vui lòng nhập email');
+                isValid = false;
+            }
+
+            // 5. Phone: required, starts with 0 and has exactly 10 digits
+            const phoneRegex = /^0\d{9}$/;
+            if (!phone.value.trim()) {
+                phone.setCustomValidity('Vui lòng nhập số điện thoại');
+                isValid = false;
+            } else if (!phoneRegex.test(phone.value.trim())) {
+                phone.setCustomValidity('Số điện thoại phải bắt đầu bằng 0 và gồm đúng 10 chữ số');
+                isValid = false;
+            }
+
+            // 6. Password confirmation
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Mật khẩu xác nhận không khớp');
+                isValid = false;
+            }
+
+            // Nếu tất cả hợp lệ
+            if (form.checkValidity() && isValid) {
                 const saveBtn = document.getElementById('saveUserBtn');
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
                 saveBtn.disabled = true;
-
-                // Submit form
                 form.submit();
             } else {
                 form.classList.add('was-validated');

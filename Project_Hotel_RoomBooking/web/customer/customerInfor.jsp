@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="model.User" %>
+<%@ page import="valid.Encrypt" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null) {
@@ -60,7 +61,7 @@
 
                                 <i class="fas fa-shield-alt me-2"></i>
                                 <span class="status-text">${user.role}</span>
-                                <button type="button" class="btn btn-remove" onclick="window.profileManager.removeProfilePictureAndNotifyServer()">Xóa tài khoản
+                                <button type="button" class="btn btn-remove" onclick="window.profileManager.removeAccount()">Xóa tài khoản
                                 </button>
                             </div>
                         </div>
@@ -126,7 +127,7 @@
                                         <i class="fas fa-calendar-check"></i>
                                     </div>
                                     <div class="stat-info">
-                                        <span class="stat-number">0</span>
+                                        <span class="stat-number">${statis.totalBookings}</span>
                                         <span class="stat-label">Đặt phòng</span>
                                     </div>
                                 </div>
@@ -135,7 +136,7 @@
                                         <i class="fas fa-star"></i>
                                     </div>
                                     <div class="stat-info">
-                                        <span class="stat-number">0</span>
+                                        <span class="stat-number">${statis.totalRoomReviews + statis.totalServiceReviews}</span>
                                         <span class="stat-label">Đánh giá</span>
                                     </div>
                                 </div>
@@ -290,6 +291,9 @@
                     </div>
                     <form id="changePasswordForm" action="changePassword" method="post">
                         <div class="modal-body">
+                            <!-- Thêm hidden input để lưu mật khẩu hiện tại từ session -->
+                            <% String currentUserPassword = Encrypt.decrypt(user.getPass()); %>
+                            <input type="hidden" id="currentUserPassword" value="<%= currentUserPassword %>">
                             <div class="mb-3">
                                 <label class="form-label">Mật khẩu hiện tại</label>
                                 <div class="input-group">
@@ -354,7 +358,7 @@
             </div>
         </div>
 
-        <!-- Scripts -->
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="js/profile-enhanced.js"></script>
     </body>

@@ -53,7 +53,7 @@
                         </c:if>
                         <c:if test="${param.error eq 'invalid'}">                            
                             <div class="alert alert-danger mb-3">
-                                Vui lòng chọn ngày nhận phòng và trả phòng hợp lệ.
+                                Vui lòng chọn ngày nhận phòng và trả phòng khác.
                             </div>
                         </c:if>
                         <form action="${pageContext.request.contextPath}/check-availability" method="POST" class="booking-form" novalidate>
