@@ -72,7 +72,7 @@
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
-                            data-bs-target="#addPromotionModal"
+                            data-bs-target="#addServiceModal"
                             >
                             <i class="fas fa-plus me-2"></i>Thêm Dịch Vụ
                         </button>
@@ -113,10 +113,10 @@
                 </form>
 
 
-                <!-- Promotions Table -->
+                <!-- Service Table -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="mb-0">All Promotions</h5>
+                        <h5 class="mb-0">All Service</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
@@ -156,20 +156,18 @@
                                         <th>Tên Dịch Vụ</th>
                                         <th>Ảnh (%)</th>
                                         <th>Giá</th>
-                                        <th>End Date</th>
                                         <th>Description</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="p" items="${pro}">
+                                    <c:forEach var="d" items="${d}">
                                         <tr>
-                                            <td>#${p.id}</td>
-                                            <td>${p.title}</td>
-                                            <td>${p.percentage}</td>
-                                            <td>${p.startAt}</td>
-                                            <td>${p.endAt}</td>
-                                            <td>${p.description}</td>
+                                            <td>#${d.serviceTypeName}</td>
+                                            <td>${d.serviceName}</td>
+                                            <td>${d.imageUrl}</td>
+                                            <td>${d.servicePrice}</td>
+                                            <td>${d.description}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <button
@@ -182,7 +180,7 @@
                                                         class="btn btn-sm btn-outline-warning"
                                                         title="Edit"
                                                         type="button"
-                                                        onclick="openEditModal(${p.id}, '${p.title}', ${p.percentage}, '${p.startAt}', '${p.endAt}', '${p.description}')"
+                                                        onclick="openEditModal(${d.id}, '${p.title}', ${p.percentage}, '${p.startAt}', '${p.endAt}', '${p.description}')"
                                                         >
                                                         <i class="fas fa-edit"></i>
                                                     </button>
@@ -250,53 +248,62 @@
 
 
 
-    <!-- Add Promotion Modal -->
-    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form id="promotionForm" action="${pageContext.request.contextPath}/addPromotion" method="post">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addPromotionLabel">Add New Promotion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" id="title" name="title" class="form-control" required />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="percentage" class="form-label">Percentage (%)</label>
-                                <input type="number" id="percentage" name="percentage" class="form-control" min="0" max="100" required />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="start_at" class="form-label">Start Date</label>
-                                <input type="date" id="start_at" name="start_at" class="form-control" required />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="end_at" class="form-label">End Date</label>
-                                <input type="date" id="end_at" name="end_at" class="form-control" required />
-                            </div>
-
-                            <div class="col-12">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Promotion</button>
-                    </div>
-                </form>
-            </div>
+<!-- Modal Thêm Dịch Vụ -->
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form action="ServiceController" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="action" value="create" />
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addServiceModalLabel">Thêm Dịch Vụ Mới</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
         </div>
-    </div>
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label for="service_name" class="form-label">Tên dịch vụ</label>
+            <input type="text" class="form-control" id="service_name" name="service_name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="service_type_id" class="form-label">Loại dịch vụ</label>
+            <select class="form-select" id="service_type_id" name="service_type_id" required>
+              <option value="" disabled selected>-- Chọn loại dịch vụ --</option>
+              <option value="1">Restaurant</option>
+              <option value="2">Spa</option>
+              <option value="3">Gym</option>
+              <option value="4">Shuttle</option>
+              <c:forEach var="type" items="${serviceTypeList}">
+                <option value="${type.id}">${type.service_type}</option>
+              </c:forEach>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="service_price" class="form-label">Giá (VNĐ)</label>
+            <input type="number" class="form-control" id="service_price" name="service_price" step="1000" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Mô tả</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="image" class="form-label">Ảnh đại diện</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Thêm dịch vụ</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 
     <!-- Update Promotion Modal -->
