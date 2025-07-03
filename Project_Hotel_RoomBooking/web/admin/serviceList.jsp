@@ -251,7 +251,7 @@
 <!-- Modal Thêm Dịch Vụ -->
 <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form action="ServiceController" method="post" enctype="multipart/form-data">
+    <form action="addService" method="post" enctype="multipart/form-data">
       <input type="hidden" name="action" value="create" />
       <div class="modal-content">
         <div class="modal-header">
@@ -290,8 +290,8 @@
           </div>
 
           <div class="mb-3">
-            <label for="image" class="form-label">Ảnh đại diện</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            <label for="image" class="form-label" >Ảnh đại diện</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" required="">
           </div>
 
         </div>
