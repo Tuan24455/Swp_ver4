@@ -45,6 +45,78 @@ public class ServiceDao {
 
         return list;
     }
+    
+        // Thêm dịch vụ mới
+    public void insert(Service s) {
+        String query = "INSERT INTO Services (service_name, service_type_id, service_price, description, image_url, isDeleted) VALUES (?, ?, ?, ?, ?, 0)";
+        try {
+            Connection conn = new DBContext().getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, s.getServiceName());
+            ps.setInt(2, s.getServiceTypeId());
+            ps.setDouble(3, s.getServicePrice());
+            ps.setString(4, s.getDescription());
+            ps.setString(5, s.getImageUrl());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Cập nhật dịch vụ
+    public void update(Service s) {
+        String query = "UPDATE Services SET service_name=?, service_type_id=?, service_price=?, description=?, image_url=? WHERE id=? AND isDeleted = 0";
+        try {
+            Connection conn = new DBContext().getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, s.getServiceName());
+            ps.setInt(2, s.getServiceTypeId());
+            ps.setDouble(3, s.getServicePrice());
+            ps.setString(4, s.getDescription());
+            ps.setString(5, s.getImageUrl());
+            ps.setInt(6, s.getId());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Xóa mềm dịch vụ
+    public void delete(int id) {
+        String query = "UPDATE Services SET isDeleted = 1 WHERE id=?";
+        try {
+            Connection conn = new DBContext().getConnection();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+//
+//    // Lấy dịch vụ theo id
+//    public Service getById(int id) {
+//        String query = "SELECT * FROM Services WHERE id=? AND isDeleted = 0";
+//        try {
+//            Connection conn = new DBContext().getConnection();
+//            PreparedStatement ps = conn.prepareStatement(query);
+//            ps.setInt(1, id);
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                return new Service(
+//                        rs.getInt("id"),
+//                        rs.getString("service_name"),
+//                        rs.getInt("service_type_id"),
+//                        rs.getDouble("service_price"),
+//                        rs.getString("description"),
+//                        rs.getString("image_url")
+//                );
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public List<Service> filterServices(List<Integer> typeIds, Double priceFrom, Double priceTo) {
         List<Service> list = new ArrayList<>();

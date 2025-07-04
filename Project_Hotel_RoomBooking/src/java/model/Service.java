@@ -18,7 +18,6 @@ public class Service {
     private String description;
     private String imageUrl;
 
-    // Getter and Setter methods
     
     public Service() {
     }
