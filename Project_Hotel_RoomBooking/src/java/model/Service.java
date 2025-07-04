@@ -6,18 +6,34 @@ package model;
 
 /**
  *
- * @author Phạm Quốc Tuấn
+ * @author Mai Tien Dung
  */
 public class Service {
 
     private int id;
     private String serviceName;
     private int serviceTypeId;
+    private String serviceTypeName;
     private double servicePrice;
     private String description;
     private String imageUrl;
 
     // Getter and Setter methods
+    
+    public Service() {
+    }
+
+    public Service(int id, String serviceName, int serviceTypeId, String serviceTypeName, double servicePrice, String description, String imageUrl) {
+        this.id = id;
+        this.serviceName = serviceName;
+        this.serviceTypeId = serviceTypeId;
+        this.serviceTypeName = serviceTypeName;
+        this.servicePrice = servicePrice;
+        this.description = description;
+        this.imageUrl = imageUrl;
+    }
+    
+
     public int getId() {
         return id;
     }
@@ -65,4 +81,13 @@ public class Service {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public String getServiceTypeName() {
+        return serviceTypeName;
+    }
+
+    public void setServiceTypeName(String serviceTypeName) {
+        this.serviceTypeName = serviceTypeName;
+    }
+    
 }

@@ -180,6 +180,7 @@
                                                            id="email" 
                                                            name="email" 
                                                            class="form-control" 
+                                                           value="${sessionScope.user.getEmail()}"
                                                            placeholder="example@email.com"
                                                            required>
                                                     <div class="invalid-feedback"></div>
@@ -194,6 +195,7 @@
                                                            id="phone" 
                                                            name="phone" 
                                                            class="form-control" 
+                                                           value="${sessionScope.user.getPhone()}"
                                                            placeholder="0123 456 789">
                                                     <div class="invalid-feedback"></div>
                                                 </div>

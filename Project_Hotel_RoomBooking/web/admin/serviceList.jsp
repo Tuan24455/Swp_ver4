@@ -1,6 +1,6 @@
 <%-- 
-    Document   : promotions
-    Created on : May 27, 2025, 10:40:46 PM
+    Document   : serviceList
+    Created on : Jun 24, 2025, 3:54:48 PM
     Author     : Phạm Quốc Tuấn
 --%>
 
@@ -14,7 +14,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Promotions Management - Hotel Management System</title>
+        <title>Service Management - Hotel Management System</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link
             rel="stylesheet"
@@ -25,14 +25,20 @@
     <body>
         <div class="d-flex" id="wrapper">
             <jsp:include page="includes/sidebar.jsp">
-                <jsp:param name="activePage" value="promotion" />
+                <jsp:param name="activePage" value="service" />
             </jsp:include>
 
 
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <jsp:include page="includes/navbar.jsp" />
+                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                    <div class="container-fluid">
+                        <button class="btn btn-outline-secondary" id="menu-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </nav>
 
                 <style>
                     .header-bg {
@@ -57,18 +63,18 @@
                     <nav aria-label="breadcrumb" class="mb-3">
                         <ol class="breadcrumb custom-breadcrumb">
                             <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Promotions</li>
+                            <li class="breadcrumb-item active" aria-current="page">Dịch Vụ</li>
                         </ol>
                     </nav>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Khuyến Mãi</h1>
+                        <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addPromotionModal"
                             >
-                            <i class="fas fa-plus me-2"></i>Thêm Khuyến Mãi
+                            <i class="fas fa-plus me-2"></i>Thêm Dịch Vụ
                         </button>
                     </div>
                 </div>
@@ -79,12 +85,13 @@
 
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">Loại Dịch Vụ</label>
                             <select class="form-select" name="status">
-                                <option value="" ${paramStatus == null ? 'selected' : ''}>All Status</option>
-                                <option value="active" ${paramStatus == 'active' ? 'selected' : ''}>Active</option>
-                                <option value="expired" ${paramStatus == 'expired' ? 'selected' : ''}>Expired</option>
-                                <option value="upcoming" ${paramStatus == 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                                <option value="" ${paramStatus == null ? 'selected' : ''}>Tất Cả</option>
+                                <option value="Restaurant"${paramStatus == 'active' ? 'selected' : ''}>Nhà Hàng</option>
+                                <option value="Spa" ${paramStatus == 'expired' ? 'selected' : ''}>Spa</option>
+                                <option value="Gym" ${paramStatus == 'upcoming' ? 'selected' : ''}>Gym</option>
+                                <option value="Shuttle" ${paramStatus == 'upcoming' ? 'selected' : ''}>Di Chuyển</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -145,10 +152,10 @@
                             <table class="table table-striped table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>Percentage (%)</th>
-                                        <th>Start Date</th>
+                                        <th>Loại Dịch Vụ</th>
+                                        <th>Tên Dịch Vụ</th>
+                                        <th>Ảnh (%)</th>
+                                        <th>Giá</th>
                                         <th>End Date</th>
                                         <th>Description</th>
                                         <th>Actions</th>
@@ -175,13 +182,7 @@
                                                         class="btn btn-sm btn-outline-warning"
                                                         title="Edit"
                                                         type="button"
-                                                        data-id="${p.id}"
-                                                        data-title="${p.title}"
-                                                        data-percentage="${p.percentage}"
-                                                        data-start-at="${p.startAt}"
-                                                        data-end-at="${p.endAt}"
-                                                        data-description="${p.description}"
-                                                        onclick="openEditModal(this)"
+                                                        onclick="openEditModal(${p.id}, '${p.title}', ${p.percentage}, '${p.startAt}', '${p.endAt}', '${p.description}')"
                                                         >
                                                         <i class="fas fa-edit"></i>
                                                     </button>
@@ -352,23 +353,21 @@
         </div>
     </div>
     <script>
-        function openEditModal(button) {
-            const id = button.getAttribute('data-id');
-            const title = button.getAttribute('data-title');
-            const percentage = button.getAttribute('data-percentage');
-            const startAt = button.getAttribute('data-start-at');
-            const endAt = button.getAttribute('data-end-at');
-            const description = button.getAttribute('data-description');
-
+        function openEditModal(id, title, percentage, startAt, endAt, description) {
+            // Gán dữ liệu vào các input của form update
             document.getElementById('update_id').value = id;
             document.getElementById('update_title').value = title;
             document.getElementById('update_percentage').value = percentage;
-            document.getElementById('update_start_at').value = startAt.substring(0, 10);
-            document.getElementById('update_end_at').value = endAt.substring(0, 10);
+
+            // Chuyển đổi định dạng ngày nếu cần
+            document.getElementById('update_start_at').value = startAt ? startAt.substring(0, 10) : '';
+            document.getElementById('update_end_at').value = endAt ? endAt.substring(0, 10) : '';
+
             document.getElementById('update_description').value = description;
 
-            var myModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
-            myModal.show();
+            // Mở modal bằng Bootstrap 5 JS API
+            const updateModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
+            updateModal.show();
         }
     </script>
 
@@ -398,6 +397,3 @@
 
 </body>
 </html>
-
-
-

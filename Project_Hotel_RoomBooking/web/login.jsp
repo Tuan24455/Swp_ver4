@@ -55,8 +55,8 @@
                                             <div class="row justify-content-between">
                                                 <div class="col-6">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" name="rememberMe" id="rememberMe">
-                                                        <label class="form-check-label text-secondary" for="rememberMe">
+                                                            <input class="form-check-input" type="checkbox" value="" name="rememberMe" id="rememberMe" checked>
+                                                            <label class="form-check-label text-secondary" for="rememberMe">
                                                             Ghi nhớ
                                                         </label>
                                                     </div>
