@@ -21,7 +21,7 @@ public class DBContext {
             // Change the username, password, and URL to match your database settings
             String username = "sa";
             String password = "123";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v5;encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v4;encrypt=true;trustServerCertificate=true";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException | SQLException ex) {
