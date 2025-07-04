@@ -522,15 +522,6 @@
                                         </label>
                                     </div>
                                 </div>
-
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="requirePasswordChange" name="requirePasswordChange">
-                                        <label class="form-check-label" for="requirePasswordChange">
-                                            <i class="fas fa-key me-1"></i>Yêu cầu đổi mật khẩu khi đăng nhập lần đầu
-                                        </label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
