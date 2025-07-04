@@ -6,7 +6,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -26,6 +27,30 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     </head>
     <body>
+        <!-- Temporary Message -->
+        <c:if test="${not empty param.message}">
+            <div id="tempMessage" class="alert alert-${param.status == 'success' ? 'success' : 'danger'} text-center" 
+                 style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 15px 30px;">
+                ${param.message}
+            </div>
+            <script>
+                setTimeout(function() {
+                    var msg = document.getElementById('tempMessage');
+                    if (msg) {
+                        msg.style.transition = 'opacity 0.5s';
+                        msg.style.opacity = '0';
+                        setTimeout(function() {
+                            msg.remove();
+                            // Remove message and status from URL without refreshing
+                            var url = new URL(window.location.href);
+                            url.searchParams.delete('message');
+                            url.searchParams.delete('status');
+                            window.history.replaceState({}, '', url);
+                        }, 500);
+                    }
+                }, 2000);
+            </script>
+        </c:if>
         <!-- Background overlay for better readability -->
         <div class="background-overlay"></div>
 
