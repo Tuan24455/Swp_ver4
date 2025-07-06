@@ -72,28 +72,38 @@
                   </h5>
                 </div>
                 <div class="card-body">
-                  <form id="profileForm" method="post" action="${pageContext.request.contextPath}/admin/account-settings">
+                  <form id="profileForm" method="post" action="/Project_Hotel_RoomBooking/admin/account-settings">
                     <input type="hidden" name="action" value="updateProfile">
                     <div class="row g-3">
-                      <div class="col-12">
-                        <label for="fullName" class="form-label">Full Name *</label>
+                      <div class="col-md-6">
+                        <label for="userName" class="form-label">Username</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="userName"
+                          value="${userData.userName}"
+                          readonly
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label for="fullName" class="form-label">Full Name</label>
                         <input
                           type="text"
                           class="form-control"
                           id="fullName"
                           name="fullName"
-                          value="${userData.fullName != null ? userData.fullName : ''}"
+                          value="${userData.fullName}"
                           required
                         />
                       </div>
                       <div class="col-md-6">
-                        <label for="email" class="form-label">Email Address *</label>
+                        <label for="email" class="form-label">Email Address</label>
                         <input
                           type="email"
                           class="form-control"
                           id="email"
                           name="email"
-                          value="${userData.email != null ? userData.email : ''}"
+                          value="${userData.email}"
                           required
                         />
                       </div>
@@ -104,13 +114,13 @@
                           class="form-control"
                           id="phone"
                           name="phone"
-                          value="${userData.phone != null ? userData.phone : ''}"
+                          value="${userData.phone}"
                         />
                       </div>
                       <div class="col-md-6">
                         <label for="gender" class="form-label">Gender</label>
                         <select class="form-select" id="gender" name="gender">
-                          <option value="">Select Gender</option>
+                          <option value="" ${userData.gender == null ? 'selected' : ''}>Select Gender</option>
                           <option value="Male" ${userData.gender == 'Male' ? 'selected' : ''}>Male</option>
                           <option value="Female" ${userData.gender == 'Female' ? 'selected' : ''}>Female</option>
                           <option value="Other" ${userData.gender == 'Other' ? 'selected' : ''}>Other</option>
@@ -123,27 +133,7 @@
                           class="form-control"
                           id="birth"
                           name="birth"
-                          value="<fmt:formatDate value='${userData.birth}' pattern='yyyy-MM-dd'/>"
-                        />
-                      </div>
-                      <div class="col-md-6">
-                        <label for="role" class="form-label">Role</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="role"
-                          value="${userData.role != null ? userData.role : ''}"
-                          readonly
-                        />
-                      </div>
-                      <div class="col-md-6">
-                        <label for="userName" class="form-label">Username</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="userName"
-                          value="${userData.userName != null ? userData.userName : ''}"
-                          readonly
+                          value="${userData.birth}"
                         />
                       </div>
                       <div class="col-12">
@@ -154,7 +144,7 @@
                           name="address"
                           rows="3"
                           placeholder="Enter your address..."
-                        >${userData.address != null ? userData.address : ''}</textarea>
+                        >${userData.address}</textarea>
                       </div>
                     </div>
                     <div class="mt-3">
@@ -166,6 +156,47 @@
                       </button>
                     </div>
                   </form>
+                </div>
+              </div>
+            </div>            <!-- Profile Picture & Quick Info -->
+            <div class="col-lg-4">
+              <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom py-3">
+                  <h5 class="mb-0">
+                    <i class="fas fa-camera me-2"></i>Profile Picture
+                  </h5>
+                </div>
+                <div class="card-body text-center">
+                  <div class="mb-3">
+                    <img
+                      src="https://via.placeholder.com/150x150"
+                      class="rounded-circle img-fluid border"
+                      alt="Profile Picture"
+                      style="width: 150px; height: 150px; object-fit: cover"
+                      id="profileImage"
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    class="form-control mb-3"
+                    id="profilePictureInput"
+                    accept="image/*"
+                    onchange="previewImage(this)"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    onclick="uploadProfilePicture()"
+                  >
+                    <i class="fas fa-upload me-2"></i>Upload Photo
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="removeProfilePicture()"
+                  >
+                    <i class="fas fa-trash me-2"></i>Remove
+                  </button>
                 </div>
               </div>
 
@@ -220,187 +251,6 @@
                       </button>
                     </div>
                   </form>
-                </div>
-              </div>
-
-              <!-- Security Settings -->
-              <div class="card shadow-sm">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-shield-alt me-2"></i>Security Settings
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="row g-3">
-                    <div class="col-12">
-                      <div class="form-check form-switch">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="twoFactorAuth"
-                          checked
-                        />
-                        <label class="form-check-label" for="twoFactorAuth">
-                          <strong>Two-Factor Authentication</strong>
-                          <br />
-                          <small class="text-muted">Add an extra layer of security to your account</small>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="form-check form-switch">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="emailNotifications"
-                          checked
-                        />
-                        <label class="form-check-label" for="emailNotifications">
-                          <strong>Email Notifications</strong>
-                          <br />
-                          <small class="text-muted">Receive security alerts and login notifications</small>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-12">
-                      <div class="form-check form-switch">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="sessionTimeout"
-                        />
-                        <label class="form-check-label" for="sessionTimeout">
-                          <strong>Auto Session Timeout</strong>
-                          <br />
-                          <small class="text-muted">Automatically log out after 30 minutes of inactivity</small>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mt-3">
-                    <button
-                      type="button"
-                      class="btn btn-outline-info"
-                      onclick="viewLoginHistory()"
-                    >
-                      <i class="fas fa-history me-2"></i>View Login History
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-warning"
-                      onclick="revokeAllSessions()"
-                    >
-                      <i class="fas fa-sign-out-alt me-2"></i>Sign Out All Devices
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Profile Picture & Quick Info -->
-            <div class="col-lg-4">
-              <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-camera me-2"></i>Profile Picture
-                  </h5>
-                </div>
-                <div class="card-body text-center">
-                  <div class="mb-3">
-                    <img
-                      src="https://via.placeholder.com/150x150"
-                      class="rounded-circle img-fluid border"
-                      alt="Profile Picture"
-                      style="width: 150px; height: 150px; object-fit: cover"
-                      id="profileImage"
-                    />
-                  </div>
-                  <input
-                    type="file"
-                    class="form-control mb-3"
-                    id="profilePictureInput"
-                    accept="image/*"
-                    onchange="previewImage(this)"
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary btn-sm"
-                    onclick="uploadProfilePicture()"
-                  >
-                    <i class="fas fa-upload me-2"></i>Upload Photo
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm"
-                    onclick="removeProfilePicture()"
-                  >
-                    <i class="fas fa-trash me-2"></i>Remove
-                  </button>
-                </div>
-              </div>
-
-              <!-- Account Summary -->
-              <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-info-circle me-2"></i>Account Summary
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="row g-2">
-                    <div class="col-6">
-                      <small class="text-muted">Account Created</small>
-                      <div class="fw-bold">Jan 15, 2024</div>
-                    </div>
-                    <div class="col-6">
-                      <small class="text-muted">Last Login</small>
-                      <div class="fw-bold">Today, 09:30 AM</div>
-                    </div>
-                    <div class="col-6">
-                      <small class="text-muted">Total Logins</small>
-                      <div class="fw-bold">1,247</div>
-                    </div>
-                    <div class="col-6">
-                      <small class="text-muted">Status</small>
-                      <div class="fw-bold text-success">
-                        <i class="fas fa-circle me-1" style="font-size: 8px"></i>Active
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Quick Actions -->
-              <div class="card shadow-sm">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2"></i>Quick Actions
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="d-grid gap-2">
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary btn-sm"
-                      onclick="exportAccountData()"
-                    >
-                      <i class="fas fa-download me-2"></i>Export Account Data
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-warning btn-sm"
-                      onclick="resetPreferences()"
-                    >
-                      <i class="fas fa-refresh me-2"></i>Reset Preferences
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-danger btn-sm"
-                      onclick="deactivateAccount()"
-                    >
-                      <i class="fas fa-user-times me-2"></i>Deactivate Account
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -527,18 +377,6 @@
           document.getElementById("profileImage").src = "https://via.placeholder.com/150x150";
           document.getElementById("profilePictureInput").value = "";
           showToast("Profile picture removed successfully!");
-        }
-      }
-
-      function viewLoginHistory() {
-        alert("Opening login history...");
-        // Implementation for viewing login history
-      }
-
-      function revokeAllSessions() {
-        if (confirm("Are you sure you want to sign out all devices? This will log you out from all active sessions.")) {
-          showToast("All sessions have been revoked. You will be logged out shortly.");
-          // Implementation for revoking all sessions
         }
       }
 
