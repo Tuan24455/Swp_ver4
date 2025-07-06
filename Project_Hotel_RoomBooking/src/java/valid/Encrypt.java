@@ -38,7 +38,6 @@ public class Encrypt {
             byte[] decodedBytes = Base64.getDecoder().decode(encryptedText);
             byte[] decryptedBytes = cipher.doFinal(decodedBytes);
             return new String(decryptedBytes);
-
         } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
             throw new RuntimeException("Lỗi giải mã AES", e);
         }
@@ -52,7 +51,7 @@ public class Encrypt {
         String input = scanner.nextLine();
 
         String encrypted = encrypt(input);
-        String decrypted = decrypt(encrypted);
+        String decrypted = decrypt("iOIn6rY20XzbTxNEc2fEuQ==");
 
         System.out.println("🔐 Đã mã hóa: " + encrypted);
         System.out.println("🔓 Giải mã lại : " + decrypted);

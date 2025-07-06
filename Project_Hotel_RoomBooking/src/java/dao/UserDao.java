@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import model.User;
+import model.UserBookingStats;
 
 public class UserDao {
 
@@ -20,9 +21,7 @@ public class UserDao {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM Users WHERE isDeleted = 0";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 User user = new User();
@@ -53,8 +52,7 @@ public class UserDao {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM Users WHERE isDeleted = 0 ORDER BY id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, (page - 1) * pageSize);
             ps.setInt(2, pageSize);
@@ -90,9 +88,7 @@ public class UserDao {
         Map<String, Integer> stats = new HashMap<>();
         String sql = "SELECT role, COUNT(*) as count FROM Users WHERE isDeleted = 0 GROUP BY role";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             // Initialize with 0
             stats.put("total", 0);
@@ -120,12 +116,11 @@ public class UserDao {
     // Tìm kiếm người dùng
     public List<User> searchUsers(String keyword) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM Users WHERE isDeleted = 0 AND " +
-                     "(full_name LIKE ? OR user_name LIKE ? OR email LIKE ? OR phone LIKE ?) " +
-                     "ORDER BY id DESC";
+        String sql = "SELECT * FROM Users WHERE isDeleted = 0 AND "
+                + "(full_name LIKE ? OR user_name LIKE ? OR email LIKE ? OR phone LIKE ?) "
+                + "ORDER BY id DESC";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String searchPattern = "%" + keyword + "%";
             ps.setString(1, searchPattern);
@@ -164,8 +159,7 @@ public class UserDao {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM Users WHERE isDeleted = 0 AND role = ? ORDER BY id DESC";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, role);
 
@@ -198,9 +192,7 @@ public class UserDao {
     // Đếm tổng số người dùng
     public int getTotalUsers() {
         String sql = "SELECT COUNT(*) FROM Users WHERE isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getInt(1);
@@ -214,8 +206,7 @@ public class UserDao {
     // Lấy người dùng theo ID
     public User getUserById(int id) {
         String sql = "SELECT * FROM Users WHERE id = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -246,8 +237,7 @@ public class UserDao {
     // Xóa mềm người dùng
     public boolean softDelete(int id) {
         String sql = "UPDATE Users SET isDeleted = 1 WHERE id = ?";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
@@ -261,8 +251,7 @@ public class UserDao {
     // Cập nhật vai trò người dùng
     public boolean updateUserRole(int id, String role) {
         String sql = "UPDATE Users SET role = ? WHERE id = ?";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, role);
             ps.setInt(2, id);
@@ -277,8 +266,7 @@ public class UserDao {
     // Login bằng username
     public User loginByUsername(String username, String password) {
         String sql = "SELECT * FROM Users WHERE user_name = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setString(2, password);
 
@@ -309,8 +297,7 @@ public class UserDao {
 
     public User loginByEmail(String email, String password) {
         String sql = "SELECT * FROM Users WHERE email = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, password);
 
@@ -341,8 +328,7 @@ public class UserDao {
 
     public User loginByPhone(String phone, String password) {
         String sql = "SELECT * FROM Users WHERE phone = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, phone);
             ps.setString(2, password);
 
@@ -373,8 +359,7 @@ public class UserDao {
 
     public boolean isExist(String username) {
         String sql = "SELECT 1 FROM Users WHERE user_name = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -390,8 +375,7 @@ public class UserDao {
 
     public boolean isEmailExist(String email) {
         String sql = "SELECT 1 FROM Users WHERE email = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -405,8 +389,7 @@ public class UserDao {
 
     public boolean isPhoneExist(String phone) {
         String sql = "SELECT 1 FROM Users WHERE phone = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, phone);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
@@ -423,8 +406,7 @@ public class UserDao {
         String sql = "INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url, isDeleted) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUserName());
             ps.setString(2, user.getPass());
@@ -447,8 +429,7 @@ public class UserDao {
     public boolean update(User user) throws SQLException {
         String sql = "UPDATE Users SET full_name = ?, birth = ?, gender = ?, email = ?, phone = ?, address = ?, avatar_url = ? WHERE id = ?";
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
             ps.setDate(2, new java.sql.Date(user.getBirth().getTime()));
             ps.setString(3, user.getGender());
@@ -463,18 +444,41 @@ public class UserDao {
         } // Không catch SQLException ở đây để lớp gọi xử lý
     }
 
-    // Cập nhật mật khẩu người dùng
-    public boolean updatePassword(int userId, String newPassword) throws SQLException {
+    public boolean updatePassword(int userId, String newPassEncrypted) throws SQLException {
         String sql = "UPDATE Users SET pass = ? WHERE id = ?";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, newPassword);
+            ps.setString(1, newPassEncrypted);
             ps.setInt(2, userId);
 
             return ps.executeUpdate() > 0;
+        }
+    }
 
-        } // Không catch SQLException ở đây để lớp gọi xử lý
+    public UserBookingStats getUserBookingStatsByUserId(int userId) {
+        String sql = "SELECT "
+                + "COUNT(*) AS totalBookings, "
+                + "COUNT(room_review_id) AS totalRoomReviews, "
+                + "COUNT(service_review_id) AS totalServiceReviews "
+                + "FROM Bookings WHERE user_id = ?";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int totalBookings = rs.getInt("totalBookings");
+                    int totalRoomReviews = rs.getInt("totalRoomReviews");
+                    int totalServiceReviews = rs.getInt("totalServiceReviews");
+                    return new UserBookingStats(userId, totalBookings, totalRoomReviews, totalServiceReviews);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static void main(String[] args) {

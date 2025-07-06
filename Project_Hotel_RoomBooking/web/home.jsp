@@ -6,7 +6,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -26,6 +27,30 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     </head>
     <body>
+        <!-- Temporary Message -->
+        <c:if test="${not empty param.message}">
+            <div id="tempMessage" class="alert alert-${param.status == 'success' ? 'success' : 'danger'} text-center" 
+                 style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 15px 30px;">
+                ${param.message}
+            </div>
+            <script>
+                setTimeout(function() {
+                    var msg = document.getElementById('tempMessage');
+                    if (msg) {
+                        msg.style.transition = 'opacity 0.5s';
+                        msg.style.opacity = '0';
+                        setTimeout(function() {
+                            msg.remove();
+                            // Remove message and status from URL without refreshing
+                            var url = new URL(window.location.href);
+                            url.searchParams.delete('message');
+                            url.searchParams.delete('status');
+                            window.history.replaceState({}, '', url);
+                        }, 500);
+                    }
+                }, 2000);
+            </script>
+        </c:if>
         <!-- Background overlay for better readability -->
         <div class="background-overlay"></div>
 
@@ -337,6 +362,21 @@
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="js/home-enhanced.js"></script>
+        
+        <!-- Show payment result message if exists -->
+        <c:if test="${not empty param.message}">    
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '${param.status == "success" ? "Thành công!" : "Thất bại!"}',
+                        text: '${param.message}',
+                        icon: '${param.status}',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            </script>
+        </c:if>
     </body>
 </html>
