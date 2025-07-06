@@ -46,9 +46,23 @@
                 <i class="fas fa-save me-2"></i>Save All Changes
               </button>
             </div>
-          </div>
+          </div>          <div class="row g-4">
+            <!-- Display Messages -->
+            <div class="col-12">
+              <c:if test="${not empty successMessage}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <i class="fas fa-check-circle me-2"></i>${successMessage}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              </c:if>
+              <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <i class="fas fa-exclamation-circle me-2"></i>${errorMessage}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              </c:if>
+            </div>
 
-          <div class="row g-4">
             <!-- Profile Information -->
             <div class="col-lg-8">
               <div class="card shadow-sm mb-4">
@@ -58,25 +72,17 @@
                   </h5>
                 </div>
                 <div class="card-body">
-                  <form id="profileForm">
+                  <form id="profileForm" method="post" action="${pageContext.request.contextPath}/admin/account-settings">
+                    <input type="hidden" name="action" value="updateProfile">
                     <div class="row g-3">
-                      <div class="col-md-6">
-                        <label for="firstName" class="form-label">First Name *</label>
+                      <div class="col-12">
+                        <label for="fullName" class="form-label">Full Name *</label>
                         <input
                           type="text"
                           class="form-control"
-                          id="firstName"
-                          value="Admin"
-                          required
-                        />
-                      </div>
-                      <div class="col-md-6">
-                        <label for="lastName" class="form-label">Last Name *</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="lastName"
-                          value="User"
+                          id="fullName"
+                          name="fullName"
+                          value="${userData.fullName != null ? userData.fullName : ''}"
                           required
                         />
                       </div>
@@ -86,7 +92,8 @@
                           type="email"
                           class="form-control"
                           id="email"
-                          value="admin@hotel.com"
+                          name="email"
+                          value="${userData.email != null ? userData.email : ''}"
                           required
                         />
                       </div>
@@ -96,7 +103,27 @@
                           type="tel"
                           class="form-control"
                           id="phone"
-                          value="+1 (555) 123-4567"
+                          name="phone"
+                          value="${userData.phone != null ? userData.phone : ''}"
+                        />
+                      </div>
+                      <div class="col-md-6">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender" name="gender">
+                          <option value="">Select Gender</option>
+                          <option value="Male" ${userData.gender == 'Male' ? 'selected' : ''}>Male</option>
+                          <option value="Female" ${userData.gender == 'Female' ? 'selected' : ''}>Female</option>
+                          <option value="Other" ${userData.gender == 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="birth" class="form-label">Date of Birth</label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="birth"
+                          name="birth"
+                          value="<fmt:formatDate value='${userData.birth}' pattern='yyyy-MM-dd'/>"
                         />
                       </div>
                       <div class="col-md-6">
@@ -105,38 +132,36 @@
                           type="text"
                           class="form-control"
                           id="role"
-                          value="System Administrator"
+                          value="${userData.role != null ? userData.role : ''}"
                           readonly
                         />
                       </div>
                       <div class="col-md-6">
-                        <label for="department" class="form-label">Department</label>
-                        <select class="form-select" id="department">
-                          <option value="administration" selected>Administration</option>
-                          <option value="management">Management</option>
-                          <option value="operations">Operations</option>
-                          <option value="it">IT Department</option>
-                        </select>
+                        <label for="userName" class="form-label">Username</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="userName"
+                          value="${userData.userName != null ? userData.userName : ''}"
+                          readonly
+                        />
                       </div>
                       <div class="col-12">
-                        <label for="bio" class="form-label">Bio/Description</label>
+                        <label for="address" class="form-label">Address</label>
                         <textarea
                           class="form-control"
-                          id="bio"
-                          rows="4"
-                          placeholder="Tell us about yourself..."
-                        >System Administrator with 5+ years of experience managing hotel operations and technology infrastructure.</textarea>
+                          id="address"
+                          name="address"
+                          rows="3"
+                          placeholder="Enter your address..."
+                        >${userData.address != null ? userData.address : ''}</textarea>
                       </div>
                     </div>
                     <div class="mt-3">
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        onclick="updateProfile()"
-                      >
+                      <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-2"></i>Update Profile
                       </button>
-                      <button type="button" class="btn btn-outline-secondary">
+                      <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
                         <i class="fas fa-undo me-2"></i>Reset Changes
                       </button>
                     </div>
@@ -152,7 +177,8 @@
                   </h5>
                 </div>
                 <div class="card-body">
-                  <form id="passwordForm">
+                  <form id="passwordForm" method="post" action="${pageContext.request.contextPath}/admin/account-settings">
+                    <input type="hidden" name="action" value="changePassword">
                     <div class="row g-3">
                       <div class="col-12">
                         <label for="currentPassword" class="form-label">Current Password *</label>
@@ -160,6 +186,7 @@
                           type="password"
                           class="form-control"
                           id="currentPassword"
+                          name="currentPassword"
                           required
                         />
                       </div>
@@ -169,10 +196,11 @@
                           type="password"
                           class="form-control"
                           id="newPassword"
+                          name="newPassword"
                           required
                         />
                         <div class="form-text">
-                          Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character.
+                          Password must be at least 6 characters long.
                         </div>
                       </div>
                       <div class="col-md-6">
@@ -181,16 +209,13 @@
                           type="password"
                           class="form-control"
                           id="confirmPassword"
+                          name="confirmPassword"
                           required
                         />
                       </div>
                     </div>
                     <div class="mt-3">
-                      <button
-                        type="button"
-                        class="btn btn-warning"
-                        onclick="changePassword()"
-                      >
+                      <button type="submit" class="btn btn-warning">
                         <i class="fas fa-key me-2"></i>Change Password
                       </button>
                     </div>
@@ -407,52 +432,68 @@
           document
             .getElementById("sidebar-wrapper")
             .classList.toggle("toggled");
-        });
-
-      // Functions
-      function updateProfile() {
-        const firstName = document.getElementById("firstName").value;
-        const lastName = document.getElementById("lastName").value;
-        const email = document.getElementById("email").value;
-        const phone = document.getElementById("phone").value;
-        const department = document.getElementById("department").value;
-        const bio = document.getElementById("bio").value;
-
-        if (!firstName || !lastName || !email) {
-          alert("Please fill in all required fields.");
-          return;
+        });      // Functions
+      function resetForm() {
+        const profileForm = document.getElementById("profileForm");
+        if (confirm("Are you sure you want to reset all changes?")) {
+          profileForm.reset();
+          showToast("Form reset successfully!");
         }
-
-        // Here you would typically send the data to your server
-        showToast("Profile updated successfully!");
       }
 
-      function changePassword() {
+      function validateProfileForm() {
+        const fullName = document.getElementById("fullName").value;
+        const email = document.getElementById("email").value;
+
+        if (!fullName || !email) {
+          alert("Please fill in all required fields (Full Name and Email).");
+          return false;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+          alert("Please enter a valid email address.");
+          return false;
+        }
+
+        return true;
+      }
+
+      function validatePasswordForm() {
         const currentPassword = document.getElementById("currentPassword").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
 
         if (!currentPassword || !newPassword || !confirmPassword) {
           alert("Please fill in all password fields.");
-          return;
+          return false;
         }
 
         if (newPassword !== confirmPassword) {
           alert("New passwords don't match.");
-          return;
+          return false;
         }
 
-        if (newPassword.length < 8) {
-          alert("Password must be at least 8 characters long.");
-          return;
+        if (newPassword.length < 6) {
+          alert("Password must be at least 6 characters long.");
+          return false;
         }
 
-        // Here you would typically send the data to your server
-        showToast("Password changed successfully!");
-        
-        // Clear the form
-        document.getElementById("passwordForm").reset();
+        return true;
       }
+
+      // Add form validation before submission
+      document.getElementById("profileForm").addEventListener("submit", function(event) {
+        if (!validateProfileForm()) {
+          event.preventDefault();
+        }
+      });
+
+      document.getElementById("passwordForm").addEventListener("submit", function(event) {
+        if (!validatePasswordForm()) {
+          event.preventDefault();
+        }
+      });
 
       function saveAllSettings() {
         updateProfile();
