@@ -17,9 +17,9 @@ public class Service {
     private double servicePrice;
     private String description;
     private String imageUrl;
+    private int status; // 1: Đang phục vụ, 0: Tạm ngưng
 
-    // Getter and Setter methods
-    
+
     public Service() {
     }
 
@@ -32,7 +32,6 @@ public class Service {
         this.description = description;
         this.imageUrl = imageUrl;
     }
-    
 
     public int getId() {
         return id;
@@ -89,5 +88,13 @@ public class Service {
     public void setServiceTypeName(String serviceTypeName) {
         this.serviceTypeName = serviceTypeName;
     }
-    
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
 }

@@ -18,6 +18,63 @@ import java.util.Map;
 
 public class ServiceDao {
 
+    // Lấy dịch vụ theo ID
+    public Service getServiceById(int id) {
+        String sql = "SELECT s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
+                + "s.service_price, s.description, s.image_url "
+                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE s.id = ?";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Service service = new Service();
+                    service.setId(rs.getInt("id"));
+                    service.setServiceName(rs.getString("service_name"));
+                    service.setServiceTypeId(rs.getInt("service_type_id"));
+                    service.setServiceTypeName(rs.getString("service_type_name"));
+                    service.setServicePrice(rs.getDouble("service_price"));
+                    service.setDescription(rs.getString("description"));
+                    service.setImageUrl(rs.getString("image_url"));
+                    return service;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Lấy các dịch vụ liên quan theo loại, loại trừ chính nó, giới hạn số lượng
+    public List<Service> getRelatedServices(int serviceTypeId, int excludeId, int limit) {
+        List<Service> list = new ArrayList<>();
+        String sql = "SELECT TOP " + limit + " s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
+                + "s.service_price, s.description, s.image_url "
+                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id "
+                + "WHERE s.service_type_id = ? AND s.id <> ?";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, serviceTypeId);
+            ps.setInt(2, excludeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Service service = new Service();
+                    service.setId(rs.getInt("id"));
+                    service.setServiceName(rs.getString("service_name"));
+                    service.setServiceTypeId(rs.getInt("service_type_id"));
+                    service.setServiceTypeName(rs.getString("service_type_name"));
+                    service.setServicePrice(rs.getDouble("service_price"));
+                    service.setDescription(rs.getString("description"));
+                    service.setImageUrl(rs.getString("image_url"));
+                    list.add(service);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     // Lấy tất cả dịch vụ từ bảng Services và ServiceTypes
     public List<Service> getAllServices() {
         List<Service> list = new ArrayList<>();

@@ -873,3 +873,127 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 .form-select option[disabled] {
     color: #adb5bd;
 }
+
+
+
+
+
+/* Service Detail Styles */
+.service-info-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.service-image-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.service-header {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.service-title {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.service-type-badge {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.service-price {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.service-description {
+    margin: 20px 0;
+}
+
+.service-description h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.service-description p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.service-status {
+    margin: 20px 0;
+}
+
+.service-status h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.status-badge {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.status-badge.available {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-badge.unavailable {
+    background-color: #f44336;
+    color: white;
+}
+
+.unavailable-notice {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Animation Enhancement */
+.service-info-container, .service-image-container {
+    transition: transform 0.3s ease;
+}
+
+.service-info-container:hover, .service-image-container:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .service-info-container {
+        margin-top: 20px;
+    }
+    
+    .service-title {
+        font-size: 1.5rem;
+    }
+    
+    .service-price {
+        font-size: 1.2rem;
+    }
+}
