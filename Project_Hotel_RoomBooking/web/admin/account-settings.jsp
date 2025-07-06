@@ -30,7 +30,7 @@
             <ol class="breadcrumb custom-breadcrumb">
               <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Account Settings
+                Account Setting
               </li>
             </ol>
           </nav>
