@@ -463,6 +463,20 @@ public class UserDao {
         } // Không catch SQLException ở đây để lớp gọi xử lý
     }
 
+    // Cập nhật mật khẩu người dùng
+    public boolean updatePassword(int userId, String newPassword) throws SQLException {
+        String sql = "UPDATE Users SET pass = ? WHERE id = ?";
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+
+            return ps.executeUpdate() > 0;
+
+        } // Không catch SQLException ở đây để lớp gọi xử lý
+    }
+
     public static void main(String[] args) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
