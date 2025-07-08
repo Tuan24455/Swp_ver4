@@ -1,21 +1,17 @@
 package controller;
 
-import java.io.IOException;
-import java.util.Properties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
-import jakarta.mail.internet.MimeUtility;
+import util.EmailUtil;
 import valid.InputValidator;
+
+import java.io.IOException;
+import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 
 @WebServlet(name = "ContactServlet", urlPatterns = {"/contact"})
 public class ContactServlet extends HttpServlet {
-
-    private final String SENDER_EMAIL = "tdpoke412@gmail.com";
-    private final String SENDER_PASSWORD = "cdnyzdpnrpxflcme";
-    private final String RECEIVER_EMAIL = "yenlaem412@gmail.com";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -62,56 +58,34 @@ public class ContactServlet extends HttpServlet {
             return;
         }
 
-        // Cấu hình gửi mail
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
-            }
-        });
-
+        // Gửi email qua EmailUtil
         try {
-            MimeMessage message = new MimeMessage(session);
+            String fullMessage = """
+                    ===== THÔNG TIN LIÊN HỆ =====
+                    Họ và tên     : %s
+                    Email         : %s
+                    Số điện thoại : %s
+                    Chủ đề        : %s
+                    Đồng ý chính sách: %s
+                    -----------------------------
+                    NỘI DUNG TIN NHẮN:
+                    %s
+                    ============================="""
+                    .formatted(
+                            name,
+                            email,
+                            (phone != null && !phone.trim().isEmpty() ? phone : "Không cung cấp"),
+                            subject,
+                            (privacy != null ? "Có" : "Không"),
+                            messageContent
+                    );
 
-            String encodedSenderName = MimeUtility.encodeText("Người dùng liên hệ từ Website", "UTF-8", "B");
-            message.setFrom(new InternetAddress(SENDER_EMAIL, encodedSenderName));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(RECEIVER_EMAIL));
-
-            String rawSubject = "[LIÊN HỆ] " + subject + " - Từ: " + name + " (" + email + ")";
-            String encodedSubject = MimeUtility.encodeText(rawSubject, "UTF-8", "B");
-            message.setSubject(encodedSubject);
-
-            String fullMessage = ""
-                    + "===== THÔNG TIN LIÊN HỆ =====\n"
-                    + "Họ và tên     : " + name + "\n"
-                    + "Email         : " + email + "\n"
-                    + "Số điện thoại : " + (phone != null && !phone.trim().isEmpty() ? phone : "Không cung cấp") + "\n"
-                    + "Chủ đề        : " + subject + "\n"
-                    + "Đồng ý chính sách: " + (privacy != null ? "Có" : "Không") + "\n"
-                    + "-----------------------------\n"
-                    + "NỘI DUNG TIN NHẮN:\n"
-                    + messageContent + "\n"
-                    + "=============================";
-
-            MimeBodyPart bodyPart = new MimeBodyPart();
-            bodyPart.setText(fullMessage, "UTF-8", "plain");
-
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(bodyPart);
-            message.setContent(multipart);
-
-            Transport.send(message);
+            EmailUtil.sendContactEmail(name, email, subject, fullMessage);
 
             request.setAttribute("message", "Tin nhắn của bạn đã được gửi thành công!");
             request.setAttribute("messageType", "success");
 
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
             request.setAttribute("message", "Có lỗi xảy ra khi gửi tin nhắn. Vui lòng thử lại sau.");
             request.setAttribute("messageType", "error");

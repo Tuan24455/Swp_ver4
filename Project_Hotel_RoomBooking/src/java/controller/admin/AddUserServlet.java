@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import valid.Encrypt;
 
 @WebServlet(name = "AddUserServlet", urlPatterns = {"/addUser"})
 @MultipartConfig(
@@ -46,7 +47,7 @@ public class AddUserServlet extends HttpServlet {
         // 2. Kiểm tra mật khẩu khớp
         if (password == null || !password.equals(confirmPassword)) {
             request.setAttribute("error", "Mật khẩu xác nhận không khớp");
-            request.getRequestDispatcher("user-management.jsp").forward(request, response);
+            request.getRequestDispatcher("admin/users.jsp").forward(request, response);
             return;
         }
 
@@ -79,7 +80,7 @@ public class AddUserServlet extends HttpServlet {
         newUser.setFullName(fullName);
         newUser.setEmail(email);
         newUser.setPhone(phone);
-        newUser.setPass(password); // Bạn nên mã hóa mật khẩu trước khi lưu
+        newUser.setPass(Encrypt.encrypt(password)); // Bạn nên mã hóa mật khẩu trước khi lưu
         newUser.setRole(role);
         newUser.setGender(gender);
         newUser.setBirth(birthDate);

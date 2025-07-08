@@ -1,6 +1,6 @@
 <%-- 
-    Document   : LoginAuth
-    Created on : Jul 4, 2025, 11:39:21 AM
+    Document   : forgot-password
+    Created on : Jul 6, 2025, 7:51:35 AM
     Author     : ADMIN
 --%>
 
@@ -12,7 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Bạn chưa đăng nhập!</h1>
-        <a href="login.jsp">Quay về trang đăng nhập</a>
+        <h1>Hello World!</h1>
     </body>
 </html>

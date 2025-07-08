@@ -1,6 +1,6 @@
 <%-- 
-    Document   : LoginAuth
-    Created on : Jul 4, 2025, 11:39:21 AM
+    Document   : find-account
+    Created on : Jul 6, 2025, 12:11:41 PM
     Author     : ADMIN
 --%>
 
@@ -12,7 +12,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Bạn chưa đăng nhập!</h1>
-        <a href="login.jsp">Quay về trang đăng nhập</a>
+        <form action="findAccount">
+            <input type="text" name="keyword">
+        </form>
     </body>
 </html>

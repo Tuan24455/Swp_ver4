@@ -71,7 +71,6 @@ public class userList extends HttpServlet {
                 // Xóa dữ liệu nhạy cảm
                 userData.setPass(null);
                 userData.setDeleted(false);
-                userData.setBirth(null);
 
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
@@ -178,8 +177,7 @@ public class userList extends HttpServlet {
         // Lấy thống kê cho tất cả các trường hợp
         Map<String, Integer> userStats = userDao.getUserStatistics();
 
-        request.setAttribute(
-                "userStats", userStats);
+        request.setAttribute("userStats", userStats);
 
         // Chuyển tiếp tới trang JSP để hiển thị
         request.getRequestDispatcher(

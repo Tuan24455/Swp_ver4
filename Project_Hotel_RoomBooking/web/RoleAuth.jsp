@@ -13,5 +13,6 @@
     </head>
     <body>
         <h1>Bạn éo có quyền vào đây!</h1>
+        <a href="home">Quay về trang chủ</a>
     </body>
 </html>

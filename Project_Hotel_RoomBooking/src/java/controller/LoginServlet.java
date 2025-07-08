@@ -26,7 +26,15 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        HttpSession session = request.getSession(false); // Không tạo mới
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user != null) {
+            response.sendRedirect("home");
+        } else {
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -38,7 +46,7 @@ public class LoginServlet extends HttpServlet {
         String rememberMe = request.getParameter("rememberMe");
 
         UserDao userdao = new UserDao();
-        User user = null;
+        User user;
 
         if (stringlog != null && !stringlog.trim().isEmpty() && password != null) {
             String encryptedPassword = Encrypt.encrypt(password); // 🔐 mã hóa mật khẩu nhập vào

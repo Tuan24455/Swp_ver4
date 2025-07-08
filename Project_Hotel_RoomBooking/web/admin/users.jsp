@@ -175,16 +175,6 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select" name="status" onchange="this.form.submit()">
-                                            <option value="">Tất cả trạng thái</option>
-                                            <option value="active" ${selectedStatus == 'active' ? 'selected' : ''}>Hoạt động</option>
-                                            <option value="inactive" ${selectedStatus == 'inactive' ? 'selected' : ''}>Không hoạt động</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="date" class="form-control" name="dateFrom" value="${dateFrom}" placeholder="Từ ngày" />
-                                    </div>
-                                    <div class="col-md-3">
                                         <a href="userList" class="btn btn-outline-primary w-100">
                                             <i class="fas fa-refresh me-2"></i>Làm mới
                                         </a>
@@ -197,9 +187,6 @@
                                 <table class="table table-hover align-middle mb-0" id="usersTable">
                                     <thead>
                                         <tr>
-                                            <th>
-                                                <input type="checkbox" class="form-check-input" id="selectAll" />
-                                            </th>
                                             <th>ID</th>
                                             <th>Avatar</th>
                                             <th>Tên</th>
@@ -207,7 +194,6 @@
                                             <th>Số điện thoại</th>
                                             <th>Vai trò</th>
                                             <th>Giới tính</th>
-                                            <th>Ngày sinh</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
@@ -216,22 +202,20 @@
                                             <c:when test="${not empty userList}">
                                                 <c:forEach var="user" items="${userList}" varStatus="status">
                                                     <tr class="user-row">
-                                                        <td>
-                                                            <input type="checkbox" class="form-check-input row-checkbox" 
-                                                                   data-user-id="${user.id}" />
-                                                        </td>
                                                         <td><strong>#${user.id}</strong></td>
                                                         <td>
                                                             <div class="user-avatar">
                                                                 <c:choose>
                                                                     <c:when test="${not empty user.avatarUrl}">
                                                                         <img src="${pageContext.request.contextPath}/${user.avatarUrl}" 
-                                                                             alt="Avatar" onerror="this.src='${pageContext.request.contextPath}/images/default-avatar.png'" />
+                                                                             alt="Avatar" 
+                                                                             onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/user/default_avatar.png';" />
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <img src="${pageContext.request.contextPath}/images/user/default_avatar.png" alt="Default Avatar" />
                                                                     </c:otherwise>
                                                                 </c:choose>
+
                                                                 <div class="status-indicator ${user.deleted ? 'offline' : 'online'}"></div>
                                                             </div>
                                                         </td>
@@ -283,21 +267,7 @@
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
-                                                        <td>
-                                                            <c:choose>
-                                                                <c:when test="${not empty user.birth}">
-                                                                    <fmt:formatDate value="${user.birth}" pattern="dd/MM/yyyy" />
-                                                                    <br><small class="text-muted">
-                                                                        <fmt:formatDate value="${user.birth}" pattern="yyyy" var="birthYear" />
-                                                                        <fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyy" var="currentYear" />
-                                                                        ${currentYear - birthYear} tuổi
-                                                                    </small>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <span class="text-muted">Chưa cập nhật</span>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                        </td>
+
                                                         <td>
                                                             <div class="action-buttons">
                                                                 <button class="btn btn-sm btn-outline-primary" 
@@ -564,216 +534,225 @@
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            const contextPath = '<%= request.getContextPath() %>'; 
+                                            const contextPath = '<%= request.getContextPath() %>';
 // Avatar preview function
-        function previewAvatar(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('avatarPreview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+                                            function previewAvatar(input) {
+                                                if (input.files && input.files[0]) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function (e) {
+                                                        document.getElementById('avatarPreview').src = e.target.result;
+                                                    };
+                                                    reader.readAsDataURL(input.files[0]);
+                                                }
+                                            }
 
-        // Toggle password visibility
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            const button = input.nextElementSibling;
-            const icon = button.querySelector('i');
+                                            // Toggle password visibility
+                                            function togglePassword(inputId) {
+                                                const input = document.getElementById(inputId);
+                                                const button = input.nextElementSibling;
+                                                const icon = button.querySelector('i');
 
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
+                                                if (input.type === 'password') {
+                                                    input.type = 'text';
+                                                    icon.classList.remove('fa-eye');
+                                                    icon.classList.add('fa-eye-slash');
+                                                } else {
+                                                    input.type = 'password';
+                                                    icon.classList.remove('fa-eye-slash');
+                                                    icon.classList.add('fa-eye');
+                                                }
+                                            }
 
-        // Form validation
-        document.getElementById('addUserForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+                                            // Form validation
+                                            document.getElementById('addUserForm').addEventListener('submit', function (e) {
+                                                e.preventDefault();
 
-            const form = this;
-            let isValid = true;
+                                                const form = this;
+                                                let isValid = true;
 
-            const fullName = document.getElementById('fullName');
-            const userName = document.getElementById('userName');
-            const birth = document.getElementById('birth');
-            const email = document.getElementById('email');
-            const phone = document.getElementById('phone');
-            const password = document.getElementById('password');
-            const confirmPassword = document.getElementById('confirmPassword');
+                                                const fullName = document.getElementById('fullName');
+                                                const userName = document.getElementById('userName');
+                                                const birth = document.getElementById('birth');
+                                                const email = document.getElementById('email');
+                                                const phone = document.getElementById('phone');
+                                                const password = document.getElementById('password');
+                                                const confirmPassword = document.getElementById('confirmPassword');
 
-            // Reset custom validity
-            [fullName, userName, birth, email, phone, confirmPassword].forEach(input => input.setCustomValidity(''));
+                                                // Reset custom validity
+                                                [fullName, userName, birth, email, phone, confirmPassword].forEach(input => input.setCustomValidity(''));
 
-            // 1. Full name: required
-            if (!fullName.value.trim()) {
-                fullName.setCustomValidity('Vui lòng nhập họ và tên');
-                isValid = false;
-            }
+                                                // 1. Full name: required
+                                                if (!fullName.value.trim()) {
+                                                    fullName.setCustomValidity('Vui lòng nhập họ và tên');
+                                                    isValid = false;
+                                                }
 
-            // 2. Username: required and only letters, numbers, underscores
-            const usernameRegex = /^\w+$/;
-            if (!userName.value.trim()) {
-                userName.setCustomValidity('Vui lòng nhập tên đăng nhập');
-                isValid = false;
-            } else if (!usernameRegex.test(userName.value.trim())) {
-                userName.setCustomValidity('Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới');
-                isValid = false;
-            }
+                                                // 2. Username: required and only letters, numbers, underscores
+                                                const usernameRegex = /^\w+$/;
+                                                if (!userName.value.trim()) {
+                                                    userName.setCustomValidity('Vui lòng nhập tên đăng nhập');
+                                                    isValid = false;
+                                                } else if (!usernameRegex.test(userName.value.trim())) {
+                                                    userName.setCustomValidity('Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới');
+                                                    isValid = false;
+                                                }
 
-            // 3. Birthdate: required and must be at least 18 years old
-            if (!birth.value) {
-                birth.setCustomValidity('Vui lòng chọn ngày sinh');
-                isValid = false;
-            } else {
-                const birthDate = new Date(birth.value);
-                const today = new Date();
-                const age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-                const dayDiff = today.getDate() - birthDate.getDate();
-                const isBirthdayPassed = monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0);
+                                                // 3. Birthdate: required and must be at least 18 years old
+                                                if (!birth.value) {
+                                                    birth.setCustomValidity('Vui lòng chọn ngày sinh');
+                                                    isValid = false;
+                                                } else {
+                                                    const birthDate = new Date(birth.value);
+                                                    const today = new Date();
+                                                    const age = today.getFullYear() - birthDate.getFullYear();
+                                                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                                                    const dayDiff = today.getDate() - birthDate.getDate();
+                                                    const isBirthdayPassed = monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0);
 
-                if (age < 18 || (age === 18 && !isBirthdayPassed)) {
-                    birth.setCustomValidity('Người dùng phải đủ 18 tuổi');
-                    isValid = false;
-                }
-            }
+                                                    if (age < 18 || (age === 18 && !isBirthdayPassed)) {
+                                                        birth.setCustomValidity('Người dùng phải đủ 18 tuổi');
+                                                        isValid = false;
+                                                    }
+                                                }
 
-            // 4. Email: required and valid format
-            if (!email.value.trim()) {
-                email.setCustomValidity('Vui lòng nhập email');
-                isValid = false;
-            }
+                                                // 4. Email: required and valid format
+                                                if (!email.value.trim()) {
+                                                    email.setCustomValidity('Vui lòng nhập email');
+                                                    isValid = false;
+                                                }
 
-            // 5. Phone: required, starts with 0 and has exactly 10 digits
-            const phoneRegex = /^0\d{9}$/;
-            if (!phone.value.trim()) {
-                phone.setCustomValidity('Vui lòng nhập số điện thoại');
-                isValid = false;
-            } else if (!phoneRegex.test(phone.value.trim())) {
-                phone.setCustomValidity('Số điện thoại phải bắt đầu bằng 0 và gồm đúng 10 chữ số');
-                isValid = false;
-            }
+                                                // 5. Phone: required, starts with 0 and has exactly 10 digits
+                                                const phoneRegex = /^0\d{9}$/;
+                                                if (!phone.value.trim()) {
+                                                    phone.setCustomValidity('Vui lòng nhập số điện thoại');
+                                                    isValid = false;
+                                                } else if (!phoneRegex.test(phone.value.trim())) {
+                                                    phone.setCustomValidity('Số điện thoại phải bắt đầu bằng 0 và gồm đúng 10 chữ số');
+                                                    isValid = false;
+                                                }
 
-            // 6. Password confirmation
-            if (password.value !== confirmPassword.value) {
-                confirmPassword.setCustomValidity('Mật khẩu xác nhận không khớp');
-                isValid = false;
-            }
+                                                // 6. Password confirmation
+                                                if (password.value !== confirmPassword.value) {
+                                                    confirmPassword.setCustomValidity('Mật khẩu xác nhận không khớp');
+                                                    isValid = false;
+                                                }
 
-            // Nếu tất cả hợp lệ
-            if (form.checkValidity() && isValid) {
-                const saveBtn = document.getElementById('saveUserBtn');
-                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
-                saveBtn.disabled = true;
-                form.submit();
-            } else {
-                form.classList.add('was-validated');
-            }
-        });
+                                                // Nếu tất cả hợp lệ
+                                                if (form.checkValidity() && isValid) {
+                                                    const saveBtn = document.getElementById('saveUserBtn');
+                                                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
+                                                    saveBtn.disabled = true;
+                                                    form.submit();
+                                                } else {
+                                                    form.classList.add('was-validated');
+                                                }
+                                            });
 
-        // User management functions
+                                            // User management functions
 // Hàm viewUser gốc của bạn
-function viewUser(userId) {
-    const contextPath = '<%= request.getContextPath() %>'; 
+                                            function viewUser(userId) {
+                                                const contextPath = '<%= request.getContextPath() %>';
 
-    fetch(contextPath + '/userList?action=getUserDetails&id=' + userId)
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.error || `Lỗi HTTP: ${response.status}`);
-                });
-            }
-            return response.json();
-        })
-        .then(userData => { 
-            console.log("📦 Dữ liệu JSON nhận được (biến userData):", userData);
-            // ... (các console.log kiểm tra dữ liệu khác nếu cần)
+                                                fetch(contextPath + '/userList?action=getUserDetails&id=' + userId)
+                                                        .then(response => {
+                                                            if (!response.ok) {
+                                                                return response.json().then(errorData => {
+                                                                    throw new Error(errorData.error || `Lỗi HTTP: ${response.status}`);
+                                                                });
+                                                            }
+                                                            return response.json();
+                                                        })
+                                                        .then(userData => {
+                                                            console.log("📦 Dữ liệu JSON nhận được (biến userData):", userData);
+                                                            // ... (các console.log kiểm tra dữ liệu khác nếu cần)
 
-            const avatarUrl = (userData.avatarUrl && userData.avatarUrl !== "false")
-                ? contextPath + '/' + userData.avatarUrl // Sử dụng nối chuỗi
-                : contextPath + '/images/user/default-avatar.png';
+                                                            const avatarUrl = (userData.avatarUrl && userData.avatarUrl !== "false")
+                                                                    ? contextPath + '/' + userData.avatarUrl // Sử dụng nối chuỗi
+                                                                    : contextPath + '/images/user/default-avatar.png';
 
-            // ***** ÁP DỤNG PHƯƠNG PHÁP NỐI CHUỖI ĐÃ THÀNH CÔNG *****
-            const userDetailsHtml = 
-                '<div class="row">' +
-                '    <div class="col-md-4 text-center">' +
-                '        <img src="' + avatarUrl + '" class="rounded-circle mb-3" alt="User Avatar" width="100" height="100">' +
-                '        <h5>' + (userData.fullName || 'Không có tên') + '</h5>' +
-                '        <p class="text-muted">@' + (userData.userName || '') + '</p>' +
-                '    </div>' +
-                '    <div class="col-md-8">' +
-                '        <table class="table table-borderless">' +
-                '            <tr><td><strong>ID:</strong></td><td>#' + (userData.id || 'N/A') + '</td></tr>' +
-                '            <tr><td><strong>Email:</strong></td><td>' + (userData.email || 'Chưa cập nhật') + '</td></tr>' +
-                '            <tr><td><strong>Số điện thoại:</strong></td><td>' + (userData.phone || 'Chưa cập nhật') + '</td></tr>' +
-                '            <tr><td><strong>Vai trò:</strong></td><td>' + (userData.role || 'Không xác định') + '</td></tr>' +
-                '            <tr><td><strong>Giới tính:</strong></td><td>' + (userData.gender || 'Chưa cập nhật') + '</td></tr>' +
-                '            <tr><td><strong>Địa chỉ:</strong></td><td>' + (userData.address || 'Chưa cập nhật') + '</td></tr>' +
-                '        </table>' +
-                '    </div>' +
-                '</div>';
+                                                            // ***** ÁP DỤNG PHƯƠNG PHÁP NỐI CHUỖI ĐÃ THÀNH CÔNG *****
+                                                            const birthDate = userData.birth
+                                                                    ? new Date(userData.birth).toLocaleDateString('vi-VN', {
+                                                                weekday: 'long',
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric'
+                                                            })
+                                                                    : 'Chưa cập nhật';
+                                                            const userDetailsHtml =
+                                                                    '<div class="row">' +
+                                                                    '    <div class="col-md-4 text-center">' +
+                                                                    '<img src="' + avatarUrl + '" onerror="this.src=\'' + contextPath + '/images/user/default_avatar.png\'" class="rounded-circle mb-3" alt="User Avatar" width="100" height="100">' +
+                                                                    '        <h5>' + (userData.fullName || 'Không có tên') + '</h5>' +
+                                                                    '        <p class="text-muted">@' + (userData.userName || '') + '</p>' +
+                                                                    '    </div>' +
+                                                                    '    <div class="col-md-8">' +
+                                                                    '        <table class="table table-borderless">' +
+                                                                    '            <tr><td><strong>ID:</strong></td><td>#' + (userData.id || 'N/A') + '</td></tr>' +
+                                                                    '            <tr><td><strong>Ngày sinh:</strong></td><td>' + birthDate + '</td></tr>' +
+                                                                    '            <tr><td><strong>Email:</strong></td><td>' + (userData.email || 'Chưa cập nhật') + '</td></tr>' +
+                                                                    '            <tr><td><strong>Số điện thoại:</strong></td><td>' + (userData.phone || 'Chưa cập nhật') + '</td></tr>' +
+                                                                    '            <tr><td><strong>Vai trò:</strong></td><td>' + (userData.role || 'Không xác định') + '</td></tr>' +
+                                                                    '            <tr><td><strong>Giới tính:</strong></td><td>' + (userData.gender || 'Chưa cập nhật') + '</td></tr>' +
+                                                                    '            <tr><td><strong>Địa chỉ:</strong></td><td>' + (userData.address || 'Chưa cập nhật') + '</td></tr>' +
+                                                                    '        </table>' +
+                                                                    '    </div>' +
+                                                                    '</div>';
 
-            console.log("📝 Chuỗi HTML được tạo ra (nối chuỗi):", userDetailsHtml);
+                                                            console.log("📝 Chuỗi HTML được tạo ra (nối chuỗi):", userDetailsHtml);
 
-            document.getElementById('userDetails').innerHTML = userDetailsHtml;
-            new bootstrap.Modal(document.getElementById('viewUserModal')).show();
-        })
-        .catch(error => {
-            console.error('❌ Error khi lấy dữ liệu:', error);
-            alert(`Lỗi: ${error.message || 'Không thể tải thông tin người dùng.'}`);
-        });
-}
+                                                            document.getElementById('userDetails').innerHTML = userDetailsHtml;
+                                                            new bootstrap.Modal(document.getElementById('viewUserModal')).show();
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('❌ Error khi lấy dữ liệu:', error);
+                                                            alert(`Lỗi: ${error.message || 'Không thể tải thông tin người dùng.'}`);
+                                                        });
+                                            }
 
-            function editUser(userId) {
-                window.location.href = 'editUser?id=' + userId;
-            }
+                                            function editUser(userId) {
+                                                window.location.href = 'editUser?id=' + userId;
+                                            }
 
-            function deleteUser(userId, userName) {
-                if (confirm(`Bạn có chắc chắn muốn xóa người dùng "${userName}"? Hành động này không thể hoàn tác.`)) {
-                    window.location.href = 'userList?action=delete&id=' + userId;
-                }
-            }
+                                            function deleteUser(userId, userName) {
+                                                if (confirm(`Bạn có chắc chắn muốn xóa người dùng "${userName}"? Hành động này không thể hoàn tác.`)) {
+                                                    window.location.href = 'userList?action=delete&id=' + userId;
+                                                }
+                                            }
 
-            function exportUsers() {
-                window.location.href = 'exportUsers';
-            }
+                                            function exportUsers() {
+                                                window.location.href = 'exportUsers';
+                                            }
 
-            // Select all functionality
-            document.getElementById('selectAll')?.addEventListener('change', function () {
-                const checkboxes = document.querySelectorAll('.row-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-            });
+                                            // Select all functionality
+                                            document.getElementById('selectAll')?.addEventListener('change', function () {
+                                                const checkboxes = document.querySelectorAll('.row-checkbox');
+                                                checkboxes.forEach(checkbox => {
+                                                    checkbox.checked = this.checked;
+                                                });
+                                            });
 
-            // Auto-hide alerts
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000);
+                                            // Auto-hide alerts
+                                            setTimeout(() => {
+                                                const alerts = document.querySelectorAll('.alert');
+                                                alerts.forEach(alert => {
+                                                    const bsAlert = new bootstrap.Alert(alert);
+                                                    bsAlert.close();
+                                                });
+                                            }, 5000);
 
-            // Reset form when modal is hidden
-            document.getElementById('addUserModal').addEventListener('hidden.bs.modal', function () {
-                const form = document.getElementById('addUserForm');
-                form.reset();
-                form.classList.remove('was-validated');
-                document.getElementById('avatarPreview').src = '${pageContext.request.contextPath}/images/default-avatar.png';
+                                            // Reset form when modal is hidden
+                                            document.getElementById('addUserModal').addEventListener('hidden.bs.modal', function () {
+                                                const form = document.getElementById('addUserForm');
+                                                form.reset();
+                                                form.classList.remove('was-validated');
+                                                document.getElementById('avatarPreview').src = '${pageContext.request.contextPath}/images/default-avatar.png';
 
-                // Reset save button
-                const saveBtn = document.getElementById('saveUserBtn');
-                saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Lưu người dùng';
-                saveBtn.disabled = false;
-            });
+                                                // Reset save button
+                                                const saveBtn = document.getElementById('saveUserBtn');
+                                                saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Lưu người dùng';
+                                                saveBtn.disabled = false;
+                                            });
         </script>
     </body>
 </html>

@@ -1,17 +1,3 @@
-﻿﻿SELECT
-    session_id,
-    login_name,
-    host_name,
-    program_name
-FROM
-    sys.dm_exec_sessions
-WHERE
-    database_id = DB_ID('BookingHotel_v4');
-
-KILL 62;
-
-ALTER DATABASE BookingHotel_v4
-SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
 DROP DATABASE BookingHotel_v4;
 Create database BookingHotel_v4;

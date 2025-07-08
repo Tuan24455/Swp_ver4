@@ -116,7 +116,7 @@ public class HomeServlet extends HttpServlet {
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
-    private void checkCookie(HttpServletRequest request) {
+    void checkCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             String username = null;

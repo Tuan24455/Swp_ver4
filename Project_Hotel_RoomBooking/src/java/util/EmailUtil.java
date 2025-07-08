@@ -1,0 +1,100 @@
+package util;
+
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.io.UnsupportedEncodingException;
+
+import java.util.Properties;
+
+public class EmailUtil {
+
+    // ==== Thông tin cố định dùng để gửi mail ====
+    private static final String SENDER_EMAIL = "tdpoke412@gmail.com";
+    private static final String SENDER_PASSWORD = "cdnyzdpnrpxflcme";
+    private static final String RECEIVER_EMAIL = "yenlaem412@gmail.com";
+    private static final String SMTP_HOST = "smtp.gmail.com";
+    private static final String SMTP_PORT = "587";
+
+    // ==== GỬI EMAIL LIÊN HỆ ====
+    public static boolean sendContactEmail(String senderName, String userEmail, String subject, String content)
+            throws MessagingException, UnsupportedEncodingException {
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", SMTP_HOST);
+        properties.put("mail.smtp.port", SMTP_PORT);
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+            }
+        });
+
+        MimeMessage message = new MimeMessage(session);
+
+        String encodedSenderName = MimeUtility.encodeText("Người dùng liên hệ từ Website", "UTF-8", "B");
+        message.setFrom(new InternetAddress(SENDER_EMAIL, encodedSenderName));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(RECEIVER_EMAIL));
+
+        String fullSubject = "[LIÊN HỆ] " + subject + " - Từ: " + senderName + " (" + userEmail + ")";
+        message.setSubject(MimeUtility.encodeText(fullSubject, "UTF-8", "B"));
+
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setText(content, "UTF-8", "plain");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(bodyPart);
+        message.setContent(multipart);
+
+        Transport.send(message);
+        return true;
+    }
+
+    // ==== GỬI EMAIL OTP ====
+    public static boolean sendOtpEmail(String recipientEmail, String otpCode)
+            throws MessagingException, UnsupportedEncodingException {
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", SMTP_HOST);
+        properties.put("mail.smtp.port", SMTP_PORT);
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+            }
+        });
+
+        MimeMessage message = new MimeMessage(session);
+
+        String encodedSenderName = MimeUtility.encodeText("Hệ thống xác thực", "UTF-8", "B");
+        message.setFrom(new InternetAddress(SENDER_EMAIL, encodedSenderName));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+        message.setSubject(MimeUtility.encodeText("Mã OTP xác thực của bạn", "UTF-8", "B"));
+
+        String content = """
+        Chào bạn,
+
+        Mã OTP của bạn là: """ + otpCode + """
+
+        Vui lòng không chia sẻ mã này với bất kỳ ai.
+        Mã sẽ hết hạn sau 5 phút.
+
+        Trân trọng,
+        Hệ thống xác thực.""";
+
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setText(content, "UTF-8", "plain");
+
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(bodyPart);
+        message.setContent(multipart);
+
+        Transport.send(message);
+        return true;
+    }
+}
