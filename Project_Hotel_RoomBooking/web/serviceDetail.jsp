@@ -132,6 +132,45 @@
                     </div>
                 </div>
 
+                <!-- Customer Reviews Section -->
+                <section class="customer-reviews mt-5">
+                    <h3 class="section-title text-center"><i class="fas fa-comments me-2"></i>Đánh giá của khách hàng</h3>
+                    <div class="section-divider"></div>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-12 col-lg-10">
+                            <div class="bg-white rounded shadow-sm p-4">
+                                <c:choose>
+                                    <c:when test="${not empty reviews}">
+                                        <c:forEach var="review" items="${reviews}">
+                                            <div class="review-item mb-4 border-bottom pb-3">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="fas fa-user-circle fa-2x text-secondary me-3"></i>
+                                                    <span class="fw-bold">Khách hàng ẩn danh</span>
+                                                    <span class="ms-auto text-warning">
+                                                        <c:forEach begin="1" end="${review.quality}" var="star">
+                                                            <i class="fas fa-star"></i>
+                                                        </c:forEach>
+                                                        <c:forEach begin="1" end="${5 - review.quality}" var="star">
+                                                            <i class="far fa-star"></i>
+                                                        </c:forEach>
+                                                    </span>
+                                                </div>
+                                                <div class="review-content">
+                                                    <p class="mb-1">${review.comment}</p>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="text-center text-muted">Chưa có đánh giá nào cho dịch vụ này.</div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Related Services Section -->
                 <section class="related-services mt-5">
                     <h3 class="section-title text-center"><i class="fas fa-thumbs-up me-2"></i>Dịch vụ tương tự</h3>
                     <div class="section-divider"></div>
