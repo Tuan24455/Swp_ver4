@@ -17,12 +17,13 @@ public class Service {
     private double servicePrice;
     private String description;
     private String imageUrl;
+    private int status; // 1: available, 0: unavailable
 
     
     public Service() {
     }
 
-    public Service(int id, String serviceName, int serviceTypeId, String serviceTypeName, double servicePrice, String description, String imageUrl) {
+    public Service(int id, String serviceName, int serviceTypeId, String serviceTypeName, double servicePrice, String description, String imageUrl, int status) {
         this.id = id;
         this.serviceName = serviceName;
         this.serviceTypeId = serviceTypeId;
@@ -30,6 +31,7 @@ public class Service {
         this.servicePrice = servicePrice;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.status = status;
     }
     
 
@@ -87,6 +89,14 @@ public class Service {
 
     public void setServiceTypeName(String serviceTypeName) {
         this.serviceTypeName = serviceTypeName;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
     
 }
