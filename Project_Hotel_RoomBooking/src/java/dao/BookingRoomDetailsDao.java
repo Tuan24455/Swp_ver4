@@ -17,88 +17,98 @@ public class BookingRoomDetailsDao {
     
     public List<Map<String, Object>> getCurrentBookings() {
         List<Map<String, Object>> bookings = new ArrayList<>();
-        
-        String sql = "SELECT * FROM vw_RoomBookingDetails";
-        
+        String sql = "SELECT " +
+                "r.room_number, " +
+                "r.floor, " +
+                "rt.room_type, " +
+                "r.capacity, " +
+                "u.full_name as customer_name, " +
+                "brd.check_in_date, " +
+                "brd.check_out_date, " +
+                "b.total_prices, " +
+                "b.status " +
+            "FROM Rooms r " +
+            "LEFT JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+            "LEFT JOIN BookingRoomDetails brd ON r.id = brd.room_id " +
+            "LEFT JOIN Bookings b ON brd.booking_id = b.id " +
+            "LEFT JOIN Users u ON b.user_id = u.id " +
+            "WHERE r.isDelete = 0 " +
+            "AND b.status IN ('Pending', 'Confirmed') " +
+            "ORDER BY r.room_number";
+
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
             while (rs.next()) {
                 Map<String, Object> booking = new HashMap<>();
-                booking.put("roomNumber", rs.getString("Tên Phòng"));
-                booking.put("floor", rs.getString("Tầng"));
-                booking.put("roomType", rs.getString("Loại Phòng"));
-                booking.put("capacity", rs.getString("Sức Chứa"));
-                booking.put("customerName", rs.getString("Tên Khách Hàng"));
-                booking.put("checkInDate", rs.getDate("Ngày Đặt"));
-                booking.put("checkOutDate", rs.getDate("Ngày Trả"));
-                booking.put("totalPrice", rs.getDouble("Tổng Tiền"));
+                booking.put("roomNumber", rs.getString("room_number"));
+                booking.put("floor", rs.getString("floor"));
+                booking.put("roomType", rs.getString("room_type"));
+                booking.put("capacity", rs.getString("capacity"));
+                booking.put("customerName", rs.getString("customer_name"));
+                booking.put("checkInDate", rs.getDate("check_in_date"));
+                booking.put("checkOutDate", rs.getDate("check_out_date"));
+                booking.put("totalPrice", rs.getDouble("total_prices"));
+                booking.put("status", rs.getString("status"));
                 bookings.add(booking);
             }
-            
         } catch (SQLException e) {
             System.out.println("Error in BookingRoomDetailsDao: " + e.getMessage());
             e.printStackTrace();
         }
-        
         return bookings;
     }
     
     public List<Map<String, Object>> getFilteredBookings(String startDate, String endDate, Integer roomTypeId) {
         List<Map<String, Object>> bookings = new ArrayList<>();
-        
-        StringBuilder sqlBuilder = new StringBuilder("SELECT b.* FROM vw_RoomBookingDetails b ");
-        sqlBuilder.append("JOIN Rooms r ON b.[Tên Phòng] = r.room_number ");
-        sqlBuilder.append("WHERE 1=1 ");
-        
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT r.room_number, r.floor, rt.room_type, r.capacity, u.full_name as customer_name, brd.check_in_date, brd.check_out_date, b.total_prices, b.status ");
+        sqlBuilder.append("FROM Rooms r ");
+        sqlBuilder.append("LEFT JOIN RoomTypes rt ON r.room_type_id = rt.id ");
+        sqlBuilder.append("LEFT JOIN BookingRoomDetails brd ON r.id = brd.room_id ");
+        sqlBuilder.append("LEFT JOIN Bookings b ON brd.booking_id = b.id ");
+        sqlBuilder.append("LEFT JOIN Users u ON b.user_id = u.id ");
+        sqlBuilder.append("WHERE r.isDelete = 0 AND b.status IN ('Pending', 'Confirmed') ");
+
         List<Object> params = new ArrayList<>();
-        
-        // Thêm điều kiện lọc theo ngày
         if (startDate != null && !startDate.isEmpty()) {
-            sqlBuilder.append("AND b.[Ngày Đặt] >= ? ");
+            sqlBuilder.append("AND brd.check_in_date >= ? ");
             params.add(startDate);
         }
-        
         if (endDate != null && !endDate.isEmpty()) {
-            sqlBuilder.append("AND b.[Ngày Trả] <= ? ");
+            sqlBuilder.append("AND brd.check_out_date <= ? ");
             params.add(endDate);
         }
-        
-        // Thêm điều kiện lọc theo loại phòng
         if (roomTypeId != null) {
-            sqlBuilder.append("AND r.room_type_id = ? ");
+            sqlBuilder.append("AND rt.id = ? ");
             params.add(roomTypeId);
         }
-        
+        sqlBuilder.append("ORDER BY r.room_number");
+
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
-            
-            // Thiết lập các tham số
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
-            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> booking = new HashMap<>();
-                    booking.put("roomNumber", rs.getString("Tên Phòng"));
-                    booking.put("floor", rs.getString("Tầng"));
-                    booking.put("roomType", rs.getString("Loại Phòng"));
-                    booking.put("capacity", rs.getString("Sức Chứa"));
-                    booking.put("customerName", rs.getString("Tên Khách Hàng"));
-                    booking.put("checkInDate", rs.getDate("Ngày Đặt"));
-                    booking.put("checkOutDate", rs.getDate("Ngày Trả"));
-                    booking.put("totalPrice", rs.getDouble("Tổng Tiền"));
+                    booking.put("roomNumber", rs.getString("room_number"));
+                    booking.put("floor", rs.getString("floor"));
+                    booking.put("roomType", rs.getString("room_type"));
+                    booking.put("capacity", rs.getString("capacity"));
+                    booking.put("customerName", rs.getString("customer_name"));
+                    booking.put("checkInDate", rs.getDate("check_in_date"));
+                    booking.put("checkOutDate", rs.getDate("check_out_date"));
+                    booking.put("totalPrice", rs.getDouble("total_prices"));
+                    booking.put("status", rs.getString("status"));
                     bookings.add(booking);
                 }
             }
-            
         } catch (SQLException e) {
             System.out.println("Error in getFilteredBookings: " + e.getMessage());
             e.printStackTrace();
         }
-        
         return bookings;
     }
     

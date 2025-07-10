@@ -51,28 +51,17 @@ public class BookingReportServlet extends HttpServlet {
                 }
             }
             
-            // Set default date range if not provided (last 30 days)
-            if (startDate == null || startDate.isEmpty()) {
-                startDate = LocalDate.now().minusDays(30).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            }
-            if (endDate == null || endDate.isEmpty()) {
-                endDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            }
             
-            // Get booking data from view with filter
-            List<Map<String, Object>> currentBookings;
-            Map<String, Object> bookingSummary;
             
-            if (roomTypeId != null || (startDate != null && !startDate.isEmpty()) || (endDate != null && !endDate.isEmpty())) {
-                // Sử dụng phương thức lọc nếu có tham số lọc
-                currentBookings = bookingDao.getFilteredBookings(startDate, endDate, roomTypeId);
-                bookingSummary = bookingDao.getFilteredBookingSummary(startDate, endDate, roomTypeId);
-            } else {
-                // Sử dụng phương thức mặc định nếu không có tham số lọc
-                currentBookings = bookingDao.getCurrentBookings();
-                bookingSummary = bookingDao.getBookingSummary();
-            }
-            
+            // Lấy danh sách booking hiện tại theo bộ lọc
+            List<Map<String, Object>> currentBookings = bookingDao.getFilteredBookings(startDate, endDate, roomTypeId);
+            request.setAttribute("currentBookings", currentBookings);
+
+            // Lấy tổng khách và tổng doanh thu theo bộ lọc
+            Map<String, Object> bookingSummary = bookingDao.getFilteredBookingSummary(startDate, endDate, roomTypeId);
+            request.setAttribute("totalCustomers", bookingSummary.getOrDefault("totalCustomers", 0));
+            request.setAttribute("totalRevenue", bookingSummary.getOrDefault("totalRevenue", 0));
+
             // Lấy thống kê phòng
             Map<String, Object> roomStatistics = new LinkedHashMap<>();
             int totalRooms, occupiedRooms, maintenanceRooms, vacantRooms;
