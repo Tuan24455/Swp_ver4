@@ -12,8 +12,10 @@
         <title>JSP Page</title>
     </head>
     <body>
+        
         <form action="findAccount">
-            <input type="text" name="keyword">
+            <input type="text" name="keyword" placeholder="Nhập email hoặc tên đăng nhập">
+            <input type="submit" value="Tìm kiếm" />
         </form>
     </body>
 </html>

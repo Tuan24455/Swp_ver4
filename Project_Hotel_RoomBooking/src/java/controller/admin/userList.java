@@ -68,10 +68,6 @@ public class userList extends HttpServlet {
                     return; // ❗ BẮT BUỘC
                 }
 
-                // Xóa dữ liệu nhạy cảm
-                userData.setPass(null);
-                userData.setDeleted(false);
-
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 new Gson().toJson(userData, response.getWriter());

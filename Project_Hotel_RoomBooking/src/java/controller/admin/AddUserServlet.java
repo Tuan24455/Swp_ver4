@@ -101,7 +101,7 @@ public class AddUserServlet extends HttpServlet {
             if (sendWelcomeEmail != null) {
                 // TODO: Gửi email ở đây nếu bạn có EmailUtility
             }
-            response.sendRedirect("userList?action=added");
+            response.sendRedirect("userList");
         } else {
             request.setAttribute("error", "Thêm người dùng thất bại");
             request.getRequestDispatcher("user-management.jsp").forward(request, response);

@@ -63,7 +63,7 @@
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="text-end">
-                                                        <a href="resetpassword" class="link-secondary text-decoration-none">Quên mật khẩu?</a>
+                                                        <a href="findAccount" class="link-secondary text-decoration-none">Quên mật khẩu?</a>
                                                     </div>
                                                 </div>
                                             </div>
