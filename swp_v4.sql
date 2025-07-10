@@ -63,7 +63,8 @@ CREATE TABLE Services (
     service_price DECIMAL(10, 2),
     description NVARCHAR(MAX),
     image_url NVARCHAR(MAX),
-	isDeleted BIT DEFAULT 0,
+    isDeleted BIT DEFAULT 0,
+    status BIT DEFAULT 1,
     FOREIGN KEY (service_type_id) REFERENCES ServiceTypes(id)
 );
 
