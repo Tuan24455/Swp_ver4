@@ -21,7 +21,7 @@ public class ServiceDao {
     // Lấy dịch vụ theo ID
     public Service getServiceById(int id) {
         String sql = "SELECT s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
-                + "s.service_price, s.description, s.image_url "
+                + "s.service_price, s.description, s.image_url, s.status "
                 + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE s.id = ?";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -36,6 +36,7 @@ public class ServiceDao {
                     service.setServicePrice(rs.getDouble("service_price"));
                     service.setDescription(rs.getString("description"));
                     service.setImageUrl(rs.getString("image_url"));
+                    service.setStatus(rs.getInt("status"));
                     return service;
                 }
             }
@@ -49,7 +50,7 @@ public class ServiceDao {
     public List<Service> getRelatedServices(int serviceTypeId, int excludeId, int limit) {
         List<Service> list = new ArrayList<>();
         String sql = "SELECT TOP " + limit + " s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
-                + "s.service_price, s.description, s.image_url "
+                + "s.service_price, s.description, s.image_url, s.status "
                 + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id "
                 + "WHERE s.service_type_id = ? AND s.id <> ?";
         try (Connection conn = new DBContext().getConnection();
@@ -66,6 +67,7 @@ public class ServiceDao {
                     service.setServicePrice(rs.getDouble("service_price"));
                     service.setDescription(rs.getString("description"));
                     service.setImageUrl(rs.getString("image_url"));
+                    service.setStatus(rs.getInt("status"));
                     list.add(service);
                 }
             }
@@ -79,7 +81,7 @@ public class ServiceDao {
     public List<Service> getAllServices() {
         List<Service> list = new ArrayList<>();
         String sql = "SELECT s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
-                + "s.service_price, s.description, s.image_url "
+                + "s.service_price, s.description, s.image_url, s.status "
                 + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -93,6 +95,7 @@ public class ServiceDao {
                 service.setServicePrice(rs.getDouble("service_price"));
                 service.setDescription(rs.getString("description"));
                 service.setImageUrl(rs.getString("image_url"));
+                service.setStatus(rs.getInt("status"));
                 list.add(service);
             }
 
