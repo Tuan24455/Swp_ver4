@@ -76,11 +76,10 @@ public class RatingReportServlet extends HttpServlet {
             for (Room room : rooms) {
                 roomMap.put(room.getId(), room.getRoomNumber());
             }
-            
-            // Create service map for easy lookup (serviceId -> serviceName)
+              // Create service map for easy lookup (serviceId -> serviceName)
             Map<Integer, String> serviceMap = new HashMap<>();
             for (Service service : services) {
-                serviceMap.put(service.getId(), service.getServiceName());
+                serviceMap.put(service.getId(), service.getName());
             }
             
             // Get rating data based on filter
