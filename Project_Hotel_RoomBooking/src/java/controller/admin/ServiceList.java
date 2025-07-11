@@ -13,9 +13,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.Serial;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import model.Service;
 
@@ -60,15 +57,22 @@ public class ServiceList extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-                ServiceDao dao = new ServiceDao();
-        List<Service> dv = dao.getAllServices();
-        request.setAttribute("d", dv);
-        request.getRequestDispatcher("admin/serviceList.jsp").forward(request, response);
-    } 
+            throws ServletException, IOException {
+        String type = request.getParameter("type");
+        String minRaw = request.getParameter("minPrice");
+        String maxRaw = request.getParameter("maxPrice");
 
-    /** 
+        Double min = (minRaw != null && !minRaw.isEmpty()) ? Double.parseDouble(minRaw) : null;
+        Double max = (maxRaw != null && !maxRaw.isEmpty()) ? Double.parseDouble(maxRaw) : null;
+        ServiceDao dao = new ServiceDao();
+        List<Service> services = dao.filterServices(type, min, max);
+        request.setAttribute("services", services);
+        request.getRequestDispatcher("admin/serviceList.jsp").forward(request, response);
+    }
+
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs

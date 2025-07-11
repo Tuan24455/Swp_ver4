@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import model.Service;
 
@@ -24,8 +25,8 @@ import model.Service;
  * @author Phạm Quốc Tuấn
  */
 @MultipartConfig
-@WebServlet(name="AddService", urlPatterns={"/addService"})
-public class AddService extends HttpServlet {
+@WebServlet(name="UpdateService", urlPatterns={"/updateService"})
+public class UpdateService extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -42,10 +43,10 @@ public class AddService extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddService</title>");  
+            out.println("<title>Servlet UpdateService</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddService at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateService at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,49 +77,74 @@ public class AddService extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/plain");
+        response.setContentType("text/plain; charset=UTF-8");
 
         try {
+            int id = Integer.parseInt(request.getParameter("id"));
             String name = request.getParameter("service_name");
-            int typeId = Integer.parseInt(request.getParameter("service_type_id"));
-            double price = Double.parseDouble(request.getParameter("service_price"));
+            String priceRaw = request.getParameter("service_price");
+            String typeRaw = request.getParameter("service_type_id");
             String description = request.getParameter("description");
+            String oldImageUrl = request.getParameter("oldImageUrl");
 
-            // Check tên dịch vụ đã tồn tại
             ServiceDao dao = new ServiceDao();
-            if (dao.checkNameExists(name)) {
+            // Validate: tên không rỗng
+            if (name == null || name.trim().isEmpty()) {
+                response.getWriter().write("invalidName");
+                return;
+            }
+
+            // Kiểm tra trùng tên (trừ chính nó)
+            if (dao.checkNameExistsExceptId(name.trim(), id)) {
                 response.getWriter().write("duplicate");
                 return;
             }
 
-            // Validate giá
-            if (price <= 0) {
+            // Validate: giá
+            double price;
+            try {
+                price = Double.parseDouble(priceRaw);
+                if (price <= 0) {
+                    response.getWriter().write("invalidPrice");
+                    return;
+                }
+            } catch (NumberFormatException e) {
                 response.getWriter().write("invalidPrice");
                 return;
             }
 
-            // Xử lý ảnh
+            // Validate: loại dịch vụ
+            if (typeRaw == null || typeRaw.isEmpty()) {
+                response.getWriter().write("invalidType");
+                return;
+            }
+            int typeId = Integer.parseInt(typeRaw);
+
+            // Validate: mô tả
+            if (description == null || description.trim().isEmpty()) {
+                response.getWriter().write("invalidDescription");
+                return;
+            }
+
+            // Xử lý ảnh mới (nếu có)
             Part imagePart = request.getPart("image");
-            String fileName = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
-            String savePath = getServletContext().getRealPath("/") + "images/services";
-            new File(savePath).mkdirs();
-            String filePath = savePath + File.separator + System.currentTimeMillis() + "_" + fileName;
-            imagePart.write(filePath);
-            String imageUrl = "images/services/" + new File(filePath).getName();
+            String imageUrl = oldImageUrl;
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String uploadPath = getServletContext().getRealPath("/") + "uploads";
+                Files.createDirectories(Paths.get(uploadPath));
+                String fileName = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
+                imagePart.write(uploadPath + File.separator + fileName);
+                imageUrl = "uploads/" + fileName;
+            }
 
-            //  Lưu vào db
-            Service s = new Service();
-            s.setName(name);
-            s.setTypeId(typeId);
-            s.setPrice(price);
-            s.setDescription(description);
-            s.setImageUrl(imageUrl);
+            // Gọi DAO để cập nhật
+            Service updated = new Service(id, name.trim(), typeId, price, description.trim(), imageUrl);
+            dao.updateService(updated);
 
-            dao.insertService(s);
             response.getWriter().write("success");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
             response.getWriter().write("error");
         }
     }
