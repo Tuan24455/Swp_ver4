@@ -49,11 +49,11 @@ public class RatingReportServlet extends HttpServlet {
             throws ServletException, IOException {
         
         try {
-            // Get filter parameters
+            // Lấy tham số lọc
             String filterType = request.getParameter("filterType");
             String qualityStr = request.getParameter("quality");
             
-            // Set default values if parameters are null
+            // Thiết lập giá trị mặc định nếu tham số là null
             if (filterType == null || filterType.isEmpty()) {
                 filterType = "all";
             }
@@ -67,28 +67,29 @@ public class RatingReportServlet extends HttpServlet {
                 }
             }
             
-            // Get all rooms and services
+            // Lấy tất cả phòng và dịch vụ
             List<Room> rooms = roomDao.getAllRooms();
             List<Service> services = serviceDao.getAllServices();
             
-            // Create room map for easy lookup (roomId -> roomNumber)
+            // Tạo map phòng để tra cứu nhanh (roomId -> roomNumber)
             Map<Integer, String> roomMap = new HashMap<>();
             for (Room room : rooms) {
                 roomMap.put(room.getId(), room.getRoomNumber());
             }
-              // Create service map for easy lookup (serviceId -> serviceName)
+            
+            // Tạo map dịch vụ để tra cứu nhanh (serviceId -> serviceName)
             Map<Integer, String> serviceMap = new HashMap<>();
             for (Service service : services) {
                 serviceMap.put(service.getId(), service.getName());
             }
             
-            // Get rating data based on filter
+            // Lấy dữ liệu đánh giá dựa trên bộ lọc
             List<RoomReview> roomReviews = new ArrayList<>();
             List<ServiceReview> serviceReviews = new ArrayList<>();
             
             if ("all".equals(filterType) || "room".equals(filterType)) {
                 roomReviews = reviewDao.getAllRoomReviews();
-                // Apply quality filter if specified
+                // Lọc theo chất lượng nếu có
                 if (quality != null) {
                     final Integer finalQuality = quality;
                     roomReviews = roomReviews.stream()
@@ -99,7 +100,7 @@ public class RatingReportServlet extends HttpServlet {
             
             if ("all".equals(filterType) || "service".equals(filterType)) {
                 serviceReviews = reviewDao.getAllServiceReviews();
-                // Apply quality filter if specified
+                // Lọc theo chất lượng nếu có
                 if (quality != null) {
                     final Integer finalQuality = quality;
                     serviceReviews = serviceReviews.stream()
@@ -108,13 +109,13 @@ public class RatingReportServlet extends HttpServlet {
                 }
             }
             
-            // Calculate summary statistics
+            // Tính toán thống kê tổng quan
             Map<String, Object> summary = calculateRatingSummary(roomReviews, serviceReviews);
             
-            // Calculate rating distribution
+            // Tính toán phân phối đánh giá
             Map<String, Object> ratingDistribution = calculateRatingDistribution(roomReviews, serviceReviews);
             
-            // Set attributes for JSP
+            // Set thuộc tính cho JSP
             request.setAttribute("rooms", rooms);
             request.setAttribute("services", services);
             request.setAttribute("roomReviews", roomReviews);
@@ -127,13 +128,13 @@ public class RatingReportServlet extends HttpServlet {
             request.setAttribute("currentQuality", qualityStr);
             request.setAttribute("now", new java.util.Date());
             
-            // Forward to JSP
+            // Chuyển tiếp tới JSP
             request.getRequestDispatcher("/admin/ratingreport.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
-                "Error generating rating report: " + e.getMessage());
+                "Lỗi khi tạo báo cáo đánh giá: " + e.getMessage());
         }
     }
     
@@ -143,11 +144,12 @@ public class RatingReportServlet extends HttpServlet {
         doGet(request, response);
     }
     
+    // Hàm tính toán thống kê tổng quan đánh giá
     private Map<String, Object> calculateRatingSummary(List<RoomReview> roomReviews, 
                                                        List<ServiceReview> serviceReviews) {
         Map<String, Object> summary = new HashMap<>();
         
-        // Room rating statistics
+        // Thống kê đánh giá phòng
         if (!roomReviews.isEmpty()) {
             double avgRoomRating = roomReviews.stream()
                 .mapToInt(RoomReview::getQuality)
@@ -160,7 +162,7 @@ public class RatingReportServlet extends HttpServlet {
             summary.put("totalRoomReviews", 0);
         }
         
-        // Service rating statistics
+        // Thống kê đánh giá dịch vụ
         if (!serviceReviews.isEmpty()) {
             double avgServiceRating = serviceReviews.stream()
                 .mapToInt(ServiceReview::getQuality)
@@ -173,7 +175,7 @@ public class RatingReportServlet extends HttpServlet {
             summary.put("totalServiceReviews", 0);
         }
         
-        // Overall statistics
+        // Thống kê tổng hợp
         int totalReviews = roomReviews.size() + serviceReviews.size();
         summary.put("totalReviews", totalReviews);
         
@@ -189,23 +191,24 @@ public class RatingReportServlet extends HttpServlet {
         return summary;
     }
     
+    // Hàm tính toán phân phối đánh giá
     private Map<String, Object> calculateRatingDistribution(List<RoomReview> roomReviews, 
                                                            List<ServiceReview> serviceReviews) {
         Map<String, Object> distribution = new HashMap<>();
         Map<Integer, Integer> ratingMap = new HashMap<>();
         
-        // Initialize rating counts
+        // Khởi tạo số lượng đánh giá cho từng mức điểm
         for (int i = 1; i <= 5; i++) {
             ratingMap.put(i, 0);
         }
         
-        // Count room reviews by rating
+        // Đếm số lượng đánh giá phòng theo điểm
         for (RoomReview review : roomReviews) {
             int rating = review.getQuality();
             ratingMap.put(rating, ratingMap.get(rating) + 1);
         }
         
-        // Count service reviews by rating
+        // Đếm số lượng đánh giá dịch vụ theo điểm
         for (ServiceReview review : serviceReviews) {
             int rating = review.getQuality();
             ratingMap.put(rating, ratingMap.get(rating) + 1);
