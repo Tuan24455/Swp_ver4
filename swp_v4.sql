@@ -146,7 +146,9 @@ VALUES
 ('tranthithuy', 'OFvwS0UtlUn9k2qYqH/8gQ==', N'Trần Thị Thúy', '1985-08-25', 'Female', 'thuy.tran@email.com', '0123456780', N'456 Đường XYZ, TP.HCM', 'Admin', 'images/user/default_avatar.png'),
 
 -- password gốc: password123
-('lequangthang', 'q5tcb63SSYLuZb5eX0ltbA==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'images/user/default_avatar.png');
+('lequangthang', 'q5tcb63SSYLuZb5eX0ltbA==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'images/user/default_avatar.png'),
+('newuser4', 'xxx', N'Người dùng 4', '1995-01-01', 'Male', 'user4@email.com', '0111111111', N'Địa chỉ', 'Customer', 'images/user/default_avatar.png'),
+('newuser5', 'xxx', N'Người dùng 5', '1996-01-01', 'Female', 'user5@email.com', '0111111112', N'Địa chỉ', 'Customer', 'images/user/default_avatar.png');
 
 -- Dữ liệu cho bảng RoomTypes
 INSERT INTO RoomTypes (room_type) 

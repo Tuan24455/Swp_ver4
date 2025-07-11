@@ -117,7 +117,7 @@
             </a>
             <a
                 href="${pageContext.request.contextPath}/serviceList"
-                class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}"
+                class="list-group-item list-group-item-action py-3 ${param.activePage == 'services' ? 'active' : ''}"
                 >
                 <i class="fas fa-calendar-check me-2"></i> Quản lí dịch vụ
             </a>

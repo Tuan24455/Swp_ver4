@@ -8,6 +8,8 @@
          pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page isErrorPage="true" %>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -79,14 +81,14 @@
                     </div>
                 </div>
 
-                <!-- Filter Section -->
-                <form method="get" action="promotionsList"  class="mb-4">
+                <!--                 Filter Section -->
+                <form method="get" action=""  class="mb-4">
                     <input type="hidden" name="page" value="1" />
 
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label">Loại Dịch Vụ</label>
-                            <select class="form-select" name="status">
+                            <select class="form-select" name="type">
                                 <option value="" ${paramStatus == null ? 'selected' : ''}>Tất Cả</option>
                                 <option value="Restaurant"${paramStatus == 'active' ? 'selected' : ''}>Nhà Hàng</option>
                                 <option value="Spa" ${paramStatus == 'expired' ? 'selected' : ''}>Spa</option>
@@ -94,13 +96,16 @@
                                 <option value="Shuttle" ${paramStatus == 'upcoming' ? 'selected' : ''}>Di Chuyển</option>
                             </select>
                         </div>
+                        <!-- Giá tối thiểu -->
                         <div class="col-md-3">
-                            <label class="form-label">Start Date</label>
-                            <input type="date" class="form-control" name="startDate" value="${paramStartDate}" />
+                            <label class="form-label">Giá Tối Thiểu</label>
+                            <input type="number" class="form-control" name="minPrice" placeholder="VD: 100000" value="${param.minPrice}" />
                         </div>
+
+                        <!-- Giá tối đa -->
                         <div class="col-md-3">
-                            <label class="form-label">End Date</label>
-                            <input type="date" class="form-control" name="endDate" value="${paramEndDate}" />
+                            <label class="form-label">Giá Tối Đa</label>
+                            <input type="number" class="form-control" name="maxPrice" placeholder="VD: 500000" value="${param.maxPrice}" />
                         </div>
                         <div class="col-md-3">
                             <label class="form-label d-block">&nbsp;</label>    
@@ -113,26 +118,13 @@
                 </form>
 
 
-                <!-- Service Table -->
+                <!--                 Service Table -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-white border-bottom py-3">
                         <h5 class="mb-0">All Service</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                            <div class="d-flex align-items-center mb-2 mb-md-0">
-                                <span class="me-2 text-muted">Show</span>
-                                <select
-                                    class="form-select form-select-sm"
-                                    style="width: auto"
-                                    >
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                                <span class="ms-2 text-muted">entries</span>
-                            </div>
                             <div
                                 class="input-group search-table-input"
                                 style="width: 250px"
@@ -143,7 +135,7 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    placeholder="Search promotions..."
+                                    placeholder="Tìm dịch vụ..."
                                     />
                             </div>
                         </div>
@@ -161,13 +153,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="d" items="${d}">
+                                    <c:forEach var="s" items="${services}">
                                         <tr>
-                                            <td>#${d.serviceTypeName}</td>
-                                            <td>${d.serviceName}</td>
-                                            <td>${d.imageUrl}</td>
-                                            <td>${d.servicePrice}</td>
-                                            <td>${d.description}</td>
+                                            <td>#${s.typeName}</td>
+                                            <td>${s.name}</td>
+                                            <td>
+                                                <img src="${s.imageUrl}" 
+                                                     alt="Ảnh dịch vụ" width="80" style="object-fit: cover; border-radius: 6px;" />
+                                            </td>
+                                            <td>${s.price}</td>
+                                            <td>${s.description}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <button
@@ -180,26 +175,26 @@
                                                         class="btn btn-sm btn-outline-warning"
                                                         title="Edit"
                                                         type="button"
-                                                        onclick="openEditModal(${d.id}, '${p.title}', ${p.percentage}, '${p.startAt}', '${p.endAt}', '${p.description}')"
-                                                        >
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editServiceModal${s.id}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
 
-                                                    <form action="${pageContext.request.contextPath}/deletePromotion" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
-                                                        <input type="hidden" name="id" value="${p.id}" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+
+                                                    <form action="deleteService" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                                                        <input type="hidden" name="id" value="${s.id}" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
                                                 </div>
                                             </td>
                                         </tr>
-                                    </c:forEach>
-
-                                    <!-- More rows here -->
+                                     </c:forEach>
                                 </tbody>
                             </table>
+
                         </div>
 
                         <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
@@ -245,158 +240,272 @@
     </div>
 
 
+                                            
+                                        
+                                        <!-- Modal chỉnh sửa dịch vụ theo ID -->
+                                <c:forEach var="s" items="${services}">
+                                    <div class="modal fade" id="editServiceModal${s.id}" tabindex="-1">
+                                        <div class="modal-dialog modal-lg">
+                                            <form action="updateService" method="post" enctype="multipart/form-data">
+                                                
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Chỉnh sửa Dịch Vụ</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <input type="hidden" name="id" value="${s.id}" />
 
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label>Loại dịch vụ</label>
+                                                            <select class="form-select" name="service_type_id">
+                                                                <option value="1" ${s.typeId == 1 ? 'selected' : ''}>Restaurant</option>
+                                                                <option value="2" ${s.typeId == 2 ? 'selected' : ''}>Spa</option>
+                                                                <option value="3" ${s.typeId == 3 ? 'selected' : ''}>Gym</option>
+                                                                <option value="4" ${s.typeId == 4 ? 'selected' : ''}>Shuttle</option>
+                                                            </select>
+                                                        </div>
 
+                                                        <div class="mb-3">
+                                                            <label>Tên dịch vụ</label>
+                                                            <input type="text" name="service_name" class="form-control" value="${s.name}" required />
+                                                        </div>
 
-<!-- Modal Thêm Dịch Vụ -->
-<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <form action="addService" method="post" enctype="multipart/form-data">
-      <input type="hidden" name="action" value="create" />
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addServiceModalLabel">Thêm Dịch Vụ Mới</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-        </div>
-        <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label>Giá</label>
+                                                            <input type="number" name="service_price" class="form-control" value="${s.price}" required />
+                                                        </div>
 
-          <div class="mb-3">
-            <label for="service_name" class="form-label">Tên dịch vụ</label>
-            <input type="text" class="form-control" id="service_name" name="service_name" required>
-          </div>
+                                                        <div class="mb-3">
+                                                            <label>Ảnh hiện tại</label><br />
+                                                            <img src="${pageContext.request.contextPath}/${s.imageUrl}" width="100" />
+                                                            <input type="file" name="image" class="form-control mt-2" accept="image/*" />
+                                                            <input type="hidden" name="oldImageUrl" value="${s.imageUrl}" />
+                                                        </div>
 
-          <div class="mb-3">
-            <label for="service_type_id" class="form-label">Loại dịch vụ</label>
-            <select class="form-select" id="service_type_id" name="service_type_id" required>
-              <option value="" disabled selected>-- Chọn loại dịch vụ --</option>
-              <option value="1">Restaurant</option>
-              <option value="2">Spa</option>
-              <option value="3">Gym</option>
-              <option value="4">Shuttle</option>
-              <c:forEach var="type" items="${serviceTypeList}">
-                <option value="${type.id}">${type.service_type}</option>
-              </c:forEach>
-            </select>
-          </div>
+                                                        <div class="mb-3">
+                                                            <label>Mô tả</label>
+                                                            <textarea class="form-control" name="description" id="editDescription${s.id}" rows="4">${s.description}</textarea>              
+                                                        </div>
+                                                    </div>
 
-          <div class="mb-3">
-            <label for="service_price" class="form-label">Giá (VNĐ)</label>
-            <input type="number" class="form-control" id="service_price" name="service_price" step="1000" required>
-          </div>
-
-          <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label for="image" class="form-label" >Ảnh đại diện</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*" required="">
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Thêm dịch vụ</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-
-
-    <!-- Update Promotion Modal -->
-    <div class="modal fade" id="updatePromotionModal" tabindex="-1" aria-labelledby="updatePromotionLabel" aria-hidden="true">
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-primary" type="submit">Cập nhật</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+    <!-- Modal Thêm Dịch Vụ -->
+    <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form id="updatePromotionForm" action="${pageContext.request.contextPath}/updatePromotion" method="post">
+            <form action="addService" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="create" />
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="updatePromotionLabel">Update Promotion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="addServiceModalLabel">Thêm Dịch Vụ Mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
-
                     <div class="modal-body">
-                        <input type="hidden" id="update_id" name="id" value="${promotion.id}" />
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="update_title" class="form-label">Title</label>
-                                <input type="text" id="update_title" name="title" class="form-control" required
-                                       value="${promotion.title}" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="update_percentage" class="form-label">Percentage (%)</label>
-                                <input type="number" id="update_percentage" name="percentage" class="form-control" min="0" max="100" required
-                                       value="${promotion.percentage}" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="update_start_at" class="form-label">Start Date</label>
-                                <input type="date" id="update_start_at" name="start_at" class="form-control" required
-                                       value="<fmt:formatDate value='${promotion.startAt}' pattern='yyyy-MM-dd'/>" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="update_end_at" class="form-label">End Date</label>
-                                <input type="date" id="update_end_at" name="end_at" class="form-control" required
-                                       value="<fmt:formatDate value='${promotion.endAt}' pattern='yyyy-MM-dd'/>" />
-                            </div>
-
-                            <div class="col-12">
-                                <label for="update_description" class="form-label">Description</label>
-                                <textarea id="update_description" name="description" class="form-control" rows="3">${promotion.description}</textarea>
-                            </div>
+                        <div class="mb-3">
+                            <label for="service_type_id" class="form-label">Loại dịch vụ</label>
+                            <select class="form-select" id="service_type_id" name="service_type_id" required>
+                                <option value="" disabled selected>-- Chọn loại dịch vụ --</option>
+                                <option value="1">Restaurant</option>
+                                <option value="2">Spa</option>
+                                <option value="3">Gym</option>
+                                <option value="4">Shuttle</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Promotion</button>
+                        <div class="mb-3">
+                            <label for="service_name" class="form-label">Tên dịch vụ</label>
+                            <input type="text" class="form-control" id="service_name" name="service_name" required>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="service_price" class="form-label">Giá (VNĐ)</label>
+                            <input type="number" class="form-control" id="service_price" name="service_price" step="1000"  required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label" >Ảnh đại diện</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*" required="">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+
+
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm dịch vụ</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
-        function openEditModal(id, title, percentage, startAt, endAt, description) {
-            // Gán dữ liệu vào các input của form update
-            document.getElementById('update_id').value = id;
-            document.getElementById('update_title').value = title;
-            document.getElementById('update_percentage').value = percentage;
+                                                        // Khởi tạo CKEditor
+                                                        let editor;
+                                                        ClassicEditor
+                                                                .create(document.querySelector('#description'), {
+                                                                    toolbar: [
+                                                                        'heading', '|',
+                                                                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                                                        'undo', 'redo'
+                                                                    ]
+                                                                })
+                                                                .then(e => editor = e)
+                                                                .catch(error => console.error(error));
 
-            // Chuyển đổi định dạng ngày nếu cần
-            document.getElementById('update_start_at').value = startAt ? startAt.substring(0, 10) : '';
-            document.getElementById('update_end_at').value = endAt ? endAt.substring(0, 10) : '';
+                                                        // Gắn sự kiện khi form submit
+                                                        document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
+                                                            e.preventDefault(); // ❌ Chặn reload
 
-            document.getElementById('update_description').value = description;
+                                                            const form = this;
+                                                            const formData = new FormData(form);
+                                                            formData.set("description", editor.getData());
 
-            // Mở modal bằng Bootstrap 5 JS API
-            const updateModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
-            updateModal.show();
-        }
+                                                            try {
+                                                                const response = await fetch("addService", {
+                                                                    method: "POST",
+                                                                    body: formData
+                                                                });
+
+                                                                const result = await response.text();
+
+                                                                if (result === "success") {
+                                                                    alert("Thêm dịch vụ thành công!");
+                                                                    location.reload();
+                                                                } else if (result === "duplicate") {
+                                                                    alert("Tên dịch vụ đã tồn tại!");
+                                                                } else if (result === "invalidPrice") {
+                                                                    alert("Giá phải là số dương lớn hơn 0!");
+                                                                } else {
+                                                                    alert("Có lỗi xảy ra khi thêm dịch vụ.");
+                                                                }
+                                                            } catch (err) {
+                                                                alert("Lỗi kết nối máy chủ.");
+                                                                console.error(err);
+                                                            }
+                                                        });
     </script>
+<script>
+    const ckeditors = {};
 
-    <script>
-        function validatePromotionForm(formId, startDateId, endDateId) {
-            const form = document.getElementById(formId);
-            form.addEventListener('submit', function (event) {
-                const startDate = new Date(document.getElementById(startDateId).value);
-                const endDate = new Date(document.getElementById(endDateId).value);
+    // Khởi tạo CKEditor khi modal mở
+    document.querySelectorAll('[id^="editServiceModal"]').forEach(modal => {
+        modal.addEventListener('shown.bs.modal', function () {
+            const id = this.id.replace("editServiceModal", "");
+            const textarea = document.getElementById("editDescription" + id);
+            if (!ckeditors[id]) {
+                ClassicEditor.create(textarea, {
+                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+                })
+                .then(editor => ckeditors[id] = editor)
+                .catch(error => console.error(error));
+            }
+        });
+    });
 
-                if (endDate <= startDate) {
-                    event.preventDefault();  // Ngăn submit
-                    alert('End Date phải lớn hơn Start Date!');
-                    document.getElementById(endDateId).focus();
+    // Xử lý submit form chỉnh sửa dịch vụ
+    document.querySelectorAll('form[action="updateService"]').forEach(form => {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const serviceIdInput = form.querySelector('input[name="id"]');
+            if (!serviceIdInput) {
+                alert("Không tìm thấy ID dịch vụ.");
+                return;
+            }
+
+            const serviceId = serviceIdInput.value;
+            const editor = ckeditors[serviceId];
+
+            // Validate: loại dịch vụ
+            const typeSelect = form.querySelector('select[name="service_type_id"]');
+            if (!typeSelect || !typeSelect.value) {
+                alert("Vui lòng chọn loại dịch vụ.");
+                return;
+            }
+
+            // Validate: tên dịch vụ
+            const nameInput = form.querySelector('input[name="service_name"]');
+            if (!nameInput || nameInput.value.trim().length === 0) {
+                alert("Tên dịch vụ không được để trống.");
+                return;
+            }
+
+            // Validate: giá
+            const priceInput = form.querySelector('input[name="service_price"]');
+            if (!priceInput) {
+                alert("Không tìm thấy input giá.");
+                return;
+            }
+
+            const price = parseFloat(priceInput.value);
+            if (isNaN(price) || price <= 0) {
+                alert("Giá phải là số dương lớn hơn 0.");
+                return;
+            }
+
+            // Validate: mô tả
+            if (!editor) {
+                alert("Mô tả chưa được khởi tạo trình soạn thảo.");
+                return;
+            }
+
+            const description = editor.getData().trim();
+            if (description.length === 0) {
+                alert("Mô tả không được để trống.");
+                return;
+            }
+
+            // Gán lại mô tả vào formData
+            formData.set("description", description);
+
+            try {
+                const res = await fetch("updateService", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await res.text();
+                if (result === "success") {
+                    alert("Cập nhật dịch vụ thành công!");
+                    location.reload();
+                } else if (result === "duplicate") {
+                    alert("Tên dịch vụ đã tồn tại!");
+                } else if (result === "invalidPrice") {
+                    alert("Giá không hợp lệ!");
+                } else if (result === "invalidDescription") {
+                    alert("Mô tả không hợp lệ!");
+                } else {
+                    alert("Đã xảy ra lỗi khi cập nhật.");
                 }
-            });
-        }
 
-        // Gọi cho cả 2 form add và update
-        validatePromotionForm('promotionForm', 'start_at', 'end_at');
-        validatePromotionForm('updatePromotionForm', 'update_start_at', 'update_end_at');
-    </script>
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi kết nối máy chủ.");
+            }
+        });
+    });
+</script>
+
+
+
 
 
 

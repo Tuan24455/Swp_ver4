@@ -6,34 +6,39 @@ package model;
 
 /**
  *
- * @author Mai Tien Dung
+ * @author Phạm Quốc Tuấn
  */
 public class Service {
 
     private int id;
-    private String serviceName;
-    private int serviceTypeId;
-    private String serviceTypeName;
-    private double servicePrice;
+    private String name;
+    private int typeId;
+    private String typeName;
+    private double price;
     private String description;
     private String imageUrl;
-    private int status; // 1: available, 0: unavailable
 
-    
     public Service() {
     }
 
-    public Service(int id, String serviceName, int serviceTypeId, String serviceTypeName, double servicePrice, String description, String imageUrl, int status) {
+    public Service(int id, String name, int typeId, double price, String description, String imageUrl) {
         this.id = id;
-        this.serviceName = serviceName;
-        this.serviceTypeId = serviceTypeId;
-        this.serviceTypeName = serviceTypeName;
-        this.servicePrice = servicePrice;
+        this.name = name;
+        this.typeId = typeId;
+        this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.status = status;
     }
-    
+
+    public Service(int id, String name, int typeId, double price, String description, String imageUrl, String typeName) {
+        this.id = id;
+        this.name = name;
+        this.typeId = typeId;
+        this.price = price;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.typeName = typeName;
+    }
 
     public int getId() {
         return id;
@@ -43,28 +48,28 @@ public class Service {
         this.id = id;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getName() {
+        return name;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getServiceTypeId() {
-        return serviceTypeId;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setServiceTypeId(int serviceTypeId) {
-        this.serviceTypeId = serviceTypeId;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 
-    public double getServicePrice() {
-        return servicePrice;
+    public double getPrice() {
+        return price;
     }
 
-    public void setServicePrice(double servicePrice) {
-        this.servicePrice = servicePrice;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getDescription() {
@@ -83,20 +88,12 @@ public class Service {
         this.imageUrl = imageUrl;
     }
 
-    public String getServiceTypeName() {
-        return serviceTypeName;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setServiceTypeName(String serviceTypeName) {
-        this.serviceTypeName = serviceTypeName;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-    
 }
