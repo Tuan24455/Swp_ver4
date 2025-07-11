@@ -111,7 +111,7 @@
         <!-- Account & System Section -->
         <h6 class="menu-heading text-uppercase text-white-50 mt-4 px-3"></h6>
         <div class="list-group list-group-flush">
-            <a href="${pageContext.request.contextPath}/reception/account-settings.jsp"
+            <a href="${pageContext.request.contextPath}/receptionInfor"
                class="list-group-item list-group-item-action py-3 ${param.activePage == 'account-settings' ? 'active' : ''}">
                 <i class="fas fa-user-cog me-2"></i> Cài đặt tài khoản
             </a>
