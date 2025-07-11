@@ -8,7 +8,9 @@ import dal.DBContext;
 import model.Service;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceDao {
 
@@ -124,29 +126,33 @@ public class ServiceDao {
         }
     }
 
-    public List<Service> filterServices(String type, Double minPrice, Double maxPrice) {
+    public List<Service> filterServices(List<Integer> typeIds, Double priceFrom, Double priceTo) {
         List<Service> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
-                "SELECT s.*, st.service_type FROM Services s "
-                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
-                + "WHERE s.isDeleted = 0"
+                "SELECT s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
+                + "s.service_price, s.description, s.image_url "
+                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE 1=1"
         );
 
         List<Object> params = new ArrayList<>();
 
-        if (type != null && !type.isEmpty()) {
-            sql.append(" AND st.service_type = ?");
-            params.add(type);
+        // Lọc theo loại dịch vụ
+        if (typeIds != null && !typeIds.isEmpty()) {
+            sql.append(" AND s.service_type_id IN (");
+            sql.append("?,".repeat(typeIds.size()));
+            sql.setLength(sql.length() - 1);
+            sql.append(")");
+            params.addAll(typeIds);
         }
 
-        if (minPrice != null) {
+        // Lọc theo khoảng giá
+        if (priceFrom != null) {
             sql.append(" AND s.service_price >= ?");
-            params.add(minPrice);
+            params.add(priceFrom);
         }
-
-        if (maxPrice != null) {
+        if (priceTo != null) {
             sql.append(" AND s.service_price <= ?");
-            params.add(maxPrice);
+            params.add(priceTo);
         }
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
@@ -155,48 +161,71 @@ public class ServiceDao {
                 ps.setObject(i + 1, params.get(i));
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Service s = new Service();
-                    s.setId(rs.getInt("id"));
-                    s.setName(rs.getString("service_name"));
-                    s.setTypeId(rs.getInt("service_type_id"));
-                    s.setTypeName(rs.getString("service_type"));
-                    s.setPrice(rs.getDouble("service_price"));
-                    s.setDescription(rs.getString("description"));
-                    s.setImageUrl(rs.getString("image_url"));
-                    list.add(s);
-                }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Service service = new Service();
+                service.setId(rs.getInt("id"));
+                service.setName(rs.getString("service_name"));
+                service.setTypeId(rs.getInt("service_type_id"));
+                service.setTypeName(rs.getString("service_type_name"));
+                service.setPrice(rs.getDouble("service_price"));
+                service.setDescription(rs.getString("description"));
+                service.setImageUrl(rs.getString("image_url"));
+                list.add(service);
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return list;
     }
-    
-    public boolean checkNameExists(String name) {
-    String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0";
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, name);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) return rs.getInt(1) > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
+
+    public Map<Integer, String> getDistinctServiceTypes() {
+        Map<Integer, String> typeMap = new LinkedHashMap<>(); // giữ nguyên thứ tự
+
+        String sql = "SELECT DISTINCT t.id, t.service_type "
+                + "FROM ServiceTypes t JOIN Services s ON t.id = s.service_type_id";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("service_type");
+                typeMap.put(id, name);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return typeMap;
     }
-    return false;
-}
-        public boolean checkNameExistsExceptId(String name, int excludeId) {
+
+    public boolean checkNameExists(String name) {
+        String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean checkNameExistsExceptId(String name, int excludeId) {
         String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0 AND id != ?";
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, name);
             ps.setInt(2, excludeId);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getInt(1) > 0;
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
             }
 
         } catch (Exception e) {
@@ -204,8 +233,6 @@ public class ServiceDao {
         }
         return false;
     }
-    
-
 
     // test thử 
     public static void main(String[] args) {
