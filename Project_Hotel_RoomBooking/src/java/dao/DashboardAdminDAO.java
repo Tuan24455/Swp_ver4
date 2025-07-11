@@ -12,22 +12,22 @@ import java.util.Map;
 
 public class DashboardAdminDAO {
 
-    // Method to get total revenue
-    public double getTotalRevenue() {
-        String sql = "SELECT SUM(total_price) FROM Bookings WHERE status = 'PAID'";
+    // Phương thức để lấy tổng doanh thu
+    public String getTotalRevenue() {
+        String sql = "SELECT COALESCE(FORMAT(SUM(amount), 'N0'), '0') + ' VND' AS [Tổng Doanh Thu] FROM Transactions WHERE status = N'Paid'";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                return rs.getDouble(1);
+                return rs.getString("Tổng Doanh Thu");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0.0;
+        return "0 VND";
     }
 
-    // Method to get room status counts
+    // Phương thức để lấy số lượng phòng theo trạng thái
     public Map<String, Integer> getRoomStatusCounts() {
         Map<String, Integer> roomStats = new HashMap<>();
         // Correctly map room statuses to Occupied, Vacant, or Maintenance
@@ -44,7 +44,7 @@ public class DashboardAdminDAO {
         return roomStats;
     }
 
-    // Method to get total number of rooms
+    // Phương thức để lấy tổng số phòng
     public int getTotalRooms() {
         String sql = "SELECT COUNT(*) FROM Rooms";
         try (Connection conn = new DBContext().getConnection();
@@ -59,7 +59,7 @@ public class DashboardAdminDAO {
         return 0;
     }
 
-    // Method to get average room rating
+    // Phương thức để lấy đánh giá trung bình của phòng
     public double getAverageRoomRating() {
         String sql = "SELECT AVG(CAST(quality AS FLOAT)) FROM RoomReviews";
         try (Connection conn = new DBContext().getConnection();
@@ -74,7 +74,7 @@ public class DashboardAdminDAO {
         return 0.0;
     }
 
-    // Method to get average service rating
+    // Phương thức để lấy đánh giá trung bình của dịch vụ
     public double getAverageServiceRating() {
         String sql = "SELECT AVG(CAST(quality AS FLOAT)) FROM ServiceReviews";
         try (Connection conn = new DBContext().getConnection();
@@ -89,7 +89,7 @@ public class DashboardAdminDAO {
         return 0.0;
     }
 
-    // Method to get recent bookings
+    // Phương thức để lấy danh sách đặt phòng gần đây
     public List<Map<String, Object>> getRecentBookings(int limit) {
         List<Map<String, Object>> bookings = new ArrayList<>();
         String sql = "SELECT TOP(?) [Tên Phòng], [Tầng], [Loại Phòng], [Tên Khách Hàng], [Ngày Đặt], [Ngày Trả], [Tổng Tiền] " +

@@ -126,6 +126,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <th>
                         <i class="fas fa-money-bill-wave me-1"></i>Tổng Tiền
                       </th>
+                      <th>Trạng Thái</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -174,13 +175,19 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                           /></span>
                         </td>
                         <td>
-                          <strong class="text-success"
-                            ><fmt:formatNumber
+                          <strong class="text-success">
+                            <fmt:formatNumber
                               value="${booking.totalPrice}"
                               type="currency"
                               currencySymbol="đ"
                               maxFractionDigits="0"
-                          /></strong>
+                            />
+                          </strong>
+                        </td>
+                        <td>
+                          <span class="badge bg-secondary text-uppercase">
+                            ${booking.status}
+                          </span>
                         </td>
                       </tr>
                     </c:forEach>
@@ -197,6 +204,13 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <!-- Phần tử này sẽ được cập nhật bởi JavaScript -->
                 </div>
               </div>
+
+              <!-- Pagination Controls -->
+              <div class="d-flex justify-content-center mt-3">
+                <nav>
+                  <ul id="pagination" class="pagination"></ul>
+                </nav>
+              </div>
             </div>
           </div>
         </div>
@@ -205,5 +219,21 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/bookingreport.js"></script>
+    <script>
+      function updateStatistics() {
+        const rows = document.querySelectorAll('.table-striped tbody tr');
+        const guestCountElem = document.querySelector('.col-md-6');
+        const revenueElem = document.querySelector('.col-md-6.text-end');
+        let totalRevenue = 0;
+        rows.forEach(r => {
+          const priceCell = r.querySelector('td:nth-last-child(2) strong');
+          if (!priceCell) return;
+          const priceText = priceCell.textContent;
+          totalRevenue += parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
+        });
+        guestCountElem.innerHTML = `<i class="fas fa-users text-primary me-2"></i><span class="text-muted">Tổng khách đang lưu trú:</span><span class="ms-2" style="font-weight:bold;">${rows.length} KHÁCH HÀNG</span>`;
+        revenueElem.innerHTML = `<i class="fas fa-money-bill-wave text-success me-2"></i><span class="text-muted">Tổng doanh thu dự kiến:</span><span class="ms-2" style="font-weight:bold;color:#28a745;">${totalRevenue.toLocaleString('vi-VN')} đ</span>`;
+      }
+    </script>
   </body>
 </html>

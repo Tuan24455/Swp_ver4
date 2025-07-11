@@ -1,5 +1,3 @@
-
-
 package controller.admin;
 
 import dao.DashboardAdminDAO;
@@ -21,7 +19,7 @@ public class Dashboard extends HttpServlet {
         DashboardAdminDAO dao = new DashboardAdminDAO();
 
         // Get data from DAO
-        double totalRevenue = dao.getTotalRevenue();
+        String totalRevenue = dao.getTotalRevenue();
         Map<String, Integer> roomStatusCounts = dao.getRoomStatusCounts();
         int totalRooms = dao.getTotalRooms();
         double avgRoomRating = dao.getAverageRoomRating();

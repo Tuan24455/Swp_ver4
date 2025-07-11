@@ -111,7 +111,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     <div class="kpi-icon bg-primary bg-opacity-10">
                       <i class="fas fa-dollar-sign text-primary"></i>
                     </div>
-                    <h3 class="h4 mb-1"><fmt:formatNumber value="${totalRevenue}" type="currency" currencySymbol="đ" maxFractionDigits="0" /></h3>
+                    <h3 class="h4 mb-1">${totalRevenue}</h3>  <!-- Hiển thị trực tiếp tổng doanh thu -->
                     <p class="text-muted mb-2">Tổng Doanh Thu</p>
                     <div class="d-flex align-items-center">
                       <c:if test="${dashboardLoaded}">
@@ -385,12 +385,15 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     <script>
       // Initialize room status chart with server data after page load
       document.addEventListener('DOMContentLoaded', function() {
-          // Wait for dashboard.js to initialize charts, then update with server data
           setTimeout(() => {
               if (window.initRoomStatusWithServerData) {
-                  window.initRoomStatusWithServerData(${occupiedRooms}, ${vacantRooms}, ${maintenanceRooms});
+                  window.initRoomStatusWithServerData(
+                      <c:out value='${occupiedRooms}'/>,
+                      <c:out value='${vacantRooms}'/>,
+                      <c:out value='${maintenanceRooms}'/>
+                  );
               }
-          }, 500);
+          }, 300);
       });
     </script>
   </body>
