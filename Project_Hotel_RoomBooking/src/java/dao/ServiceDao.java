@@ -126,6 +126,7 @@ public class ServiceDao {
         }
     }
 
+    //hàm lọc dịch vụ của Dũng viết
     public List<Service> filterServices(List<Integer> typeIds, Double priceFrom, Double priceTo) {
         List<Service> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
@@ -181,6 +182,7 @@ public class ServiceDao {
         return list;
     }
 
+    // hàm lấy danh sách loại dịch vụ của Dũng
     public Map<Integer, String> getDistinctServiceTypes() {
         Map<Integer, String> typeMap = new LinkedHashMap<>(); // giữ nguyên thứ tự
 
