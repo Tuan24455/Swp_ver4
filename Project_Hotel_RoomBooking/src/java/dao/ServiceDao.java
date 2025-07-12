@@ -203,7 +203,8 @@ public class ServiceDao {
 
         return typeMap;
     }
-
+    
+    
     public boolean checkNameExists(String name) {
         String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
