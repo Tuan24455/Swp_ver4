@@ -55,20 +55,20 @@ public class ServiceList extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String type = request.getParameter("type");
-        String minRaw = request.getParameter("minPrice");
-        String maxRaw = request.getParameter("maxPrice");
-
-        Double min = (minRaw != null && !minRaw.isEmpty()) ? Double.parseDouble(minRaw) : null;
-        Double max = (maxRaw != null && !maxRaw.isEmpty()) ? Double.parseDouble(maxRaw) : null;
-        ServiceDao dao = new ServiceDao();
-        List<Service> services = dao.filterServices(type, min, max);
-        request.setAttribute("services", services);
-        request.getRequestDispatcher("admin/serviceList.jsp").forward(request, response);
-    }
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        String type = request.getParameter("type");
+//        String minRaw = request.getParameter("minPrice");
+//        String maxRaw = request.getParameter("maxPrice");
+//
+//        Double min = (minRaw != null && !minRaw.isEmpty()) ? Double.parseDouble(minRaw) : null;
+//        Double max = (maxRaw != null && !maxRaw.isEmpty()) ? Double.parseDouble(maxRaw) : null;
+//        ServiceDao dao = new ServiceDao();
+//        List<Service> services = dao.filterServices(type, min, max);
+//        request.setAttribute("services", services);
+//        request.getRequestDispatcher("admin/serviceList.jsp").forward(request, response);
+//    }
 
     /**
      * Handles the HTTP <code>POST</code> method.

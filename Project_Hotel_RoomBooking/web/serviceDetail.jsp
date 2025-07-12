@@ -63,7 +63,7 @@
             <div class="container">
                 <div class="hero-content text-center">
                     <h1 class="hero-title"><i class="fas fa-info-circle me-2"></i>Chi Tiết Dịch Vụ</h1>
-                    <p class="hero-subtitle">Thông tin chi tiết về dịch vụ ${service.serviceName}</p>
+                    <p class="hero-subtitle">Thông tin chi tiết về dịch vụ ${service.name}</p>
                 </div>
             </div>
         </section>
@@ -73,21 +73,21 @@
                 <div class="row">
                     <div class="col-lg-6 animate__animated animate__fadeInLeft">
                         <div class="service-image-container">
-                            <img src="${service.imageUrl}" alt="${service.serviceName}" class="main-image img-fluid rounded shadow">
+                            <img src="${service.imageUrl}" alt="${service.name}" class="main-image img-fluid rounded shadow">
                         </div>
                     </div>
 
                     <div class="col-lg-6 animate__animated animate__fadeInRight">
                         <div class="service-info-container">
                             <div class="service-header">
-                                <h2 class="service-title">${service.serviceName}</h2>
-                                <span class="service-type-badge">${service.serviceTypeName}</span>
+                                <h2 class="service-title">${service.name}</h2>
+                                <span class="service-type-badge">${service.typeName}</span>
                             </div>
 
                             <div class="service-price">
                                 <i class="fas fa-tag text-success me-2"></i>
                                 <span class="price-value">
-                                    <fmt:formatNumber value="${service.servicePrice}" type="number" groupingUsed="true"/> VND
+                                    <fmt:formatNumber value="${service.price}" type="number" groupingUsed="true"/> VND
                                 </span>
                             </div>
 
@@ -96,37 +96,23 @@
                                 <p>${service.description}</p>
                             </div>
 
-                            <div class="service-status">
-                                <h4><i class="fas fa-clock me-2"></i>Trạng thái</h4>
-                                <span class="status-badge ${service.status == 1 ? 'available' : 'unavailable'}">
-                                    ${service.status == 1 ? 'Đang phục vụ' : 'Tạm ngưng'}
-                                </span>
-                            </div>
-
                             <div class="booking-section mt-4">
-                                <c:choose>
-                                    <c:when test="${service.status == 1}">
-                                        <form action="bookService" method="POST" class="booking-form">
-                                            <input type="hidden" name="serviceId" value="${service.id}">
-                                            <div class="form-group mb-3">
-                                                <label for="bookingDate" class="form-label"><i class="fas fa-calendar me-2"></i>Ngày sử dụng</label>
-                                                <input type="date" class="form-control" id="bookingDate" name="bookingDate" required>
-                                            </div>
-                                            <div class="form-group mb-3">
-                                                <label for="quantity" class="form-label"><i class="fas fa-sort-numeric-up me-2"></i>Số lượng</label>
-                                                <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1" required>
-                                            </div>
-                                            <div class="form-group mb-3">
-                                                <label for="note" class="form-label"><i class="fas fa-sticky-note me-2"></i>Ghi chú</label>
-                                                <textarea class="form-control" id="note" name="note" rows="3"></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-book-service w-100"><i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ</button>
-                                        </form>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="unavailable-notice"><i class="fas fa-exclamation-circle me-2"></i>Dịch vụ hiện không khả dụng</div>
-                                    </c:otherwise>
-                                </c:choose>
+                                <form action="bookService" method="POST" class="booking-form">
+                                    <input type="hidden" name="serviceId" value="${service.id}">
+                                    <div class="form-group mb-3">
+                                        <label for="bookingDate" class="form-label"><i class="fas fa-calendar me-2"></i>Ngày sử dụng</label>
+                                        <input type="date" class="form-control" id="bookingDate" name="bookingDate" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="quantity" class="form-label"><i class="fas fa-sort-numeric-up me-2"></i>Số lượng</label>
+                                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="note" class="form-label"><i class="fas fa-sticky-note me-2"></i>Ghi chú</label>
+                                        <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-book-service w-100"><i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -177,41 +163,44 @@
                     <div class="row mt-4 justify-content-center">
                         <div class="col-12 col-lg-10">
                             <div class="bg-white rounded shadow-sm p-4">
-                                <div class="row">
-                                    <div class="col-md-4 mb-4">
-                                        <a href="serviceDetail?id=6" class="text-decoration-none">
-                                            <div class="service-card animate__animated animate__fadeInUp">
-                                                <div class="service-image">
-                                                    <img src="https://image.url" alt="Massage mặt" class="img-fluid">
-                                                    <div class="service-price-badge">
-                                                        250.000 VND
-                                                    </div>
+                                <c:choose>
+                                    <c:when test="${not empty relatedServices}">
+                                        <div class="row">
+                                            <c:forEach var="relatedService" items="${relatedServices}" varStatus="status">
+                                                <div class="col-md-4 mb-4">
+                                                    <a href="serviceDetail?id=${relatedService.id}" class="text-decoration-none">
+                                                        <div class="service-card animate__animated animate__fadeInUp">
+                                                            <div class="service-image">
+                                                                <img src="${relatedService.imageUrl}" alt="${relatedService.name}" class="img-fluid">
+                                                                <div class="service-price-badge">
+                                                                    <fmt:formatNumber value="${relatedService.price}" type="number" groupingUsed="true"/> VND
+                                                                </div>
+                                                            </div>
+                                                            <div class="service-content">
+                                                                <h5 class="service-name">${relatedService.name}</h5>
+                                                                <p class="service-brief">
+                                                                    <c:choose>
+                                                                        <c:when test="${fn:length(relatedService.description) > 50}">
+                                                                            ${fn:substring(relatedService.description, 0, 50)}...
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            ${relatedService.description}
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
                                                 </div>
-                                                <div class="service-content">
-                                                    <h5 class="service-name">Massage mặt</h5>
-                                                    <p class="service-brief">Massage mặt thư giãn...</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                    <div class="col-md-4 mb-4">
-                                        <a href="serviceDetail?id=10" class="text-decoration-none">
-                                            <div class="service-card animate__animated animate__fadeInUp">
-                                                <div class="service-image">
-                                                    <img src="https://image.url" alt="Trị liệu" class="img-fluid">
-                                                    <div class="service-price-badge">
-                                                        600.000 VND
-                                                    </div>
-                                                </div>
-                                                <div class="service-content">
-                                                    <h5 class="service-name">Trị liệu</h5>
-                                                    <p class="service-brief">Dịch vụ trị liệu phục hồi...</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
+                                            </c:forEach>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="text-center text-muted">
+                                            <p>Không có dịch vụ tương tự nào.</p>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
@@ -233,7 +222,7 @@
 
             const quantityInput = document.getElementById('quantity');
             if (quantityInput) {
-                const basePrice = parseFloat("${service.servicePrice}"); // Safely pass the value
+                const basePrice = parseFloat("${service.price}"); // Fixed property name
                 quantityInput.addEventListener('change', function() {
                     const quantity = this.value;
                     document.querySelector('.price-value').textContent = new Intl.NumberFormat('vi-VN').format(basePrice * quantity) + ' VND';
