@@ -1,6 +1,5 @@
-
-DROP DATABASE BookingHotel_v4;
-Create database BookingHotel_v4;
+DROP DATABASE IF EXISTS BookingHotel_v4;
+CREATE DATABASE BookingHotel_v4;
 USE BookingHotel_v4;
 
 -- Bảng người dùng
@@ -136,7 +135,7 @@ CREATE TABLE Transactions (
     FOREIGN KEY (booking_id) REFERENCES Bookings(id)
 );
 
--- Dữ liệu cho bảng Users
+-- Dữ liệu cho bảng Users (giữ nguyên)
 INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url) 
 VALUES 
 -- password gốc: password123
@@ -150,7 +149,7 @@ VALUES
 ('newuser4', 'xxx', N'Người dùng 4', '1995-01-01', 'Male', 'user4@email.com', '0111111111', N'Địa chỉ', 'Customer', 'images/user/default_avatar.png'),
 ('newuser5', 'xxx', N'Người dùng 5', '1996-01-01', 'Female', 'user5@email.com', '0111111112', N'Địa chỉ', 'Customer', 'images/user/default_avatar.png');
 
--- Dữ liệu cho bảng RoomTypes
+-- Dữ liệu cho bảng RoomTypes (giữ nguyên)
 INSERT INTO RoomTypes (room_type) 
 VALUES 
 (N'Standard Room'),
@@ -158,7 +157,7 @@ VALUES
 (N'Suite'),
 (N'Presidential Suite');
 
--- Dữ liệu cho bảng Rooms
+-- Dữ liệu cho bảng Rooms (giữ nguyên)
 INSERT INTO Rooms (room_number, room_type_id, room_price, room_status, capacity, description, image_url, floor) 
 VALUES 
 ('101', 1, 500000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'https://image.url', 1),
@@ -172,7 +171,7 @@ VALUES
 ('501', 1, 530000, N'Available', 2, N'Phòng tiêu chuẩn, thoải mái', 'https://image.url', 5),
 ('502', 2, 1100000, N'Available', 3, N'Phòng sang trọng, rộng rãi', 'https://image.url', 5);
 
--- Dữ liệu cho bảng RoomReviews
+-- Dữ liệu cho bảng RoomReviews (giữ nguyên)
 INSERT INTO RoomReviews (room_id, quality, comment) 
 VALUES 
 (1, 4, N'Phòng sạch sẽ và tiện nghi.'),
@@ -186,7 +185,7 @@ VALUES
 (9, 5, N'Phòng tuyệt vời, sẽ quay lại lần sau.'),
 (10, 4, N'Phòng đẹp, nhưng giá hơi cao.');
 
--- Dữ liệu cho bảng ServiceTypes
+-- Dữ liệu cho bảng ServiceTypes (giữ nguyên)
 INSERT INTO ServiceTypes (service_type) 
 VALUES 
 (N'Restaurant'),
@@ -194,7 +193,7 @@ VALUES
 (N'Gym'),
 (N'Shuttle');
 
--- Dữ liệu cho bảng Services
+-- Dữ liệu cho bảng Services (giữ nguyên)
 INSERT INTO Services (service_name, service_type_id, service_price, description, image_url) 
 VALUES 
 (N'Buffet', 1, 200000, N'Ăn sáng buffet tại nhà hàng', 'https://image.url'),
@@ -208,7 +207,7 @@ VALUES
 (N'Chè', 1, 50000, N'Món chè ngọt', 'https://image.url'),
 (N'Trị liệu', 2, 600000, N'Dịch vụ trị liệu phục hồi', 'https://image.url');
 
--- Dữ liệu cho bảng ServiceReviews
+-- Dữ liệu cho bảng ServiceReviews (giữ nguyên)
 INSERT INTO ServiceReviews (service_id, quality, comment) 
 VALUES 
 (1, 5, N'Dịch vụ ăn uống rất tốt, món ăn ngon miệng.'),
@@ -222,61 +221,78 @@ VALUES
 (9, 4, N'Chè ngon nhưng không đa dạng.'),
 (10, 5, N'Trị liệu phục hồi tốt, sẽ quay lại lần sau.');
 
--- Dữ liệu cho bảng Promotion
+-- Dữ liệu cho bảng Promotion (sửa: thay năm từ 2025 thành 2024 để test với ngày hiện tại)
 INSERT INTO Promotion (title, percentage, start_at, end_at, description) 
 VALUES 
-(N'Giảm giá mùa hè', 10, '2025-06-01', '2025-06-30', N'Khuyến mãi mùa hè, giảm giá 10% cho tất cả các phòng.'),
-(N'Khuyến mãi cuối năm', 20, '2025-12-01', '2025-12-31', N'Mừng lễ cuối năm, giảm giá 20% cho tất cả dịch vụ.'),
-(N'Giảm giá cho khách hàng mới', 15, '2025-05-01', '2025-05-31', N'Tặng 15% cho khách hàng lần đầu sử dụng dịch vụ.'),
-(N'Khuyến mãi phòng VIP', 25, '2025-06-01', '2025-06-15', N'Giảm giá 25% cho các phòng Tổng thống.'),
-(N'Giảm giá cuối tuần', 30, '2025-06-05', '2025-06-07', N'Giảm 30% cho các phòng vào cuối tuần.');
+(N'Giảm giá mùa hè', 10, '2024-06-01', '2024-06-30', N'Khuyến mãi mùa hè, giảm giá 10% cho tất cả các phòng.'),  -- Sửa: thay 2025 thành 2024
+(N'Khuyến mãi cuối năm', 20, '2024-12-01', '2024-12-31', N'Mừng lễ cuối năm, giảm giá 20% cho tất cả dịch vụ.'),  -- Sửa: thay 2025 thành 2024
+(N'Giảm giá cho khách hàng mới', 15, '2024-05-01', '2024-05-31', N'Tặng 15% cho khách hàng lần đầu sử dụng dịch vụ.'),  -- Sửa: thay 2025 thành 2024
+(N'Khuyến mãi phòng VIP', 25, '2024-06-01', '2024-06-15', N'Giảm giá 25% cho các phòng Tổng thống.'),  -- Sửa: thay 2025 thành 2024
+(N'Giảm giá cuối tuần', 30, '2024-06-05', '2024-06-07', N'Giảm 30% cho các phòng vào cuối tuần.');  -- Sửa: thay 2025 thành 2024
 
--- Dữ liệu cho bảng Bookings
-INSERT INTO Bookings (user_id, promotion_id, total_prices, status, room_review_id, service_review_id) 
+-- Thêm: Xóa data cũ trước insert để tránh lỗi foreign key khi chạy lại script
+DELETE FROM Transactions;
+DELETE FROM BookingServiceDetail;
+DELETE FROM BookingRoomDetails;
+DELETE FROM Bookings;
+
+-- Dữ liệu cho bảng Bookings (sửa: thêm created_at đa dạng trong 2024 để test chart; thêm 5 records nữa để có 10 tổng, với status 'Confirmed' cho chart)
+INSERT INTO Bookings (user_id, created_at, promotion_id, total_prices, status, room_review_id, service_review_id) 
 VALUES 
-(1, 1, 4500000, N'Pending', NULL, NULL),
-(2, 2, 3000000, N'Confirmed', 1, 1),
-(3, 3, 5000000, N'Confirmed', 2, 2),
-(4, 4, 3500000, N'Pending', 3, 3),
-(5, 5, 6000000, N'Confirmed', 4, 4);
+(1, '2024-10-01 10:00:00', 1, 4500000, N'Pending', NULL, NULL),  -- ID 1, recent for weekly
+(2, '2024-09-30 11:00:00', 2, 3000000, N'Confirmed', 1, 1),     -- ID 2
+(3, '2024-09-29 12:00:00', 3, 5000000, N'Confirmed', 2, 2),     -- ID 3
+(4, '2024-09-28 13:00:00', 4, 3500000, N'Pending', 3, 3),       -- ID 4
+(5, '2024-09-27 14:00:00', 5, 6000000, N'Confirmed', 4, 4),     -- ID 5
+(1, '2024-09-26 15:00:00', 1, 2000000, N'Confirmed', NULL, NULL),  -- Thêm: ID 6, for weekly/monthly
+(2, '2024-09-25 16:00:00', 2, 2500000, N'Confirmed', NULL, NULL),  -- Thêm: ID 7
+(3, '2024-08-15 17:00:00', 3, 3000000, N'Confirmed', NULL, NULL),  -- Thêm: ID 8, for monthly
+(4, '2023-07-10 18:00:00', 4, 4000000, N'Confirmed', NULL, NULL),  -- Thêm: ID 9, for yearly
+(5, '2022-06-05 19:00:00', 5, 5000000, N'Confirmed', NULL, NULL);  -- Thêm: ID 10, for yearly
 
--- Cập nhật dữ liệu BookingRoomDetails phù hợp và đa dạng hơn
+-- Dữ liệu cho bảng BookingRoomDetails (sửa: dùng booking_id 1-5 thay vì 5-9; thêm records cho ID 6-10 để đầy đủ, ngày đa dạng trong 2024)
 INSERT INTO BookingRoomDetails (booking_id, room_id, check_in_date, check_out_date, quantity, prices) 
 VALUES 
--- Booking 1: Phòng Standard 101
-(5, 1, '2025-06-06', '2025-06-08', 1, 1000000),
+(1, 1, '2024-10-02', '2024-10-04', 1, 1000000),  -- Sửa: booking_id từ 5 thành 1
+(2, 2, '2024-09-30', '2024-10-02', 1, 1200000),  -- Sửa: booking_id từ 6 thành 2
+(3, 3, '2024-09-29', '2024-10-01', 2, 1100000),  -- Sửa: booking_id từ 7 thành 3
+(4, 5, '2024-09-28', '2024-09-30', 1, 1500000),  -- Sửa: booking_id từ 8 thành 4
+(5, 7, '2024-09-27', '2024-09-29', 1, 2000000),  -- Sửa: booking_id từ 9 thành 5
+(6, 1, '2024-09-26', '2024-09-28', 1, 1000000),  -- Thêm: cho ID 6
+(7, 2, '2024-09-25', '2024-09-27', 1, 1200000),  -- Thêm: cho ID 7
+(8, 3, '2024-08-16', '2024-08-18', 1, 1100000),  -- Thêm: cho ID 8
+(9, 5, '2023-07-11', '2023-07-13', 1, 1500000),  -- Thêm: cho ID 9
+(10, 7, '2022-06-06', '2022-06-08', 1, 2000000); -- Thêm: cho ID 10
 
--- Booking 2: Phòng Deluxe 102
-(6, 2, '2025-06-08', '2025-06-10', 1, 1200000),
-
--- Booking 3: Phòng Standard 201 x2
-(7, 3, '2025-06-10', '2025-06-12', 2, 1100000),
-
--- Booking 4: Phòng Suite 301
-(8, 5, '2025-06-12', '2025-06-14', 1, 1500000),
-
--- Booking 5: Phòng Tổng thống 401
-(9, 7, '2025-06-15', '2025-06-17', 1, 2000000);
-
-
--- Dữ liệu cho bảng BookingServiceDetail
+-- Dữ liệu cho bảng BookingServiceDetail (sửa: dùng booking_id 1-5 thay vì 5-9; thêm records cho ID 6-10)
 INSERT INTO BookingServiceDetail (booking_id, service_id, quantity, prices) 
 VALUES 
-(5, 1, 1, 200000),
-(6, 2, 1, 500000),
-(7, 3, 1, 150000),
-(8, 4, 1, 300000),
-(9, 5, 1, 80000);
+(1, 1, 1, 200000),  -- Sửa: booking_id từ 5 thành 1
+(2, 2, 1, 500000),  -- Sửa: booking_id từ 6 thành 2
+(3, 3, 1, 150000),  -- Sửa: booking_id từ 7 thành 3
+(4, 4, 1, 300000),  -- Sửa: booking_id từ 8 thành 4
+(5, 5, 1, 80000),   -- Sửa: booking_id từ 9 thành 5
+(6, 1, 1, 200000),  -- Thêm: cho ID 6
+(7, 2, 1, 500000),  -- Thêm: cho ID 7
+(8, 3, 1, 150000),  -- Thêm: cho ID 8
+(9, 4, 1, 300000),  -- Thêm: cho ID 9
+(10, 5, 1, 80000);  -- Thêm: cho ID 10
 
--- Dữ liệu cho bảng Transactions
+-- Dữ liệu cho bảng Transactions (sửa: dùng booking_id 1-5 thay vì 5-9; thêm records cho ID 6-10 với transaction_date đa dạng trong 2024, status 'Paid' cho chart)
 INSERT INTO Transactions (booking_id, transaction_date, amount, payment_method, status) 
 VALUES 
-(5, '2025-06-05', 4500000, N'Credit Card', N'Paid'),
-(6, '2025-06-06', 3000000, N'Cash', N'Paid'),
-(7, '2025-06-07', 5000000, N'Credit Card', N'Paid'),
-(8, '2025-06-08', 3500000, N'Cash', N'Pending'),
-(9, '2025-06-09', 6000000, N'Credit Card', N'Paid');
+(1, '2024-10-01 12:00:00', 4500000, N'Credit Card', N'Paid'),  -- Sửa: booking_id từ 5 thành 1, thay ngày từ 2025 thành 2024
+(2, '2024-09-30 13:00:00', 3000000, N'Cash', N'Paid'),         -- Sửa: booking_id từ 6 thành 2, thay ngày từ 2025 thành 2024
+(3, '2024-09-29 14:00:00', 5000000, N'Credit Card', N'Paid'),  -- Sửa: booking_id từ 7 thành 3, thay ngày từ 2025 thành 2024
+(4, '2024-09-28 15:00:00', 3500000, N'Cash', N'Pending'),      -- Sửa: booking_id từ 8 thành 4, thay ngày từ 2025 thành 2024
+(5, '2024-09-27 16:00:00', 6000000, N'Credit Card', N'Paid'),  -- Sửa: booking_id từ 9 thành 5, thay ngày từ 2025 thành 2024
+(6, '2024-09-26 17:00:00', 2000000, N'Credit Card', N'Paid'),  -- Thêm: cho ID 6, ngày trong 2024 cho test chart
+(7, '2024-09-25 18:00:00', 2500000, N'Cash', N'Paid'),         -- Thêm: cho ID 7
+(8, '2024-08-15 19:00:00', 3000000, N'Credit Card', N'Paid'),  -- Thêm: cho ID 8, cho monthly
+(9, '2023-07-10 20:00:00', 4000000, N'Cash', N'Paid'),         -- Thêm: cho ID 9, cho yearly
+(10, '2022-06-05 21:00:00', 5000000, N'Credit Card', N'Paid'); -- Thêm: cho ID 10, cho yearly
 
+-- Query kiểm tra phòng available 
 USE BookingHotel_v4;
 GO
 
