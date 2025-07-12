@@ -65,7 +65,7 @@ public class ServiceList extends HttpServlet {
         Double min = (minRaw != null && !minRaw.isEmpty()) ? Double.parseDouble(minRaw) : null;
         Double max = (maxRaw != null && !maxRaw.isEmpty()) ? Double.parseDouble(maxRaw) : null;
         ServiceDao dao = new ServiceDao();
-        List<Service> services = dao.filterServices(type, min, max);
+        List<Service> services = dao.filterServices_02(type, min, max);
         request.setAttribute("services", services);
         request.getRequestDispatcher("admin/serviceList.jsp").forward(request, response);
     }
