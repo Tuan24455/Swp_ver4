@@ -9,17 +9,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class DashboardAdminDAO {
 
-    // Method to get total revenue
+    // Method to get total revenue (sửa: dùng Transactions để tính tổng amount đã Paid, xử lý null)
     public double getTotalRevenue() {
-        String sql = "SELECT SUM(total_price) FROM Bookings WHERE status = 'PAID'";
+        String sql = "SELECT SUM(amount) FROM Transactions WHERE status = 'Paid'";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                return rs.getDouble(1);
+                double revenue = rs.getDouble(1);
+                return rs.wasNull() ? 0.0 : revenue;  // Xử lý null
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -27,10 +30,9 @@ public class DashboardAdminDAO {
         return 0.0;
     }
 
-    // Method to get room status counts
+    // Method to get room status counts (giữ nguyên, OK)
     public Map<String, Integer> getRoomStatusCounts() {
         Map<String, Integer> roomStats = new HashMap<>();
-        // Correctly map room statuses to Occupied, Vacant, or Maintenance
         String sql = "SELECT CASE WHEN room_status = 'Occupied' THEN 'Occupied' WHEN room_status = 'Available' THEN 'Vacant' WHEN room_status = 'Maintenance' THEN 'Maintenance' WHEN room_status = 'Cleaning' THEN 'Cleaning' ELSE room_status END as status, COUNT(*) as count FROM Rooms WHERE isDelete = 0 GROUP BY room_status";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -44,9 +46,9 @@ public class DashboardAdminDAO {
         return roomStats;
     }
 
-    // Method to get total number of rooms
+    // Method to get total number of rooms (thêm lọc isDelete = 0)
     public int getTotalRooms() {
-        String sql = "SELECT COUNT(*) FROM Rooms";
+        String sql = "SELECT COUNT(*) FROM Rooms WHERE isDelete = 0";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -59,14 +61,15 @@ public class DashboardAdminDAO {
         return 0;
     }
 
-    // Method to get average room rating
+    // Method to get average room rating (sửa: xử lý null, bỏ cast không cần)
     public double getAverageRoomRating() {
-        String sql = "SELECT AVG(CAST(quality AS FLOAT)) FROM RoomReviews";
+        String sql = "SELECT AVG(quality * 1.0) FROM RoomReviews";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                return rs.getDouble(1);
+                double avg = rs.getDouble(1);
+                return rs.wasNull() ? 0.0 : avg;  // Xử lý null nếu không có review
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,14 +77,15 @@ public class DashboardAdminDAO {
         return 0.0;
     }
 
-    // Method to get average service rating
+    // Method to get average service rating (tương tự)
     public double getAverageServiceRating() {
-        String sql = "SELECT AVG(CAST(quality AS FLOAT)) FROM ServiceReviews";
+        String sql = "SELECT AVG(quality * 1.0) FROM ServiceReviews";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                return rs.getDouble(1);
+                double avg = rs.getDouble(1);
+                return rs.wasNull() ? 0.0 : avg;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,12 +93,25 @@ public class DashboardAdminDAO {
         return 0.0;
     }
 
-    // Method to get recent bookings
+    // Method to get recent bookings (sửa: query join trực tiếp, không dùng view)
     public List<Map<String, Object>> getRecentBookings(int limit) {
         List<Map<String, Object>> bookings = new ArrayList<>();
-        String sql = "SELECT TOP(?) [Tên Phòng], [Tầng], [Loại Phòng], [Tên Khách Hàng], [Ngày Đặt], [Ngày Trả], [Tổng Tiền] " +
-                     "FROM vw_RoomBookingDetails " +
-                     "ORDER BY [Ngày Đặt] DESC";
+        String sql = "SELECT TOP(?) " +
+                     "r.room_number AS [Tên Phòng], " +
+                     "r.floor AS [Tầng], " +
+                     "rt.room_type AS [Loại Phòng], " +
+                     "u.full_name AS [Tên Khách Hàng], " +
+                     "brd.check_in_date AS [Ngày Đặt], " +
+                     "brd.check_out_date AS [Ngày Trả], " +
+                     "b.total_prices AS [Tổng Tiền] " +
+                     "FROM BookingRoomDetails brd " +
+                     "INNER JOIN Rooms r ON brd.room_id = r.id " +
+                     "INNER JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+                     "INNER JOIN Bookings b ON brd.booking_id = b.id " +
+                     "INNER JOIN Users u ON b.user_id = u.id " +
+                     "WHERE r.isDelete = 0 AND b.status IN (N'Pending', N'Confirmed') " +
+                     "ORDER BY brd.check_in_date DESC";  // Sort by Ngày Đặt (check_in_date) DESC để lấy recent
+
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, limit);
@@ -115,5 +132,83 @@ public class DashboardAdminDAO {
             e.printStackTrace();
         }
         return bookings;
+    }
+
+    // Method để lấy data cho chart theo period (với fix đồng bộ labels, fill 0 cho missing)
+    public Map<String, Object> getRevenueAndBookingData(String period) {
+        Map<String, Object> data = new HashMap<>();
+        Map<String, Double> revenueMap = new HashMap<>();  // Để lưu revenue theo label
+        Map<String, Integer> bookingMap = new HashMap<>(); // Để lưu bookings theo label
+        Set<String> allLabels = new TreeSet<>();  // Để merge labels unique và sort
+
+        String sqlRevenue = "";
+        String sqlBooking = "";
+
+        if ("weekly".equals(period)) {
+            // Doanh thu và booking theo 7 ngày gần nhất
+            sqlRevenue = "SELECT CONVERT(VARCHAR(10), transaction_date, 120) AS label, SUM(amount) AS revenue " +
+                         "FROM Transactions WHERE status = 'Paid' AND transaction_date >= DATEADD(DAY, -7, GETDATE()) " +
+                         "GROUP BY CONVERT(VARCHAR(10), transaction_date, 120) ORDER BY label";
+            sqlBooking = "SELECT CONVERT(VARCHAR(10), created_at, 120) AS label, COUNT(*) AS bookings " +
+                         "FROM Bookings WHERE status = 'Confirmed' AND created_at >= DATEADD(DAY, -7, GETDATE()) " +
+                         "GROUP BY CONVERT(VARCHAR(10), created_at, 120) ORDER BY label";
+        } else if ("monthly".equals(period)) {
+            // Theo 12 tháng gần nhất
+            sqlRevenue = "SELECT CONVERT(VARCHAR(7), transaction_date, 120) AS label, SUM(amount) AS revenue " +
+                         "FROM Transactions WHERE status = 'Paid' AND transaction_date >= DATEADD(MONTH, -12, GETDATE()) " +
+                         "GROUP BY CONVERT(VARCHAR(7), transaction_date, 120) ORDER BY label";
+            sqlBooking = "SELECT CONVERT(VARCHAR(7), created_at, 120) AS label, COUNT(*) AS bookings " +
+                         "FROM Bookings WHERE status = 'Confirmed' AND created_at >= DATEADD(MONTH, -12, GETDATE()) " +
+                         "GROUP BY CONVERT(VARCHAR(7), created_at, 120) ORDER BY label";
+        } else if ("yearly".equals(period)) {
+            // Theo 5 năm gần nhất
+            sqlRevenue = "SELECT YEAR(transaction_date) AS label, SUM(amount) AS revenue " +
+                         "FROM Transactions WHERE status = 'Paid' AND transaction_date >= DATEADD(YEAR, -5, GETDATE()) " +
+                         "GROUP BY YEAR(transaction_date) ORDER BY label";
+            sqlBooking = "SELECT YEAR(created_at) AS label, COUNT(*) AS bookings " +
+                         "FROM Bookings WHERE status = 'Confirmed' AND created_at >= DATEADD(YEAR, -5, GETDATE()) " +
+                         "GROUP BY YEAR(created_at) ORDER BY label";
+        } else {
+            return data;  // Period không hợp lệ
+        }
+
+        try (Connection conn = new DBContext().getConnection()) {
+            // Query revenue
+            try (PreparedStatement ps = conn.prepareStatement(sqlRevenue);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String label = rs.getString("label");
+                    revenueMap.put(label, rs.getDouble("revenue"));
+                    allLabels.add(label);
+                }
+            }
+            // Query bookings
+            try (PreparedStatement ps = conn.prepareStatement(sqlBooking);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String label = rs.getString("label");
+                    bookingMap.put(label, rs.getInt("bookings"));
+                    allLabels.add(label);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Chuyển allLabels thành list sort
+        List<String> labels = new ArrayList<>(allLabels);
+        List<Double> revenueData = new ArrayList<>();
+        List<Integer> bookingData = new ArrayList<>();
+
+        // Fill data, dùng 0 nếu missing
+        for (String label : labels) {
+            revenueData.add(revenueMap.getOrDefault(label, 0.0));
+            bookingData.add(bookingMap.getOrDefault(label, 0));
+        }
+
+        data.put("labels", labels);
+        data.put("revenue", revenueData);
+        data.put("bookings", bookingData);
+        return data;
     }
 }
