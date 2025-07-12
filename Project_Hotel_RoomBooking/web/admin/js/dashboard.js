@@ -1,21 +1,4 @@
-// Chart Data
-const chartData = {
-    weekly: {
-        labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
-        revenue: [445000000, 52000000, 48000000, 61000000, 55000000, 67000000, 59000000],
-        bookings: [25, 30, 28, 35, 32, 38, 34]
-    },
-    monthly: {
-        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-        revenue: [1200000000, 1350000000, 1180000000, 1420000000, 1380000000, 1250000000, 1480000000, 1520000000, 1380000000, 1450000000, 1380000000, 1250000000],
-        bookings: [650, 720, 680, 780, 750, 690, 820, 850, 780, 810, 780, 690]
-    },
-    yearly: {
-        labels: ['2020', '2021', '2022', '2023', '2024'],
-        revenue: [12500000000, 11800000000, 14200000000, 15800000000, 16500000000],
-        bookings: [8500, 7800, 9200, 9800, 10200]
-    }
-};
+// dashboard.js
 
 let revenueChart, roomStatusChart;
 let currentPeriod = 'weekly';
@@ -23,18 +6,19 @@ let currentPeriod = 'weekly';
 // Initialize Charts
 document.addEventListener('DOMContentLoaded', function() {
     initializeCharts();
+    updateChart('weekly');  // Load default weekly data dynamically
 });
 
 function initializeCharts() {
-    // Revenue Chart
+    // Revenue Chart (init with empty data, will be updated by fetch)
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
     revenueChart = new Chart(revenueCtx, {
         type: 'line',
         data: {
-            labels: chartData[currentPeriod].labels,
+            labels: [],
             datasets: [{
                 label: 'Doanh Thu (VND)',
-                data: chartData[currentPeriod].revenue,
+                data: [],
                 borderColor: '#4f46e5',
                 backgroundColor: 'rgba(79, 70, 229, 0.1)',
                 borderWidth: 3,
@@ -43,7 +27,7 @@ function initializeCharts() {
                 yAxisID: 'y'
             }, {
                 label: 'Số Đặt Phòng',
-                data: chartData[currentPeriod].bookings,
+                data: [],
                 borderColor: '#06b6d4',
                 backgroundColor: 'rgba(6, 182, 212, 0.1)',
                 borderWidth: 3,
@@ -130,8 +114,6 @@ function initializeCharts() {
             }
         }
     });
-
-
 }
 
 // Function to update room status chart with server data
@@ -142,30 +124,47 @@ function updateRoomStatusChart(occupiedRooms, vacantRooms, maintenanceRooms) {
     }
 }
 
-// Update Chart Function
+// Update Chart Function (sửa: fetch data động từ server thay vì hard-coded)
 function updateChart(period) {
     currentPeriod = period;
     
     // Update active button
     document.querySelectorAll('.btn-period').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    // Update chart data
-    revenueChart.data.labels = chartData[period].labels;
-    revenueChart.data.datasets[0].data = chartData[period].revenue;
-    revenueChart.data.datasets[1].data = chartData[period].bookings;
-    revenueChart.update();
-    
-    // Show notification
-    let periodText;
-    if (period === 'weekly') {
-        periodText = 'tuần';
-    } else if (period === 'monthly') {
-        periodText = 'tháng';
-    } else {
-        periodText = 'năm';
+    const activeBtn = document.querySelector(`.btn-period[onclick="updateChart('${period}')"]`);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
     }
-    showNotification('Đã cập nhật biểu đồ theo ' + periodText);
+    
+    // Fetch data từ servlet
+    fetch(`/Project_Hotel_RoomBooking/admin/revenue-chart?period=${period}`)  // Đã thay /your-context-path/ bằng /Project_Hotel_RoomBooking/ dựa trên URL test của bạn
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Update chart data
+            revenueChart.data.labels = data.labels || [];
+            revenueChart.data.datasets[0].data = data.revenue || [];
+            revenueChart.data.datasets[1].data = data.bookings || [];
+            revenueChart.update();
+            
+            // Show notification
+            let periodText;
+            if (period === 'weekly') {
+                periodText = 'tuần';
+            } else if (period === 'monthly') {
+                periodText = 'tháng';
+            } else {
+                periodText = 'năm';
+            }
+            showNotification('Đã cập nhật biểu đồ theo ' + periodText);
+        })
+        .catch(error => {
+            console.error('Error fetching chart data:', error);
+            showNotification('Lỗi khi tải dữ liệu biểu đồ', 'danger');
+        });
 }
 
 // Utility Functions
