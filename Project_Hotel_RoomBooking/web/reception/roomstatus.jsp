@@ -115,7 +115,7 @@
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
                                     <h6 class="card-subtitle mb-2 text-muted">Cleaning</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}</h2>
+                                    <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Cleaning'] != null ? statusCounts['Cleaning'] : 0}</h2>
                                     <p class="card-text text-danger">
                                         <i class="fas fa-tools me-1"></i> Under maintenance
                                     </p>
@@ -136,10 +136,10 @@
                                         onchange="filterRooms()"
                                         >
                                         <option value="">All Status</option>
-                                        <option value="available">Available</option>
-                                        <option value="occupied">Occupied</option>
-                                        <option value="maintenance">Maintenance</option>
-                                        <option value="cleaning">Cleaning</option>
+                                        <option value="Available">Available</option>
+                                        <option value="Occupied">Occupied</option>
+                                        <option value="Maintenance">Maintenance</option>
+                                        <option value="Cleaning">Cleaning</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
@@ -165,40 +165,41 @@
                                         onchange="filterRooms()"
                                         >
                                         <option value="">All Types</option>
-                                        <option value="standard">Standard</option>
-                                        <option value="deluxe">Deluxe</option>
-                                        <option value="suite">Suite</option>
-                                        <option value="presidential">Presidential</option>
+                                        <option value="Standard Room">Standard</option>
+                                        <option value="Deluxe Room">Deluxe</option>
+                                        <option value="Suite">Suite</option>
+                                        <option value="Presidential Suite">Presidential</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                
                     <!-- Floor 1 -->
                     <div class="floor-section">
-                        <h5 class="mb-3"><i class="fas fa-building me-2"></i>1st Floor</h5>
+                        <h5 class="mb-3"><i class="fas fa-building me-2"></i>Tầng 1</h5>
                         <div class="row g-3" id="floor1">
+                            <c:forEach var="r" items="${room1}">
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <div
                                     class="card room-card room-available shadow-sm"
-                                    data-room="101"
-                                    data-status="available"
+                                    data-room="${r.roomNumber}"
+                                    data-status="${r.roomStatus}"
                                     data-floor="1"
-                                    data-type="standard"
+                                    data-type="${r.roomTypeName}"
                                     >
                                     <div class="card-body">
                                         <div
                                             class="d-flex justify-content-between align-items-center mb-2"
                                             >
-                                            <h6 class="card-title mb-0">Room 101</h6>
-                                            <span class="badge bg-success">Available</span>
+                                            <h6 class="card-title mb-0">${r.roomNumber}</h6>
+                                            <span class="badge bg-success">${r.roomStatus}</span>
                                         </div>
-                                        <p class="card-text text-muted small mb-2">Standard Room</p>
+                                        <p class="card-text text-muted small mb-2">${r.roomTypeName}</p>
                                         <div
                                             class="d-flex justify-content-between align-items-center"
                                             >
-                                            <small class="text-muted">Last cleaned: Today</small>
+
                                             <div class="btn-group btn-group-sm">
                                                 <button
                                                     class="btn btn-outline-primary"
@@ -217,143 +218,31 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-4 col-sm-6">
-                                <div
-                                    class="card room-card room-occupied shadow-sm"
-                                    data-room="102"
-                                    data-status="occupied"
-                                    data-floor="1"
-                                    data-type="deluxe"
-                                    >
-                                    <div class="card-body">
-                                        <div
-                                            class="d-flex justify-content-between align-items-center mb-2"
-                                            >
-                                            <h6 class="card-title mb-0">Room 102</h6>
-                                            <span class="badge bg-warning">Occupied</span>
-                                        </div>
-                                        <p class="card-text text-muted small mb-2">Deluxe Room</p>
-                                        <div
-                                            class="d-flex justify-content-between align-items-center"
-                                            >
-                                            <small class="text-muted">Guest: John Doe</small>
-                                            <div class="btn-group btn-group-sm">
-                                                <button
-                                                    class="btn btn-outline-primary"
-                                                    onclick="viewRoom('102')"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-outline-info"
-                                                    onclick="checkOut('102')"
-                                                    >
-                                                    <i class="fas fa-sign-out-alt"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-4 col-sm-6">
-                                <div
-                                    class="card room-card room-cleaning shadow-sm"
-                                    data-room="103"
-                                    data-status="cleaning"
-                                    data-floor="1"
-                                    data-type="standard"
-                                    >
-                                    <div class="card-body">
-                                        <div
-                                            class="d-flex justify-content-between align-items-center mb-2"
-                                            >
-                                            <h6 class="card-title mb-0">Room 103</h6>
-                                            <span class="badge bg-info">Cleaning</span>
-                                        </div>
-                                        <p class="card-text text-muted small mb-2">Standard Room</p>
-                                        <div
-                                            class="d-flex justify-content-between align-items-center"
-                                            >
-                                            <small class="text-muted">ETA: 30 mins</small>
-                                            <div class="btn-group btn-group-sm">
-                                                <button
-                                                    class="btn btn-outline-primary"
-                                                    onclick="viewRoom('103')"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-outline-success"
-                                                    onclick="markClean('103')"
-                                                    >
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-4 col-sm-6">
-                                <div
-                                    class="card room-card room-available shadow-sm"
-                                    data-room="104"
-                                    data-status="available"
-                                    data-floor="1"
-                                    data-type="standard"
-                                    >
-                                    <div class="card-body">
-                                        <div
-                                            class="d-flex justify-content-between align-items-center mb-2"
-                                            >
-                                            <h6 class="card-title mb-0">Room 104</h6>
-                                            <span class="badge bg-success">Available</span>
-                                        </div>
-                                        <p class="card-text text-muted small mb-2">Standard Room</p>
-                                        <div
-                                            class="d-flex justify-content-between align-items-center"
-                                            >
-                                            <small class="text-muted">Last cleaned: Today</small>
-                                            <div class="btn-group btn-group-sm">
-                                                <button
-                                                    class="btn btn-outline-primary"
-                                                    onclick="viewRoom('104')"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-outline-warning"
-                                                    onclick="updateStatus('104')"
-                                                    >
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </c:forEach>            
                         </div>
                     </div>
-
+                
                     <!-- Floor 2 -->
                     <div class="floor-section">
                         <h5 class="mb-3"><i class="fas fa-building me-2"></i>2nd Floor</h5>
                         <div class="row g-3" id="floor2">
+                            <c:forEach var="r2" items="${room2}">
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <div
                                     class="card room-card room-maintenance shadow-sm"
-                                    data-room="201"
-                                    data-status="maintenance"
+                                    data-room="${r2.roomNumber}"
+                                    data-status="${r2.roomStatus}"
                                     data-floor="2"
-                                    data-type="suite"
+                                    data-type="${r2.roomTypeName}"
                                     >
                                     <div class="card-body">
                                         <div
                                             class="d-flex justify-content-between align-items-center mb-2"
                                             >
-                                            <h6 class="card-title mb-0">Room 201</h6>
-                                            <span class="badge bg-danger">Maintenance</span>
+                                            <h6 class="card-title mb-0">${r2.roomNumber}</h6>
+                                            <span class="badge bg-danger">${r2.roomStatus}</span>
                                         </div>
-                                        <p class="card-text text-muted small mb-2">Suite</p>
+                                        <p class="card-text text-muted small mb-2">${r2.roomTypeName}</p>
                                         <div
                                             class="d-flex justify-content-between align-items-center"
                                             >
@@ -376,82 +265,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-4 col-sm-6">
-                                <div
-                                    class="card room-card room-available shadow-sm"
-                                    data-room="202"
-                                    data-status="available"
-                                    data-floor="2"
-                                    data-type="deluxe"
-                                    >
-                                    <div class="card-body">
-                                        <div
-                                            class="d-flex justify-content-between align-items-center mb-2"
-                                            >
-                                            <h6 class="card-title mb-0">Room 202</h6>
-                                            <span class="badge bg-success">Available</span>
-                                        </div>
-                                        <p class="card-text text-muted small mb-2">Deluxe Room</p>
-                                        <div
-                                            class="d-flex justify-content-between align-items-center"
-                                            >
-                                            <small class="text-muted">Last cleaned: Today</small>
-                                            <div class="btn-group btn-group-sm">
-                                                <button
-                                                    class="btn btn-outline-primary"
-                                                    onclick="viewRoom('202')"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-outline-warning"
-                                                    onclick="updateStatus('202')"
-                                                    >
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-md-4 col-sm-6">
-                                <div
-                                    class="card room-card room-occupied shadow-sm"
-                                    data-room="203"
-                                    data-status="occupied"
-                                    data-floor="2"
-                                    data-type="deluxe"
-                                    >
-                                    <div class="card-body">
-                                        <div
-                                            class="d-flex justify-content-between align-items-center mb-2"
-                                            >
-                                            <h6 class="card-title mb-0">Room 203</h6>
-                                            <span class="badge bg-warning">Occupied</span>
-                                        </div>
-                                        <p class="card-text text-muted small mb-2">Deluxe Room</p>
-                                        <div
-                                            class="d-flex justify-content-between align-items-center"
-                                            >
-                                            <small class="text-muted">Guest: Jane Smith</small>
-                                            <div class="btn-group btn-group-sm">
-                                                <button
-                                                    class="btn btn-outline-primary"
-                                                    onclick="viewRoom('203')"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-outline-info"
-                                                    onclick="checkOut('203')"
-                                                    >
-                                                    <i class="fas fa-sign-out-alt"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </c:forEach>
                         </div>
                     </div>
 
@@ -459,46 +273,140 @@
                     <div class="floor-section">
                         <h5 class="mb-3"><i class="fas fa-building me-2"></i>3rd Floor</h5>
                         <div class="row g-3" id="floor3">
+                            <c:forEach var="r3" items="${room3}">
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <div
-                                    class="card room-card room-available shadow-sm"
-                                    data-room="301"
-                                    data-status="available"
+                                    class="card room-card room-maintenance shadow-sm"
+                                    data-room="${r3.roomNumber}"
+                                    data-status="${r3.roomStatus}"
                                     data-floor="3"
-                                    data-type="presidential"
+                                    data-type="${r3.roomTypeName}"
                                     >
                                     <div class="card-body">
                                         <div
                                             class="d-flex justify-content-between align-items-center mb-2"
                                             >
-                                            <h6 class="card-title mb-0">Room 301</h6>
-                                            <span class="badge bg-success">Available</span>
+                                            <h6 class="card-title mb-0">${r3.roomNumber}</h6>
+                                            <span class="badge bg-danger">${r3.roomStatus}</span>
                                         </div>
-                                        <p class="card-text text-muted small mb-2">
-                                            Presidential Suite
-                                        </p>
+                                        <p class="card-text text-muted small mb-2">${r3.roomTypeName}</p>
                                         <div
                                             class="d-flex justify-content-between align-items-center"
                                             >
-                                            <small class="text-muted">Last cleaned: Today</small>
+                                            <small class="text-muted">Issue: AC repair</small>
                                             <div class="btn-group btn-group-sm">
                                                 <button
                                                     class="btn btn-outline-primary"
-                                                    onclick="viewRoom('301')"
+                                                    onclick="viewRoom('201')"
                                                     >
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                                 <button
-                                                    class="btn btn-outline-warning"
-                                                    onclick="updateStatus('301')"
+                                                    class="btn btn-outline-success"
+                                                    onclick="markFixed('201')"
                                                     >
-                                                    <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-wrench"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    
+                    <!-- Floor 4 -->
+                    <div class="floor-section">
+                        <h5 class="mb-3"><i class="fas fa-building me-2"></i>Tầng 4</h5>
+                        <div class="row g-3" id="floor4">
+                            <c:forEach var="r4" items="${room4}">
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div
+                                    class="card room-card room-maintenance shadow-sm"
+                                    data-room="${r4.roomNumber}"
+                                    data-status="${r4.roomStatus}"
+                                    data-floor="4"
+                                    data-type="${r4.roomTypeName}"
+                                    >
+                                    <div class="card-body">
+                                        <div
+                                            class="d-flex justify-content-between align-items-center mb-2"
+                                            >
+                                            <h6 class="card-title mb-0">${r4.roomNumber}</h6>
+                                            <span class="badge bg-danger">${r4.roomStatus}</span>
+                                        </div>
+                                        <p class="card-text text-muted small mb-2">${r4.roomTypeName}</p>
+                                        <div
+                                            class="d-flex justify-content-between align-items-center"
+                                            >
+                                            <small class="text-muted">Issue: AC repair</small>
+                                            <div class="btn-group btn-group-sm">
+                                                <button
+                                                    class="btn btn-outline-primary"
+                                                    onclick="viewRoom('201')"
+                                                    >
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button
+                                                    class="btn btn-outline-success"
+                                                    onclick="markFixed('201')"
+                                                    >
+                                                    <i class="fas fa-wrench"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    
+                    <!-- Floor 5 -->
+                    <div class="floor-section">
+                        <h5 class="mb-3"><i class="fas fa-building me-2"></i>Tầng 5</h5>
+                        <div class="row g-3" id="floor5">
+                            <c:forEach var="r5" items="${room5}">
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div
+                                    class="card room-card room-maintenance shadow-sm"
+                                    data-room="${r5.roomNumber}"
+                                    data-status="${r5.roomStatus}"
+                                    data-floor="5"
+                                    data-type="${r5.roomTypeName}"
+                                    >
+                                    <div class="card-body">
+                                        <div
+                                            class="d-flex justify-content-between align-items-center mb-2"
+                                            >
+                                            <h6 class="card-title mb-0">${r5.roomNumber}</h6>
+                                            <span class="badge bg-danger">${r5.roomStatus}</span>
+                                        </div>
+                                        <p class="card-text text-muted small mb-2">${r5.roomTypeName}</p>
+                                        <div
+                                            class="d-flex justify-content-between align-items-center"
+                                            >
+                                            <small class="text-muted">Issue: AC repair</small>
+                                            <div class="btn-group btn-group-sm">
+                                                <button
+                                                    class="btn btn-outline-primary"
+                                                    onclick="viewRoom('201')"
+                                                    >
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button
+                                                    class="btn btn-outline-success"
+                                                    onclick="markFixed('201')"
+                                                    >
+                                                    <i class="fas fa-wrench"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
