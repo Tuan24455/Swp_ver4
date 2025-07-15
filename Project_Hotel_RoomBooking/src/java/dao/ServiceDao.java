@@ -19,8 +19,7 @@ public class ServiceDao {
         List<Service> list = new ArrayList<>();
         String sql = "SELECT s.*, st.service_type "
                 + "FROM Services s "
-                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
-                + "WHERE s.isDeleted = 0";
+                + "JOIN ServiceTypes st ON s.service_type_id = st.id ";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
