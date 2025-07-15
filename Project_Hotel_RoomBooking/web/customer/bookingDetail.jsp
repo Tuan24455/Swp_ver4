@@ -24,26 +24,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/booking-detail.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            font-size: 0.9em;
-        }
-        .checkbox-group {
-            margin-bottom: 5px;
-        }
-        .checkbox-group label {
-            font-size: 0.9em;
-            color: #333;
-        }
-        .requirements h3 {
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            color: #2c3e50;
-        }
-    </style>
+
 </head>
 <body>
     
@@ -72,20 +53,7 @@
                     </div>
                     
 
-                    <div class="requirements">
-                        <h3>Bạn có muốn sử dụng thêm dịch vụ gì không?</h3>
-                        <jsp:useBean id="serviceDao" class="dao.ServiceDao" />
-                        <div class="services-grid">
-                            <c:forEach var="service" items="${serviceDao.allServices}">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" id="service_${service.id}" name="selectedServices" value="${service.id}" data-price="${service.servicePrice}" onchange="updateTotalPrice()">
-                                    <label for="service_${service.id}">
-                                        ${service.serviceName} - <fmt:formatNumber value="${service.servicePrice}" pattern="#,###"/>đ
-                                    </label>
-                                </div>
-                            </c:forEach>
-                        </div>
-                    </div>
+
                     
                     <input type="hidden" name="roomId" value="${param.roomId}">
                     <input type="hidden" name="checkIn" value="${param.checkIn}">
@@ -94,7 +62,7 @@
                     <input type="hidden" name="pricePerNight" value="${param.pricePerNight}">
                     <input type="hidden" name="totalAmount" id="totalAmountInput" value="0">
                     
-                    <button type="submit" class="btn btn-primary">Xác nhận và Thanh toán</button>
+                    <button type="submit" class="payment-button">Xác nhận và Thanh toán</button>
 
                 </form>
             </c:if>
@@ -128,36 +96,13 @@
     </div>
     <script>
         let basePrice = 0;
-        let selectedServicesTotal = 0;
-
         document.addEventListener('DOMContentLoaded', function() {
             var stayNights = parseInt('${nights}', 10);
             var pricePerNight = parseInt('${param.pricePerNight}', 10);
-            basePrice = pricePerNight * stayNights;
-            updateTotalPrice();
-
-            // Calculate initial total price
-            updateTotalPrice();
+            var total = pricePerNight * stayNights;
+            document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + new Intl.NumberFormat('vi-VN').format(total) + 'đ';
+            document.getElementById('totalAmountInput').value = total;
         });
-
-        function formatPrice(price) {
-            return new Intl.NumberFormat('vi-VN').format(price);
-        }
-
-        function updateTotalPrice() {
-            selectedServicesTotal = 0;
-            const checkboxes = document.querySelectorAll('input[name="selectedServices"]');
-            
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selectedServicesTotal += parseFloat(checkbox.dataset.price);
-                }
-            });
-
-            const finalTotal = basePrice + selectedServicesTotal;
-            document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + formatPrice(finalTotal) + 'đ';
-            document.getElementById('totalAmountInput').value = finalTotal;
-        }
     </script>
 
 </body>

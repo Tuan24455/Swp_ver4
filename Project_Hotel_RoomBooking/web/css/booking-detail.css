@@ -1,15 +1,17 @@
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --success-color: #27ae60;
-    --warning-color: #f39c12;
+    --primary-color: #1a73e8;
+    --secondary-color: #4285f4;
+    --accent-color: #ea4335;
+    --success-color: #0f9d58;
+    --warning-color: #fbbc04;
     --light-bg: #f8f9fa;
-    --dark-text: #2c3e50;
-    --light-text: #7f8c8d;
-    --border-radius: 12px;
+    --dark-text: #202124;
+    --light-text: #5f6368;
+    --border-radius: 16px;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+    --container-width: 1200px;
+    --spacing-unit: 24px;
 }
 
 * {
@@ -20,26 +22,30 @@
 }
 
 body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     min-height: 100vh;
-    padding: 40px 0;
+    padding: var(--spacing-unit) 0;
+    color: var(--dark-text);
 }
 
 .container {
-    max-width: 1200px;
+    max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 var(--spacing-unit);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: var(--spacing-unit);
+    align-items: start;
 }
 
 /* Booking Form Styles */
 .booking-form {
     background: white;
-    padding: 30px;
+    padding: var(--spacing-unit);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    position: sticky;
+    top: var(--spacing-unit);
 }
 
 .booking-form h2 {
@@ -74,11 +80,12 @@ body {
 
 .form-control {
     width: 100%;
-    padding: 12px 15px;
+    padding: 12px 16px;
     border: 2px solid #e9ecef;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 1rem;
     transition: var(--transition);
+    background-color: var(--light-bg);
 }
 
 .form-control:focus {
@@ -124,12 +131,19 @@ body {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     overflow: hidden;
+    position: sticky;
+    top: var(--spacing-unit);
 }
 
 .room-image {
     width: 100%;
     height: 300px;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.room-image:hover {
+    transform: scale(1.02);
 }
 
 .room-info {
@@ -145,8 +159,18 @@ body {
 .room-info p {
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    margin: 12px 0;
     color: var(--dark-text);
+    font-size: 1.1em;
+    padding: 8px 12px;
+    background: var(--light-bg);
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.room-info p:hover {
+    transform: translateX(5px);
+    background: #e9ecef;
 }
 
 .room-info i {
@@ -157,10 +181,11 @@ body {
 
 /* Price Details */
 .price-details {
-    padding: 25px;
+    padding: var(--spacing-unit);
     background: var(--light-bg);
-    margin: 0 25px 25px;
+    margin: var(--spacing-unit);
     border-radius: var(--border-radius);
+    border: 2px solid #e9ecef;
 }
 
 .price-details h3 {
@@ -175,21 +200,39 @@ body {
 }
 
 .total-price {
-    margin-top: 15px;
-    padding-top: 15px;
+    margin-top: var(--spacing-unit);
+    padding: var(--spacing-unit);
     border-top: 2px solid #e9ecef;
-    color: var(--accent-color);
-    font-size: 1.5rem;
-    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
 /* Booking Policy */
 .booking-policy {
-    padding: 25px;
-    margin: 0 25px 25px;
+    padding: var(--spacing-unit);
+    margin: var(--spacing-unit);
     background: #fff8e6;
     border-radius: var(--border-radius);
-    border-left: 4px solid var(--warning-color);
+    border: 2px solid var(--warning-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.booking-policy::before {
+    content: '\f071';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    font-size: 100px;
+    color: rgba(251, 188, 4, 0.1);
+    transform: rotate(15deg);
 }
 
 .booking-policy h4 {
@@ -244,6 +287,52 @@ body {
     text-decoration: underline;
 }
 
+/* Payment Button */
+.payment-button {
+    background: linear-gradient(45deg, #2196F3, #1976D2);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.payment-button:hover {
+    background: linear-gradient(45deg, #1976D2, #1565C0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.payment-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.payment-button:hover::before {
+    left: 100%;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -252,5 +341,10 @@ body {
     
     body {
         padding: 20px 0;
+    }
+
+    .payment-button {
+        width: 100%;
+        padding: 15px 30px;
     }
 }

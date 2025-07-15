@@ -19,6 +19,14 @@ public class Booking {
     private String status;
     private Integer roomReviewId;
     private Integer serviceReviewId;
+    private String vnp_TxnRef;        // VNPay transaction reference
+    private String vnp_OrderInfo;     // Order information
+    private String vnp_ResponseCode;  // Response code from VNPay
+    private String vnp_TransactionStatus; // Transaction status from VNPay
+    private String vnp_PayDate;      // Payment date from VNPay
+    private String vnp_TransactionNo; // VNPay transaction number
+    private String vnp_BankCode;     // Bank code from VNPay
+    private String vnp_Amount;       // Payment amount in VND
 
     // Getter and Setter methods
 
@@ -84,5 +92,69 @@ public class Booking {
 
     public void setServiceReviewId(Integer serviceReviewId) {
         this.serviceReviewId = serviceReviewId;
+    }
+
+    public String getVnp_TxnRef() {
+        return vnp_TxnRef;
+    }
+
+    public void setVnp_TxnRef(String vnp_TxnRef) {
+        this.vnp_TxnRef = vnp_TxnRef;
+    }
+
+    public String getVnp_OrderInfo() {
+        return vnp_OrderInfo;
+    }
+
+    public void setVnp_OrderInfo(String vnp_OrderInfo) {
+        this.vnp_OrderInfo = vnp_OrderInfo;
+    }
+
+    public String getVnp_ResponseCode() {
+        return vnp_ResponseCode;
+    }
+
+    public void setVnp_ResponseCode(String vnp_ResponseCode) {
+        this.vnp_ResponseCode = vnp_ResponseCode;
+    }
+
+    public String getVnp_TransactionStatus() {
+        return vnp_TransactionStatus;
+    }
+
+    public void setVnp_TransactionStatus(String vnp_TransactionStatus) {
+        this.vnp_TransactionStatus = vnp_TransactionStatus;
+    }
+
+    public String getVnp_PayDate() {
+        return vnp_PayDate;
+    }
+
+    public void setVnp_PayDate(String vnp_PayDate) {
+        this.vnp_PayDate = vnp_PayDate;
+    }
+
+    public String getVnp_TransactionNo() {
+        return vnp_TransactionNo;
+    }
+
+    public void setVnp_TransactionNo(String vnp_TransactionNo) {
+        this.vnp_TransactionNo = vnp_TransactionNo;
+    }
+
+    public String getVnp_BankCode() {
+        return vnp_BankCode;
+    }
+
+    public void setVnp_BankCode(String vnp_BankCode) {
+        this.vnp_BankCode = vnp_BankCode;
+    }
+
+    public String getVnp_Amount() {
+        return vnp_Amount;
+    }
+
+    public void setVnp_Amount(String vnp_Amount) {
+        this.vnp_Amount = vnp_Amount;
     }
 }
