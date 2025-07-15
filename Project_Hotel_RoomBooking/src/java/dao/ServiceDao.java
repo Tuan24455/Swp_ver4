@@ -180,6 +180,59 @@ public class ServiceDao {
 
         return list;
     }
+    
+    // Tuấn viết cho admin
+    public List<Service> filterServices_02(String type, Double minPrice, Double maxPrice) { 
+        List<Service> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT s.*, st.service_type FROM Services s "
+                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
+                + "WHERE s.isDeleted = 0"
+        );
+
+        List<Object> params = new ArrayList<>();
+
+        if (type != null && !type.isEmpty()) {
+            sql.append(" AND st.service_type = ?");
+            params.add(type);
+        }
+
+        if (minPrice != null) {
+            sql.append(" AND s.service_price >= ?");
+            params.add(minPrice);
+        }
+
+        if (maxPrice != null) {
+            sql.append(" AND s.service_price <= ?");
+            params.add(maxPrice);
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Service s = new Service();
+                    s.setId(rs.getInt("id"));
+                    s.setName(rs.getString("service_name"));
+                    s.setTypeId(rs.getInt("service_type_id"));
+                    s.setTypeName(rs.getString("service_type"));
+                    s.setPrice(rs.getDouble("service_price"));
+                    s.setDescription(rs.getString("description"));
+                    s.setImageUrl(rs.getString("image_url"));
+                    list.add(s);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
     // hàm lấy danh sách loại dịch vụ của Dũng
     public Map<Integer, String> getDistinctServiceTypes() {
@@ -202,7 +255,8 @@ public class ServiceDao {
 
         return typeMap;
     }
-
+    
+    
     public boolean checkNameExists(String name) {
         String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
