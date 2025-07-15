@@ -133,4 +133,10 @@ public class User {
     public void setDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", userName=" + userName + ", pass=" + pass + ", fullName=" + fullName + ", birth=" + birth + ", gender=" + gender + ", email=" + email + ", phone=" + phone + ", address=" + address + ", role=" + role + ", avatarUrl=" + avatarUrl + ", isDeleted=" + isDeleted + '}';
+    }
+    
 }

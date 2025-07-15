@@ -5,6 +5,7 @@ import jakarta.mail.internet.*;
 import java.io.UnsupportedEncodingException;
 
 import java.util.Properties;
+import java.util.Random;
 
 public class EmailUtil {
 
@@ -96,5 +97,19 @@ public class EmailUtil {
 
         Transport.send(message);
         return true;
+    }
+
+    public static String generate8DigitCode() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(8);
+        for (int i = 0; i < 8; i++) {
+            int digit = random.nextInt(10); // Tạo số từ 0 đến 9
+            sb.append(digit);
+        }
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Mã ngẫu nhiên: " + generate8DigitCode());
     }
 }

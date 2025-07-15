@@ -5,6 +5,7 @@
 package controller;
 
 import dao.UserDao;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +13,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.User;
-import valid.InputValidator;
+import util.EmailUtil;
 
 /**
  *
  * @author ADMIN
  */
-@WebServlet(name = "FindAccountServlet", urlPatterns = {"/findAccount"})
-public class FindAccountServlet extends HttpServlet {
+@WebServlet(name = "OTPVerificationServlet", urlPatterns = {"/otpVerification"})
+public class OTPVerificationServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +44,10 @@ public class FindAccountServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet FindAccountServlet</title>");
+            out.println("<title>Servlet OTPVerificationServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet FindAccountServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OTPVerificationServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,7 +65,24 @@ public class FindAccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("findAccount.jsp").forward(request, response);
+        String keyword = request.getParameter("keyword");
+        System.out.println(keyword);
+        String otp = EmailUtil.generate8DigitCode();
+
+        UserDao dao = new UserDao();
+        User ufound = dao.findAccount(keyword);
+
+        try {
+            EmailUtil.sendOtpEmail(ufound.getEmail(), otp);
+        } catch (MessagingException | UnsupportedEncodingException ex) {
+            Logger.getLogger(OTPVerificationServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute("otp", otp);
+
+        request.setAttribute("keyword", keyword);
+        request.getRequestDispatcher("otp-verification.jsp").forward(request, response);
     }
 
     /**
@@ -74,34 +96,18 @@ public class FindAccountServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+//        processRequest(request, response);
         String keyword = request.getParameter("keyword");
-
-        // In ra giá trị keyword để debug
-        System.out.println(">> [DEBUG] Keyword nhận được: " + keyword);
-        
-        if (keyword == null || keyword.trim().isEmpty()) {
-            request.setAttribute("error", "Vui lòng nhập email hoặc tên đăng nhập.");
-            request.getRequestDispatcher("findAccount.jsp").forward(request, response);
-            return;
-        }
-        
-        keyword = keyword.trim(); // loại bỏ khoảng trắng đầu/cuối
-
-        if (keyword.contains("@") && !InputValidator.isValidEmail(keyword)) {
-            request.setAttribute("error", "Định dạng email không hợp lệ.");
-            request.getRequestDispatcher("findAccount.jsp").forward(request, response);
-            return;
-        }
-        
-        UserDao dao = new UserDao();
-        User ufound = dao.findAccount(keyword);
-        
-        if (ufound != null) {
-            response.sendRedirect("otpVerification?keyword=" + keyword);
-        } else {
-            request.setAttribute("error", "Không tìm thấy tài khoản!");
-            request.getRequestDispatcher("findAccount.jsp").forward(request, response);
+        String otpstr = request.getParameter("otp");
+        HttpSession session = request.getSession();
+        String otpverifi = (String) session.getAttribute("otp");
+        if (otpstr.equals(otpverifi)) {
+            session.removeAttribute("otp");
+            request.setAttribute("keyword", keyword);
+            request.getRequestDispatcher("reset-password.jsp").forward(request, response);
+        }else{
+            request.setAttribute("keyword", keyword);
+            request.getRequestDispatcher("otp-verification.jsp").forward(request, response);
         }
     }
 

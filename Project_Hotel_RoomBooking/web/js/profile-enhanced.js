@@ -364,7 +364,7 @@ class ProfileManager {
         }
 
         this.showToast("Thông tin đã được cập nhật thành công!", "success");
-        // e.target.submit(); // Bỏ comment nếu bạn muốn submit form chính
+         e.target.submit(); // Bỏ comment nếu bạn muốn submit form chính
     }
 
     async handleAvatarFileSelect(input) {
