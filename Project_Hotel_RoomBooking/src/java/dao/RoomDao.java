@@ -447,5 +447,42 @@ public class RoomDao {
 
         return rooms;
     }
+    // Bên lễ tân - Tuấn
+    public List<Room> getRoomsByFloor(int floor) {
+    List<Room> rooms = new ArrayList<>();
+    String sql = "SELECT r.*, rt.room_type AS room_type_name "
+               + "FROM Rooms r "
+               + "JOIN RoomTypes rt ON r.room_type_id = rt.id "
+               + "WHERE r.isDelete = 0 AND r.floor = ?";  // Lọc theo tầng
+
+    try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, floor);  // Thiết lập tham số tầng
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Room room = new Room();
+                room.setId(rs.getInt("id"));
+                room.setRoomNumber(rs.getString("room_number"));
+                room.setRoomTypeId(rs.getInt("room_type_id"));
+                room.setRoomTypeName(rs.getString("room_type_name"));
+                room.setRoomPrice(rs.getDouble("room_price"));
+                room.setRoomStatus(rs.getString("room_status"));
+                room.setCapacity(rs.getInt("capacity"));
+                room.setDescription(rs.getString("description"));
+                room.setImageUrl(rs.getString("image_url"));
+                room.setFloor(rs.getInt("floor"));
+                room.setDeleted(rs.getBoolean("isDelete"));
+                rooms.add(room);  // Thêm phòng vào danh sách
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return rooms;  // Trả về danh sách phòng của tầng yêu cầu
+}
+
 
 }

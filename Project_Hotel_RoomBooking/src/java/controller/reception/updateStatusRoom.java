@@ -13,17 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import model.Room;
 
 /**
  *
  * @author Phạm Quốc Tuấn
  */
-@WebServlet(name="roomStatus", urlPatterns={"/roomStatus"})
-public class roomStatus extends HttpServlet {
+@WebServlet(name="updateStatusRoom", urlPatterns={"/updateStatusRoom"})
+public class updateStatusRoom extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,10 +37,10 @@ public class roomStatus extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet roomStatus</title>");  
+            out.println("<title>Servlet updateStatusRoom</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet roomStatus at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet updateStatusRoom at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,32 +56,8 @@ public class roomStatus extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RoomDao dao = new RoomDao();
-        List<Room> room1 = new ArrayList<>();
-        room1 = dao.getRoomsByFloor(1);
-
-        List<Room> room2 = new ArrayList<>();
-        room2 = dao.getRoomsByFloor(2);
-
-        List<Room> room3 = new ArrayList<>();
-        room3 = dao.getRoomsByFloor(3);
-
-        List<Room> room4 = new ArrayList<>();
-        room4 = dao.getRoomsByFloor(4);
-        
-        List<Room> room5 = new ArrayList<>();
-        room5 = dao.getRoomsByFloor(5);
-        Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
-
-        request.setAttribute("room1", room1);
-        request.setAttribute("room2", room2);
-        request.setAttribute("room3", room3);
-        request.setAttribute("room4", room4);
-        request.setAttribute("room5", room5);
-        request.setAttribute("statusCounts", statusCounts);
-
-        request.getRequestDispatcher("reception/roomstatus.jsp").forward(request, response);
+    throws ServletException, IOException {
+        processRequest(request, response);
     } 
 
     /** 
@@ -96,8 +69,25 @@ public class roomStatus extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+        // Lấy thông tin từ form trong modal
+        String roomId = request.getParameter("roomId");
+        String newStatus = request.getParameter("status");
+        RoomDao dao = new RoomDao();
+
+        Room room = dao.getRoomById(Integer.parseInt(roomId));
+
+        if (room != null) {
+            room.setRoomStatus(newStatus);
+            boolean updated = dao.updateRoom(room);
+
+            if (updated) {
+                response.sendRedirect(request.getContextPath() +"/roomStatus");
+            } else {
+                System.out.println("Lỗi To");
+            }
+
+        }
     }
 
     /** 
