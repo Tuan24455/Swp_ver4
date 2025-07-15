@@ -57,13 +57,6 @@ public class RegisterDetailServlet extends HttpServlet {
             return;
         }
 
-        // SĐT đã tồn tại?
-        if (dao.isPhoneExist(phone)) {
-            request.setAttribute("error", "Số điện thoại đã được sử dụng.");
-            backToForm(request, response, username, password);
-            return;
-        }
-
         // Kiểm tra ngày sinh hợp lệ
         Date birth;
         try {

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import model.User;
 import model.UserBookingStats;
+import valid.InputValidator;
 
 public class UserDao {
 
@@ -234,6 +235,46 @@ public class UserDao {
         return null;
     }
 
+    public User findAccount(String keyword) {
+        String sql = "SELECT * FROM Users WHERE isDeleted = 0 AND ";
+
+        if (InputValidator.isValidEmail(keyword)) {
+            sql += "email = ?";
+        } else if (InputValidator.isValidUsername(keyword)) {
+            sql += "user_name = ?";
+        } else {
+            // keyword không hợp lệ, không cần query
+            return null;
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, keyword);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setPass(rs.getString("pass"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setBirth(rs.getDate("birth"));
+                    user.setGender(rs.getString("gender"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPhone(rs.getString("phone"));
+                    user.setAddress(rs.getString("address"));
+                    user.setRole(rs.getString("role"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+                    user.setDeleted(rs.getBoolean("isDeleted"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Xóa mềm người dùng
     public boolean softDelete(int id) {
         String sql = "UPDATE Users SET isDeleted = 1 WHERE id = ?";
@@ -326,37 +367,6 @@ public class UserDao {
         return null;
     }
 
-    public User loginByPhone(String phone, String password) {
-        String sql = "SELECT * FROM Users WHERE phone = ? AND pass = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, phone);
-            ps.setString(2, password);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setUserName(rs.getString("user_name"));
-                    user.setPass(rs.getString("pass"));
-                    user.setFullName(rs.getString("full_name"));
-                    user.setBirth(rs.getDate("birth"));
-                    user.setGender(rs.getString("gender"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPhone(rs.getString("phone"));
-                    user.setAddress(rs.getString("address"));
-                    user.setRole(rs.getString("role"));
-                    user.setAvatarUrl(rs.getString("avatar_url"));
-                    user.setDeleted(rs.getBoolean("isDeleted"));
-                    return user;
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error during login: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public boolean isExist(String username) {
         String sql = "SELECT 1 FROM Users WHERE user_name = ? AND isDeleted = 0";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -382,20 +392,6 @@ public class UserDao {
             }
         } catch (SQLException e) {
             System.err.println("Error checking email existence: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean isPhoneExist(String phone) {
-        String sql = "SELECT 1 FROM Users WHERE phone = ? AND isDeleted = 0";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, phone);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        } catch (SQLException e) {
-            System.err.println("Error checking phone existence: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -482,35 +478,10 @@ public class UserDao {
     }
 
     public static void main(String[] args) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date birth = sdf.parse("2001-09-15");
+        UserDao dao = new UserDao();
+        User ufound = dao.findAccount("nguyenminhquan");
 
-            User testUser = new User(
-                    "newuser123",
-                    "123456",
-                    "Nguyễn Văn A",
-                    birth,
-                    "Nam",
-                    "newuser123@gmail.com",
-                    "0987654321",
-                    "Hà Nội",
-                    "Customer",
-                    "",
-                    false
-            );
+        System.out.println(ufound);
 
-            UserDao dao = new UserDao();
-            // Cần bắt SQLException hoặc thêm throws vào main method
-            if (dao.insert(testUser)) {
-                System.out.println("✅ User inserted successfully.");
-            } else {
-                System.out.println("❌ User insertion failed.");
-            }
-
-        } catch (Exception e) {
-            System.err.println("❌ Error inserting user: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }
