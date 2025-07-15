@@ -661,7 +661,7 @@
                                                     <i class="fas fa-lock me-1"></i>Mật khẩu mới
                                                 </label>
                                                 <div class="input-group">
-                                                    <input type="password" class="form-control" id="editPassword" name="password" minlength="6">
+                                                    <input type="password" class="form-control" id="editPassword" name="password" minlength="8">
                                                     <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('editPassword')">
                                                         <i class="fas fa-eye"></i>
                                                     </button>

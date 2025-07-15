@@ -99,7 +99,7 @@ public class EditUserServlet extends HttpServlet {
             String role = request.getParameter("role");
             String address = request.getParameter("address");
             String password = request.getParameter("password"); // optional
-
+            System.out.println(password);
             // 2. Parse ngày sinh
             Date birth = null;
             if (birthStr != null && !birthStr.isEmpty()) {

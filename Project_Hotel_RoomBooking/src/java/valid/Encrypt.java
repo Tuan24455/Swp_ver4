@@ -51,7 +51,7 @@ public class Encrypt {
         String input = scanner.nextLine();
 
         String encrypted = encrypt(input);
-        String decrypted = decrypt("iOIn6rY20XzbTxNEc2fEuQ==");
+        String decrypted = decrypt("OFvwS0UtlUn9k2qYqH/8gQ==");
 
         System.out.println("🔐 Đã mã hóa: " + encrypted);
         System.out.println("🔓 Giải mã lại : " + decrypted);

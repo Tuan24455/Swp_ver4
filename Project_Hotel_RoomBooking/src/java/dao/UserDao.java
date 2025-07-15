@@ -423,17 +423,18 @@ public class UserDao {
 
     // Đã thay đổi từ void thành boolean và thêm throws SQLException
     public boolean update(User user) throws SQLException {
-        String sql = "UPDATE Users SET full_name = ?, birth = ?, gender = ?, email = ?, phone = ?, address = ?, avatar_url = ? WHERE id = ?";
+        String sql = "UPDATE Users SET full_name = ?, pass = ?, birth = ?, gender = ?, email = ?, phone = ?, address = ?, avatar_url = ? WHERE id = ?";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getFullName());
-            ps.setDate(2, new java.sql.Date(user.getBirth().getTime()));
-            ps.setString(3, user.getGender());
-            ps.setString(4, user.getEmail());
-            ps.setString(5, user.getPhone());
-            ps.setString(6, user.getAddress());
-            ps.setString(7, user.getAvatarUrl());
-            ps.setInt(8, user.getId());
+            ps.setString(2, user.getPass());
+            ps.setDate(3, new java.sql.Date(user.getBirth().getTime()));
+            ps.setString(4, user.getGender());
+            ps.setString(5, user.getEmail());
+            ps.setString(6, user.getPhone());
+            ps.setString(7, user.getAddress());
+            ps.setString(8, user.getAvatarUrl());
+            ps.setInt(9, user.getId());
 
             return ps.executeUpdate() > 0; // Trả về true nếu có dòng được cập nhật
 

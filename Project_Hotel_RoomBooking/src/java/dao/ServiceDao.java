@@ -19,7 +19,8 @@ public class ServiceDao {
         List<Service> list = new ArrayList<>();
         String sql = "SELECT s.*, st.service_type "
                 + "FROM Services s "
-                + "JOIN ServiceTypes st ON s.service_type_id = st.id ";
+                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
+                + "WHERE isDeleted = 0";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
@@ -47,7 +48,7 @@ public class ServiceDao {
         String sql = "SELECT s.*, st.service_type "
                 + "FROM Services s "
                 + "JOIN ServiceTypes st ON s.service_type_id = st.id "
-                + "WHERE s.id = ? AND s.isDeleted = 0";
+                + "WHERE isDeleted = 0";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -131,7 +132,7 @@ public class ServiceDao {
         StringBuilder sql = new StringBuilder(
                 "SELECT s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
                 + "s.service_price, s.description, s.image_url "
-                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE 1=1"
+                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE isDelete=0"
         );
 
         List<Object> params = new ArrayList<>();
@@ -180,14 +181,14 @@ public class ServiceDao {
 
         return list;
     }
-    
+
     // Tuấn viết cho admin
-    public List<Service> filterServices_02(String type, Double minPrice, Double maxPrice) { 
+    public List<Service> filterServices_02(String type, Double minPrice, Double maxPrice) {
         List<Service> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT s.*, st.service_type FROM Services s "
                 + "JOIN ServiceTypes st ON s.service_type_id = st.id "
-                + "WHERE s.isDeleted = 0"
+                + "WHERE isDeleted = 0"
         );
 
         List<Object> params = new ArrayList<>();
@@ -255,8 +256,7 @@ public class ServiceDao {
 
         return typeMap;
     }
-    
-    
+
     public boolean checkNameExists(String name) {
         String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -272,7 +272,7 @@ public class ServiceDao {
     }
 
     public boolean checkNameExistsExceptId(String name, int excludeId) {
-        String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND isDeleted = 0 AND id != ?";
+        String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND id != ?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, name);
