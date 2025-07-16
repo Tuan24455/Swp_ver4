@@ -290,8 +290,10 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
         </c:if>
       </c:forEach>
     </form>
-
     <jsp:include page="customer/includes/footer.jsp" />
+    <script>
+      var contextPath = "${pageContext.request.contextPath}";
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/home-enhanced.js"></script>
   </body>

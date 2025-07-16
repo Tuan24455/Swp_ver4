@@ -2,86 +2,97 @@ package controller;
 
 import dao.ServiceDao;
 import dao.ReviewDao;
+import model.Service;
+import model.ServiceReview;
 import java.io.IOException;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import model.Service;
-import model.ServiceReview;
 
-/**
- * Servlet kiểm soát trang chi tiết dịch vụ.
- */
 @WebServlet(name = "ServiceDetailServlet", urlPatterns = {"/serviceDetail"})
 public class ServiceDetailServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy tham số id của dịch vụ từ URL
-        String sid = request.getParameter("id");
-        if (sid == null || sid.trim().isEmpty()) {
-            // Nếu không có id, chuyển hướng về trang danh sách dịch vụ
-            response.sendRedirect("service");
-            return;
-        }
-        
         try {
-            // Chuyển đổi id sang kiểu số nguyên
-            int id = Integer.parseInt(sid);
-            ServiceDao dao = new ServiceDao();
-            // Lấy thông tin dịch vụ theo id
-            Service service = dao.getServiceById(id);
-            if (service == null) {
-                // Nếu không tìm thấy dịch vụ, chuyển hướng về trang danh sách
-                response.sendRedirect("service");
+            // Lấy service ID từ parameter - kiểm tra cả "serviceId" và "id"
+            String serviceIdParam = request.getParameter("serviceId");
+            if (serviceIdParam == null || serviceIdParam.trim().isEmpty()) {
+                serviceIdParam = request.getParameter("id");
+            }
+            
+            if (serviceIdParam == null || serviceIdParam.trim().isEmpty()) {
+                response.sendRedirect("service?error=missing_service_id");
                 return;
             }
             
-            // Lấy đánh giá của dịch vụ
+            int serviceId = Integer.parseInt(serviceIdParam);
+            
+            // Khởi tạo DAO
+            ServiceDao serviceDao = new ServiceDao();
             ReviewDao reviewDao = new ReviewDao();
-            List<ServiceReview> reviews = reviewDao.getServiceReviewsByServiceId(id);
             
-            // Lấy các dịch vụ cùng loại để hiển thị liên quan
-            List<Integer> typeIds = new ArrayList<>();
-            typeIds.add(service.getTypeId());
-            List<Service> allSameType = dao.filterServices(typeIds, null, null);
+            // Lấy thông tin chi tiết dịch vụ
+            Service service = serviceDao.getServiceById(serviceId);
             
-            // Loại bỏ dịch vụ hiện tại và giới hạn trong 6 dịch vụ liên quan
-            List<Service> related = new ArrayList<>();
-            for (Service s : allSameType) {
-                if (s.getId() != id && related.size() < 6) {
-                    related.add(s);
-                }
+            if (service == null) {
+                response.sendRedirect("service?error=service_not_found");
+                return;
             }
             
-            // Đặt dữ liệu vào request để hiển thị trong JSP
+            // Lấy danh sách đánh giá cho dịch vụ này
+            List<ServiceReview> reviews = reviewDao.getServiceReviewsByServiceId(serviceId);
+            
+            // Lấy danh sách dịch vụ cùng loại (để hiển thị dịch vụ tương tự)
+            List<Service> relatedServices = serviceDao.getServicesByType(service.getTypeId(), serviceId, 6);
+            
+            // Tính toán thống kê đánh giá
+            double averageRating = 0.0;
+            int totalReviews = reviews.size();
+            
+            if (totalReviews > 0) {
+                double sum = 0;
+                for (ServiceReview review : reviews) {
+                    sum += review.getQuality();
+                }
+                averageRating = sum / totalReviews;
+                averageRating = Math.round(averageRating * 10.0) / 10.0; // Làm tròn 1 chữ số thập phân
+            }
+            
+            // Set attributes cho JSP
             request.setAttribute("service", service);
             request.setAttribute("reviews", reviews);
-            request.setAttribute("relatedServices", related);
-            // Chuyển đến trang hiển thị chi tiết dịch vụ
+            request.setAttribute("relatedServices", relatedServices);
+            request.setAttribute("averageRating", averageRating);
+            request.setAttribute("totalReviews", totalReviews);
+            
+            // Forward đến JSP
             request.getRequestDispatcher("serviceDetail.jsp").forward(request, response);
+            
         } catch (NumberFormatException e) {
-            // Nếu id không hợp lệ, chuyển hướng về trang danh sách
-            response.sendRedirect("service");
+            // Service ID không hợp lệ
+            response.sendRedirect("service?error=invalid_service_id");
+        } catch (Exception e) {
+            // Lỗi khác
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+                "Đã xảy ra lỗi khi tải chi tiết dịch vụ: " + e.getMessage());
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Xử lý đặt dịch vụ
-        String serviceId = request.getParameter("serviceId");
-        String bookingDate = request.getParameter("bookingDate");
-        String quantity = request.getParameter("quantity");
-        String note = request.getParameter("note");
-        
-        // TODO: Thêm logic đặt dịch vụ ở đây
-        // Hiện tại, chỉ chuyển hướng trở lại trang chi tiết dịch vụ
-        response.sendRedirect("serviceDetail?id=" + serviceId);
+        // Chuyển hướng POST requests thành GET requests
+        doGet(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "ServiceDetailServlet - Hiển thị chi tiết dịch vụ";
     }
 }

@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "VNPayReturnServlet", urlPatterns = {"/vnpay-return"})
 public class VNPayReturnServlet extends HttpServlet {
@@ -38,27 +39,44 @@ public class VNPayReturnServlet extends HttpServlet {
         if (fields.containsKey("vnp_SecureHash")) {
             fields.remove("vnp_SecureHash");
         }
-        
-        // Check checksum
+          // Check checksum
         String signValue = VNPayConfig.hashAllFields(fields);
         if (signValue.equals(vnp_SecureHash)) {
             String vnp_TxnRef = request.getParameter("vnp_TxnRef");
             String[] parts = vnp_TxnRef.split("_");
-            int bookingId = Integer.parseInt(parts[0]);
             
             boolean paymentSuccess = false;
+            String message = "";
+            
             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
-                // Thanh toán thành công
-                // Cập nhật trạng thái đơn hàng trong database
-                bookingDao.updateBookingStatus(bookingId, "Confirmed");
                 paymentSuccess = true;
+                
+                // Check if this is a service payment or room booking
+                if (parts[0].startsWith("SVC")) {
+                    // Handle service payment
+                    message = "Thanh toán dịch vụ thành công!";
+                    // TODO: Process service booking in database
+                    processServicePayment(request, parts[0]);
+                } else {
+                    // Handle room booking payment
+                    int bookingId = Integer.parseInt(parts[0]);
+                    bookingDao.updateBookingStatus(bookingId, "Confirmed");
+                    message = "Thanh toán đặt phòng thành công!";
+                }
             } else {
-                // Thanh toán thất bại
-                bookingDao.updateBookingStatus(bookingId, "Payment Failed");
+                // Payment failed
+                paymentSuccess = false;
+                
+                if (parts[0].startsWith("SVC")) {
+                    message = "Thanh toán dịch vụ thất bại!";
+                } else {
+                    int bookingId = Integer.parseInt(parts[0]);
+                    bookingDao.updateBookingStatus(bookingId, "Payment Failed");
+                    message = "Thanh toán đặt phòng thất bại!";
+                }
             }
             
             // Chuyển về trang chủ với thông báo
-            String message = paymentSuccess ? "Thanh toán thành công!" : "Thanh toán thất bại!";
             response.sendRedirect(request.getContextPath() + "/home?message=" + URLEncoder.encode(message, "UTF-8") + "&status=" + (paymentSuccess ? "success" : "error"));
         } else {
             // Checksum failed
@@ -70,11 +88,31 @@ public class VNPayReturnServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
-
+        }
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+    
+    private void processServicePayment(HttpServletRequest request, String serviceBookingRef) {
+        try {
+            // Get the pending service booking from session
+            HttpSession session = request.getSession();
+            Object pendingBooking = session.getAttribute("pendingServiceBooking");
+            
+            if (pendingBooking != null) {
+                // Process the service booking here
+                // For now, we'll just remove it from session
+                // In a full implementation, you would save this to a ServiceBookings table
+                session.removeAttribute("pendingServiceBooking");
+                
+                // Log successful service booking
+                System.out.println("Service booking processed successfully: " + serviceBookingRef);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

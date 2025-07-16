@@ -97,7 +97,7 @@
                             </div>
 
                             <div class="booking-section mt-4">
-                                <form action="bookService" method="POST" class="booking-form">
+                                <form action="${pageContext.request.contextPath}/bookService" method="POST" class="booking-form">
                                     <input type="hidden" name="serviceId" value="${service.id}">
                                     <div class="form-group mb-3">
                                         <label for="bookingDate" class="form-label"><i class="fas fa-calendar me-2"></i>Ngày sử dụng</label>
@@ -212,6 +212,9 @@
     <jsp:include page="customer/includes/footer.jsp"/>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var contextPath = '${pageContext.request.contextPath}';
+    </script>
     <script src="js/home-enhanced.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

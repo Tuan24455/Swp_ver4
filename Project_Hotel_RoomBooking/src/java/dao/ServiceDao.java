@@ -41,14 +41,12 @@ public class ServiceDao {
         }
 
         return list;
-    }
-
-    // Lấy dịch vụ theo ID
+    }    // Lấy dịch vụ theo ID
     public Service getServiceById(int id) {
         String sql = "SELECT s.*, st.service_type "
                 + "FROM Services s "
                 + "JOIN ServiceTypes st ON s.service_type_id = st.id "
-                + "WHERE isDeleted = 0";
+                + "WHERE s.id = ? AND s.isDeleted = 0";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -269,9 +267,7 @@ public class ServiceDao {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public boolean checkNameExistsExceptId(String name, int excludeId) {
+    }    public boolean checkNameExistsExceptId(String name, int excludeId) {
         String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND id != ?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -287,6 +283,43 @@ public class ServiceDao {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Lấy danh sách dịch vụ cùng loại (để hiển thị dịch vụ tương tự)
+    public List<Service> getServicesByType(int typeId, int excludeServiceId, int limit) {
+        List<Service> list = new ArrayList<>();
+        String sql = "SELECT TOP(?) s.*, st.service_type "
+                + "FROM Services s "
+                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
+                + "WHERE s.service_type_id = ? AND s.id != ? AND s.isDeleted = 0 "
+                + "ORDER BY s.id DESC";
+
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, limit);
+            ps.setInt(2, typeId);
+            ps.setInt(3, excludeServiceId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Service s = new Service();
+                    s.setId(rs.getInt("id"));
+                    s.setName(rs.getString("service_name"));
+                    s.setTypeId(rs.getInt("service_type_id"));
+                    s.setTypeName(rs.getString("service_type"));
+                    s.setPrice(rs.getDouble("service_price"));
+                    s.setDescription(rs.getString("description"));
+                    s.setImageUrl(rs.getString("image_url"));
+                    list.add(s);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
     // test thử 
