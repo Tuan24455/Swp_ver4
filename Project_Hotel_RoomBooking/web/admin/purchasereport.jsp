@@ -57,70 +57,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             </div>
           </div>
 
-          <!-- Summary Cards -->
-          <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Tổng Phòng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">
-                    ${totalRooms}
-                  </h2>
-                  <p class="card-text text-info">
-                    <i class="fas fa-building me-1"></i> Tổng số phòng khách sạn
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Phòng Đang Dùng</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">
-                    ${occupiedRooms}
-                  </h2>
-                  <p class="card-text text-success">
-                    <i class="fas fa-user-check me-1"></i>
-                    <c:if test="${totalRooms > 0}">
-                      <fmt:formatNumber
-                        value="${(occupiedRooms / totalRooms) * 100}"
-                        maxFractionDigits="0"
-                      />% tỷ lệ lấp đầy
-                    </c:if>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">Phòng Trống</h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">
-                    ${availableRooms}
-                  </h2>
-                  <p class="card-text text-primary">
-                    <i class="fas fa-door-open me-1"></i> Sẵn sàng cho khách
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card kpi-card shadow-sm">
-                <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted">
-                    Phòng Đang Sửa Chữa
-                  </h6>
-                  <h2 class="card-title display-6 fw-bold mb-1">
-                    ${maintenanceRooms}
-                  </h2>
-                  <p class="card-text text-warning">
-                    <i class="fas fa-tools me-1"></i> Đang bảo trì
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Additional Services Analysis -->
 
           <!-- Additional Services Analysis -->
@@ -135,7 +71,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                               ${currentServicePage != null && currentServicePage <= 1 ? 'disabled' : ''}>
                         <i class="fas fa-chevron-left"></i>
                       </button>
-                      <span class="fw-bold">Trang ${currentServicePage != null ? currentServicePage : 1} / ${totalServicePages != null ? totalServicePages : 1}</span>
+                      <span class="fw-bold"> Trang ${currentServicePage != null ? currentServicePage : 1} / ${totalServicePages != null ? totalServicePages : 1}</span>
                       <button type="button" class="btn btn-outline-primary btn-sm ms-2" 
                               onclick="changeServicePage(${currentServicePage != null ? currentServicePage + 1 : 2})" 
                               ${currentServicePage != null && totalServicePages != null && currentServicePage >= totalServicePages ? 'disabled' : ''}>
@@ -165,8 +101,8 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                           <tr>
                             <td><strong><c:out value="${service['Dịch Vụ']}" /></strong></td>
                             <td><c:out value="${service['Số Lần Sử Dụng']}" /></td>
-                            <td><fmt:formatNumber value="${service['Doanh Thu']}" type="currency" currencyCode="VND" pattern="#,##0 ¤"/></td>
-                            <td><fmt:formatNumber value="${service['Giá Trung Bình']}" type="currency" currencyCode="VND" pattern="#,##0 ¤"/></td>
+                            <td><fmt:formatNumber value="${service['Doanh Thu']}" type="currency" currencyCode="VND" pattern="#,,##0 ¤"/></td>
+                            <td><fmt:formatNumber value="${service['Giá Trung Bình']}" type="currency" currencyCode="VND" pattern="#,,##0 ¤"/></td>
                           </tr>
                         </c:forEach>
                       </tbody>
@@ -212,7 +148,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                                 value="${row['Doanh Thu']}"
                                 type="currency"
                                 currencyCode="VND"
-                                pattern="#,##0 ¤"
+                                pattern="#,,##0 ¤"
                               />
                             </td>
                             <td>
@@ -220,7 +156,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                                 value="${row['Gia Trung Binh']}"
                                 type="currency"
                                 currencyCode="VND"
-                                pattern="#,##0 ¤"
+                                pattern="#,,##0 ¤"
                               />
                             </td>
                           </tr>
