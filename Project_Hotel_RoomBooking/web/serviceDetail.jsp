@@ -111,7 +111,25 @@
                                         <label for="note" class="form-label"><i class="fas fa-sticky-note me-2"></i>Ghi chú</label>
                                         <textarea class="form-control" id="note" name="note" rows="3"></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-book-service w-100"><i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ</button>
+                                    
+                                    <!-- Display calculated total -->
+                                    <div class="total-price-display mb-3 p-3 bg-light rounded">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">Tổng tiền:</span>
+                                            <span class="price-display fw-bold text-success fs-5">
+                                                <fmt:formatNumber value="${service.price}" type="number" groupingUsed="true"/> VND
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="button-group d-grid gap-2">
+                                        <button type="submit" class="btn btn-book-service">
+                                            <i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ
+                                        </button>
+                                        <button type="button" class="btn btn-pay-now" onclick="submitDirectPayment()">
+                                            <i class="fas fa-credit-card me-2"></i>Thanh toán ngay
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -212,8 +230,87 @@
     <jsp:include page="customer/includes/footer.jsp"/>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .btn-pay-now {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-pay-now:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ba085 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .total-price-display {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .price-display {
+            font-size: 1.25rem !important;
+        }
+        
+        .button-group .btn {
+            padding: 12px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+    </style>
+
     <script>
         var contextPath = '${pageContext.request.contextPath}';
+        
+        function submitDirectPayment() {
+            const bookingDate = document.getElementById('bookingDate').value;
+            const quantity = document.getElementById('quantity').value;
+            const note = document.getElementById('note').value;
+            
+            if (!bookingDate) {
+                alert('Vui lòng chọn ngày sử dụng dịch vụ!');
+                return;
+            }
+            
+            if (!quantity || quantity < 1) {
+                alert('Vui lòng nhập số lượng hợp lệ!');
+                return;
+            }
+            
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = contextPath + '/direct-service-payment';
+            
+            const serviceId = '${service.id}';
+            const serviceName = '${service.name}';
+            const servicePrice = '${service.price}';
+            const totalAmount = (parseFloat(servicePrice) * parseInt(quantity)).toString();
+            
+            const fields = {
+                'serviceId': serviceId,
+                'bookingDate': bookingDate,
+                'quantity': quantity,
+                'note': note,
+                'totalAmount': totalAmount,
+                'serviceName': serviceName
+            };
+            
+            for (const name in fields) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = fields[name];
+                form.appendChild(input);
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
     </script>
     <script src="js/home-enhanced.js"></script>
     <script>
@@ -225,10 +322,11 @@
 
             const quantityInput = document.getElementById('quantity');
             if (quantityInput) {
-                const basePrice = parseFloat("${service.price}"); // Fixed property name
+                const basePrice = parseFloat("${service.price}");
                 quantityInput.addEventListener('change', function() {
-                    const quantity = this.value;
-                    document.querySelector('.price-value').textContent = new Intl.NumberFormat('vi-VN').format(basePrice * quantity) + ' VND';
+                    const quantity = parseInt(this.value) || 1;
+                    const totalPrice = basePrice * quantity;
+                    document.querySelector('.price-display').textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' VND';
                 });
             }
         });
