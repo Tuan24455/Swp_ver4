@@ -14,20 +14,45 @@ import java.util.TreeSet;
 
 public class DashboardAdminDAO {
 
-    // Method to get total revenue (sửa: dùng Transactions để tính tổng amount đã Paid, xử lý null)
-    public double getTotalRevenue() {
-        String sql = "SELECT SUM(amount) FROM Transactions WHERE status = 'Paid'";
+    // Method to get total revenue from room bookings
+    public double getRoomRevenue() {
+        String sql = "SELECT SUM(total_prices) AS [Tổng Doanh Thu Từ Tất Cả Bookings] " +
+                     "FROM Bookings " +
+                     "WHERE status = 'Confirmed'";
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 double revenue = rs.getDouble(1);
-                return rs.wasNull() ? 0.0 : revenue;  // Xử lý null
+                return rs.wasNull() ? 0.0 : revenue;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0.0;
+    }
+
+    // Method to get total revenue from service bookings
+    public double getServiceRevenue() {
+        String sql = "SELECT SUM(total_amount) AS [Tổng Doanh Thu Từ Dịch Vụ] " +
+                     "FROM ServiceBookings " +
+                     "WHERE status = 'Confirmed'";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                double revenue = rs.getDouble(1);
+                return rs.wasNull() ? 0.0 : revenue;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    // Method to get total revenue (combined room + service)
+    public double getTotalRevenue() {
+        return getRoomRevenue() + getServiceRevenue();
     }
 
     // Method to get room status counts (giữ nguyên, OK)
