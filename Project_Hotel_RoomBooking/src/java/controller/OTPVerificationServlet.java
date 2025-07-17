@@ -101,11 +101,12 @@ public class OTPVerificationServlet extends HttpServlet {
         String otpstr = request.getParameter("otp");
         HttpSession session = request.getSession();
         String otpverifi = (String) session.getAttribute("otp");
+        System.out.println("OTP nhập vào: " + otpstr);
+        System.out.println("OTP trong session: " + otpverifi);
         if (otpstr.equals(otpverifi)) {
-            session.removeAttribute("otp");
             request.setAttribute("keyword", keyword);
             request.getRequestDispatcher("reset-password.jsp").forward(request, response);
-        }else{
+        } else {
             request.setAttribute("keyword", keyword);
             request.getRequestDispatcher("otp-verification.jsp").forward(request, response);
         }

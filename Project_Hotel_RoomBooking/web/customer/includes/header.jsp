@@ -126,5 +126,5 @@
 
     <link
         rel="stylesheet"
-        href="${pageContext.request.contextPath}/customer/includes/component.css"
+        href="${pageContext.request.contextPath}/customer/includes/component.css?v=2"
         />
