@@ -9,9 +9,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
+import model.ServiceBooking;
+import dao.ServiceBookingDao;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 @WebServlet(name = "ProcessServicePaymentServlet", urlPatterns = {"/process-service-payment"})
 public class ProcessServicePaymentServlet extends HttpServlet {
+    private ServiceBookingDao serviceBookingDao;
+    
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        serviceBookingDao = new ServiceBookingDao();
+    }
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -34,15 +45,29 @@ public class ProcessServicePaymentServlet extends HttpServlet {
             double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
             String serviceName = request.getParameter("serviceName");
             
+            // Create ServiceBooking object
+            ServiceBooking serviceBooking = new ServiceBooking();
+            serviceBooking.setUserId(user.getId());
+            serviceBooking.setServiceId(serviceId);
+            serviceBooking.setBookingDate(Date.valueOf(bookingDate));
+            serviceBooking.setQuantity(quantity);
+            serviceBooking.setNote(note);
+            serviceBooking.setTotalAmount(totalAmount);
+            serviceBooking.setStatus("Pending");
+            serviceBooking.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            
+            // Save the service booking
+            int bookingId = serviceBookingDao.createServiceBooking(serviceBooking);
+            
+            if (bookingId <= 0) {
+                throw new ServletException("Failed to create service booking");
+            }
+            
             // Create a unique booking reference for service booking
-            String serviceBookingRef = "SVC_" + serviceId + "_" + System.currentTimeMillis();
+            String serviceBookingRef = "SVC_" + bookingId;
             
-            // Store service booking details in session for later processing
-            session.setAttribute("pendingServiceBooking", new ServiceBookingDetails(
-                serviceId, bookingDate, quantity, note, totalAmount, serviceName, user.getId()
-            ));
-            
-            // Create VNPay payment URL for service booking
+            // Store service booking ID in session for later processing
+            session.setAttribute("pendingServiceBookingId", bookingId);            // Create VNPay payment URL for service booking
             long amountInVND = (long) totalAmount;
             String paymentUrl = VNPayService.createServicePaymentUrl(request, serviceBookingRef, amountInVND, serviceName);
             
@@ -60,27 +85,5 @@ public class ProcessServicePaymentServlet extends HttpServlet {
             throws ServletException, IOException {
         // Redirect GET requests to service list
         response.sendRedirect("service");
-    }
-    
-    // Inner class to hold service booking details
-    public static class ServiceBookingDetails {
-        public final int serviceId;
-        public final String bookingDate;
-        public final int quantity;
-        public final String note;
-        public final double totalAmount;
-        public final String serviceName;
-        public final int userId;
-        
-        public ServiceBookingDetails(int serviceId, String bookingDate, int quantity, 
-                String note, double totalAmount, String serviceName, int userId) {
-            this.serviceId = serviceId;
-            this.bookingDate = bookingDate;
-            this.quantity = quantity;
-            this.note = note;
-            this.totalAmount = totalAmount;
-            this.serviceName = serviceName;
-            this.userId = userId;
-        }
     }
 }
