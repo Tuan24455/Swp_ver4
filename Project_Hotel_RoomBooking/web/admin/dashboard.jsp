@@ -107,18 +107,21 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             <div class="col-xl-3 col-md-6">
               <div class="kpi-card">
                 <div class="d-flex justify-content-between align-items-start">
-                  <div>
+                  <div class="w-100">
                     <div class="kpi-icon bg-primary bg-opacity-10">
                       <i class="fas fa-dollar-sign text-primary"></i>
                     </div>
                     <h3 class="h4 mb-1"><fmt:formatNumber value="${totalRevenue}" type="currency" currencySymbol="đ" maxFractionDigits="0" /></h3>
                     <p class="text-muted mb-2">Tổng Doanh Thu</p>
-                    <div class="d-flex align-items-center">
-                      <c:if test="${dashboardLoaded}">
-                        <small class="text-success"
-                          ><i class="fas fa-arrow-up"></i> Đã cập nhật</small
-                        >
-                      </c:if>
+                    <div class="revenue-breakdown">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="text-muted">Tổng Doanh Thu Đặt Phòng</small>
+                        <small class="fw-bold"><fmt:formatNumber value="${roomRevenue}" type="currency" currencySymbol="đ" maxFractionDigits="0" /></small>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Tổng Doanh Thu Dịch Vụ</small>
+                        <small class="fw-bold"><fmt:formatNumber value="${serviceRevenue}" type="currency" currencySymbol="đ" maxFractionDigits="0" /></small>
+                      </div>
                     </div>
                   </div>
                 </div>

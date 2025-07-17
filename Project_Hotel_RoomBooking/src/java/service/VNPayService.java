@@ -143,4 +143,51 @@ public class VNPayService {
         
         return paymentUrl;
     }
+
+    public static boolean validatePaymentResponse(Map<String, String[]> requestParams) {
+        try {
+            // Convert parameter map from array to single value
+            Map<String, String> fields = new HashMap<>();
+            for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
+                if (entry.getValue() != null && entry.getValue().length > 0) {
+                    fields.put(entry.getKey(), entry.getValue()[0]);
+                }
+            }
+
+            // Remove hash value from fields
+            String vnp_SecureHash = fields.remove("vnp_SecureHash");
+            if (vnp_SecureHash == null) {
+                return false;
+            }
+
+            // Sort field names
+            List<String> fieldNames = new ArrayList<>(fields.keySet());
+            Collections.sort(fieldNames);
+
+            // Build hash data
+            StringBuilder hashData = new StringBuilder();
+            Iterator<String> itr = fieldNames.iterator();
+            while (itr.hasNext()) {
+                String fieldName = itr.next();
+                String fieldValue = fields.get(fieldName);
+                if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                    hashData.append(fieldName);
+                    hashData.append('=');
+                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                }
+                if (itr.hasNext()) {
+                    hashData.append('&');
+                }
+            }
+
+            // Calculate HMAC-SHA512 hash
+            String hmac = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
+            
+            // Compare hash values
+            return hmac.equals(vnp_SecureHash);
+            
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

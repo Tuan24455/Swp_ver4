@@ -22,6 +22,8 @@ public class Dashboard extends HttpServlet {
 
         // Get data from DAO
         double totalRevenue = dao.getTotalRevenue();
+        double roomRevenue = dao.getRoomRevenue();
+        double serviceRevenue = dao.getServiceRevenue();
         Map<String, Integer> roomStatusCounts = dao.getRoomStatusCounts();
         int totalRooms = dao.getTotalRooms();
         double avgRoomRating = dao.getAverageRoomRating();
@@ -30,6 +32,8 @@ public class Dashboard extends HttpServlet {
 
         // Set attributes for JSP
         request.setAttribute("totalRevenue", totalRevenue);
+        request.setAttribute("roomRevenue", roomRevenue);
+        request.setAttribute("serviceRevenue", serviceRevenue);
         request.setAttribute("roomStatusCounts", roomStatusCounts);
         request.setAttribute("totalRooms", totalRooms);
         request.setAttribute("avgRoomRating", avgRoomRating);

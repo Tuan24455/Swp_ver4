@@ -134,6 +134,26 @@ CREATE TABLE Transactions (
     FOREIGN KEY (booking_id) REFERENCES Bookings(id)
 );
 
+
+--bảng thanh toán dịch vụ
+CREATE TABLE [dbo].[ServiceBookings] (
+    [id] INT IDENTITY(1,1) NOT NULL,  -- Khóa chính, tự tăng
+    [user_id] INT NOT NULL,           -- ID người dùng, giả sử là khóa ngoại
+    [service_id] INT NOT NULL,        -- ID dịch vụ, giả sử là khóa ngoại
+    [booking_date] DATETIME NOT NULL, -- Ngày đặt dịch vụ
+    [quantity] INT NOT NULL,          -- Số lượng
+    [note] NVARCHAR(500) NULL,        -- Ghi chú (có thể NULL, độ dài tối đa 500 ký tự)
+    [total_amount] DECIMAL(18,2) NOT NULL, -- Tổng tiền, kiểu số thập phân với 2 chữ số sau dấu phẩy
+    [status] VARCHAR(50) NOT NULL,    -- Trạng thái (ví dụ: 'Pending', 'Completed')
+    [created_at] DATETIME NOT NULL DEFAULT GETDATE(),  -- Thời gian tạo, mặc định là thời gian hiện tại
+    [updated_at] DATETIME NULL DEFAULT GETDATE(),      -- Thời gian cập nhật, có thể NULL hoặc mặc định
+
+ALTER TABLE [dbo].[ServiceBookings]
+ADD CONSTRAINT FK_ServiceBookings_Users FOREIGN KEY ([user_id]) REFERENCES [dbo].[Users]([id]);
+
+ALTER TABLE [dbo].[ServiceBookings]
+ADD CONSTRAINT FK_ServiceBookings_Services FOREIGN KEY ([service_id]) REFERENCES [dbo].[Services]([id]);
+
 -- Dữ liệu cho bảng Users (giữ nguyên)
 INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url) 
 VALUES 

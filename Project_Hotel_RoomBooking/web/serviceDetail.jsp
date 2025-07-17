@@ -51,6 +51,21 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+        
+        .total-price-display {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .price-display {
+            font-size: 1.25rem !important;
+        }
+        
+        .button-group .btn {
+            padding: 12px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +126,22 @@
                                         <label for="note" class="form-label"><i class="fas fa-sticky-note me-2"></i>Ghi chú</label>
                                         <textarea class="form-control" id="note" name="note" rows="3"></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-book-service w-100"><i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ</button>
+                                    
+                                    <!-- Display calculated total -->
+                                    <div class="total-price-display mb-3 p-3 bg-light rounded">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">Tổng tiền:</span>
+                                            <span class="price-display fw-bold text-success fs-5">
+                                                <fmt:formatNumber value="${service.price}" type="number" groupingUsed="true"/> VND
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="button-group d-grid gap-2">
+                                        <button type="submit" class="btn btn-book-service">
+                                            <i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -212,9 +242,6 @@
     <jsp:include page="customer/includes/footer.jsp"/>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        var contextPath = '${pageContext.request.contextPath}';
-    </script>
     <script src="js/home-enhanced.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -225,10 +252,11 @@
 
             const quantityInput = document.getElementById('quantity');
             if (quantityInput) {
-                const basePrice = parseFloat("${service.price}"); // Fixed property name
+                const basePrice = parseFloat("${service.price}");
                 quantityInput.addEventListener('change', function() {
-                    const quantity = this.value;
-                    document.querySelector('.price-value').textContent = new Intl.NumberFormat('vi-VN').format(basePrice * quantity) + ' VND';
+                    const quantity = parseInt(this.value) || 1;
+                    const totalPrice = basePrice * quantity;
+                    document.querySelector('.price-display').textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' VND';
                 });
             }
         });
