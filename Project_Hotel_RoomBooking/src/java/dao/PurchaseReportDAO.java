@@ -522,4 +522,155 @@ public class PurchaseReportDAO extends DBContext {
         }
         return reportData;
     }
+
+    // Method lấy báo cáo hóa đơn kết hợp (phòng + dịch vụ) với phân trang
+    public List<Map<String, Object>> getCombinedInvoiceReportDataPaginated(Date dateFrom, Date dateTo, String roomType, String serviceType, String paymentStatus, int page, int pageSize) {
+        List<Map<String, Object>> combinedData = new ArrayList<>();
+        String sql = "(SELECT \n"
+                + "    b.id AS [Số Hóa Đơn],\n"
+                + "    u.full_name AS [Tên Khách],\n"
+                + "    r.room_number AS [Phòng],\n"
+                + "    brd.check_in_date AS [Nhận Phòng],\n"
+                + "    brd.check_out_date AS [Trả Phòng],\n"
+                + "    brd.prices AS [Phí Phòng],\n"
+                + "    NULL AS [Dịch Vụ],\n"
+                + "    b.total_prices AS [Tổng Tiền],\n"
+                + "    COALESCE(t.status, 'Pending') AS [Trạng Thái],\n"
+                + "    'room' AS type\n"
+                + "FROM \n"
+                + "    Bookings b\n"
+                + "    INNER JOIN Users u ON b.user_id = u.id\n"
+                + "    INNER JOIN BookingRoomDetails brd ON b.id = brd.booking_id\n"
+                + "    INNER JOIN Rooms r ON brd.room_id = r.id AND r.isDelete = 0\n"
+                + "    INNER JOIN RoomTypes rt ON r.room_type_id = rt.id\n"
+                + "    LEFT JOIN Transactions t ON b.id = t.booking_id\n"
+                + "WHERE \n"
+                + "    (? IS NULL OR brd.check_in_date >= ?) \n"
+                + "    AND (? IS NULL OR brd.check_out_date <= ?) \n"
+                + "    AND (? = '' OR rt.room_type = ?) \n"
+                + "    AND (? = '' OR t.status = ?) \n"
+                + ") UNION ALL (\n"
+                + "SELECT \n"
+                + "    sb.id AS [Số Hóa Đơn],\n"
+                + "    u.full_name AS [Tên Khách],\n"
+                + "    NULL AS [Phòng],\n"
+                + "    NULL AS [Nhận Phòng],\n"
+                + "    NULL AS [Trả Phòng],\n"
+                + "    NULL AS [Phí Phòng],\n"
+                + "    s.service_name AS [Dịch Vụ],\n"
+                + "    sb.total_amount AS [Tổng Tiền],\n"
+                + "    sb.status AS [Trạng Thái],\n"
+                + "    'service' AS type\n"
+                + "FROM \n"
+                + "    ServiceBookings sb\n"
+                + "    INNER JOIN Users u ON sb.user_id = u.id\n"
+                + "    INNER JOIN Services s ON sb.service_id = s.id\n"
+                + "WHERE \n"
+                + "    (? IS NULL OR sb.booking_date >= ?) \n"
+                + "    AND (? IS NULL OR sb.booking_date <= ?) \n"
+                + "    AND (? = '' OR s.service_name LIKE ?) \n"
+                + "    AND (? = '' OR sb.status = ?) \n"
+                + ") ORDER BY [Số Hóa Đơn] DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Parameters for room part
+            ps.setDate(1, dateFrom);
+            ps.setDate(2, dateFrom);
+            ps.setDate(3, dateTo);
+            ps.setDate(4, dateTo);
+            ps.setString(5, roomType);
+            ps.setString(6, roomType);
+            ps.setString(7, paymentStatus);
+            ps.setString(8, paymentStatus);
+
+            // Parameters for service part
+            ps.setDate(9, dateFrom);
+            ps.setDate(10, dateFrom);
+            ps.setDate(11, dateTo);
+            ps.setDate(12, dateTo);
+            ps.setString(13, serviceType);
+            ps.setString(14, serviceType);
+            ps.setString(15, paymentStatus);
+            ps.setString(16, paymentStatus);
+
+            // Pagination
+            ps.setInt(17, (page - 1) * pageSize);
+            ps.setInt(18, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                ResultSetMetaData md = rs.getMetaData();
+                int columns = md.getColumnCount();
+
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    for (int i = 1; i <= columns; i++) {
+                        row.put(md.getColumnLabel(i), rs.getObject(i));
+                    }
+                    combinedData.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return combinedData;
+    }
+
+    public int getTotalCombinedInvoiceCount(Date dateFrom, Date dateTo, String roomType, String serviceType, String paymentStatus) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM (\n"
+                + "(SELECT b.id FROM Bookings b\n"
+                + "    INNER JOIN Users u ON b.user_id = u.id\n"
+                + "    INNER JOIN BookingRoomDetails brd ON b.id = brd.booking_id\n"
+                + "    INNER JOIN Rooms r ON brd.room_id = r.id AND r.isDelete = 0\n"
+                + "    INNER JOIN RoomTypes rt ON r.room_type_id = rt.id\n"
+                + "    LEFT JOIN Transactions t ON b.id = t.booking_id\n"
+                + "WHERE (? IS NULL OR brd.check_in_date >= ?) \n"
+                + "    AND (? IS NULL OR brd.check_out_date <= ?) \n"
+                + "    AND (? = '' OR rt.room_type = ?) \n"
+                + "    AND (? = '' OR t.status = ?)) \n"
+                + "UNION ALL \n"
+                + "(SELECT sb.id FROM ServiceBookings sb\n"
+                + "    INNER JOIN Users u ON sb.user_id = u.id\n"
+                + "    INNER JOIN Services s ON sb.service_id = s.id\n"
+                + "WHERE (? IS NULL OR sb.booking_date >= ?) \n"
+                + "    AND (? IS NULL OR sb.booking_date <= ?) \n"
+                + "    AND (? = '' OR s.service_name LIKE ?) \n"
+                + "    AND (? = '' OR sb.status = ?))\n"
+                + ") AS combined";
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Room part
+            ps.setDate(1, dateFrom);
+            ps.setDate(2, dateFrom);
+            ps.setDate(3, dateTo);
+            ps.setDate(4, dateTo);
+            ps.setString(5, roomType);
+            ps.setString(6, roomType);
+            ps.setString(7, paymentStatus);
+            ps.setString(8, paymentStatus);
+
+            // Service part
+            ps.setDate(9, dateFrom);
+            ps.setDate(10, dateFrom);
+            ps.setDate(11, dateTo);
+            ps.setDate(12, dateTo);
+            ps.setString(13, serviceType);
+            ps.setString(14, serviceType);
+            ps.setString(15, paymentStatus);
+            ps.setString(16, paymentStatus);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
 }

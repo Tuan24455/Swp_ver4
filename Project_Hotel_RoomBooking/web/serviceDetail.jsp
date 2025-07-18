@@ -93,58 +93,19 @@
                     </div>
 
                     <div class="col-lg-6 animate__animated animate__fadeInRight">
-                        <div class="service-info-container">
-                            <div class="service-header">
-                                <h2 class="service-title">${service.name}</h2>
-                                <span class="service-type-badge">${service.typeName}</span>
-                            </div>
-
-                            <div class="service-price">
-                                <i class="fas fa-tag text-success me-2"></i>
-                                <span class="price-value">
-                                    <fmt:formatNumber value="${service.price}" type="number" groupingUsed="true"/> VND
-                                </span>
-                            </div>
-
-                            <div class="service-description">
-                                <h4><i class="fas fa-info-circle me-2"></i>Mô tả dịch vụ</h4>
+                        <div class="service-info-container d-flex">
+                            <div>
+                                <h3>Tên Dịch Vụ</h3>
+                                <p>${service.name}</p>
+                                <h3>Giá Dịch Vụ</h3>
+                                <p><fmt:formatNumber value="${service.price}" type="currency" currencyCode="VND" pattern="#,##0 ¤"/></p>
+                                <h3>Mô tả dịch vụ</h3>
                                 <p>${service.description}</p>
                             </div>
-
-                            <div class="booking-section mt-4">
-                                <form action="${pageContext.request.contextPath}/bookService" method="POST" class="booking-form">
-                                    <input type="hidden" name="serviceId" value="${service.id}">
-                                    <div class="form-group mb-3">
-                                        <label for="bookingDate" class="form-label"><i class="fas fa-calendar me-2"></i>Ngày sử dụng</label>
-                                        <input type="date" class="form-control" id="bookingDate" name="bookingDate" required>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label for="quantity" class="form-label"><i class="fas fa-sort-numeric-up me-2"></i>Số lượng</label>
-                                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1" required>
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label for="note" class="form-label"><i class="fas fa-sticky-note me-2"></i>Ghi chú</label>
-                                        <textarea class="form-control" id="note" name="note" rows="3"></textarea>
-                                    </div>
-                                    
-                                    <!-- Display calculated total -->
-                                    <div class="total-price-display mb-3 p-3 bg-light rounded">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="fw-bold">Tổng tiền:</span>
-                                            <span class="price-display fw-bold text-success fs-5">
-                                                <fmt:formatNumber value="${service.price}" type="number" groupingUsed="true"/> VND
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="button-group d-grid gap-2">
-                                        <button type="submit" class="btn btn-book-service">
-                                            <i class="fas fa-calendar-check me-2"></i>Đặt dịch vụ
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
                         </div>
+
+                        <!-- Remove booking section -->
+
                     </div>
                 </div>
 

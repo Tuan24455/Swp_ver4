@@ -30,10 +30,19 @@ public class DBContext {
     }
 
     public Connection getConnection() throws SQLException {
-        DBContext dbContext = new DBContext();
-        // Kiểm tra xem kết nối có null không trước khi trả về
+        // Kiểm tra xem kết nối hiện tại có null hoặc đã đóng không
         if (connection == null || connection.isClosed()) {
-            throw new SQLException("Failed to establish database connection through DBContext.");
+            // Tạo kết nối mới nếu cần
+            try {
+                String username = "sa";
+                String password = "123";
+                String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v4;encrypt=true;trustServerCertificate=true";
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                connection = DriverManager.getConnection(url, username, password);
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+                throw new SQLException("Failed to establish database connection: " + ex.getMessage(), ex);
+            }
         }
         return connection;
     }

@@ -101,8 +101,8 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                           <tr>
                             <td><strong><c:out value="${service['Dịch Vụ']}" /></strong></td>
                             <td><c:out value="${service['Số Lần Sử Dụng']}" /></td>
-                            <td><fmt:formatNumber value="${service['Doanh Thu']}" type="currency" currencyCode="VND" pattern="#,,##0 ¤"/></td>
-                            <td><fmt:formatNumber value="${service['Giá Trung Bình']}" type="currency" currencyCode="VND" pattern="#,,##0 ¤"/></td>
+                            <td><fmt:formatNumber value="${service['Doanh Thu']}" type="currency" currencyCode="VND" pattern="#,##0 ¤"/></td>
+                            <td><fmt:formatNumber value="${service['Giá Trung Bình']}" type="currency" currencyCode="VND" pattern="#,##0 ¤"/></td>
                           </tr>
                         </c:forEach>
                       </tbody>
@@ -148,7 +148,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                                 value="${row['Doanh Thu']}"
                                 type="currency"
                                 currencyCode="VND"
-                                pattern="#,,##0 ¤"
+                                pattern="#,##0 ¤"
                               />
                             </td>
                             <td>
@@ -156,7 +156,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                                 value="${row['Gia Trung Binh']}"
                                 type="currency"
                                 currencyCode="VND"
-                                pattern="#,,##0 ¤"
+                                pattern="#,##0 ¤"
                               />
                             </td>
                           </tr>
@@ -169,31 +169,31 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             </div>
           </div>
 
-          <!-- Room Invoice Report -->
+          <!-- Combined Invoice Report -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
               <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Báo Cáo Hóa Đơn Phòng Chi Tiết</h5>
+                <h5 class="mb-0">Báo Cáo Hóa Đơn Chi Tiết</h5>
                 <div class="pagination-controls">
                   <button type="button" class="btn btn-outline-primary btn-sm me-2" 
-                          onclick="changeRoomInvoicePage(${currentRoomInvoicePage != null ? currentRoomInvoicePage - 1 : 0})" 
-                          ${currentRoomInvoicePage != null && currentRoomInvoicePage <= 1 ? 'disabled' : ''}>
+                          onclick="changeCombinedPage(${currentCombinedPage != null ? currentCombinedPage - 1 : 0})" 
+                          ${currentCombinedPage != null && currentCombinedPage <= 1 ? 'disabled' : ''}>
                     <i class="fas fa-chevron-left"></i>
                   </button>
-                  <span class="fw-bold">Trang ${currentRoomInvoicePage != null ? currentRoomInvoicePage : 1} / ${totalRoomInvoicePages != null ? totalRoomInvoicePages : 1}</span>
+                  <span class="fw-bold"> Trang ${currentCombinedPage != null ? currentCombinedPage : 1} / ${totalCombinedPages != null ? totalCombinedPages : 1}</span>
                   <button type="button" class="btn btn-outline-primary btn-sm ms-2" 
-                          onclick="changeRoomInvoicePage(${currentRoomInvoicePage != null ? currentRoomInvoicePage + 1 : 2})" 
-                          ${currentRoomInvoicePage != null && totalRoomInvoicePages != null && currentRoomInvoicePage >= totalRoomInvoicePages ? 'disabled' : ''}>
+                          onclick="changeCombinedPage(${currentCombinedPage != null ? currentCombinedPage + 1 : 2})" 
+                          ${currentCombinedPage != null && totalCombinedPages != null && currentCombinedPage >= totalCombinedPages ? 'disabled' : ''}>
                     <i class="fas fa-chevron-right"></i>
                   </button>
                 </div>
               </div>
             </div>
             <div class="card-body">
-              <!-- Filter Section -->              
+              <!-- Combined Filter Section -->              
               <form method="post" action="${pageContext.request.contextPath}/admin/purchasereport">
-                <input type="hidden" name="reportType" value="roomInvoice" />
-                <input type="hidden" name="roomInvoicePage" value="1" />
+                <input type="hidden" name="reportType" value="combined" />
+                <input type="hidden" name="combinedPage" value="1" />
                 <div class="row g-3 mb-4">
                   <div class="col-md-2">
                     <label class="form-label">Từ Ngày</label>
@@ -213,20 +213,20 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     </select>
                   </div>
                   <div class="col-md-2">
+                    <label class="form-label">Loại Dịch Vụ</label>
+                    <select class="form-select" id="serviceTypeFilter" name="serviceTypeFilter">
+                      <option value="">Tất Cả Loại</option>
+                      <c:forEach var="type" items="${serviceTypes}">
+                        <option value="${type}" ${param.serviceTypeFilter == type ? 'selected' : ''}>${type}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
                     <label class="form-label">Trạng Thái Thanh Toán</label>
                     <select class="form-select" id="paymentStatusFilter" name="paymentStatusFilter">
                       <option value="">Tất Cả Trạng Thái</option>
                       <c:forEach var="status" items="${paymentStatuses}">
                         <option value="${status}" ${param.paymentStatusFilter == status ? 'selected' : ''}>${status}</option>
-                      </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">Loại Khách</label>
-                    <select class="form-select" id="guestTypeFilter" name="guestTypeFilter">
-                      <option value="">Tất Cả Khách</option>
-                      <c:forEach var="guest" items="${guestTypes}">
-                        <option value="${guest}" ${param.guestTypeFilter == guest ? 'selected' : ''}>${guest}</option>
                       </c:forEach>
                     </select>
                   </div>
@@ -251,281 +251,62 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <th>Nhận Phòng</th>
                       <th>Trả Phòng</th>
                       <th>Phí Phòng</th>
+                      <th>Dịch Vụ</th>
                       <th>Tổng Tiền</th>
                       <th>Trạng Thái</th>
                       <th>Thao Tác</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <c:if test="${empty invoiceData}">
+                    <c:if test="${empty combinedInvoiceData}">
                       <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                           Không có dữ liệu để hiển thị.
                         </td>
                       </tr>
                     </c:if>
-                    <c:forEach var="invoice" items="${invoiceData}">
-                      <tr>
+                    <c:forEach var="invoice" items="${combinedInvoiceData}">
+                      <tr data-type="${invoice.type}">
                         <td>
-                          <strong
-                            ><c:out value="${invoice['Số Hóa Đơn']}"
-                          /></strong>
+                          <strong><c:out value="${invoice['Số Hóa Đơn']}" /></strong>
                         </td>
                         <td><c:out value="${invoice['Tên Khách']}" /></td>
                         <td><c:out value="${invoice['Phòng']}" /></td>
                         <td>
-                          <fmt:formatDate
-                            value="${invoice['Nhận Phòng']}"
-                            pattern="yyyy-MM-dd"
-                          />
+                          <fmt:formatDate value="${invoice['Nhận Phòng']}" pattern="yyyy-MM-dd" />
                         </td>
                         <td>
-                          <fmt:formatDate
-                            value="${invoice['Trả Phòng']}"
-                            pattern="yyyy-MM-dd"
-                          />
+                          <fmt:formatDate value="${invoice['Trả Phòng']}" pattern="yyyy-MM-dd" />
                         </td>
                         <td>
-                          <fmt:formatNumber
-                            value="${invoice['Phí Phòng']}"
-                            type="currency"
-                            currencyCode="VND"
-                            pattern="#,##0 ¤"
-                          />
+                          <fmt:formatNumber value="${invoice['Phí Phòng']}" type="currency" currencyCode="VND" pattern="#,##0 ¤" />
                         </td>
-                        <td>
-                          <strong
-                            ><fmt:formatNumber
-                              value="${invoice['Tổng Tiền']}"
-                              type="currency"
-                              currencyCode="VND"
-                              pattern="#,##0 ¤"
-                          /></strong>
-                        </td>
-                        <td>
-                          <c:choose>
-                            <c:when test="${invoice['Trạng Thái'] == 'Paid'}">
-                              <span class="badge bg-success"
-                                >Đã Thanh Toán</span
-                              >
-                            </c:when>
-                            <c:when
-                              test="${invoice['Trạng Thái'] == 'Pending'}"
-                            >
-                              <span class="badge bg-warning"
-                                >Chờ Thanh Toán</span
-                              >
-                            </c:when>
-                            <c:otherwise>
-                              <span class="badge bg-danger"
-                                ><c:out value="${invoice['Trạng Thái']}"
-                              /></span>
-                            </c:otherwise>
-                          </c:choose>
-                        </td>
-                        <td>
-                          <div class="btn-group btn-group-sm">
-                            <button
-                              class="btn btn-outline-primary"
-                              title="Xem Hóa Đơn"
-                              onclick="viewInvoice('${invoice['Số Hóa Đơn']}')"
-                            >
-                              <i class="fas fa-eye"></i>
-                            </button>
-                            <button
-                              class="btn btn-outline-info"
-                              title="In Hóa Đơn"
-                              onclick="printInvoice('${invoice['Số Hóa Đơn']}')"
-                            >
-                              <i class="fas fa-print"></i>
-                            </button>
-                            <button
-                              class="btn btn-outline-secondary"
-                              title="Download PDF"
-                              onclick="downloadInvoice('${invoice['Số Hóa Đơn']}')"
-                            >
-                              <i class="fas fa-download"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </c:forEach>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Service Invoice Report -->
-          <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white border-bottom py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Báo Cáo Hóa Đơn Dịch Vụ Chi Tiết</h5>
-                <div class="pagination-controls">
-                  <button type="button" class="btn btn-outline-primary btn-sm me-2" 
-                          onclick="changeServiceInvoicePage(${currentServiceInvoicePage != null ? currentServiceInvoicePage - 1 : 0})" 
-                          ${currentServiceInvoicePage != null && currentServiceInvoicePage <= 1 ? 'disabled' : ''}>
-                    <i class="fas fa-chevron-left"></i>
-                  </button>
-                  <span class="fw-bold">Trang ${currentServiceInvoicePage != null ? currentServiceInvoicePage : 1} / ${totalServiceInvoicePages != null ? totalServiceInvoicePages : 1}</span>
-                  <button type="button" class="btn btn-outline-primary btn-sm ms-2" 
-                          onclick="changeServiceInvoicePage(${currentServiceInvoicePage != null ? currentServiceInvoicePage + 1 : 2})" 
-                          ${currentServiceInvoicePage != null && totalServiceInvoicePages != null && currentServiceInvoicePage >= totalServiceInvoicePages ? 'disabled' : ''}>
-                    <i class="fas fa-chevron-right"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <!-- Filter Section -->              
-              <form method="post" action="${pageContext.request.contextPath}/admin/purchasereport">
-                <input type="hidden" name="reportType" value="serviceInvoice" />
-                <input type="hidden" name="serviceInvoicePage" value="1" />
-                <div class="row g-3 mb-4">
-                  <div class="col-md-2">
-                    <label class="form-label">Từ Ngày</label>
-                    <input type="date" class="form-control" id="serviceDateFrom" name="serviceDateFrom" value="${param.serviceDateFrom}" />
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">Đến Ngày</label>
-                    <input type="date" class="form-control" id="serviceDateTo" name="serviceDateTo" value="${param.serviceDateTo}" />
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">Loại Dịch Vụ</label>
-                    <select class="form-select" id="serviceTypeFilter" name="serviceTypeFilter">
-                      <option value="">Tất Cả Loại</option>
-                      <c:forEach var="type" items="${serviceTypes}">
-                        <option value="${type}" ${param.serviceTypeFilter == type ? 'selected' : ''}>${type}</option>
-                      </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">Trạng Thái Thanh Toán</label>
-                    <select class="form-select" id="servicePaymentStatusFilter" name="servicePaymentStatusFilter">
-                      <option value="">Tất Cả Trạng Thái</option>
-                      <c:forEach var="status" items="${paymentStatuses}">
-                        <option value="${status}" ${param.servicePaymentStatusFilter == status ? 'selected' : ''}>${status}</option>
-                      </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">Loại Khách</label>
-                    <select class="form-select" id="serviceGuestTypeFilter" name="serviceGuestTypeFilter">
-                      <option value="">Tất Cả Khách</option>
-                      <c:forEach var="guest" items="${guestTypes}">
-                        <option value="${guest}" ${param.serviceGuestTypeFilter == guest ? 'selected' : ''}>${guest}</option>
-                      </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <div class="d-grid">
-                      <button type="submit" class="btn btn-outline-primary">
-                        <i class="fas fa-filter me-2"></i>Áp Dụng
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-
-              <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                  <thead class="table-light">
-                    <tr>
-                      <th>Số Hóa Đơn</th>
-                      <th>Tên Khách</th>
-                      <th>Dịch Vụ</th>
-                      <th>Ngày Đặt</th>
-                      <th>Số Lượng</th>
-                      <th>Đơn Giá</th>
-                      <th>Tổng Tiền</th>
-                      <th>Trạng Thái</th>
-                      <th>Thao Tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <c:if test="${empty serviceInvoiceData}">
-                      <tr>
-                        <td colspan="9" class="text-center">
-                          Không có dữ liệu để hiển thị.
-                        </td>
-                      </tr>
-                    </c:if>
-                    <c:forEach var="invoice" items="${serviceInvoiceData}">
-                      <tr>
-                        <td>
-                          <strong
-                            ><c:out value="${invoice['Số Hóa Đơn']}"
-                          /></strong>
-                        </td>
-                        <td><c:out value="${invoice['Tên Khách']}" /></td>
                         <td><c:out value="${invoice['Dịch Vụ']}" /></td>
                         <td>
-                          <fmt:formatDate
-                            value="${invoice['Ngày Đặt']}"
-                            pattern="yyyy-MM-dd"
-                          />
-                        </td>
-                        <td><c:out value="${invoice['Số Lượng']}" /></td>
-                        <td>
-                          <fmt:formatNumber
-                            value="${invoice['Đơn Giá']}"
-                            type="currency"
-                            currencyCode="VND"
-                            pattern="#,##0 ¤"
-                          />
-                        </td>
-                        <td>
-                          <strong
-                            ><fmt:formatNumber
-                              value="${invoice['Tổng Tiền']}"
-                              type="currency"
-                              currencyCode="VND"
-                              pattern="#,##0 ¤"
-                          /></strong>
+                          <strong><fmt:formatNumber value="${invoice['Tổng Tiền']}" type="currency" currencyCode="VND" pattern="#,##0 ¤" /></strong>
                         </td>
                         <td>
                           <c:choose>
                             <c:when test="${invoice['Trạng Thái'] == 'Paid'}">
-                              <span class="badge bg-success"
-                                >Đã Thanh Toán</span
-                              >
+                              <span class="badge bg-success">Đã Thanh Toán</span>
                             </c:when>
-                            <c:when
-                              test="${invoice['Trạng Thái'] == 'Pending'}"
-                            >
-                              <span class="badge bg-warning"
-                                >Chờ Thanh Toán</span
-                              >
+                            <c:when test="${invoice['Trạng Thái'] == 'Pending'}">
+                              <span class="badge bg-warning">Chờ Thanh Toán</span>
                             </c:when>
                             <c:otherwise>
-                              <span class="badge bg-danger"
-                                ><c:out value="${invoice['Trạng Thái']}"
-                              /></span>
+                              <span class="badge bg-danger"><c:out value="${invoice['Trạng Thái']}" /></span>
                             </c:otherwise>
                           </c:choose>
                         </td>
                         <td>
                           <div class="btn-group btn-group-sm">
-                            <button
-                              class="btn btn-outline-primary"
-                              title="Xem Hóa Đơn"
-                              onclick="viewServiceInvoice('${invoice['Số Hóa Đơn']}')"
-                            >
+                            <button class="btn btn-outline-primary" title="Xem Hóa Đơn" onclick="viewCombinedInvoice('${invoice['Số Hóa Đơn']}', '${invoice.type}')">
                               <i class="fas fa-eye"></i>
                             </button>
-                            <button
-                              class="btn btn-outline-info"
-                              title="In Hóa Đơn"
-                              onclick="printServiceInvoice('${invoice['Số Hóa Đơn']}')"
-                            >
+                            <button class="btn btn-outline-info" title="In Hóa Đơn" onclick="printCombinedInvoice('${invoice['Số Hóa Đơn']}', '${invoice.type}')">
                               <i class="fas fa-print"></i>
                             </button>
-                            <button
-                              class="btn btn-outline-secondary"
-                              title="Download PDF"
-                              onclick="downloadServiceInvoice('${invoice['Số Hóa Đơn']}')"
-                            >
+                            <button class="btn btn-outline-secondary" title="Download PDF" onclick="downloadCombinedInvoice('${invoice['Số Hóa Đơn']}', '${invoice.type}')">
                               <i class="fas fa-download"></i>
                             </button>
                           </div>
@@ -537,6 +318,9 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               </div>
             </div>
           </div>
+
+          <!-- Remove the service invoice section -->
+
         </div>
       </div>
     </div>
@@ -604,15 +388,33 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
              window.location.href = currentUrl.toString();
          }
 
-         function changeServiceInvoicePage(page) {
-             if (page < 1 || page > ${totalServiceInvoicePages != null ? totalServiceInvoicePages : 1}) {
-                 return;
-             }
-             
-             var currentUrl = new URL(window.location);
-             currentUrl.searchParams.set('serviceInvoicePage', page);
-             window.location.href = currentUrl.toString();
-         }        function viewInvoice(invoiceId) {
+         function changeCombinedPage(page) {
+            if (page < 1 || page > ${totalCombinedPages != null ? totalCombinedPages : 1}) {
+                return;
+            }
+            
+            var currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('combinedPage', page);
+            window.location.href = currentUrl.toString();
+        }
+
+        function viewCombinedInvoice(invoiceId, type) {
+            if (type === 'room') {
+                viewInvoice(invoiceId);
+            } else if (type === 'service') {
+                viewServiceInvoice(invoiceId);
+            }
+        }
+
+        function printCombinedInvoice(invoiceId, type) {
+            // Implement print logic based on type
+        }
+
+        function downloadCombinedInvoice(invoiceId, type) {
+            // Implement download logic based on type
+        }
+
+        function viewInvoice(invoiceId) {
             console.log('Fetching invoice details for ID:', invoiceId);
             
             // Fetch invoice details via AJAX
