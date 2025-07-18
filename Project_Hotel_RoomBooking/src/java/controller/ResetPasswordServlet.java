@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,7 @@ import valid.Encrypt;
  */
 @WebServlet(name = "ResetPasswordServlet", urlPatterns = {"/resetPassword"})
 public class ResetPasswordServlet extends HttpServlet {
-    
+
     private final UserDao dao = new UserDao();
 
     /**
@@ -83,7 +84,7 @@ public class ResetPasswordServlet extends HttpServlet {
         String keyword = request.getParameter("keyword");
         String new_password = request.getParameter("newpassword");
         String confirm_pasword = request.getParameter("confirmpassword");
-        
+
         if (new_password == null || confirm_pasword == null || new_password.isEmpty() || confirm_pasword.isEmpty()) {
             request.setAttribute("keyword", keyword);
             request.setAttribute("error", "không được để trống mật khẩu");
@@ -93,7 +94,7 @@ public class ResetPasswordServlet extends HttpServlet {
             request.setAttribute("error", "Mật khẩu và xác nhận mật khẩu không khớp");
             request.getRequestDispatcher("reset-password.jsp").forward(request, response);
         }
-        
+
         User user = dao.findAccount(keyword);
         user.setPass(Encrypt.encrypt(new_password));
         try {
@@ -105,6 +106,8 @@ public class ResetPasswordServlet extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(ResetPasswordServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        HttpSession session = request.getSession();
+        session.removeAttribute("otp");
         response.sendRedirect("login.jsp");
     }
 
