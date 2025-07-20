@@ -135,24 +135,6 @@ CREATE TABLE Transactions (
 );
 
 
---bảng thanh toán dịch vụ
-CREATE TABLE [dbo].[ServiceBookings] (
-    [id] INT IDENTITY(1,1) NOT NULL,  -- Khóa chính, tự tăng
-    [user_id] INT NOT NULL,           -- ID người dùng, giả sử là khóa ngoại
-    [service_id] INT NOT NULL,        -- ID dịch vụ, giả sử là khóa ngoại
-    [booking_date] DATETIME NOT NULL, -- Ngày đặt dịch vụ
-    [quantity] INT NOT NULL,          -- Số lượng
-    [note] NVARCHAR(500) NULL,        -- Ghi chú (có thể NULL, độ dài tối đa 500 ký tự)
-    [total_amount] DECIMAL(18,2) NOT NULL, -- Tổng tiền, kiểu số thập phân với 2 chữ số sau dấu phẩy
-    [status] VARCHAR(50) NOT NULL,    -- Trạng thái (ví dụ: 'Pending', 'Completed')
-    [created_at] DATETIME NOT NULL DEFAULT GETDATE(),  -- Thời gian tạo, mặc định là thời gian hiện tại
-    [updated_at] DATETIME NULL DEFAULT GETDATE(),      -- Thời gian cập nhật, có thể NULL hoặc mặc định
-
-ALTER TABLE [dbo].[ServiceBookings]
-ADD CONSTRAINT FK_ServiceBookings_Users FOREIGN KEY ([user_id]) REFERENCES [dbo].[Users]([id]);
-
-ALTER TABLE [dbo].[ServiceBookings]
-ADD CONSTRAINT FK_ServiceBookings_Services FOREIGN KEY ([service_id]) REFERENCES [dbo].[Services]([id]);
 
 -- Dữ liệu cho bảng Users (giữ nguyên)
 INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url) 
@@ -283,19 +265,7 @@ VALUES
 (9, 5, '2023-07-11', '2023-07-13', 1, 1500000),  -- Thêm: cho ID 9
 (10, 7, '2022-06-06', '2022-06-08', 1, 2000000); -- Thêm: cho ID 10
 
--- Dữ liệu cho bảng BookingServiceDetail (sửa: dùng booking_id 1-5 thay vì 5-9; thêm records cho ID 6-10)
-INSERT INTO BookingServiceDetail (booking_id, service_id, quantity, prices) 
-VALUES 
-(1, 1, 1, 200000),  -- Sửa: booking_id từ 5 thành 1
-(2, 2, 1, 500000),  -- Sửa: booking_id từ 6 thành 2
-(3, 3, 1, 150000),  -- Sửa: booking_id từ 7 thành 3
-(4, 4, 1, 300000),  -- Sửa: booking_id từ 8 thành 4
-(5, 5, 1, 80000),   -- Sửa: booking_id từ 9 thành 5
-(6, 1, 1, 200000),  -- Thêm: cho ID 6
-(7, 2, 1, 500000),  -- Thêm: cho ID 7
-(8, 3, 1, 150000),  -- Thêm: cho ID 8
-(9, 4, 1, 300000),  -- Thêm: cho ID 9
-(10, 5, 1, 80000);  -- Thêm: cho ID 10
+
 
 -- Dữ liệu cho bảng Transactions (sửa: dùng booking_id 1-5 thay vì 5-9; thêm records cho ID 6-10 với transaction_date đa dạng trong 2024, status 'Paid' cho chart)
 INSERT INTO Transactions (booking_id, transaction_date, amount, payment_method, status) 
