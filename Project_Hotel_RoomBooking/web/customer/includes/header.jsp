@@ -32,10 +32,10 @@
                 <div id="userDropdown" class="dropdown-menu">
                     <c:choose>
                         <c:when test="${empty sessionScope.user}">
-                            <a href="login.jsp" class="dropdown-item"
+                            <a href="${pageContext.request.contextPath}/login.jsp" class="dropdown-item"
                                ><i class="fas fa-sign-in-alt"></i> Login</a
                             >
-                            <a href="register.jsp" class="dropdown-item"
+                            <a href="${pageContext.request.contextPath}/register.jsp" class="dropdown-item"
                                ><i class="fas fa-user-plus"></i> Register</a
                             >
                         </c:when>
