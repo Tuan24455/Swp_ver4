@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.admin;
+package controller.reception;
 
-import dao.RoomDao;
+import dao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,16 +12,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import model.Room;
+import jakarta.servlet.http.HttpSession;
+import model.User;
+import valid.Encrypt;
 
 /**
  *
- * @author Phạm Quốc Tuấn
+ * @author ADMIN
  */
-@WebServlet(name = "RoomList", urlPatterns = {"/roomList"})
-public class RoomList extends HttpServlet {
+@WebServlet(name = "ChangeReceptionPassword", urlPatterns = {"/changeReceptionPassword"})
+public class ChangeReceptionPassword extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +40,10 @@ public class RoomList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RoomList</title>");
+            out.println("<title>Servlet ChangeReceptionPassword</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RoomList at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ChangeReceptionPassword at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,45 +61,7 @@ public class RoomList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    String roomType = request.getParameter("roomType");
-    String roomStatus = request.getParameter("roomStatus");
-    String floorStr = request.getParameter("floor");
-    String pageStr = request.getParameter("page");
-
-    Integer floor = (floorStr != null && !floorStr.isEmpty()) ? Integer.parseInt(floorStr) : null;
-    int page = (pageStr != null && !pageStr.isEmpty()) ? Integer.parseInt(pageStr) : 1;
-    int pageSize = 10;
-
-    RoomDao dao = new RoomDao();
-    int countAll = dao.getTotalRooms();
-
-    // Lọc phòng
-    List<Room> filteredRooms = dao.filterRooms(roomType, roomStatus, floor);
-    int totalFiltered = filteredRooms.size();
-    int totalPages = (int) Math.ceil((double) totalFiltered / pageSize);
-
-    // Phân trang
-    int fromIndex = (page - 1) * pageSize;
-    int toIndex = Math.min(fromIndex + pageSize, totalFiltered);
-    List<Room> paginatedRooms = filteredRooms.subList(fromIndex, toIndex);
-
-    // Thống kê
-    Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
-
-    request.setAttribute("rooms", paginatedRooms); // chỉ gán phần phân trang
-    request.setAttribute("roomTypes", dao.getAllRoomTypes());
-    request.setAttribute("statusCounts", statusCounts);
-    request.setAttribute("totalRooms", totalFiltered);// Test lọc tính tổng theo lọc
-    request.setAttribute("countAll", countAll);
-    request.setAttribute("currentPage", page);
-    request.setAttribute("totalPages", totalPages);
-    request.setAttribute("pageSize", pageSize);
-
-    // Lưu lại điều kiện lọc để giữ lại trên giao diện
-    request.setAttribute("paramRoomType", roomType);
-    request.setAttribute("paramRoomStatus", roomStatus);
-    request.setAttribute("paramFloor", floorStr);
-        request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -113,7 +75,51 @@ public class RoomList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            out.print("{\"success\": false, \"message\": \"Chưa đăng nhập\"}");
+            return;
+        }
+
+        String currentPassword = request.getParameter("currentPassword");
+        String newPassword = request.getParameter("newPassword");
+
+        try {
+            String decryptedCurrentPassword = Encrypt.decrypt(user.getPass());
+
+            if (!currentPassword.equals(decryptedCurrentPassword)) {
+                out.print("{\"success\": false, \"message\": \"Mật khẩu hiện tại không đúng\"}");
+                return;
+            }
+
+            // Regex: 8–16 ký tự, ít nhất 1 hoa, 1 thường, 1 số
+            String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$";
+            if (!newPassword.matches(passwordRegex)) {
+                out.print("{\"success\": false, \"message\": \"Mật khẩu mới không hợp lệ\"}");
+                return;
+            }
+
+            // Update mật khẩu
+            String encryptedNewPass = Encrypt.encrypt(newPassword);
+            boolean updated = new UserDao().updatePassword(user.getId(), encryptedNewPass);
+
+            if (updated) {
+                session.setAttribute("user", user); // cập nhật lại session
+                out.print("{\"success\": true}");
+            } else {
+                out.print("{\"success\": false, \"message\": \"Cập nhật mật khẩu thất bại\"}");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.print("{\"success\": false, \"message\": \"Lỗi máy chủ\"}");
+        }
     }
 
     /**

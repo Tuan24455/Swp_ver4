@@ -44,7 +44,7 @@
 
                 <style>
                     .header-bg {
-                        background-image: url('https://images.squarespace-cdn.com/content/v1/5aadf482aa49a1d810879b88/1626698419120-J7CH9BPMB2YI728SLFPN/1.jpg');
+                        background-image: url('https://media.istockphoto.com/id/1372396372/vi/anh/xe-cho-thu%C3%AA-xe-bu%C3%BDt-s%C3%A2n-bay-%C4%91%C6%B0a-%C4%91%C3%B3n-%E1%BB%9F-las-vegas.jpg?s=2048x2048&w=is&k=20&c=flaqoSKcuO-om3VdmoL_Yl1KJIZIc3RBnT8E5nHs4Pg=');
                         background-size: cover;
                         background-position: center;
                         background-repeat: no-repeat;
@@ -110,7 +110,7 @@
                         <div class="col-md-3">
                             <label class="form-label d-block">&nbsp;</label>    
                             <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Filter
+                                <i class="fas fa-search me-2"></i>Tìm Kiếm
                             </button>
                         </div>
                     </div>

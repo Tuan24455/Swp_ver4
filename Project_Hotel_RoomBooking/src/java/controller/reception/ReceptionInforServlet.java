@@ -4,6 +4,7 @@
  */
 package controller.reception;
 
+import controller.customer.InformationServlet;
 import dao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,8 +14,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.User;
 import model.UserBookingStats;
+import valid.InputValidator;
 
 /**
  *
@@ -69,7 +76,6 @@ public class ReceptionInforServlet extends HttpServlet {
         }
         UserDao dao = new UserDao();
         UserBookingStats statis = dao.getUserBookingStatsByUserId(user.getId());
-        request.setAttribute("statis", statis);
         request.getRequestDispatcher("/reception/receptionInfor.jsp").forward(request, response);
     }
 
@@ -84,7 +90,71 @@ public class ReceptionInforServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        System.out.println("==== POST receptionInfor ====");
+        request.getParameterMap().forEach((key, value) -> {
+            System.out.println("PARAM: " + key + " = " + String.join(",", value));
+        });
+        System.out.println("fullName: " + request.getParameter("fullName"));
+        System.out.println("email: " + request.getParameter("email"));
+        System.out.println("birth: " + request.getParameter("birth"));
+        System.out.println("gender: " + request.getParameter("gender"));
+        System.out.println("phone: " + request.getParameter("phone"));
+        System.out.println("address: " + request.getParameter("address"));
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        UserDao dao = new UserDao();
+        if (user == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        try {
+            // Lấy dữ liệu từ form
+            String fullName = request.getParameter("fullName");
+            String email = request.getParameter("email");
+            if (email == null || email.trim().isEmpty()) {
+                request.setAttribute("error", "Email không được để trống");
+                request.getRequestDispatcher("/reception/receptionInfor.jsp").forward(request, response);
+                return;
+            }
+            if (!email.equals(user.getEmail()) && dao.isEmailExist(email)) {
+                request.setAttribute("error", "Email đã tồn tại");
+                request.getRequestDispatcher("/reception/receptionInfor.jsp").forward(request, response);
+                return;
+            }
+            String phone = request.getParameter("phone");
+            String address = request.getParameter("address");
+            String birthStr = request.getParameter("birth");
+            String gender = request.getParameter("gender");
+
+            // Parse ngày sinh
+            Date birth = InputValidator.parseDate(birthStr);
+
+            // Cập nhật lại user object
+            user.setFullName(fullName);
+            user.setEmail(email);
+            user.setPhone(phone);
+            user.setAddress(address);
+            user.setBirth(birth);
+            user.setGender(gender);
+
+            try {
+                // Cập nhật DB
+                boolean up = dao.update(user);
+            } catch (SQLException ex) {
+                Logger.getLogger(InformationServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            // Cập nhật session và thông báo
+            session.setAttribute("user", user);
+            request.setAttribute("success", "Cập nhật thông tin thành công!");
+
+        } catch (ParseException e) {
+            request.setAttribute("error", "Đã xảy ra lỗi: " + e.getMessage());
+        }
+
+        request.getRequestDispatcher("/reception/receptionInfor.jsp").forward(request, response);
     }
 
     /**

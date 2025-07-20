@@ -60,7 +60,7 @@
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
                                     <h6 class="card-subtitle mb-2 text-muted">Total Rooms</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${totalRooms}</h2>
+                                    <h2 class="card-title display-6 fw-bold mb-1">${countAll}</h2>
                                     <p class="card-text text-info">
                                         <i class="fas fa-bed me-1"></i> All room types
                                     </p>

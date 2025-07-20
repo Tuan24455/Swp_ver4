@@ -98,7 +98,7 @@
                         <div class="col-md-3">
                             <label class="form-label d-block">&nbsp;</label>    
                             <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Filter
+                                <i class="fas fa-search me-2"></i>Tìm Kiếm 
                             </button>
                         </div>
                     </div>
