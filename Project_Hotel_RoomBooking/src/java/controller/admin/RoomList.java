@@ -71,6 +71,7 @@ public class RoomList extends HttpServlet {
     int pageSize = 10;
 
     RoomDao dao = new RoomDao();
+    int countAll = dao.getTotalRooms();
 
     // Lọc phòng
     List<Room> filteredRooms = dao.filterRooms(roomType, roomStatus, floor);
@@ -88,7 +89,8 @@ public class RoomList extends HttpServlet {
     request.setAttribute("rooms", paginatedRooms); // chỉ gán phần phân trang
     request.setAttribute("roomTypes", dao.getAllRoomTypes());
     request.setAttribute("statusCounts", statusCounts);
-    request.setAttribute("totalRooms", totalFiltered);
+    request.setAttribute("totalRooms", totalFiltered);// Test lọc tính tổng theo lọc
+    request.setAttribute("countAll", countAll);
     request.setAttribute("currentPage", page);
     request.setAttribute("totalPages", totalPages);
     request.setAttribute("pageSize", pageSize);
