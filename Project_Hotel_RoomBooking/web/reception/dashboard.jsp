@@ -1,726 +1,303 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
-prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - Hotel Management System</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      href="${pageContext.request.contextPath}/css/style.css"
-      rel="stylesheet"
-    />
-    <link
-      href="${pageContext.request.contextPath}/css/dashboard.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
+    <title>Reception Dashboard - Hotel Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <style>
+        /* Custom styles for a cleaner look */
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
     <div class="d-flex" id="wrapper">
-      <jsp:include page="includes/sidebar.jsp">
-        <jsp:param name="activePage" value="dashboard" />
-      </jsp:include>
+        <jsp:include page="includes/sidebar.jsp">
+            <jsp:param name="activePage" value="dashboard" />
+        </jsp:include>
 
-      <!-- Main Content -->
-      <div id="page-content-wrapper" class="flex-fill">
-        <!-- Top Navigation -->
-        <nav
-          class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-        >
-          <div class="container-fluid">
-            <div class="d-flex align-items-center gap-3">
-              <span id="current-date" class="fw-semibold text-muted">Thứ Ba, 24 tháng 6, 2025</span>
-              <span id="current-time" class="fw-semibold">16:56:28</span>
-            </div>
-          </div>
-        </nav>
-
-        <div class="container-fluid py-4">
-          <!-- Page Header -->
-          <div class="page-header">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h1 class="h2 mb-2">Dashboard Overview</h1>
-                <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                      <a href="#"><i class="fas fa-home me-1"></i>Home</a>
-                    </li>
-                    <li class="breadcrumb-item active">Dashboard</li>
-                  </ol>
-                </nav>
-              </div>
-              <div class="btn-group">
-                <button class="btn btn-light" onclick="exportReport()">
-                  <i class="fas fa-download me-2"></i>Export Report
-                </button>
-                <button class="btn btn-light" onclick="refreshData()">
-                  <i class="fas fa-sync-alt me-2"></i>Refresh
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gantt Chart -->
-          <div class="card shadow-sm">
-            <div class="card-header bg-white border-bottom">
-              <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="fas fa-chart-gantt me-2"></i>Room Booking Timeline
-                </h5>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-outline-primary active">
-                    <i class="fas fa-calendar me-1"></i>Week View
-                  </button>
-                  <button class="btn btn-sm btn-outline-secondary">
-                    <i class="fas fa-calendar-day me-1"></i>Day View
-                  </button>
+        <!-- Main Content -->
+        <div id="page-content-wrapper" class="flex-fill">
+            <!-- Top Navigation -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <button class="btn btn-sm btn-outline-secondary" id="menu-toggle"><i class="fas fa-bars"></i></button>
+                    <div class="d-flex align-items-center gap-3 ms-auto">
+                        <span id="current-date" class="fw-semibold text-muted">Tuesday, June 24, 2025</span>
+                        <span id="current-time" class="fw-semibold">16:56:28</span>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="card-body p-0">
-              <div class="gantt-wrapper">
-                <div class="gantt-container">
-                <div class="gantt-layout">
-                  <!-- Left Sidebar -->
-                  <div class="gantt-sidebar">
-                    <div class="gantt-header-row">
-                      <div class="room-col">Room</div>
-                      <div class="customer-col">Customer</div>
-                      <div class="status-col">Status</div>
-                    </div>
-                    
-                    <!-- Room 101 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('101')">
-                      <div class="room-col">
-                        <span class="room-number">101</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Nguyễn Văn Nam</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-success">Confirmed</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 102 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('102')">
-                      <div class="room-col">
-                        <span class="room-number">102</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Trần Thị Hoa</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-warning">Pending</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 201 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('201')">
-                      <div class="room-col">
-                        <span class="room-number">201</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Lê Minh Tuấn</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-success">Confirmed</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 202 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('202')">
-                      <div class="room-col">
-                        <span class="room-number">202</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Phạm Thị Lan</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-info">Check-in</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 203 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('203')">
-                      <div class="room-col">
-                        <span class="room-number">203</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Võ Văn Phúc</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-success">Confirmed</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 301 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('301')">
-                      <div class="room-col">
-                        <span class="room-number">301</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Đặng Thị Mai</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-secondary">Check-out</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 302 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('302')">
-                      <div class="room-col">
-                        <span class="room-number">302</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Hoàng Văn Dũng</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-success">Confirmed</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 303 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('303')">
-                      <div class="room-col">
-                        <span class="room-number">303</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Bùi Thị Hằng</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-warning">Pending</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 401 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('401')">
-                      <div class="room-col">
-                        <span class="room-number">401</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Nguyễn Thị Thu</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-info">Check-in</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 402 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('402')">
-                      <div class="room-col">
-                        <span class="room-number">402</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Trương Văn Hải</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-success">Confirmed</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 403 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('403')">
-                      <div class="room-col">
-                        <span class="room-number">403</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Phan Thị Linh</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-success">Confirmed</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 501 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('501')">
-                      <div class="room-col">
-                        <span class="room-number">501</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Lý Văn Toàn</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-warning">Pending</span>
-                      </div>
-                    </div>
-                    
-                    <!-- Room 502 -->
-                    <div class="gantt-room-row" onclick="showRoomDetails('502')">
-                      <div class="room-col">
-                        <span class="room-number">502</span>
-                      </div>
-                      <div class="customer-col">
-                        <span class="customer-name">Đinh Thị Hương</span>
-                      </div>
-                      <div class="status-col">
-                        <span class="badge bg-secondary">Check-out</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Right Timeline -->
-                  <div class="gantt-timeline">
-                    <!-- Timeline Header -->
-                    <div class="timeline-header">
-                      <div class="timeline-date">15</div>
-                      <div class="timeline-date">16</div>
-                      <div class="timeline-date">17</div>
-                      <div class="timeline-date">18</div>
-                      <div class="timeline-date">19</div>
-                      <div class="timeline-date today">20</div>
-                      <div class="timeline-date">21</div>
-                      <div class="timeline-date">22</div>
-                      <div class="timeline-date">23</div>
-                      <div class="timeline-date">24</div>
-                      <div class="timeline-date">25</div>
-                      <div class="timeline-date">26</div>
-                    </div>
-                    
-                    <!-- Timeline Rows -->
-                    <div class="timeline-content">
-                      <!-- Grid Lines -->
-                      <div class="timeline-grid">
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                        <div class="grid-line"></div>
-                      </div>
-                      
-                      <!-- Room 101 Bar (Day 15-18) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar confirmed" style="left: 0%; width: 25%;" onclick="showRoomDetails('101')">
-                          <span class="bar-text">3 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 102 Bar (Day 16-19) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar pending" style="left: 8.33%; width: 25%;" onclick="showRoomDetails('102')">
-                          <span class="bar-text">3 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 201 Bar (Day 17-22) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar confirmed" style="left: 16.66%; width: 41.66%;" onclick="showRoomDetails('201')">
-                          <span class="bar-text">5 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 202 Bar (Day 18-21) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar checkin" style="left: 25%; width: 25%;" onclick="showRoomDetails('202')">
-                          <span class="bar-text">3 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 203 Bar (Day 19-23) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar confirmed" style="left: 33.33%; width: 33.33%;" onclick="showRoomDetails('203')">
-                          <span class="bar-text">4 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 301 Bar (Day 20-24) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar checkout" style="left: 41.66%; width: 33.33%;" onclick="showRoomDetails('301')">
-                          <span class="bar-text">4 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 302 Bar (Day 21-25) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar confirmed" style="left: 50%; width: 33.33%;" onclick="showRoomDetails('302')">
-                          <span class="bar-text">4 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 303 Bar (Day 22-26) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar pending" style="left: 58.33%; width: 33.33%;" onclick="showRoomDetails('303')">
-                          <span class="bar-text">4 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 401 Bar (Day 15-20) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar checkin" style="left: 0%; width: 41.66%;" onclick="showRoomDetails('401')">
-                          <span class="bar-text">5 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 402 Bar (Day 17-21) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar confirmed" style="left: 16.66%; width: 33.33%;" onclick="showRoomDetails('402')">
-                          <span class="bar-text">4 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 403 Bar (Day 19-22) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar confirmed" style="left: 33.33%; width: 25%;" onclick="showRoomDetails('403')">
-                          <span class="bar-text">3 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 501 Bar (Day 20-26) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar pending" style="left: 41.66%; width: 50%;" onclick="showRoomDetails('501')">
-                          <span class="bar-text">6 nights</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Room 502 Bar (Day 16-19) -->
-                      <div class="timeline-row">
-                        <div class="gantt-bar checkout" style="left: 8.33%; width: 25%;" onclick="showRoomDetails('502')">
-                          <span class="bar-text">3 nights</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            </nav>
+
+            <div class="container-fluid py-4">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <h1 class="h2">Dashboard Overview</h1>
                 </div>
 
-                <!-- Detail Sidebar -->
-                <div class="detail-sidebar" id="detailSidebar">
-                  <div class="detail-header">
-                    <h6 class="mb-0">
-                      <i class="fas fa-info-circle me-2"></i>Room Details
-                    </h6>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="closeDetailSidebar()">
-                      <i class="fas fa-times"></i>
-                    </button>
-                  </div>
-                  <div class="detail-content" id="detailContent">
-                    <div class="text-center text-muted py-4">
-                      <i class="fas fa-mouse-pointer fa-2x mb-2"></i>
-                      <p>Click on a room or booking bar to view details</p>
+                <!-- Calendar Card -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Room Booking Calendar</h5>
                     </div>
-                  </div>
+
+                    <!-- Room Filter Section -->
+                    <div class="card-body border-bottom">
+                        <div class="row align-items-end g-3">
+                            <div class="col-md-5">
+                                <label for="roomFilter" class="form-label fw-semibold">Filter by Room:</label>
+                                <select class="form-select" id="roomFilter">
+                                    <option value="">All Rooms</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="statusFilter" class="form-label fw-semibold">Filter by Status:</label>
+                                <select class="form-select" id="statusFilter">
+                                    <option value="">All Status</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Check-in">Check-in</option>
+                                    <option value="Check-out">Check-out</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div id="calendar"></div>
+                    </div>
                 </div>
-              </div>
+
+                <!-- Quick Actions Section -->
+                <div class="row mt-4">
+                    <div class="col-lg-6">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h5 class="mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="#" class="btn btn-outline-primary"><i class="fas fa-calendar-plus me-2"></i>New Booking</a>
+                                    <a href="#" class="btn btn-outline-info"><i class="fas fa-door-open me-2"></i>Room Management</a>
+                                    <a href="#" class="btn btn-outline-success"><i class="fas fa-users-cog me-2"></i>Staff Management</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-
-          <!-- Quick Actions Section -->
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="card shadow-sm">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2 text-warning"></i>Quick Actions
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="d-grid gap-3">
-                    <a
-                      href="${pageContext.request.contextPath}/admin/bookings.jsp"
-                      class="btn btn-outline-primary quick-action-btn"
-                    >
-                      <i class="fas fa-calendar-plus me-2"></i>New Booking
-                    </a>
-                    <a
-                      href="roomstatus.jsp"
-                      class="btn btn-outline-info quick-action-btn"
-                    >
-                      <i class="fas fa-door-open me-2"></i>Room Management
-                    </a>
-                    <a
-                      href="users.jsp"
-                      class="btn btn-outline-success quick-action-btn"
-                    >
-                      <i class="fas fa-users-cog me-2"></i>Staff Management
-                    </a>
-                  </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
 
     <!-- Room Booking Detail Modal -->
     <div class="modal fade" id="roomDetailModal" tabindex="-1" aria-labelledby="roomDetailModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="roomDetailModalLabel">
-              <i class="fas fa-bed me-2"></i>Room Booking Details
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Room Number</div>
-              <div class="booking-detail-value" id="modalRoomNumber">101</div>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomDetailModalLabel">Room Booking Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>Room Number:</strong> <span id="modalRoomNumber"></span></p>
+                            <p><strong>Floor Number:</strong> <span id="modalFloorNumber"></span></p>
+                            <p><strong>Customer Name:</strong> <span id="modalCustomer"></span></p>
+                            <p><strong>Check-in Date:</strong> <span id="modalCheckIn"></span></p>
+                            <p><strong>Check-out Date:</strong> <span id="modalCheckOut"></span></p>
+                            <p><strong>Status:</strong> <span id="modalStatus" class="badge"></span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Edit Booking</button>
+                </div>
             </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Guest Name</div>
-              <div class="booking-detail-value" id="modalGuestName">Nguyễn Văn Nam</div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Check-in Date</div>
-              <div class="booking-detail-value" id="modalCheckIn">November 15, 2024</div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Check-out Date</div>
-              <div class="booking-detail-value" id="modalCheckOut">November 18, 2024</div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Number of Nights</div>
-              <div class="booking-detail-value" id="modalNights">3 nights</div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Room Type</div>
-              <div class="booking-detail-value" id="modalRoomType">Deluxe Room</div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Total Price</div>
-              <div class="booking-detail-value">
-                <span class="text-success fw-bold" id="modalPrice">$450.00</span>
-              </div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Booking Status</div>
-              <div class="booking-detail-value">
-                <span class="room-status-badge bg-success text-white" id="modalStatus">Confirmed</span>
-              </div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Contact Number</div>
-              <div class="booking-detail-value" id="modalContact">+84 123 456 789</div>
-            </div>
-            
-            <div class="booking-detail-item">
-              <div class="booking-detail-label">Special Requests</div>
-              <div class="booking-detail-value" id="modalRequests">Extra pillows, Late check-out</div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">
-              <i class="fas fa-edit me-2"></i>Edit Booking
-            </button>
-          </div>
         </div>
-      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Sidebar toggle functionality
-      document
-        .getElementById("menu-toggle")
-        .addEventListener("click", function () {
-          document
-            .getElementById("sidebar-wrapper")
-            .classList.toggle("toggled");
+        document.getElementById("menu-toggle")?.addEventListener("click", () => {
+            document.getElementById("wrapper")?.classList.toggle("toggled");
         });
 
-      function exportReport() {
-        alert('Export functionality would be implemented here');
-      }
+        const roomDetails = {
+            '101': [
+                { customer: 'Nguyễn Văn Nam (Người A)', checkIn: '2025-08-20', checkOut: '2025-08-30', status: 'Confirmed', statusClass: 'bg-success' },
+                { customer: 'Trần Thị Bình (Người B)', checkIn: '2025-08-30', checkOut: '2025-08-31', status: 'Pending', statusClass: 'bg-warning' } // Đổi checkOut thành 31 để hiển thị đến hết 30
+            ],
+            '102': [{ customer: 'Trần Thị Hoa', checkIn: '2025-08-16', checkOut: '2025-08-19', status: 'Pending', statusClass: 'bg-warning' }],
+            '103': [{ customer: 'Lê Minh Hải', checkIn: '2025-08-20', checkOut: '2025-08-22', status: 'Check-in', statusClass: 'bg-info' }],
+            '104': [{ customer: 'Phạm Văn Bình', checkIn: '2025-08-25', checkOut: '2025-08-28', status: 'Confirmed', statusClass: 'bg-success' }],
+            '105': [{ customer: 'Võ Thị Lan', checkIn: '2025-09-01', checkOut: '2025-09-05', status: 'Check-out', statusClass: 'bg-secondary' }],
+            '201': [{ customer: 'Lê Minh Tuấn', checkIn: '2025-08-17', checkOut: '2025-08-22', status: 'Confirmed', statusClass: 'bg-success' }],
+            '202': [{ customer: 'Phạm Thị Lan', checkIn: '2025-08-18', checkOut: '2025-08-21', status: 'Check-in', statusClass: 'bg-info' }],
+            '203': [{ customer: 'Võ Văn Phúc', checkIn: '2025-08-19', checkOut: '2025-08-23', status: 'Confirmed', statusClass: 'bg-success' }],
+            '204': [{ customer: 'Đặng Văn Khôi', checkIn: '2025-09-02', checkOut: '2025-09-04', status: 'Pending', statusClass: 'bg-warning' }],
+            '205': [{ customer: 'Hoàng Thị Minh', checkIn: '2025-09-05', checkOut: '2025-09-08', status: 'Check-out', statusClass: 'bg-secondary' }],
+            '301': [{ customer: 'Đặng Thị Mai', checkIn: '2025-08-20', checkOut: '2025-08-24', status: 'Check-out', statusClass: 'bg-secondary' }],
+            '302': [{ customer: 'Hoàng Văn Dũng', checkIn: '2025-08-25', checkOut: '2025-08-28', status: 'Confirmed', statusClass: 'bg-success' }],
+            '303': [{ customer: 'Bùi Văn Tùng', checkIn: '2025-09-10', checkOut: '2025-09-12', status: 'Check-in', statusClass: 'bg-info' }],
+            '304': [{ customer: 'Phan Thị Ngọc', checkIn: '2025-09-15', checkOut: '2025-09-18', status: 'Pending', statusClass: 'bg-warning' }],
+            '305': [{ customer: 'Lý Văn Quân', checkIn: '2025-09-20', checkOut: '2025-09-22', status: 'Confirmed', statusClass: 'bg-success' }],
+            '401': [{ customer: 'Bùi Thị Hằng', checkIn: '2025-09-05', checkOut: '2025-09-10', status: 'Check-out', statusClass: 'bg-secondary' }],
+            '402': [{ customer: 'Phan Văn An', checkIn: '2025-09-01', checkOut: '2025-09-05', status: 'Pending', statusClass: 'bg-warning' }],
+            '403': [{ customer: 'Trương Thị Yến', checkIn: '2025-10-01', checkOut: '2025-10-03', status: 'Confirmed', statusClass: 'bg-success' }],
+            '404': [{ customer: 'Ngô Văn Long', checkIn: '2025-10-05', checkOut: '2025-10-07', status: 'Check-in', statusClass: 'bg-info' }],
+            '405': [{ customer: 'Vũ Thị Hà', checkIn: '2025-10-10', checkOut: '2025-10-12', status: 'Check-out', statusClass: 'bg-secondary' }],
+            '501': [{ customer: 'Lý Thị Thu', checkIn: '2025-09-10', checkOut: '2025-09-14', status: 'Confirmed', statusClass: 'bg-success' }],
+            '502': [{ customer: 'Đỗ Văn Kiên', checkIn: '2025-10-15', checkOut: '2025-10-18', status: 'Pending', statusClass: 'bg-warning' }],
+            '503': [{ customer: 'Hồ Thị Dung', checkIn: '2025-10-20', checkOut: '2025-10-22', status: 'Check-in', statusClass: 'bg-info' }],
+            '504': [{ customer: 'Mai Văn Hùng', checkIn: '2025-10-25', checkOut: '2025-10-28', status: 'Confirmed', statusClass: 'bg-success' }],
+            '505': [{ customer: 'Dương Thị Linh', checkIn: '2025-11-01', checkOut: '2025-11-03', status: 'Check-out', statusClass: 'bg-secondary' }]
+        };
 
-      function refreshData() {
-        alert('Refresh functionality would be implemented here');
-      }
-
-      // Room details data
-      const roomDetails = {
-        '101': {
-          room: '101',
-          type: 'Deluxe Single',
-          customer: 'Nguyễn Văn Nam',
-          phone: '0909 123 456',
-          email: 'nam.nguyen@email.com',
-          checkIn: '2024-01-15',
-          checkOut: '2024-01-18',
-          nights: 3,
-          price: '1,500,000 VND',
-          totalPrice: '4,500,000 VND',
-          status: 'Confirmed',
-          statusClass: 'bg-success',
-          amenities: ['WiFi', 'TV', 'Air Conditioning', 'Mini Bar'],
-          notes: 'Guest requested early check-in at 12:00 PM',
-          image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&h=120&fit=crop'
-        },
-        '102': {
-          room: '102',
-          type: 'Deluxe Double',
-          customer: 'Trần Thị Hoa',
-          phone: '0909 234 567',
-          email: 'hoa.tran@email.com',
-          checkIn: '2024-01-16',
-          checkOut: '2024-01-19',
-          nights: 3,
-          price: '1,800,000 VND',
-          totalPrice: '5,400,000 VND',
-          status: 'Pending',
-          statusClass: 'bg-warning',
-          amenities: ['WiFi', 'TV', 'Air Conditioning', 'Balcony'],
-          notes: 'Waiting for payment confirmation',
-          image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=300&h=120&fit=crop'
-        },
-        '201': {
-          room: '201',
-          type: 'Suite',
-          customer: 'Lê Minh Tuấn',
-          phone: '0909 345 678',
-          email: 'tuan.le@email.com',
-          checkIn: '2024-01-17',
-          checkOut: '2024-01-22',
-          nights: 5,
-          price: '2,500,000 VND',
-          totalPrice: '12,500,000 VND',
-          status: 'Confirmed',
-          statusClass: 'bg-success',
-          amenities: ['WiFi', 'TV', 'Air Conditioning', 'Jacuzzi', 'Kitchen'],
-          notes: 'VIP guest - special welcome amenities',
-          image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300&h=120&fit=crop'
-        },
-        '202': {
-          room: '202',
-          type: 'Family Room',
-          customer: 'Phạm Thị Lan',
-          phone: '0909 456 789',
-          email: 'lan.pham@email.com',
-          checkIn: '2024-01-18',
-          checkOut: '2024-01-21',
-          nights: 3,
-          price: '2,000,000 VND',
-          totalPrice: '6,000,000 VND',
-          status: 'Check-in',
-          statusClass: 'bg-info',
-          amenities: ['WiFi', 'TV', 'Air Conditioning', 'Extra Bed'],
-          notes: 'Guest checked in at 2:00 PM',
-          image: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?w=300&h=120&fit=crop'
-        },
-        '203': {
-          room: '203',
-          type: 'Standard Double',
-          customer: 'Võ Văn Phúc',
-          phone: '0909 567 890',
-          email: 'phuc.vo@email.com',
-          checkIn: '2024-01-19',
-          checkOut: '2024-01-23',
-          nights: 4,
-          price: '1,200,000 VND',
-          totalPrice: '4,800,000 VND',
-          status: 'Confirmed',
-          statusClass: 'bg-success',
-          amenities: ['WiFi', 'TV', 'Air Conditioning'],
-          notes: 'No special requests',
-          image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=120&fit=crop'
-        },
-        '301': {
-          room: '301',
-          type: 'Deluxe Suite',
-          customer: 'Đặng Thị Mai',
-          phone: '0909 678 901',
-          email: 'mai.dang@email.com',
-          checkIn: '2024-01-20',
-          checkOut: '2024-01-24',
-          nights: 4,
-          price: '3,000,000 VND',
-          totalPrice: '12,000,000 VND',
-          status: 'Check-out',
-          statusClass: 'bg-secondary',
-          amenities: ['WiFi', 'TV', 'Air Conditioning', 'Ocean View', 'Premium Service'],
-          notes: 'Guest will check out at 11:00 AM',
-          image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=120&fit=crop'
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
-      };
 
-             function showRoomDetails(roomNumber) {
-         // Get room data
-         const room = roomDetails[roomNumber];
-         
-         if (!room) {
-           // If no data exists for this room, create default data
-           const defaultRoom = {
-             room: roomNumber,
-             type: 'Standard Room',
-             customer: 'Guest Name',
-             checkIn: '2024-01-20',
-             checkOut: '2024-01-23',
-             nights: 3,
-             price: '1,500,000 VND',
-             status: 'Confirmed',
-             phone: '+84 123 456 789',
-             notes: 'No special requests'
-           };
-           
-           // Update modal with default data
-           document.getElementById('modalRoomNumber').textContent = 'Room ' + roomNumber;
-           document.getElementById('modalGuestName').textContent = defaultRoom.customer;
-           document.getElementById('modalCheckIn').textContent = formatDate(defaultRoom.checkIn);
-           document.getElementById('modalCheckOut').textContent = formatDate(defaultRoom.checkOut);
-           document.getElementById('modalNights').textContent = defaultRoom.nights + ' nights';
-           document.getElementById('modalRoomType').textContent = defaultRoom.type;
-           document.getElementById('modalPrice').textContent = defaultRoom.price;
-           document.getElementById('modalStatus').textContent = defaultRoom.status;
-           document.getElementById('modalStatus').className = 'room-status-badge bg-success text-white';
-           document.getElementById('modalContact').textContent = defaultRoom.phone;
-           document.getElementById('modalRequests').textContent = defaultRoom.notes;
-         } else {
-           // Update modal with room data
-           document.getElementById('modalRoomNumber').textContent = 'Room ' + room.room;
-           document.getElementById('modalGuestName').textContent = room.customer;
-           document.getElementById('modalCheckIn').textContent = formatDate(room.checkIn);
-           document.getElementById('modalCheckOut').textContent = formatDate(room.checkOut);
-           document.getElementById('modalNights').textContent = room.nights + ' nights';
-           document.getElementById('modalRoomType').textContent = room.type;
-           document.getElementById('modalPrice').textContent = room.totalPrice;
-           document.getElementById('modalStatus').textContent = room.status;
-           document.getElementById('modalStatus').className = 'room-status-badge ' + room.statusClass.replace('bg-', 'bg-') + ' text-white';
-           document.getElementById('modalContact').textContent = room.phone;
-           document.getElementById('modalRequests').textContent = room.notes;
-         }
-         
-         // Show modal
-         const modal = new bootstrap.Modal(document.getElementById('roomDetailModal'));
-         modal.show();
-       }
-       
-       function formatDate(dateString) {
-         const date = new Date(dateString);
-         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-         return date.toLocaleDateString('en-US', options);
-       }
+        function addDays(dateString, days) {
+            const date = new Date(dateString);
+            date.setDate(date.getDate() + days);
+            return date.toISOString().split('T')[0]; // Trả về định dạng YYYY-MM-DD
+        }
 
-      function closeDetailSidebar() {
-        const sidebar = document.getElementById('detailSidebar');
-        sidebar.classList.remove('show');
-      }
+        function showRoomDetails(props) {
+            // Tính số tầng từ room number (ví dụ: 201 → 2)
+            const floor = Math.floor(parseInt(props.roomNumber) / 100);
+
+            document.getElementById('modalRoomNumber').textContent = props.roomNumber;
+            document.getElementById('modalFloorNumber').textContent = floor;
+            document.getElementById('modalCustomer').textContent = props.customer;
+            document.getElementById('modalCheckIn').textContent = formatDate(props.checkIn);
+            document.getElementById('modalCheckOut').textContent = formatDate(props.checkOut);
+            
+            const statusBadge = document.getElementById('modalStatus');
+            statusBadge.textContent = props.status;
+            statusBadge.className = 'badge ' + props.statusClass;
+
+            const modal = new bootstrap.Modal(document.getElementById('roomDetailModal'));
+            modal.show();
+        }
+
+        let calendar;
+
+        function renderCalendar(filteredRooms) {
+            const calendarEl = document.getElementById('calendar');
+            if (!calendarEl) return;
+
+            const statusColorMap = {
+                'Confirmed': '#28a745', 'Pending': '#ffc107',
+                'Check-in': '#17a2b8', 'Check-out': '#6c757d'
+            };
+
+            const events = [];
+            Object.entries(filteredRooms).forEach(([roomNumber, bookings]) => {
+                bookings.forEach(booking => {
+                    const eventEnd = addDays(booking.checkOut, 1); // Thêm 1 ngày vào checkOut để hiển thị đến hết ngày check-out
+                    events.push({
+                        title: 'Room ' + roomNumber + ' - ' + booking.customer,
+                        start: booking.checkIn,
+                        end: eventEnd, // Đảm bảo hiển thị đến hết ngày check-out
+                        allDay: true,
+                        extendedProps: {
+                            roomNumber: roomNumber,
+                            customer: booking.customer,
+                            checkIn: booking.checkIn,
+                            checkOut: booking.checkOut, // Giữ nguyên checkOut gốc cho modal
+                            status: booking.status,
+                            statusClass: booking.statusClass
+                        },
+                        backgroundColor: statusColorMap[booking.status] || '#007bff',
+                        borderColor: statusColorMap[booking.status] || '#007bff'
+                    });
+                });
+            });
+
+            if (calendar) {
+                calendar.removeAllEvents();
+                calendar.addEventSource(events);
+            } else {
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    height: 'auto',
+                    initialView: 'dayGridMonth',
+                    firstDay: 1, // Bắt đầu từ Monday (Mon, Tue, Wed, Thu, Fri, Sat, Sun)
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: '' // Bỏ các nút month/week/day
+                    },
+                    events: events,
+                    eventClick: info => {
+                        info.jsEvent.preventDefault();
+                        showRoomDetails(info.event.extendedProps); // Hiển thị chi tiết booking được click
+                    }
+                });
+                calendar.render();
+            }
+        }
+
+        function applyFilters() {
+            const selectedRoom = document.getElementById('roomFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            let filteredRooms = { ...roomDetails };
+
+            // Lọc theo room
+            if (selectedRoom !== '') {
+                filteredRooms = { [selectedRoom]: roomDetails[selectedRoom] || [] };
+            }
+
+            // Lọc theo status (lọc từng booking trong mảng)
+            if (status !== '') {
+                Object.keys(filteredRooms).forEach(roomNumber => {
+                    filteredRooms[roomNumber] = filteredRooms[roomNumber].filter(booking => booking.status === status);
+                });
+            }
+
+            renderCalendar(filteredRooms);
+
+            // Nếu chọn một phòng cụ thể và có bookings, nhảy đến ngày check-in của booking đầu tiên
+            if (selectedRoom !== '' && filteredRooms[selectedRoom] && filteredRooms[selectedRoom].length > 0) {
+                const firstBooking = filteredRooms[selectedRoom][0];
+                console.log('Jumping to date for room ' + selectedRoom + ': ' + firstBooking.checkIn); // Debug
+                calendar.gotoDate(firstBooking.checkIn); // Nhảy đến tháng chứa check-in
+            }
+        }
+
+        function populateRoomFilter() {
+            const roomFilterSelect = document.getElementById('roomFilter');
+            if (!roomFilterSelect) return;
+            Object.keys(roomDetails).sort((a, b) => a - b).forEach(roomNumber => {
+                console.log('Adding room: ' + roomNumber); // Debug
+                const option = document.createElement('option');
+                option.value = roomNumber;
+                option.textContent = 'Room ' + roomNumber;
+                roomFilterSelect.appendChild(option);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateRoomFilter();
+            renderCalendar(roomDetails);
+            document.getElementById('roomFilter')?.addEventListener('change', applyFilters);
+            document.getElementById('statusFilter')?.addEventListener('change', applyFilters);
+        });
     </script>
-  </body>
+</body>
 </html>
