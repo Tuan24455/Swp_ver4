@@ -75,15 +75,29 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(username);
                 response.addCookie(pass);
 
-                response.sendRedirect("home");
+                String redirectUrl = request.getParameter("redirectUrl");
+                if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                    String decodedUrl = java.net.URLDecoder.decode(redirectUrl, "UTF-8");
+                    response.sendRedirect(decodedUrl);
+                } else {
+                    response.sendRedirect("home");
+                }
 
             } else {
+                String redirectUrl = request.getParameter("redirectUrl");
                 request.setAttribute("error", "Sai tài khoản hoặc mật khẩu");
+                if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                    request.setAttribute("redirectUrl", redirectUrl);
+                }
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
 
         } else {
+            String redirectUrl = request.getParameter("redirectUrl");
             request.setAttribute("error", "Hãy điền tài khoản mật khẩu");
+            if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                request.setAttribute("redirectUrl", redirectUrl);
+            }
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }

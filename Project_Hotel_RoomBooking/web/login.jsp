@@ -35,6 +35,7 @@
                         <div class="row gy-5 justify-content-center">
                             <div class="col-12 col-lg-7">
                                 <form action="login" method="post">
+                                    <input type="hidden" name="redirectUrl" value="${param.redirectUrl}">
                                     <div class="row gy-3 overflow-hidden">
                                         <div class="col-12">
                                             <div class="form-floating mb-3">

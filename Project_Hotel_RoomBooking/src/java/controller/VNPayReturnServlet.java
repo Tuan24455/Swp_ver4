@@ -1,7 +1,6 @@
 package controller;
 
 import dao.BookingDao;
-import dao.ServiceBookingDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,13 +14,13 @@ import service.VNPayService;
 @WebServlet(name = "VNPayReturnServlet", urlPatterns = {"/vnpay-return"})
 public class VNPayReturnServlet extends HttpServlet {
     private BookingDao bookingDao;
-    private ServiceBookingDao serviceBookingDao;
+    private VNPayService vnPayService;
 
     @Override
     public void init() throws ServletException {
         super.init();
         bookingDao = new BookingDao();
-        serviceBookingDao = new ServiceBookingDao();
+        vnPayService = new VNPayService();
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -31,7 +30,7 @@ public class VNPayReturnServlet extends HttpServlet {
         String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         
         // Verify payment response
-        boolean validPayment = VNPayService.validatePaymentResponse(request.getParameterMap());
+        boolean validPayment = vnPayService.validatePaymentResponse(request.getParameterMap());
         
         boolean paymentSuccess = false;
         String message = "";
@@ -45,7 +44,7 @@ public class VNPayReturnServlet extends HttpServlet {
             if (parts[0].equals("SVC")) {
                 // Handle service booking payment
                 int serviceBookingId = Integer.parseInt(parts[1]);
-                serviceBookingDao.updateServiceBookingStatus(serviceBookingId, "Confirmed");
+                // serviceBookingDao.updateServiceBookingStatus(serviceBookingId, "Confirmed"); // This line was removed
                 message = "Thanh toán dịch vụ thành công!";
             } else {
                 // Handle room booking payment
@@ -58,7 +57,7 @@ public class VNPayReturnServlet extends HttpServlet {
             paymentSuccess = false;
             if (parts[0].equals("SVC")) {
                 int serviceBookingId = Integer.parseInt(parts[1]);
-                serviceBookingDao.updateServiceBookingStatus(serviceBookingId, "Payment Failed");
+                // serviceBookingDao.updateServiceBookingStatus(serviceBookingId, "Payment Failed"); // This line was removed
                 message = "Thanh toán dịch vụ thất bại!";
             } else {
                 int bookingId = Integer.parseInt(parts[0]);

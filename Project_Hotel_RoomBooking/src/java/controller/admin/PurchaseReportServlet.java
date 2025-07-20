@@ -62,54 +62,26 @@ public class PurchaseReportServlet extends HttpServlet {
             request.setAttribute("guestTypes", guestTypes);
             request.setAttribute("serviceTypes", serviceTypes);
 
-            // Phân trang cho Hóa đơn phòng chi tiết
-            int roomInvoicePage = 1;
-            final int ROOM_INVOICE_PAGE_SIZE = 5;
-            if (request.getParameter("roomInvoicePage") != null) {
+            // Phân trang cho hóa đơn kết hợp
+            int combinedPage = 1;
+            final int COMBINED_PAGE_SIZE = 5;
+            if (request.getParameter("combinedPage") != null) {
                 try {
-                    roomInvoicePage = Integer.parseInt(request.getParameter("roomInvoicePage"));
+                    combinedPage = Integer.parseInt(request.getParameter("combinedPage"));
                 } catch (NumberFormatException e) {
-                    roomInvoicePage = 1;
+                    combinedPage = 1;
                 }
             }
 
-            // Phân trang cho Hóa đơn dịch vụ chi tiết  
-            int serviceInvoicePage = 1;
-            final int SERVICE_INVOICE_PAGE_SIZE = 5;
-            if (request.getParameter("serviceInvoicePage") != null) {
-                try {
-                    serviceInvoicePage = Integer.parseInt(request.getParameter("serviceInvoicePage"));
-                } catch (NumberFormatException e) {
-                    serviceInvoicePage = 1;
-                }
-            }
+            // Nếu combinedInvoiceData chưa được set (từ doPost), lấy mặc định
+            if (request.getAttribute("combinedInvoiceData") == null) {
+                List<Map<String, Object>> combinedData = purchaseReportDAO.getCombinedInvoiceReportDataPaginated(null, null, "", "", "", combinedPage, COMBINED_PAGE_SIZE);
+                int totalCombined = purchaseReportDAO.getTotalCombinedInvoiceCount(null, null, "", "", "");
+                int totalCombinedPages = (int) Math.ceil((double) totalCombined / COMBINED_PAGE_SIZE);
 
-            // Nếu invoiceData chưa được set (từ doPost), lấy mặc định (không filter)
-            if (request.getAttribute("invoiceData") == null) {
-                List<Map<String, Object>> roomInvoiceData = purchaseReportDAO.getRoomInvoiceReportDataPaginated(null, null, "", "", "", roomInvoicePage, ROOM_INVOICE_PAGE_SIZE);
-                int totalRoomInvoices = purchaseReportDAO.getTotalRoomInvoiceCount(null, null, "", "", "");
-                int totalRoomInvoicePages = (int) Math.ceil((double) totalRoomInvoices / ROOM_INVOICE_PAGE_SIZE);
-
-                request.setAttribute("invoiceData", roomInvoiceData);
-                request.setAttribute("currentRoomInvoicePage", roomInvoicePage);
-                request.setAttribute("totalRoomInvoicePages", totalRoomInvoicePages);
-            }
-
-            System.out.println("Checking serviceInvoiceData attribute: " + request.getAttribute("serviceInvoiceData"));
-            if (request.getAttribute("serviceInvoiceData") == null) {
-                System.out.println("serviceInvoiceData is null, loading default data...");
-                
-                // Load real data from database
-                List<Map<String, Object>> serviceInvoiceData = purchaseReportDAO.getServiceInvoiceReportDataPaginated(null, null, "", "", "", serviceInvoicePage, SERVICE_INVOICE_PAGE_SIZE);
-                int totalServiceInvoices = purchaseReportDAO.getTotalServiceInvoiceCount(null, null, "", "", "");
-                int totalServiceInvoicePages = (int) Math.ceil((double) totalServiceInvoices / SERVICE_INVOICE_PAGE_SIZE);
-
-                System.out.println("Service invoice data size: " + serviceInvoiceData.size());
-                System.out.println("Total service invoices: " + totalServiceInvoices);
-
-                request.setAttribute("serviceInvoiceData", serviceInvoiceData);
-                request.setAttribute("currentServiceInvoicePage", serviceInvoicePage);
-                request.setAttribute("totalServiceInvoicePages", Math.max(totalServiceInvoicePages, 1));
+                request.setAttribute("combinedInvoiceData", combinedData);
+                request.setAttribute("currentCombinedPage", combinedPage);
+                request.setAttribute("totalCombinedPages", totalCombinedPages);
             }
 
             // Lấy dữ liệu báo cáo dịch vụ từ ServiceBooking
@@ -140,11 +112,6 @@ public class PurchaseReportServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("error", "Đã xảy ra lỗi khi tải dữ liệu báo cáo: " + e.getMessage());
         }
-
-        System.out.println("=== Before forwarding to JSP ===");
-        System.out.println("serviceInvoiceData attribute: " + request.getAttribute("serviceInvoiceData"));
-        System.out.println("currentServiceInvoicePage: " + request.getAttribute("currentServiceInvoicePage"));
-        System.out.println("totalServiceInvoicePages: " + request.getAttribute("totalServiceInvoicePages"));
 
         request.getRequestDispatcher("/admin/purchasereport.jsp").forward(request, response);
     }
@@ -221,71 +188,22 @@ public class PurchaseReportServlet extends HttpServlet {
         
         String reportType = request.getParameter("reportType");
         
-        if ("roomInvoice".equals(reportType)) {
-            handleRoomInvoiceFilter(request, response);
-        } else if ("serviceInvoice".equals(reportType)) {
-            handleServiceInvoiceFilter(request, response);
-        } else {
-            // Default behavior - handle old invoice filter for backward compatibility
-            handleRoomInvoiceFilter(request, response);
+        if ("combined".equals(reportType)) {
+            handleCombinedFilter(request, response);
         }
         
         // Gọi doGet để load các phần còn lại
         doGet(request, response);
     }
     
-    private void handleRoomInvoiceFilter(HttpServletRequest request, HttpServletResponse response) {
+    private void handleCombinedFilter(HttpServletRequest request, HttpServletResponse response) {
         try {
             // Lấy thông số filter từ form
             String dateFromStr = request.getParameter("dateFrom");
             String dateToStr = request.getParameter("dateTo");
             String roomTypeFilter = request.getParameter("roomTypeFilter");
-            String paymentStatusFilter = request.getParameter("paymentStatusFilter");
-            String guestTypeFilter = request.getParameter("guestTypeFilter");
-
-            Date dateFrom = null, dateTo = null;
-            if (dateFromStr != null && !dateFromStr.isEmpty()) {
-                dateFrom = Date.valueOf(dateFromStr);
-            }
-            if (dateToStr != null && !dateToStr.isEmpty()) {
-                dateTo = Date.valueOf(dateToStr);
-            }
-
-            // Phân trang
-            int roomInvoicePage = 1;
-            final int ROOM_INVOICE_PAGE_SIZE = 5;
-            if (request.getParameter("roomInvoicePage") != null) {
-                try {
-                    roomInvoicePage = Integer.parseInt(request.getParameter("roomInvoicePage"));
-                } catch (NumberFormatException e) {
-                    roomInvoicePage = 1;
-                }
-            }
-
-            // Lấy dữ liệu filtered và phân trang
-            List<Map<String, Object>> roomInvoiceData = purchaseReportDAO.getRoomInvoiceReportDataPaginated(dateFrom, dateTo, roomTypeFilter, paymentStatusFilter, guestTypeFilter, roomInvoicePage, ROOM_INVOICE_PAGE_SIZE);
-            int totalRoomInvoices = purchaseReportDAO.getTotalRoomInvoiceCount(dateFrom, dateTo, roomTypeFilter, paymentStatusFilter, guestTypeFilter);
-            int totalRoomInvoicePages = (int) Math.ceil((double) totalRoomInvoices / ROOM_INVOICE_PAGE_SIZE);
-
-            // Set attributes
-            request.setAttribute("invoiceData", roomInvoiceData);
-            request.setAttribute("currentRoomInvoicePage", roomInvoicePage);
-            request.setAttribute("totalRoomInvoicePages", totalRoomInvoicePages);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Lỗi khi lọc báo cáo hóa đơn phòng: " + e.getMessage());
-        }
-    }
-    
-    private void handleServiceInvoiceFilter(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            // Lấy thông số filter từ form
-            String dateFromStr = request.getParameter("serviceDateFrom");
-            String dateToStr = request.getParameter("serviceDateTo");
             String serviceTypeFilter = request.getParameter("serviceTypeFilter");
-            String servicePaymentStatusFilter = request.getParameter("servicePaymentStatusFilter");
-            String serviceGuestTypeFilter = request.getParameter("serviceGuestTypeFilter");
+            String paymentStatusFilter = request.getParameter("paymentStatusFilter");
 
             Date dateFrom = null, dateTo = null;
             if (dateFromStr != null && !dateFromStr.isEmpty()) {
@@ -296,29 +214,29 @@ public class PurchaseReportServlet extends HttpServlet {
             }
 
             // Phân trang
-            int serviceInvoicePage = 1;
-            final int SERVICE_INVOICE_PAGE_SIZE = 5;
-            if (request.getParameter("serviceInvoicePage") != null) {
+            int combinedPage = 1;
+            final int COMBINED_PAGE_SIZE = 5;
+            if (request.getParameter("combinedPage") != null) {
                 try {
-                    serviceInvoicePage = Integer.parseInt(request.getParameter("serviceInvoicePage"));
+                    combinedPage = Integer.parseInt(request.getParameter("combinedPage"));
                 } catch (NumberFormatException e) {
-                    serviceInvoicePage = 1;
+                    combinedPage = 1;
                 }
             }
 
             // Lấy dữ liệu filtered và phân trang
-            List<Map<String, Object>> serviceInvoiceData = purchaseReportDAO.getServiceInvoiceReportDataPaginated(dateFrom, dateTo, serviceTypeFilter, servicePaymentStatusFilter, serviceGuestTypeFilter, serviceInvoicePage, SERVICE_INVOICE_PAGE_SIZE);
-            int totalServiceInvoices = purchaseReportDAO.getTotalServiceInvoiceCount(dateFrom, dateTo, serviceTypeFilter, servicePaymentStatusFilter, serviceGuestTypeFilter);
-            int totalServiceInvoicePages = (int) Math.ceil((double) totalServiceInvoices / SERVICE_INVOICE_PAGE_SIZE);
+            List<Map<String, Object>> combinedData = purchaseReportDAO.getCombinedInvoiceReportDataPaginated(dateFrom, dateTo, roomTypeFilter, serviceTypeFilter, paymentStatusFilter, combinedPage, COMBINED_PAGE_SIZE);
+            int totalCombined = purchaseReportDAO.getTotalCombinedInvoiceCount(dateFrom, dateTo, roomTypeFilter, serviceTypeFilter, paymentStatusFilter);
+            int totalCombinedPages = (int) Math.ceil((double) totalCombined / COMBINED_PAGE_SIZE);
 
             // Set attributes
-            request.setAttribute("serviceInvoiceData", serviceInvoiceData);
-            request.setAttribute("currentServiceInvoicePage", serviceInvoicePage);
-            request.setAttribute("totalServiceInvoicePages", totalServiceInvoicePages);
+            request.setAttribute("combinedInvoiceData", combinedData);
+            request.setAttribute("currentCombinedPage", combinedPage);
+            request.setAttribute("totalCombinedPages", totalCombinedPages);
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Lỗi khi lọc báo cáo hóa đơn dịch vụ: " + e.getMessage());
+            request.setAttribute("error", "Lỗi khi lọc báo cáo hóa đơn kết hợp: " + e.getMessage());
         }
     }
 }

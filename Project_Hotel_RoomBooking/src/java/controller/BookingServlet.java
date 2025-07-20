@@ -40,6 +40,10 @@ public class BookingServlet extends HttpServlet {
             booking.setCreatedAt(new Date(System.currentTimeMillis()));
             booking.setStatus("Pending");
             
+            // Set total price
+            double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
+            booking.setTotalPrices(totalAmount);
+            
             // Save booking
             BookingDao bookingDao = new BookingDao();
             int bookingId = bookingDao.createBooking(booking, roomId, checkIn, checkOut, selectedServices);
@@ -49,8 +53,7 @@ public class BookingServlet extends HttpServlet {
             
             if (bookingId > 0) {
                 // Booking successful, redirect to VNPay payment
-                double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
-                String paymentUrl = VNPayService.createPaymentUrl(request, bookingId, (long)totalAmount);
+                String paymentUrl = VNPayService.createPaymentUrl(request, bookingId, (long)booking.getTotalPrices());
                 response.sendRedirect(paymentUrl);
             } else {
                 // Booking failed
