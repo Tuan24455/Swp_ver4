@@ -1,4 +1,4 @@
-package controller.customer;
+package controller;
 
 import dao.UserDao;
 import model.User;
