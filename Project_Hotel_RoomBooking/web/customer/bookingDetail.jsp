@@ -34,7 +34,12 @@
             <h2>Thông tin liên hệ</h2>
             <c:if test="${sessionScope.user == null}">
                 <div class="error-message">
-                    Vui lòng <a href="login.jsp">đăng nhập</a> để tiếp tục đặt phòng
+                    <% 
+                        String currentUrl = request.getRequestURL().toString();
+                        String queryString = request.getQueryString();
+                        String fullUrl = queryString != null ? currentUrl + "?" + queryString : currentUrl;
+                    %>
+                    Vui lòng <a href="${pageContext.request.contextPath}/login.jsp?redirectUrl=<%=java.net.URLEncoder.encode(fullUrl, "UTF-8")%>">đăng nhập</a> để tiếp tục đặt phòng
                 </div>
             </c:if>
             <c:if test="${sessionScope.user != null}">

@@ -19,11 +19,12 @@ public class BookingDao extends DBContext {
             conn.setAutoCommit(false);  // Start transaction
             
             // Insert into Bookings table
-            String sql = "INSERT INTO Bookings (user_id, created_at, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO Bookings (user_id, created_at, status, total_prices) VALUES (?, ?, ?, ?)";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, booking.getUserId());
             ps.setTimestamp(2, new Timestamp(booking.getCreatedAt().getTime()));
             ps.setString(3, booking.getStatus());
+            ps.setDouble(4, booking.getTotalPrices());
             ps.executeUpdate();
             
             // Get generated booking ID
