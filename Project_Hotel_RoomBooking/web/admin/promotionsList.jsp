@@ -166,12 +166,6 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <button
-                                                        class="btn btn-sm btn-outline-primary"
-                                                        title="View"
-                                                        >
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button
                                                         class="btn btn-sm btn-outline-warning"
                                                         title="Edit"
                                                         type="button"
@@ -182,7 +176,7 @@
                                                         data-end-at="${p.endAt}"
                                                         data-description="${p.description}"
                                                         onclick="openEditModal(this)"
-                                                        >
+                                                        style="margin-right: 10px;">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
