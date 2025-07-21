@@ -86,12 +86,9 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <label for="statusFilter" class="form-label fw-semibold"
                     >Lọc theo Trạng Thái:</label
                   >
-                  <select class="form-select" id="statusFilter">
+                  <select class="form-select" id="statusFilter" disabled>
                     <option value="">Tất Cả Trạng Thái</option>
-                    <option value="Đã Xác Nhận">Đã Xác Nhận</option>
-                    <option value="Đang Chờ">Đang Chờ</option>
-                    <option value="Nhận Phòng">Nhận Phòng</option>
-                    <option value="Trả Phòng">Trả Phòng</option>
+                    <!-- Options will be populated based on selected room -->
                   </select>
                 </div>
                 <div class="col-md-4">
@@ -100,7 +97,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   >
                   <select class="form-select" id="dateFilter" disabled>
                     <option value="">Chọn Ngày</option>
-                    <!-- Options will be populated based on selected room -->
+                    <!-- Options will be populated based on selected room and status -->
                   </select>
                 </div>
               </div>
@@ -397,20 +394,20 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         console.log("Room filter populated with", roomNumbers.length, "rooms");
       }
 
-      // New function: Populate date filter based on selected room
-      function populateDateFilter(selectedRoom) {
-        const dateFilter = document.getElementById("dateFilter");
-        if (!dateFilter) {
-          console.error("Date filter element not found!");
+      // New function: Populate status filter based on selected room
+      function populateStatusFilter(selectedRoom) {
+        const statusFilter = document.getElementById("statusFilter");
+        if (!statusFilter) {
+          console.error("Status filter element not found!");
           return;
         }
 
         // Reset and disable if no room selected
-        dateFilter.disabled = true;
-        dateFilter.innerHTML = '<option value="">Chọn Ngày</option>';
+        statusFilter.disabled = true;
+        statusFilter.innerHTML = '<option value="">Tất Cả Trạng Thái</option>';
 
         if (selectedRoom === "") {
-          console.log("No room selected, disabling date filter");
+          console.log("No room selected, disabling status filter");
           return;
         }
 
@@ -420,13 +417,91 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           return;
         }
 
-        // Collect unique check-in dates
-        const uniqueDates = new Set();
+        // Map DB status to UI display
+        const statusDisplayMap = {
+          Confirmed: "Đã Xác Nhận",
+          Pending: "Đang Chờ",
+          "Check-in": "Nhận Phòng",
+          "Check-out": "Trả Phòng",
+        };
+
+        // Collect unique statuses (DB values)
+        const uniqueStatuses = new Set();
         bookings.forEach((booking) => {
-          if (booking.checkIn) {
-            uniqueDates.add(booking.checkIn); // Assuming checkIn is in YYYY-MM-DD format
+          if (booking.status && statusDisplayMap[booking.status]) {
+            uniqueStatuses.add(booking.status); // Add DB status
           }
         });
+
+        if (uniqueStatuses.size === 0) {
+          console.log(`No valid statuses for room ${selectedRoom}`);
+          return;
+        }
+
+        // Convert to array and sort (optional, can customize order)
+        const sortedStatuses = Array.from(uniqueStatuses).sort();
+
+        // Populate options with UI display
+        sortedStatuses.forEach((dbStatus) => {
+          const uiStatus = statusDisplayMap[dbStatus];
+          const option = document.createElement("option");
+          option.value = uiStatus; // Value is UI string
+          option.textContent = uiStatus;
+          statusFilter.appendChild(option);
+        });
+
+        statusFilter.disabled = false;
+        console.log(
+          `Status filter populated with ${sortedStatuses.length} statuses for room ${selectedRoom}`
+        );
+      }
+
+      // Updated function: Populate date filter based on selected room and status
+      function populateDateFilter(selectedRoom, selectedStatus) {
+        const dateFilter = document.getElementById("dateFilter");
+        if (!dateFilter) {
+          console.error("Date filter element not found!");
+          return;
+        }
+
+        // Reset and disable
+        dateFilter.disabled = true;
+        dateFilter.innerHTML = '<option value="">Chọn Ngày</option>';
+
+        if (selectedRoom === "" || selectedStatus === "") {
+          console.log("Room or status not selected, disabling date filter");
+          return;
+        }
+
+        // Map UI status back to DB
+        const statusDbMap = {
+          "Đã Xác Nhận": "Confirmed",
+          "Đang Chờ": "Pending",
+          "Nhận Phòng": "Check-in",
+          "Trả Phòng": "Check-out",
+        };
+        const dbStatus = statusDbMap[selectedStatus];
+
+        const bookings = roomDetails[selectedRoom] || [];
+        if (bookings.length === 0) {
+          console.log(`No bookings for room ${selectedRoom}`);
+          return;
+        }
+
+        // Collect unique check-in dates for the specific status
+        const uniqueDates = new Set();
+        bookings.forEach((booking) => {
+          if (booking.checkIn && booking.status === dbStatus) {
+            uniqueDates.add(booking.checkIn);
+          }
+        });
+
+        if (uniqueDates.size === 0) {
+          console.log(
+            `No dates for room ${selectedRoom} with status ${selectedStatus}`
+          );
+          return;
+        }
 
         // Convert to array and sort by date
         const sortedDates = Array.from(uniqueDates).sort(
@@ -443,7 +518,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
         dateFilter.disabled = false;
         console.log(
-          `Date filter populated with ${sortedDates.length} dates for room ${selectedRoom}`
+          `Date filter populated with ${sortedDates.length} dates for room ${selectedRoom} and status ${selectedStatus}`
         );
       }
 
@@ -593,18 +668,15 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           }
         }
 
-        // Filter by status
-        if (selectedStatus !== "") {
+        // Filter by status (if selected and not "All")
+        if (selectedStatus !== "" && selectedStatus !== "Tất Cả Trạng Thái") {
           console.log(
             `Filtering for status: ${selectedStatus} (DB: ${dbStatus})`
           );
           Object.keys(filteredRooms).forEach((roomNumber) => {
-            // Filter bookings by status
             const originalLength = filteredRooms[roomNumber]?.length || 0;
             filteredRooms[roomNumber] = filteredRooms[roomNumber].filter(
-              (booking) => {
-                return booking.status === dbStatus;
-              }
+              (booking) => booking.status === dbStatus
             );
             console.log(
               `Room ${roomNumber}: filtered from ${originalLength} to ${filteredRooms[roomNumber].length} bookings`
@@ -667,10 +739,16 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         const dateFilter = document.getElementById("dateFilter");
 
         roomFilter?.addEventListener("change", () => {
-          populateDateFilter(roomFilter.value); // Populate date filter when room changes
+          populateStatusFilter(roomFilter.value); // Populate status filter when room changes
+          populateDateFilter(roomFilter.value, ""); // Reset date filter
           applyFilters();
         });
-        statusFilter?.addEventListener("change", applyFilters);
+
+        statusFilter?.addEventListener("change", () => {
+          populateDateFilter(roomFilter.value, statusFilter.value); // Populate date filter when status changes
+          applyFilters();
+        });
+
         dateFilter?.addEventListener("change", applyFilters); // Apply filters and gotoDate when date changes
 
         // Update clock
