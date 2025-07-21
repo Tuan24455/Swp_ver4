@@ -164,23 +164,16 @@
                                             <td>${s.price}</td>
                                             <td>${s.description}</td>
                                             <td>
-                                                <div class="btn-group" role="group">
-                                                    <button
-                                                        class="btn btn-sm btn-outline-primary"
-                                                        title="View"
-                                                        >
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
+                                                <div class="btn-group" role="group">           
                                                     <button
                                                         class="btn btn-sm btn-outline-warning"
                                                         title="Edit"
                                                         type="button"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#editServiceModal${s.id}">
+                                                        data-bs-target="#editServiceModal${s.id}"
+                                                        style="margin-right: 10px;">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-
-
 
                                                     <form action="deleteService" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
                                                         <input type="hidden" name="id" value="${s.id}" />
