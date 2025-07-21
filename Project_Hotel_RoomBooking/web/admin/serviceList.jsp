@@ -23,6 +23,7 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
             />
         <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
         <div class="d-flex" id="wrapper">
@@ -81,19 +82,19 @@
                     </div>
                 </div>
 
-                <!--                 Filter Section -->
-                <form method="get" action=""  class="mb-4">
+                <!-- Filter Section -->
+                <form action="serviceList" method="get" class="mb-4">
                     <input type="hidden" name="page" value="1" />
 
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label">Loại Dịch Vụ</label>
                             <select class="form-select" name="type">
-                                <option value="" ${paramStatus == null ? 'selected' : ''}>Tất Cả</option>
-                                <option value="Restaurant"${paramStatus == 'active' ? 'selected' : ''}>Nhà Hàng</option>
-                                <option value="Spa" ${paramStatus == 'expired' ? 'selected' : ''}>Spa</option>
-                                <option value="Gym" ${paramStatus == 'upcoming' ? 'selected' : ''}>Gym</option>
-                                <option value="Shuttle" ${paramStatus == 'upcoming' ? 'selected' : ''}>Di Chuyển</option>
+                                <option value="" ${param.type == null ? 'selected' : ''}>Tất Cả</option>
+                                <option value="Restaurant"${param.type == 'Restaurant' ? 'selected' : ''}>Nhà Hàng</option>
+                                <option value="Spa" ${param.type == 'Spa' ? 'selected' : ''}>Spa</option>
+                                <option value="Gym" ${param.type == 'Gym' ? 'selected' : ''}>Gym</option>
+                                <option value="Shuttle" ${param.type == 'Shuttle' ? 'selected' : ''}>Di Chuyển</option>
                             </select>
                         </div>
                         <!-- Giá tối thiểu -->
@@ -110,33 +111,36 @@
                         <div class="col-md-3">
                             <label class="form-label d-block">&nbsp;</label>    
                             <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Tìm Kiếm
+                                <i class="fas fa-search me-2"></i>Lọc
                             </button>
                         </div>
                     </div>
-
                 </form>
+
 
 
                 <!--                 Service Table -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="mb-0">All Service</h5>
+                        <h5 class="mb-0">Thông tin dịch vụ </h5>
                     </div>
                     <div class="card-body">
+                        <!-- Hiển thị thông báo nếu không tìm thấy kết quả -->
+                        <c:if test="${not empty requestScope.noResultsMessage}">
+                            <div class="alert alert-danger" role="alert">
+                                ${requestScope.noResultsMessage}
+                            </div>
+                        </c:if>
+
+                        <!-- Phần tìm kiếm dịch vụ -->
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                            <div
-                                class="input-group search-table-input"
-                                style="width: 250px"
-                                >
-                                <span class="input-group-text"
-                                      ><i class="fas fa-search"></i
-                                    ></span>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Tìm dịch vụ..."
-                                    />
+                            <div class="input-group search-table-input" style="width: 250px">
+                                <form action="serviceList" method="get" class="d-flex">
+                                    <input type="text" class="form-control" name="searchQuery" placeholder="Tìm dịch vụ..." value="${param.searchQuery}" />
+                                    <button class="btn btn-outline-primary" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
@@ -165,17 +169,13 @@
                                             <td>${s.description}</td>
                                             <td>
                                                 <div class="btn-group" role="group">           
-                                                    <button
-                                                        class="btn btn-sm btn-outline-warning"
-                                                        title="Edit"
-                                                        type="button"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editServiceModal${s.id}"
-                                                        style="margin-right: 10px;">
+                                                    <button class="btn btn-sm btn-outline-warning" title="Edit" type="button"
+                                                            data-bs-toggle="modal" data-bs-target="#editServiceModal${s.id}" style="margin-right: 10px;">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <form action="deleteService" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                                                    <form action="deleteService" method="post" style="display:inline;" 
+                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
                                                         <input type="hidden" name="id" value="${s.id}" />
                                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
                                                             <i class="fas fa-trash"></i>
@@ -184,41 +184,40 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                     </c:forEach>
+                                    </c:forEach>
                                 </tbody>
                             </table>
-
                         </div>
 
+                        <!-- Phân trang -->
                         <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
-                        <c:set var="endEntry" value="${startEntry + pro.size() - 1}" />
-
+                        <c:set var="endEntry" value="${startEntry + services.size() - 1}" />
                         <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
                             <small class="text-muted mb-2 mb-md-0">
-                                Showing ${startEntry} to ${endEntry} of ${totalPromotions} entries
+                                Showing ${startEntry} to ${endEntry} of ${totalServices} entries
                             </small>
 
-                            <nav aria-label="Promotion pagination">
+                            <nav aria-label="Service pagination">
                                 <ul class="pagination pagination-sm mb-0">
+                                    <!-- Previous Page -->
                                     <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                        <a class="page-link"
-                                           href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage - 1}">
+                                        <a class="page-link" href="serviceList?searchQuery=${param.searchQuery}&type=${param.type}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&page=${currentPage - 1}">
                                             Previous
                                         </a>
                                     </li>
 
+                                    <!-- Page Numbers -->
                                     <c:forEach begin="1" end="${totalPages}" var="p">
                                         <li class="page-item ${p == currentPage ? 'active' : ''}">
-                                            <a class="page-link"
-                                               href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${p}">
+                                            <a class="page-link" href="serviceList?searchQuery=${param.searchQuery}&type=${param.type}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&page=${p}">
                                                 ${p}
                                             </a>
                                         </li>
                                     </c:forEach>
 
+                                    <!-- Next Page -->
                                     <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                        <a class="page-link"
-                                           href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage + 1}">
+                                        <a class="page-link" href="serviceList?searchQuery=${param.searchQuery}&type=${param.type}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&page=${currentPage + 1}">
                                             Next
                                         </a>
                                     </li>
@@ -233,64 +232,64 @@
     </div>
 
 
-                                            
-                                        
-                                        <!-- Modal chỉnh sửa dịch vụ theo ID -->
-                                <c:forEach var="s" items="${services}">
-                                    <div class="modal fade" id="editServiceModal${s.id}" tabindex="-1">
-                                        <div class="modal-dialog modal-lg">
-                                            <form action="updateService" method="post" enctype="multipart/form-data">
-                                                
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Chỉnh sửa Dịch Vụ</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <input type="hidden" name="id" value="${s.id}" />
 
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label>Loại dịch vụ</label>
-                                                            <select class="form-select" name="service_type_id">
-                                                                <option value="1" ${s.typeId == 1 ? 'selected' : ''}>Restaurant</option>
-                                                                <option value="2" ${s.typeId == 2 ? 'selected' : ''}>Spa</option>
-                                                                <option value="3" ${s.typeId == 3 ? 'selected' : ''}>Gym</option>
-                                                                <option value="4" ${s.typeId == 4 ? 'selected' : ''}>Shuttle</option>
-                                                            </select>
-                                                        </div>
 
-                                                        <div class="mb-3">
-                                                            <label>Tên dịch vụ</label>
-                                                            <input type="text" name="service_name" class="form-control" value="${s.name}" required />
-                                                        </div>
+    <!-- Modal chỉnh sửa dịch vụ theo ID -->
+    <c:forEach var="s" items="${services}">
+        <div class="modal fade" id="editServiceModal${s.id}" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <form action="updateService" method="post" enctype="multipart/form-data">
 
-                                                        <div class="mb-3">
-                                                            <label>Giá</label>
-                                                            <input type="number" name="service_price" class="form-control" value="${s.price}" required />
-                                                        </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Chỉnh sửa Dịch Vụ</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <input type="hidden" name="id" value="${s.id}" />
 
-                                                        <div class="mb-3">
-                                                            <label>Ảnh hiện tại</label><br />
-                                                            <img src="${pageContext.request.contextPath}/${s.imageUrl}" width="100" />
-                                                            <input type="file" name="image" class="form-control mt-2" accept="image/*" />
-                                                            <input type="hidden" name="oldImageUrl" value="${s.imageUrl}" />
-                                                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label>Loại dịch vụ</label>
+                                <select class="form-select" name="service_type_id">
+                                    <option value="1" ${s.typeId == 1 ? 'selected' : ''}>Restaurant</option>
+                                    <option value="2" ${s.typeId == 2 ? 'selected' : ''}>Spa</option>
+                                    <option value="3" ${s.typeId == 3 ? 'selected' : ''}>Gym</option>
+                                    <option value="4" ${s.typeId == 4 ? 'selected' : ''}>Shuttle</option>
+                                </select>
+                            </div>
 
-                                                        <div class="mb-3">
-                                                            <label>Mô tả</label>
-                                                            <textarea class="form-control" name="description" id="editDescription${s.id}" rows="4">${s.description}</textarea>              
-                                                        </div>
-                                                    </div>
+                            <div class="mb-3">
+                                <label>Tên dịch vụ</label>
+                                <input type="text" name="service_name" class="form-control" value="${s.name}" required />
+                            </div>
 
-                                                    <div class="modal-footer">
-                                                        <button class="btn btn-primary" type="submit">Cập nhật</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </c:forEach>
+                            <div class="mb-3">
+                                <label>Giá</label>
+                                <input type="number" name="service_price" class="form-control" value="${s.price}" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Ảnh hiện tại</label><br />
+                                <img src="${pageContext.request.contextPath}/${s.imageUrl}" width="100" />
+                                <input type="file" name="image" class="form-control mt-2" accept="image/*" />
+                                <input type="hidden" name="oldImageUrl" value="${s.imageUrl}" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Mô tả</label>
+                                <textarea class="form-control" name="description" id="editDescription${s.id}" rows="4">${s.description}</textarea>              
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Cập nhật</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </c:forEach>
     <!-- Modal Thêm Dịch Vụ -->
     <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -322,7 +321,7 @@
 
                         <div class="mb-3">
                             <label for="service_price" class="form-label">Giá (VNĐ)</label>
-                            <input type="number" class="form-control" id="service_price" name="service_price" step="1000"  required>
+                            <input type="number" class="form-control" id="service_price" name="service_price"  required>
                         </div>
 
                         <div class="mb-3">
@@ -349,153 +348,155 @@
 
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
-                                                        // Khởi tạo CKEditor
-                                                        let editor;
-                                                        ClassicEditor
-                                                                .create(document.querySelector('#description'), {
-                                                                    toolbar: [
-                                                                        'heading', '|',
-                                                                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-                                                                        'undo', 'redo'
-                                                                    ]
-                                                                })
-                                                                .then(e => editor = e)
-                                                                .catch(error => console.error(error));
+                                                              // Khởi tạo CKEditor
+                                                              let editor;
+                                                              ClassicEditor
+                                                                      .create(document.querySelector('#description'), {
+                                                                          toolbar: [
+                                                                              'heading', '|',
+                                                                              'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                                                              'undo', 'redo'
+                                                                          ]
+                                                                      })
+                                                                      .then(e => editor = e)
+                                                                      .catch(error => console.error(error));
 
-                                                        // Gắn sự kiện khi form submit
-                                                        document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
-                                                            e.preventDefault(); // ❌ Chặn reload
+                                                              // Gắn sự kiện khi form submit
+                                                              document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
+                                                                  e.preventDefault(); // ❌ Chặn reload
 
-                                                            const form = this;
-                                                            const formData = new FormData(form);
-                                                            formData.set("description", editor.getData());
+                                                                  const form = this;
+                                                                  const formData = new FormData(form);
+                                                                  formData.set("description", editor.getData());
 
-                                                            try {
-                                                                const response = await fetch("addService", {
-                                                                    method: "POST",
-                                                                    body: formData
-                                                                });
+                                                                  try {
+                                                                      const response = await fetch("addService", {
+                                                                          method: "POST",
+                                                                          body: formData
+                                                                      });
 
-                                                                const result = await response.text();
+                                                                      const result = await response.text();
 
-                                                                if (result === "success") {
-                                                                    alert("Thêm dịch vụ thành công!");
-                                                                    location.reload();
-                                                                } else if (result === "duplicate") {
-                                                                    alert("Tên dịch vụ đã tồn tại!");
-                                                                } else if (result === "invalidPrice") {
-                                                                    alert("Giá phải là số dương lớn hơn 0!");
-                                                                } else {
-                                                                    alert("Có lỗi xảy ra khi thêm dịch vụ.");
-                                                                }
-                                                            } catch (err) {
-                                                                alert("Lỗi kết nối máy chủ.");
-                                                                console.error(err);
-                                                            }
-                                                        });
+                                                                      if (result === "success") {
+                                                                          alert("Thêm dịch vụ thành công!");
+                                                                          location.reload();
+                                                                      } else if (result === "duplicate") {
+                                                                          alert("Tên dịch vụ đã tồn tại!");
+                                                                      } else if (result === "invalidPrice") {
+                                                                          alert("Giá phải là số dương lớn hơn 0!");
+                                                                      } else if (result=="blankDescription") {
+	                                                                  alert("Mô tả Không được để trống !");
+                                                                      } else {
+                                                                          alert("Có lỗi xảy ra khi thêm dịch vụ.");
+                                                                      }
+                                                                  } catch (err) {
+                                                                      alert("Lỗi kết nối máy chủ.");
+                                                                      console.error(err);
+                                                                  }
+                                                              });
     </script>
-<script>
-    const ckeditors = {};
+    <script>
+        const ckeditors = {};
 
-    // Khởi tạo CKEditor khi modal mở
-    document.querySelectorAll('[id^="editServiceModal"]').forEach(modal => {
-        modal.addEventListener('shown.bs.modal', function () {
-            const id = this.id.replace("editServiceModal", "");
-            const textarea = document.getElementById("editDescription" + id);
-            if (!ckeditors[id]) {
-                ClassicEditor.create(textarea, {
-                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
-                })
-                .then(editor => ckeditors[id] = editor)
-                .catch(error => console.error(error));
-            }
+        // Khởi tạo CKEditor khi modal mở
+        document.querySelectorAll('[id^="editServiceModal"]').forEach(modal => {
+            modal.addEventListener('shown.bs.modal', function () {
+                const id = this.id.replace("editServiceModal", "");
+                const textarea = document.getElementById("editDescription" + id);
+                if (!ckeditors[id]) {
+                    ClassicEditor.create(textarea, {
+                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+                    })
+                            .then(editor => ckeditors[id] = editor)
+                            .catch(error => console.error(error));
+                }
+            });
         });
-    });
 
-    // Xử lý submit form chỉnh sửa dịch vụ
-    document.querySelectorAll('form[action="updateService"]').forEach(form => {
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
+        // Xử lý submit form chỉnh sửa dịch vụ
+        document.querySelectorAll('form[action="updateService"]').forEach(form => {
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
 
-            const formData = new FormData(this);
-            const serviceIdInput = form.querySelector('input[name="id"]');
-            if (!serviceIdInput) {
-                alert("Không tìm thấy ID dịch vụ.");
-                return;
-            }
-
-            const serviceId = serviceIdInput.value;
-            const editor = ckeditors[serviceId];
-
-            // Validate: loại dịch vụ
-            const typeSelect = form.querySelector('select[name="service_type_id"]');
-            if (!typeSelect || !typeSelect.value) {
-                alert("Vui lòng chọn loại dịch vụ.");
-                return;
-            }
-
-            // Validate: tên dịch vụ
-            const nameInput = form.querySelector('input[name="service_name"]');
-            if (!nameInput || nameInput.value.trim().length === 0) {
-                alert("Tên dịch vụ không được để trống.");
-                return;
-            }
-
-            // Validate: giá
-            const priceInput = form.querySelector('input[name="service_price"]');
-            if (!priceInput) {
-                alert("Không tìm thấy input giá.");
-                return;
-            }
-
-            const price = parseFloat(priceInput.value);
-            if (isNaN(price) || price <= 0) {
-                alert("Giá phải là số dương lớn hơn 0.");
-                return;
-            }
-
-            // Validate: mô tả
-            if (!editor) {
-                alert("Mô tả chưa được khởi tạo trình soạn thảo.");
-                return;
-            }
-
-            const description = editor.getData().trim();
-            if (description.length === 0) {
-                alert("Mô tả không được để trống.");
-                return;
-            }
-
-            // Gán lại mô tả vào formData
-            formData.set("description", description);
-
-            try {
-                const res = await fetch("updateService", {
-                    method: "POST",
-                    body: formData
-                });
-
-                const result = await res.text();
-                if (result === "success") {
-                    alert("Cập nhật dịch vụ thành công!");
-                    location.reload();
-                } else if (result === "duplicate") {
-                    alert("Tên dịch vụ đã tồn tại!");
-                } else if (result === "invalidPrice") {
-                    alert("Giá không hợp lệ!");
-                } else if (result === "invalidDescription") {
-                    alert("Mô tả không hợp lệ!");
-                } else {
-                    alert("Đã xảy ra lỗi khi cập nhật.");
+                const formData = new FormData(this);
+                const serviceIdInput = form.querySelector('input[name="id"]');
+                if (!serviceIdInput) {
+                    alert("Không tìm thấy ID dịch vụ.");
+                    return;
                 }
 
-            } catch (err) {
-                console.error(err);
-                alert("Lỗi kết nối máy chủ.");
-            }
+                const serviceId = serviceIdInput.value;
+                const editor = ckeditors[serviceId];
+
+                // Validate: loại dịch vụ
+                const typeSelect = form.querySelector('select[name="service_type_id"]');
+                if (!typeSelect || !typeSelect.value) {
+                    alert("Vui lòng chọn loại dịch vụ.");
+                    return;
+                }
+
+                // Validate: tên dịch vụ
+                const nameInput = form.querySelector('input[name="service_name"]');
+                if (!nameInput || nameInput.value.trim().length === 0) {
+                    alert("Tên dịch vụ không được để trống.");
+                    return;
+                }
+
+                // Validate: giá
+                const priceInput = form.querySelector('input[name="service_price"]');
+                if (!priceInput) {
+                    alert("Không tìm thấy input giá.");
+                    return;
+                }
+
+                const price = parseFloat(priceInput.value);
+                if (isNaN(price) || price <= 0) {
+                    alert("Giá phải là số dương lớn hơn 0.");
+                    return;
+                }
+
+                // Validate: mô tả
+                if (!editor) {
+                    alert("Mô tả chưa được khởi tạo trình soạn thảo.");
+                    return;
+                }
+
+                const description = editor.getData().trim();
+                if (description.length === 0) {
+                    alert("Mô tả không được để trống.");
+                    return;
+                }
+
+                // Gán lại mô tả vào formData
+                formData.set("description", description);
+
+                try {
+                    const res = await fetch("updateService", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const result = await res.text();
+                    if (result === "success") {
+                        alert("Cập nhật dịch vụ thành công!");
+                        location.reload();
+                    } else if (result === "duplicate") {
+                        alert("Tên dịch vụ đã tồn tại!");
+                    } else if (result === "invalidPrice") {
+                        alert("Giá không hợp lệ!");
+                    } else if (result === "invalidDescription") {
+                        alert("Mô tả không hợp lệ!");
+                    } else {
+                        alert("Đã xảy ra lỗi khi cập nhật.");
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Lỗi kết nối máy chủ.");
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 
 
