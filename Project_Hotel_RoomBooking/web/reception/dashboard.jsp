@@ -73,7 +73,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             <!-- Phần Lọc Phòng -->
             <div class="card-body border-bottom">
               <div class="row align-items-end g-3">
-                <div class="col-md-5">
+                <div class="col-md-4">
                   <label for="roomFilter" class="form-label fw-semibold"
                     >Lọc theo Phòng:</label
                   >
@@ -82,7 +82,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     <!-- Options will be populated dynamically after data loads -->
                   </select>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                   <label for="statusFilter" class="form-label fw-semibold"
                     >Lọc theo Trạng Thái:</label
                   >
@@ -92,6 +92,15 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     <option value="Đang Chờ">Đang Chờ</option>
                     <option value="Nhận Phòng">Nhận Phòng</option>
                     <option value="Trả Phòng">Trả Phòng</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="dateFilter" class="form-label fw-semibold"
+                    >Lọc theo Ngày:</label
+                  >
+                  <select class="form-select" id="dateFilter" disabled>
+                    <option value="">Chọn Ngày</option>
+                    <!-- Options will be populated based on selected room -->
                   </select>
                 </div>
               </div>
@@ -387,6 +396,57 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
         console.log("Room filter populated with", roomNumbers.length, "rooms");
       }
+
+      // New function: Populate date filter based on selected room
+      function populateDateFilter(selectedRoom) {
+        const dateFilter = document.getElementById("dateFilter");
+        if (!dateFilter) {
+          console.error("Date filter element not found!");
+          return;
+        }
+
+        // Reset and disable if no room selected
+        dateFilter.disabled = true;
+        dateFilter.innerHTML = '<option value="">Chọn Ngày</option>';
+
+        if (selectedRoom === "") {
+          console.log("No room selected, disabling date filter");
+          return;
+        }
+
+        const bookings = roomDetails[selectedRoom] || [];
+        if (bookings.length === 0) {
+          console.log(`No bookings for room ${selectedRoom}`);
+          return;
+        }
+
+        // Collect unique check-in dates
+        const uniqueDates = new Set();
+        bookings.forEach((booking) => {
+          if (booking.checkIn) {
+            uniqueDates.add(booking.checkIn); // Assuming checkIn is in YYYY-MM-DD format
+          }
+        });
+
+        // Convert to array and sort by date
+        const sortedDates = Array.from(uniqueDates).sort(
+          (a, b) => new Date(a) - new Date(b)
+        );
+
+        // Populate options
+        sortedDates.forEach((date) => {
+          const option = document.createElement("option");
+          option.value = date;
+          option.textContent = formatDate(date); // Display in DD-MM-YYYY
+          dateFilter.appendChild(option);
+        });
+
+        dateFilter.disabled = false;
+        console.log(
+          `Date filter populated with ${sortedDates.length} dates for room ${selectedRoom}`
+        );
+      }
+
       function renderCalendar(filteredRooms) {
         console.log("Rendering calendar with data:", filteredRooms);
 
@@ -503,9 +563,10 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
       function applyFilters() {
         const selectedRoom = document.getElementById("roomFilter").value;
         const selectedStatus = document.getElementById("statusFilter").value;
+        const selectedDate = document.getElementById("dateFilter").value;
 
         console.log(
-          `Applying filters - Room: ${selectedRoom}, Status: ${selectedStatus}`
+          `Applying filters - Room: ${selectedRoom}, Status: ${selectedStatus}, Date: ${selectedDate}`
         );
 
         // Map UI status values back to database status values
@@ -552,22 +613,36 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         }
 
         // Render the filtered calendar
-        renderCalendar(filteredRooms); // If a specific room is selected with bookings, navigate to the first booking date
-        if (
+        renderCalendar(filteredRooms);
+
+        // If a date is selected, navigate to that date
+        if (selectedDate !== "" && calendar) {
+          try {
+            console.log(`Navigating to date: ${selectedDate}`);
+            calendar.gotoDate(new Date(selectedDate));
+          } catch (err) {
+            console.error("Failed to navigate to date:", err);
+          }
+        } else if (
           selectedRoom !== "" &&
           filteredRooms[selectedRoom] &&
           filteredRooms[selectedRoom].length > 0 &&
           filteredRooms[selectedRoom][0].checkIn
         ) {
+          // Fallback: Navigate to first booking date if no specific date selected
           const firstBooking = filteredRooms[selectedRoom][0];
           try {
-            console.log(`Navigating to date: ${firstBooking.checkIn}`);
+            console.log(
+              `Navigating to first booking date: ${firstBooking.checkIn}`
+            );
             calendar.gotoDate(new Date(firstBooking.checkIn));
           } catch (err) {
             console.error("Failed to navigate to date:", err);
           }
         }
-      } // Initialize on DOM load
+      }
+
+      // Initialize on DOM load
       document.addEventListener("DOMContentLoaded", async () => {
         console.log("=== Dashboard initialization ===");
 
@@ -587,12 +662,16 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         }
 
         // Setup event listeners
-        document
-          .getElementById("roomFilter")
-          ?.addEventListener("change", applyFilters);
-        document
-          .getElementById("statusFilter")
-          ?.addEventListener("change", applyFilters);
+        const roomFilter = document.getElementById("roomFilter");
+        const statusFilter = document.getElementById("statusFilter");
+        const dateFilter = document.getElementById("dateFilter");
+
+        roomFilter?.addEventListener("change", () => {
+          populateDateFilter(roomFilter.value); // Populate date filter when room changes
+          applyFilters();
+        });
+        statusFilter?.addEventListener("change", applyFilters);
+        dateFilter?.addEventListener("change", applyFilters); // Apply filters and gotoDate when date changes
 
         // Update clock
         updateClock();
