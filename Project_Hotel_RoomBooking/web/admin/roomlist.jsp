@@ -19,7 +19,19 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
-        <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+
+        <!-- jQuery (bắt buộc) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Bootstrap (CSS + JS) -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Summernote CSS + JS -->
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
+
     </head>
     <body>
         <div class="d-flex" id="wrapper" >
@@ -59,10 +71,10 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Total Rooms</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${totalRooms}</h2>
+                                    <h6 class="card-subtitle mb-2 text-muted">Tổng số phòng</h6>
+                                    <h2 class="card-title display-6 fw-bold mb-1">${countAll}</h2>
                                     <p class="card-text text-info">
-                                        <i class="fas fa-bed me-1"></i> All room types
+                                        <i class="fas fa-bed me-1"></i> Tất cả các kiẻu phòng
                                     </p>
                                 </div>
                             </div>
@@ -70,7 +82,7 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Available</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Đang trống</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Available'] != null ? statusCounts['Available'] : 0}</h2>
                                     <p class="card-text text-success">
                                         <i class="fas fa-check-circle me-1"></i> Ready for booking
@@ -81,7 +93,7 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Occupied</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Đang sử dụng</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Occupied'] != null ? statusCounts['Occupied'] : 0}</h2>
                                     <p class="card-text text-warning">
                                         <i class="fas fa-user me-1"></i> Currently booked
@@ -92,7 +104,7 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Maintenance</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Bảo trì</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}</h2>
                                     <p class="card-text text-danger">
                                         <i class="fas fa-tools me-1"></i> Under maintenance
@@ -121,10 +133,10 @@
                             <label class="form-label">Tình trạng</label>
                             <select name="roomStatus" class="form-select">
                                 <option value="">Tất cả</option>
-                                <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
+                                <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Đang trống</option>
+                                <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Đang sử dụng</option>
+                                <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Đang dọn dẹp</option>
                             </select>
                         </div>
 
@@ -145,7 +157,7 @@
                     <!-- Rooms Table -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-white border-bottom py-3">
-                            <h5 class="mb-0">All Rooms</h5>
+                            <h5 class="mb-0">Danh sách phòng</h5>
                         </div>
                         <div class="card-body">
                             <div
@@ -162,7 +174,7 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        placeholder="Search rooms..."
+                                        placeholder="Tìm phòng..."
                                         />
                                 </div>
                             </div>
@@ -171,14 +183,13 @@
                                 <table class="table table-striped table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Image</th>
-                                            <th>Room Number</th>
-                                            <th>Room Type</th>
-                                            <th>Floor</th>
-                                            <th>Capacity</th>
-                                            <th>Price/Night</th>
-                                            <th>Status</th>
-                                            <th>Last Cleaned</th>
+                                            <th>Ảnh</th>
+                                            <th>Số phòng</th>
+                                            <th>Kiểu phòng</th>
+                                            <th>Tầng</th>
+                                            <th>Sức chứa</th>
+                                            <th>Giá phòng / đêm</th>
+                                            <th>Trạng thái</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -192,7 +203,7 @@
                                                 <td>${r.roomTypeName}</td>
                                                 <td>${r.floor}</td>
                                                 <td>${r.capacity}</td>
-                                                <td>$${r.roomPrice}</td>
+                                                <td>${r.roomPrice}đ</td>
                                                 <td>
                                                     <span class="badge
                                                           ${r.roomStatus == 'Available' ? 'bg-light text-dark' : 
@@ -202,7 +213,6 @@
                                                               ${r.roomStatus}
                                                           </span>
                                                     </td>
-                                                    <td>2025-05-25</td>
                                                     <td>
                                                         <div class="btn-group" role="group">
                                                             <button class="btn btn-sm btn-outline-primary" title="View Details">
@@ -304,9 +314,7 @@
                                                                     <div class="col-12">
                                                                         <label class="form-label">Description</label>
                                                                         <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
-                                                                        <script>
-                                                                            CKEDITOR.replace('editDescription${r.id}');
-                                                                        </script>
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -326,10 +334,7 @@
                                 <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
                                 <c:set var="endEntry" value="${startEntry + rooms.size() - 1}" />
 
-                                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                                    <small class="text-muted mb-2 mb-md-0">
-                                        Showing ${startEntry} to ${endEntry} of ${totalRooms} entries
-                                    </small>
+                                <div class="d-flex justify-content-end align-items-center mt-3 flex-wrap">
 
                                     <nav aria-label="Room pagination">
                                         <ul class="pagination pagination-sm mb-0">
@@ -389,77 +394,71 @@
                             <h5 class="modal-title">Thêm phòng mới</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <form action="${pageContext.request.contextPath}/addRoom" method="post" enctype="multipart/form-data">
+                        <form id="addRoomForm" enctype="multipart/form-data">
                             <div class="modal-body">
+                                <div id="addRoomError" class="text-danger mb-2"></div>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Room Number</label>
+                                        <label class="form-label">Số phòng</label>
                                         <input type="text" class="form-control" name="roomNumber" required />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Room Type</label>
                                         <select class="form-select" name="roomType" required>
-                                            <option value="">Select Room Type</option>
-                                            <option value="Standard Room">Standard Room</option>
-                                            <option value="Deluxe Room">Deluxe Room</option>
-                                            <option value="Suite">Suite</option>
-                                            <option value="Presidential Suite">Presidential Suite</option>
+                                            <option value="">Chọn loại phòng</option>
+                                            <option value="1">Standard Room</option>
+                                            <option value="2">Deluxe Room</option>
+                                            <option value="3">Suite</option>
+                                            <option value="4">Presidential Suite</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Floor</label>
+                                        <label class="form-label">Tầng</label>
                                         <select class="form-select" name="floor" required>
-                                            <option value="">Select Floor</option>
-                                            <option value="1">1st Floor</option>
-                                            <option value="2">2nd Floor</option>
-                                            <option value="3">3rd Floor</option>
-                                            <option value="4">4th Floor</option>
-                                            <option value="5">5th Floor</option>
+                                            <option value="">Chọn tầng</option>
+                                            <option value="1">Tầng 1</option>
+                                            <option value="2">Tầng 2</option>
+                                            <option value="3">Tầng 3</option>
+                                            <option value="4">Tầng 4</option>
+                                            <option value="5">Tầng 5</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Capacity</label>
+                                        <label class="form-label">Sức chứa</label>
                                         <select class="form-select" name="capacity" required>
-                                            <option value="">Select Capacity</option>
-                                            <option value="1">1 Guest</option>
-                                            <option value="2">2 Guests</option>
-                                            <option value="3">3 Guests</option>
-                                            <option value="4">4 Guests</option>
-                                            <option value="6">6 Guests</option>
+                                            <option value="">Chọn sức chứa</option>
+                                            <option value="1">1 người</option>
+                                            <option value="2">2 người</option>
+                                            <option value="3">3 người</option>
+                                            <option value="4">4 người</option>
+                                            <option value="6">6 người</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Price per Night</label>
+                                        <label class="form-label">Giá phòng / đêm</label>
                                         <input type="number" class="form-control" name="price" step="0.01" required />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Status</label>
+                                        <label class="form-label">Trạng thái</label>
                                         <select class="form-select" name="status" required>
-                                            <option value="Available">Available</option>
-                                            <option value="Occupied">Occupied</option>
-                                            <option value="Maintenance">Maintenance</option>
-                                            <option value="Cleaning">Cleaning</option>
+                                            <option value="Available">Trống</option>
+                                            <option value="Maintenance">Bảo trì</option>
+                                            <option value="Cleaning">Đang dọn dẹp</option>
                                         </select>
                                     </div>
                                     <div class="col-md-12">
-                                        <label class="form-label">Room Image</label>
+                                        <label class="form-label">Ảnh phòng</label>
                                         <input type="file" class="form-control" name="roomImage" accept="image/*" required />
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">Room Description</label>
-                                        <textarea class="form-control" name="description" id="addDescription" rows="3"
-                                                  placeholder="Enter room features and amenities..." required></textarea>
-                                        <script>
-                                            CKEDITOR.replace('addDescription');
-                                        </script>
+                                        <label class="form-label">Mô tả phòng</label>
+                                        <textarea class="form-control" name="description" id="addDescription" rows="5" placeholder="Nhập các tiện ích, đặc điểm phòng..."  ></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    Cancel
-                                </button>
-                                <button type="submit" class="btn btn-primary">Add Room</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-primary">Thêm phòng</button>
                             </div>
                         </form>
                     </div>
@@ -469,22 +468,90 @@
 
 
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
             <script>
-                                            // Sidebar toggle functionality
-                                            document
-                                                    .getElementById("menu-toggle")
-                                                    .addEventListener("click", function () {
-                                                        document
-                                                                .getElementById("sidebar-wrapper")
-                                                                .classList.toggle("toggled");
-                                                    });
+                $(document).ready(function () {
+                    $('#addDescription').summernote({
+                        placeholder: 'Nhập mô tả phòng ở đây...',
+                        tabsize: 2,
+                        height: 300,
+                        toolbar: [
+                            ['style', ['bold', 'italic', 'underline', 'clear']],
+                            ['font', ['fontsize', 'color']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['insert', ['picture', 'link']],
+                            ['view', ['fullscreen', 'codeview']]
+                        ]
+                    });
+                });
+
+
+                // Submit form
+                document.querySelector("#addRoomForm").addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    const form = this;
+                    const formData = new FormData(form);
+                    const descriptionValue = $('#addDescription').summernote('code');
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = descriptionValue;
+                    const plainText = tempDiv.textContent || tempDiv.innerText || "";
+                    if (plainText.trim().length === 0) {
+                        alert("Mô tả không được để trống!");
+                        return;
+                    }
+
+                    try {
+                        // Gửi yêu cầu AJAX tới Servlet
+                        const response = await fetch("addRoom", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        // Nhận kết quả trả về từ Servlet
+                        const result = await response.text();
+                        console.log(result);  // Debug: Kiểm tra kết quả trả về từ Servlet
+
+                        // Xử lý các kết quả trả về từ Servlet
+                        switch (result) {
+                            case 'success':
+                                alert("Thêm phòng thành công!");
+                                $('#addRoomModal').modal('hide');
+                                location.reload();
+                                break;
+                            case 'roomNumberExists':
+                                alert("Số phòng đã tồn tại!");
+                                break;
+                            case 'invalidPrice':
+                                alert("Giá phòng phải là số dương lớn hơn 500000");
+                                break;
+                            case 'emptyDescription':
+                                alert("Mô tả không được để trống!");
+                                break;
+                            case 'tooLongDescription':
+                                alert("Mô tả không được quá 1000 ký tự!");
+                                break;
+                            case 'invalidRoomNumber':
+                                alert("Số phòng phải từ 100 đến 999.");
+                                break;
+                            case 'invalidRoomFloor':
+                                alert("Số phòng không khớp với tầng đã chọn.");
+                                break;
+                            case 'invalidImage':
+                                alert("Ảnh phòng phải là JPG, PNG, JPEG.");
+                                break;
+                            default:
+                                alert("Có lỗi xảy ra khi thêm phòng.");
+                        }
+                    } catch (err) {
+                        alert("Lỗi kết nối máy chủ.");
+                        console.error(err);
+                    }
+                });
             </script>
+
+
+
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         </body>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${error}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </c:if>
     </html>

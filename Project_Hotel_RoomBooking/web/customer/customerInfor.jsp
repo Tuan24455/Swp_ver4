@@ -175,8 +175,8 @@
                                             <label class="info-label">
                                                 <i class="fas fa-at me-2"></i>Tên đăng nhập
                                             </label>
-                                            <input type="text" class="form-control info-input" 
-                                                   value="${user.userName}" readonly disabled />
+                                            <input type="text" class="form-control info-input" name="userName"
+                                                   value="${user.userName}" readonly />
                                         </div>
 
                                         <!-- Email -->

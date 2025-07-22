@@ -82,7 +82,8 @@ CREATE TABLE Promotion (
     percentage DECIMAL(5, 2),
     start_at DATE,
     end_at DATE,
-    description NVARCHAR(MAX)
+    description NVARCHAR(MAX),
+	isDeleted BIT DEFAULT 0
 );
 
 -- Bảng đặt phòng
@@ -302,3 +303,33 @@ WHERE r.room_status != N'Maintenance'
             @check_in < brd.check_out_date AND @check_out > brd.check_in_date
         )
   );
+
+
+
+
+
+
+
+------------------------
+-- bảng quản lý log chatbot ai
+-- mục tiêu để lưu trữ chat phục vụ cho việc nâng cấp chatbot
+CREATE TABLE chat_logs (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NULL, -- NULL for anonymous users
+    user_message NVARCHAR(MAX) NOT NULL,
+    bot_response NVARCHAR(MAX) NOT NULL,
+    timestamp DATETIME2 DEFAULT GETDATE(),
+    session_id NVARCHAR(50) NOT NULL,
+    
+    -- Foreign key constraint (optional, in case user_id references Users table)
+    -- FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+-- Index for better performance on session lookups
+CREATE INDEX IX_chat_logs_session_id ON chat_logs(session_id);
+CREATE INDEX IX_chat_logs_timestamp ON chat_logs(timestamp);
+CREATE INDEX IX_chat_logs_user_id ON chat_logs(user_id);
+
+-- Sample data (optional)
+-- INSERT INTO chat_logs (user_id, user_message, bot_response, session_id) 
+-- VALUES (NULL, 'Xin chào', 'Xin chào! Tôi là trợ lý ảo của khách sạn. Tôi có thể giúp gì cho bạn?', 'demo-session-001');

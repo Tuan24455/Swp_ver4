@@ -45,15 +45,15 @@ public class Encrypt {
 
     // ✅ Hàm main để test
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(System.in);
 
         System.out.print("Nhập chuỗi cần mã hóa: ");
-        String input = scanner.nextLine();
+//        String input = scanner.nextLine();
 
-        String encrypted = encrypt(input);
-        String decrypted = decrypt("OFvwS0UtlUn9k2qYqH/8gQ==");
+//        String encrypted = encrypt(input);
+        String decrypted = decrypt("rqQ9Bx84OF6viefBbpU5DA==");
 
-        System.out.println("🔐 Đã mã hóa: " + encrypted);
+//        System.out.println("🔐 Đã mã hóa: " + encrypted);
         System.out.println("🔓 Giải mã lại : " + decrypted);
     }
 }
