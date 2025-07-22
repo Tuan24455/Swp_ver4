@@ -85,37 +85,55 @@
                 <!-- Filter Section -->
                 <form action="serviceList" method="get" class="mb-4">
                     <input type="hidden" name="page" value="1" />
+                    <div class="card shadow-sm border-0 rounded-4" style="background: #f5f9ff;">
+                        <div class="card-body rounded-4">
+                            <h5 class="mb-4 fw-semibold text-primary">
+                            </h5>
+                            <div class="row g-4 align-items-end">
+                                <!-- Loại Dịch Vụ -->
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold text-secondary">
+                                        <i class="fas fa-concierge-bell me-1"></i> Loại Dịch Vụ
+                                    </label>
+                                    <select class="form-select rounded-pill shadow-sm" name="type">
+                                        <option value="" ${param.type == null ? 'selected' : ''}>Tất Cả</option>
+                                        <option value="Restaurant" ${param.type == 'Restaurant' ? 'selected' : ''}>Nhà Hàng</option>
+                                        <option value="Spa" ${param.type == 'Spa' ? 'selected' : ''}>Spa</option>
+                                        <option value="Gym" ${param.type == 'Gym' ? 'selected' : ''}>Gym</option>
+                                        <option value="Shuttle" ${param.type == 'Shuttle' ? 'selected' : ''}>Di Chuyển</option>
+                                    </select>
+                                </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Loại Dịch Vụ</label>
-                            <select class="form-select" name="type">
-                                <option value="" ${param.type == null ? 'selected' : ''}>Tất Cả</option>
-                                <option value="Restaurant"${param.type == 'Restaurant' ? 'selected' : ''}>Nhà Hàng</option>
-                                <option value="Spa" ${param.type == 'Spa' ? 'selected' : ''}>Spa</option>
-                                <option value="Gym" ${param.type == 'Gym' ? 'selected' : ''}>Gym</option>
-                                <option value="Shuttle" ${param.type == 'Shuttle' ? 'selected' : ''}>Di Chuyển</option>
-                            </select>
-                        </div>
-                        <!-- Giá tối thiểu -->
-                        <div class="col-md-3">
-                            <label class="form-label">Giá Tối Thiểu</label>
-                            <input type="number" class="form-control" name="minPrice" placeholder="VD: 100000" value="${param.minPrice}" />
-                        </div>
+                                <!-- Giá Tối Thiểu -->
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold text-secondary">
+                                        <i class="fas fa-dollar-sign me-1"></i> Giá Tối Thiểu
+                                    </label>
+                                    <input type="number" class="form-control rounded-pill shadow-sm" name="minPrice"
+                                           placeholder="VD: 100000" value="${param.minPrice}" />
+                                </div>
 
-                        <!-- Giá tối đa -->
-                        <div class="col-md-3">
-                            <label class="form-label">Giá Tối Đa</label>
-                            <input type="number" class="form-control" name="maxPrice" placeholder="VD: 500000" value="${param.maxPrice}" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label d-block">&nbsp;</label>    
-                            <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Lọc
-                            </button>
+                                <!-- Giá Tối Đa -->
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold text-secondary">
+                                        <i class="fas fa-dollar-sign me-1"></i> Giá Tối Đa
+                                    </label>
+                                    <input type="number" class="form-control rounded-pill shadow-sm" name="maxPrice"
+                                           placeholder="VD: 500000" value="${param.maxPrice}" />
+                                </div>
+
+                                <!-- Nút Lọc -->
+                                <div class="col-md-3 d-flex justify-content-start mt-2 mt-md-0">
+                                    <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm" type="submit">
+                                        <i class="fas fa-filter me-2"></i> Lọc
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
+
+
 
 
 
@@ -192,10 +210,7 @@
                         <!-- Phân trang -->
                         <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
                         <c:set var="endEntry" value="${startEntry + services.size() - 1}" />
-                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                            <small class="text-muted mb-2 mb-md-0">
-                                Showing ${startEntry} to ${endEntry} of ${totalServices} entries
-                            </small>
+                        <div class="d-flex justify-content-end align-items-center mt-3 flex-wrap">
 
                             <nav aria-label="Service pagination">
                                 <ul class="pagination pagination-sm mb-0">
@@ -382,10 +397,10 @@
                                                                           location.reload();
                                                                       } else if (result === "duplicate") {
                                                                           alert("Tên dịch vụ đã tồn tại!");
-                                                                      } else if (result ==="invalidPrice") {
+                                                                      } else if (result === "invalidPrice") {
                                                                           alert("Giá phải là số dương lớn hơn 0!");
-                                                                      } else if (result==="blankDescription") {
-	                                                                  alert("Mô tả Không được để trống !");
+                                                                      } else if (result === "blankDescription") {
+                                                                          alert("Mô tả Không được để trống !");
                                                                       } else {
                                                                           alert("Có lỗi xảy ra khi thêm dịch vụ.");
                                                                       }

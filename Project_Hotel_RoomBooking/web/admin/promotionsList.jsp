@@ -76,25 +76,35 @@
                 </div>
 
                 <!-- Filter Section -->
-                <form method="get" action="promotionList" class="mb-4">
-                    <input type="hidden" name="page" value="1" />
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Start Date</label>
-                            <input type="date" class="form-control" name="startDate" value="${paramStartDate}" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">End Date</label>
-                            <input type="date" class="form-control" name="endDate" value="${paramEndDate}" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label d-block">&nbsp;</label>    
-                            <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Lọc
-                            </button>
-                        </div>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="get" action="promotionList">
+                            <input type="hidden" name="page" value="1" />
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4 col-sm-6">
+                                    <label for="startDate" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar-alt me-1 text-primary"></i>Start Date
+                                    </label>
+                                    <input type="date" id="startDate" class="form-control rounded-3 shadow-sm" name="startDate" value="${paramStartDate}" />
+                                </div>
+
+                                <div class="col-md-4 col-sm-6">
+                                    <label for="endDate" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar-check me-1 text-success"></i>End Date
+                                    </label>
+                                    <input type="date" id="endDate" class="form-control rounded-3 shadow-sm" name="endDate" value="${paramEndDate}" />
+                                </div>
+
+                                <div class="col-md-4 col-sm-12 d-flex justify-content-start justify-content-md-start mt-2 mt-md-0">
+                                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm  w-md-auto">
+                                        <i class="fas fa-filter me-2"></i>Lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
+
 
 
                 <!-- Promotions Table -->
@@ -123,11 +133,11 @@
                             <table class="table table-striped table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Percentage (%)</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Description</th>
+                                        <th>Tên khuyến mãi</th>
+                                        <th>Ưu đãi (%)</th>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày kết thúc</th>
+                                        <th>Mô tả</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -217,10 +227,7 @@
 
                         <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
                         <c:set var="endEntry" value="${startEntry + pro.size() - 1}" />
-                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                            <small class="text-muted mb-2 mb-md-0">
-                                Showing ${startEntry} to ${endEntry} of ${totalServices} entries
-                            </small>
+                        <div class="d-flex justify-content-end align-items-center mt-3 flex-wrap">
 
                             <nav aria-label="Promotion pagination">
                                 <ul class="pagination pagination-sm mb-0">
