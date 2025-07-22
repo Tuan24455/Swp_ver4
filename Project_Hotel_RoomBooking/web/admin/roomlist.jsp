@@ -19,7 +19,11 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
-        <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     </head>
     <body>
         <div class="d-flex" id="wrapper" >
@@ -304,9 +308,9 @@
                                                                     <div class="col-12">
                                                                         <label class="form-label">Description</label>
                                                                         <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
-                                                                        <script>
+<!--                                                                        <script>
                                                                             CKEDITOR.replace('editDescription${r.id}');
-                                                                        </script>
+                                                                        </script>-->
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -386,77 +390,72 @@
                             <h5 class="modal-title">Thêm phòng mới</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <form action="${pageContext.request.contextPath}/addRoom" method="post" enctype="multipart/form-data">
+                        <form id="addRoomForm" enctype="multipart/form-data">
                             <div class="modal-body">
+                                <div id="addRoomError" class="text-danger mb-2"></div>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Room Number</label>
+                                        <label class="form-label">Số phòng</label>
                                         <input type="text" class="form-control" name="roomNumber" required />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Room Type</label>
                                         <select class="form-select" name="roomType" required>
-                                            <option value="">Select Room Type</option>
-                                            <option value="Standard Room">Standard Room</option>
-                                            <option value="Deluxe Room">Deluxe Room</option>
-                                            <option value="Suite">Suite</option>
-                                            <option value="Presidential Suite">Presidential Suite</option>
+                                            <option value="">Chọn loại phòng</option>
+                                            <option value="1">Standard Room</option>
+                                            <option value="2">Deluxe Room</option>
+                                            <option value="3">Suite</option>
+                                            <option value="4">Presidential Suite</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Floor</label>
+                                        <label class="form-label">Tầng</label>
                                         <select class="form-select" name="floor" required>
-                                            <option value="">Select Floor</option>
-                                            <option value="1">1st Floor</option>
-                                            <option value="2">2nd Floor</option>
-                                            <option value="3">3rd Floor</option>
-                                            <option value="4">4th Floor</option>
-                                            <option value="5">5th Floor</option>
+                                            <option value="">Chọn tầng</option>
+                                            <option value="1">Tầng 1</option>
+                                            <option value="2">Tầng 2</option>
+                                            <option value="3">Tầng 3</option>
+                                            <option value="4">Tầng 4</option>
+                                            <option value="5">Tầng 5</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Capacity</label>
+                                        <label class="form-label">Sức chứa</label>
                                         <select class="form-select" name="capacity" required>
-                                            <option value="">Select Capacity</option>
-                                            <option value="1">1 Guest</option>
-                                            <option value="2">2 Guests</option>
-                                            <option value="3">3 Guests</option>
-                                            <option value="4">4 Guests</option>
-                                            <option value="6">6 Guests</option>
+                                            <option value="">Chọn sức chứa</option>
+                                            <option value="1">1 người</option>
+                                            <option value="2">2 người</option>
+                                            <option value="3">3 người</option>
+                                            <option value="4">4 người</option>
+                                            <option value="6">6 người</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Price per Night</label>
+                                        <label class="form-label">Giá phòng / đêm</label>
                                         <input type="number" class="form-control" name="price" step="0.01" required />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Status</label>
+                                        <label class="form-label">Trạng thái</label>
                                         <select class="form-select" name="status" required>
-                                            <option value="Available">Available</option>
-                                            <option value="Occupied">Occupied</option>
-                                            <option value="Maintenance">Maintenance</option>
-                                            <option value="Cleaning">Cleaning</option>
+                                            <option value="Available">Trống</option>
+                                            <option value="Occupied">Đang sử dụng</option>
+                                            <option value="Maintenance">Bảo trì</option>
+                                            <option value="Cleaning">Đang dọn dẹp</option>
                                         </select>
                                     </div>
                                     <div class="col-md-12">
-                                        <label class="form-label">Room Image</label>
+                                        <label class="form-label">Ảnh phòng</label>
                                         <input type="file" class="form-control" name="roomImage" accept="image/*" required />
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">Room Description</label>
-                                        <textarea class="form-control" name="description" id="addDescription" rows="3"
-                                                  placeholder="Enter room features and amenities..." required></textarea>
-                                        <script>
-                                            CKEDITOR.replace('addDescription');
-                                        </script>
+                                        <label class="form-label">Mô tả phòng</label>
+                                        <textarea class="form-control" name="description" id="addDescription" rows="5" placeholder="Nhập các tiện ích, đặc điểm phòng..." ></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    Cancel
-                                </button>
-                                <button type="submit" class="btn btn-primary">Add Room</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-primary">Thêm phòng</button>
                             </div>
                         </form>
                     </div>
@@ -466,22 +465,113 @@
 
 
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
             <script>
-                                            // Sidebar toggle functionality
-                                            document
-                                                    .getElementById("menu-toggle")
-                                                    .addEventListener("click", function () {
-                                                        document
-                                                                .getElementById("sidebar-wrapper")
-                                                                .classList.toggle("toggled");
-                                                    });
+                let ckeditor;
+
+                // Plugin xử lý ảnh base64 (nếu muốn upload ảnh bằng base64)
+                class Base64UploadAdapter {
+                    constructor(loader) {
+                        this.loader = loader;
+                    }
+
+                    upload() {
+                        return this.loader.file
+                                .then(file => {
+                                    return new Promise((resolve, reject) => {
+                                        const reader = new FileReader();
+                                        reader.onload = () => resolve({default: reader.result});
+                                        reader.onerror = error => reject(error);
+                                        reader.readAsDataURL(file);
+                                    });
+                                });
+                    }
+
+                    abort() {}
+                }
+
+                function MyCustomUploadAdapterPlugin(editor) {
+                    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                        return new Base64UploadAdapter(loader);
+                    };
+                }
+
+                // Khởi tạo CKEditor khi mở modal
+                $('#addRoomModal').on('shown.bs.modal', function () {
+                    if (!ckeditor) {
+                        ClassicEditor
+                                .create(document.querySelector('#addDescription'), {
+                                    extraPlugins: [MyCustomUploadAdapterPlugin]
+                                })
+                                .then(editor => {
+                                    ckeditor = editor;
+                                })
+                                .catch(error => {
+                                    console.error('Error initializing CKEditor:', error);
+                                });
+                    }
+                });
+
+                // Submit form
+                document.querySelector("#addRoomForm").addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    const form = this;
+                    const formData = new FormData(form);
+                    const descriptionValue = ckeditor.getData();
+                    formData.set("description", descriptionValue);
+
+                    try {
+                        // Gửi yêu cầu AJAX tới Servlet
+                        const response = await fetch("addRoom", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        // Nhận kết quả trả về từ Servlet
+                        const result = await response.text();
+                        console.log(result);  // Debug: Kiểm tra kết quả trả về từ Servlet
+
+                        // Xử lý các kết quả trả về từ Servlet
+                        switch (result) {
+                            case 'success':
+                                alert("Thêm phòng thành công!");
+                                $('#addRoomModal').modal('hide');
+                                location.reload();
+                                break;
+                            case 'roomNumberExists':
+                                alert("Số phòng đã tồn tại!");
+                                break;
+                            case 'invalidPrice':
+                                alert("Giá phòng phải là số dương lớn hơn 500000");
+                                break;
+                            case 'emptyDescription':
+                                alert("Mô tả không được để trống!");
+                                break;
+                            case 'tooLongDescription':
+                                alert("Mô tả không được quá 1000 ký tự!");
+                                break;
+                            case 'invalidRoomNumber':
+                                alert("Số phòng phải từ 100 đến 999.");
+                                break;
+                            case 'invalidRoomFloor':
+                                alert("Số phòng không khớp với tầng đã chọn.");
+                                break;
+                            case 'invalidImage':
+                                alert("Ảnh phòng phải là JPG, PNG, JPEG.");
+                                break;
+                            default:
+                                alert("Có lỗi xảy ra khi thêm phòng.");
+                        }
+                    } catch (err) {
+                        alert("Lỗi kết nối máy chủ.");
+                        console.error(err);
+                    }
+                });
             </script>
+
+
+
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         </body>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${error}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </c:if>
     </html>

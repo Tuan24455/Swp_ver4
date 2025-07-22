@@ -483,6 +483,24 @@ public class RoomDao {
 
     return rooms;  // Trả về danh sách phòng của tầng yêu cầu
 }
+    
+    public boolean isRoomNumberExists(int roomNumber) {
+    String sql = "SELECT COUNT(*) FROM Rooms WHERE room_number = ? AND isDelete = 0";
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, roomNumber);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
 
 
 }

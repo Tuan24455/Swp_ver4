@@ -78,54 +78,142 @@ public class addRoom extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+     request.setCharacterEncoding("UTF-8");
 
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
-        String roomNumber = request.getParameter("roomNumber");
-        String roomTypeName = request.getParameter("roomType");
-        String roomPrice = request.getParameter("price");
-        String roomStatus = request.getParameter("status");
-        String capacity = request.getParameter("capacity");
+    try (PrintWriter out = response.getWriter()) {
+        // Lấy dữ liệu từ form
+        String roomNumberRaw = request.getParameter("roomNumber");
+        String roomTypeRaw = request.getParameter("roomType");
+        String floorRaw = request.getParameter("floor");
+        String capacityRaw = request.getParameter("capacity");
+        String priceRaw = request.getParameter("price");
+        String status = request.getParameter("status");
         String description = request.getParameter("description");
-        String floor = request.getParameter("floor");
-
         Part filePart = request.getPart("roomImage");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
-        // Đường dẫn vật lý lưu file
-//        String uploadPath = getServletContext().getRealPath("/") + "images/rooms";
-        String uploadPath = getServletContext().getRealPath("/images/rooms");
+        // Kiểm tra xem roomNumber có null hoặc rỗng không
+        if (roomNumberRaw == null || roomNumberRaw.isEmpty()) {
+            response.getWriter().write("invalidRoomNumber"); // Trả về lỗi nếu số phòng null hoặc rỗng
+            return;
+        }
+
+        // Kiểm tra giá trị roomType, floor, capacity, price, description có null không
+        if (roomTypeRaw == null || roomTypeRaw.isEmpty()) {
+            response.getWriter().write("invalidRoomType");
+            return;
+        }
+        if (floorRaw == null || floorRaw.isEmpty()) {
+            response.getWriter().write("invalidFloor");
+            return;
+        }
+        if (capacityRaw == null || capacityRaw.isEmpty()) {
+            response.getWriter().write("invalidCapacity");
+            return;
+        }
+        if (priceRaw == null || priceRaw.isEmpty()) {
+            response.getWriter().write("invalidPrice");
+            return;
+        }
+        if (description == null || description.trim().isEmpty()) {
+            response.getWriter().write("emptyDescription");
+            return;
+        }
+
+        // Chuyển đổi các giá trị sang kiểu đúng
+        int roomTypeId = Integer.parseInt(roomTypeRaw);
+        int floor = Integer.parseInt(floorRaw);
+        int capacity = Integer.parseInt(capacityRaw);
+        double price = Double.parseDouble(priceRaw);
+
+        // Lấy ảnh phòng
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+        // Validate ảnh
+        if (!fileExtension.equals("jpg") && !fileExtension.equals("jpeg") && !fileExtension.equals("png")) {
+            response.getWriter().write("invalidImage");
+            return;
+        }
+
+        // Validate số phòng
+        int roomNumber;
+        try {
+            roomNumber = Integer.parseInt(roomNumberRaw);
+            if (roomNumber < 100 || roomNumber > 999) {
+                response.getWriter().write("invalidRoomNumber");
+                return;
+            }
+            if (floor == 1 && (roomNumber < 100 || roomNumber >= 200)) {
+                response.getWriter().write("invalidRoomFloor");
+                return;
+            }
+            if (floor == 2 && (roomNumber < 200 || roomNumber >= 300)) {
+                response.getWriter().write("invalidRoomFloor");
+                return;
+            }
+            if (floor == 3 && (roomNumber < 300 || roomNumber >= 400)) {
+                response.getWriter().write("invalidRoomFloor");
+                return;
+            }
+            if (floor == 4 && (roomNumber < 400 || roomNumber >= 500)) {
+                response.getWriter().write("invalidRoomFloor");
+                return;
+            }
+            if (floor == 5 && (roomNumber < 500 || roomNumber >= 600)) {
+                response.getWriter().write("invalidRoomFloor");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            response.getWriter().write("invalidRoomNumber");
+            return;
+        }
+
+        RoomDao dao = new RoomDao();
+
+        // Kiểm tra trùng số phòng
+        if (dao.isRoomNumberExists(roomNumber)) {
+            response.getWriter().write("roomNumberExists");
+            return;
+        }
+
+        // Validate giá phòng
+        if (price < 500000) {
+            response.getWriter().write("invalidPrice");
+            return;
+        }
+
+        // Lưu ảnh vào server
+        String uploadPath = request.getServletContext().getRealPath("/images/rooms");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
-
-        // ✅ Lưu file vào thư mục
-        filePart.write(uploadPath + File.separator + fileName);
-
-        // ✅ Đường dẫn lưu trong DB (trình duyệt truy cập được)
+        String filePath = uploadPath + File.separator + fileName;
+        filePart.write(filePath);
         String imageUrl = "images/rooms/" + fileName;
 
-        RoomDao dao = new RoomDao();
-        int roomTypeId = dao.getRoomTypeIdByName(roomTypeName);
+        // Tạo đối tượng Room và insert vào DB
+        Room room = new Room();
+        room.setRoomNumber(String.valueOf(roomNumber));
+        room.setRoomTypeId(roomTypeId);
+        room.setFloor(floor);
+        room.setCapacity(capacity);
+        room.setRoomPrice(price);
+        room.setRoomStatus(status);
+        room.setDescription(description);
+        room.setImageUrl(imageUrl);
 
-        if (roomTypeId == -1) {
-            request.setAttribute("error", "Loại phòng không hợp lệ.");
-            request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
-            return;
-        }
-
-        Room room = new Room(roomNumber, roomTypeId, Double.parseDouble(roomPrice), roomStatus, Integer.parseInt(capacity), description, imageUrl, Integer.parseInt(floor));
-
-        boolean success = dao.insertRoom(room);
-
-        if (success) {
-            response.sendRedirect(request.getContextPath() + "/roomList");
+        boolean isSuccess = dao.insertRoom(room);
+        if (isSuccess) {
+            response.getWriter().write("success");
         } else {
-            request.setAttribute("error", "Không thể thêm phòng.");
-            request.getRequestDispatcher("addRoom.jsp").forward(request, response);
+            response.getWriter().write("error");
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.getWriter().write("error");
+    }
     }
 
     /**
