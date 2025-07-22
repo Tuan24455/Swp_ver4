@@ -11,6 +11,7 @@ import java.util.Date;
  * @author Phạm Quốc Tuấn
  */
 public class Booking {
+
     private int id;
     private int userId;
     private Date createdAt;
@@ -27,9 +28,36 @@ public class Booking {
     private String vnp_TransactionNo; // VNPay transaction number
     private String vnp_BankCode;     // Bank code from VNPay
     private String vnp_Amount;       // Payment amount in VND
+    private String userName;
+    private Date checkInDate;
+    private Date checkOutDate;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+
+    }
+
+    public Date getCheckInDate() {
+        return checkInDate;
+    }
+
+    public void setCheckInDate(Date checkInDate) {
+        this.checkInDate = checkInDate;
+    }
+
+    public Date getCheckOutDate() {
+        return checkOutDate;
+    }
+
+    public void setCheckOutDate(Date checkOutDate) {
+        this.checkOutDate = checkOutDate;
+    }
 
     // Getter and Setter methods
-
     public int getId() {
         return id;
     }

@@ -20,8 +20,8 @@ public class DBContext {
         try {
             // Change the username, password, and URL to match your database settings
             String username = "sa";
-            String password = "123";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v5;encrypt=true;trustServerCertificate=true";
+            String password = "123456";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v4;encrypt=true;trustServerCertificate=true";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException | SQLException ex) {
@@ -35,7 +35,7 @@ public class DBContext {
             // Tạo kết nối mới nếu cần
             try {
                 String username = "sa";
-                String password = "123";
+                String password = "123456";
                 String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v4;encrypt=true;trustServerCertificate=true";
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                 connection = DriverManager.getConnection(url, username, password);

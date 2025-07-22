@@ -4,7 +4,7 @@
  */
 package controller.reception;
 
-import dao.UserDao;
+import dao.BookingDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,16 +12,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.User;
-import model.UserBookingStats;
+import model.Booking;
 
 /**
  *
- * @author ADMIN
+ * @author Admin
  */
-@WebServlet(name = "ReceptionInforServlet", urlPatterns = {"/receptionInfor"})
-public class ReceptionInforServlet extends HttpServlet {
+@WebServlet(name = "EditBookingServlet", urlPatterns = {"/editBooking"})
+public class EditBookingServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+    private BookingDao bookingDAO; // Khởi tạo DAO của bạn
+
+    public void init() {
+        bookingDAO = new BookingDao(); // Khởi tạo trong init hoặc dùng dependency injection
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +45,10 @@ public class ReceptionInforServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ReceptionInforServlet</title>");
+            out.println("<title>Servlet EditBookingServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ReceptionInforServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet EditBookingServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,16 +66,24 @@ public class ReceptionInforServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            response.sendRedirect("login");
-            return;
+        try {
+            int bookingId = Integer.parseInt(request.getParameter("id"));
+            Booking existingBooking = bookingDAO.getBookingById(bookingId); // Phương thức lấy booking theo ID
+
+            if (existingBooking != null) {
+                request.setAttribute("booking", existingBooking);
+                request.getRequestDispatcher("updateBooking.jsp").forward(request, response);
+            } else {
+                // Xử lý khi không tìm thấy booking, ví dụ: về trang danh sách hoặc hiển thị lỗi
+                response.sendRedirect("bookings?error=bookingNotFound");
+            }
+        } catch (NumberFormatException e) {
+            // Xử lý lỗi nếu id không phải là số hợp lệ
+            response.sendRedirect("bookings?error=invalidId");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("bookings?error=serverError");
         }
-        UserDao dao = new UserDao();
-        UserBookingStats statis = dao.getUserBookingStatsByUserId(user.getId());
-        request.setAttribute("statis", statis);
-        request.getRequestDispatcher("/reception/receptionInfor.jsp").forward(request, response);
     }
 
     /**
