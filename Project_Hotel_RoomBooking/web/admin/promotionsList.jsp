@@ -76,11 +76,9 @@
                 </div>
 
                 <!-- Filter Section -->
-                <form method="get" action="promotionsList"  class="mb-4" >
+                <form method="get" action="promotionList" class="mb-4">
                     <input type="hidden" name="page" value="1" />
-
                     <div class="row g-3">
-
                         <div class="col-md-3">
                             <label class="form-label">Start Date</label>
                             <input type="date" class="form-control" name="startDate" value="${paramStartDate}" />
@@ -105,27 +103,26 @@
                         <h5 class="mb-0">Thông tin khuyến mãi</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                            <div
-                                class="input-group search-table-input"
-                                style="width: 250px"
-                                >
-                                <span class="input-group-text"
-                                      ><i class="fas fa-search"></i
-                                    ></span>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Search promotions..."
-                                    />
+                        <c:if test="${not empty requestScope.noResultsMessage}">
+                            <div class="alert alert-danger" role="alert">
+                                ${requestScope.noResultsMessage}
                             </div>
-                        </div>
+                        </c:if>
+                        <form action="promotionList" method="get" class="d-flex mb-3" style="width: 300px;">
+                            <input type="text" class="form-control me-2" name="searchQuery"
+                                   placeholder="Tìm khuyến mãi..."
+                                   value="${sessionScope.promotionSearchQuery}" />
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+
+
 
                         <div class="table-responsive">
                             <table class="table table-striped table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Title</th>
                                         <th>Percentage (%)</th>
                                         <th>Start Date</th>
@@ -137,7 +134,6 @@
                                 <tbody>
                                     <c:forEach var="p" items="${pro}">
                                         <tr>
-                                            <td>#${p.id}</td>
                                             <td>${p.title}</td>
                                             <td>${p.percentage}</td>
                                             <td>${p.startAt}</td>
@@ -145,20 +141,14 @@
                                             <td>${p.description}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <button
-                                                        class="btn btn-sm btn-outline-warning"
-                                                        title="Edit"
-                                                        type="button"
-                                                        data-id="${p.id}"
-                                                        data-title="${p.title}"
-                                                        data-percentage="${p.percentage}"
-                                                        data-start-at="${p.startAt}"
-                                                        data-end-at="${p.endAt}"
-                                                        data-description="${p.description}"
-                                                        onclick="openEditModal(this)"
-                                                        style="margin-right: 10px;">
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-outline-warning"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#updatePromotionModal${p.id}"
+                                                            style="margin-right: 10px;">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
+
 
 
                                                     <form action="${pageContext.request.contextPath}/deletePromotion" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
@@ -168,6 +158,54 @@
                                                         </button>
                                                     </form>
                                                 </div>
+                                                <div class="modal fade" id="updatePromotionModal${p.id}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Cập Nhật Khuyến Mãi</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="updatePromotionForm" action="updatePromotion" method="post" enctype="multipart/form-data">
+                                                                    <input type="hidden" name="id" value="${p.id}">
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Tiêu Đề</label>
+                                                                        <input type="text" class="form-control" name="title" value="${p.title}" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Tỷ Lệ Giảm Giá (%)</label>
+                                                                        <input type="number" class="form-control" name="percentage" min="0" max="100" value="${p.percentage}" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Ngày Bắt Đầu</label>
+                                                                        <input type="date" class="form-control" name="start_at"
+                                                                               value="<fmt:formatDate value='${p.startAt}' pattern='yyyy-MM-dd' />" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Ngày Kết Thúc</label>
+                                                                        <input type="date" class="form-control" name="end_at"
+                                                                               value="<fmt:formatDate value='${p.endAt}' pattern='yyyy-MM-dd' />" required>
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Mô Tả</label>
+                                                                        <textarea class="form-control" name="description" rows="3" required>${p.description}</textarea>
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                        <button type="submit" class="btn btn-primary">Lưu Cập Nhật</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -177,6 +215,38 @@
                             </table>
                         </div>
 
+                        <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
+                        <c:set var="endEntry" value="${startEntry + pro.size() - 1}" />
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                            <small class="text-muted mb-2 mb-md-0">
+                                Showing ${startEntry} to ${endEntry} of ${totalServices} entries
+                            </small>
+
+                            <nav aria-label="Promotion pagination">
+                                <ul class="pagination pagination-sm mb-0">
+                                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                        <a class="page-link"
+                                           href="promotionList?searchQuery=${param.searchQuery}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage - 1}">
+                                            Previous
+                                        </a>
+                                    </li>
+                                    <c:forEach begin="1" end="${totalPages}" var="p">
+                                        <li class="page-item ${p == currentPage ? 'active' : ''}">
+                                            <a class="page-link"
+                                               href="promotionList?searchQuery=${param.searchQuery}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${p}">
+                                                ${p}
+                                            </a>
+                                        </li>
+                                    </c:forEach>
+                                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                        <a class="page-link"
+                                           href="promotionList?searchQuery=${param.searchQuery}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage + 1}">
+                                            Next
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
 
 
                     </div>
@@ -189,145 +259,153 @@
 
 
 
-<!-- Modal Thêm Khuyến Mãi -->
-<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addPromotionModalLabel">Thêm Khuyến Mãi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addPromotionForm" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Tiêu Đề</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="percentage" class="form-label">Tỷ Lệ Giảm Giá (%)</label>
-                        <input type="number" class="form-control" id="percentage" name="percentage" min="0" max="100" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="start_at" class="form-label">Ngày Bắt Đầu</label>
-                        <input type="date" class="form-control" id="start_at" name="start_at" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="end_at" class="form-label">Ngày Kết Thúc</label>
-                        <input type="date" class="form-control" id="end_at" name="end_at" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Mô Tả</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Lưu Khuyến Mãi</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-    <!-- Update Promotion Modal -->
-    <div class="modal fade" id="updatePromotionModal" tabindex="-1" aria-labelledby="updatePromotionLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <!-- Modal Thêm Khuyến Mãi -->
+    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <form id="updatePromotionForm" action="${pageContext.request.contextPath}/updatePromotion" method="post">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="updatePromotionLabel">Update Promotion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <input type="hidden" id="update_id" name="id" value="${promotion.id}" />
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="update_title" class="form-label">Title</label>
-                                <input type="text" id="update_title" name="title" class="form-control" required
-                                       value="${promotion.title}" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="update_percentage" class="form-label">Percentage (%)</label>
-                                <input type="number" id="update_percentage" name="percentage" class="form-control" min="0" max="100" required
-                                       value="${promotion.percentage}" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="update_start_at" class="form-label">Start Date</label>
-                                <input type="date" id="update_start_at" name="start_at" class="form-control" required
-                                       value="<fmt:formatDate value='${promotion.startAt}' pattern='yyyy-MM-dd'/>" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="update_end_at" class="form-label">End Date</label>
-                                <input type="date" id="update_end_at" name="end_at" class="form-control" required
-                                       value="<fmt:formatDate value='${promotion.endAt}' pattern='yyyy-MM-dd'/>" />
-                            </div>
-
-                            <div class="col-12">
-                                <label for="update_description" class="form-label">Description</label>
-                                <textarea id="update_description" name="description" class="form-control" rows="3">${promotion.description}</textarea>
-                            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPromotionModalLabel">Thêm Khuyến Mãi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPromotionForm" action="addPromotion" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Tiêu Đề</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Promotion</button>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label for="percentage" class="form-label">Tỷ Lệ Giảm Giá (%)</label>
+                            <input type="number" class="form-control" id="percentage" name="percentage" min="0" max="100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_at" class="form-label">Ngày Bắt Đầu</label>
+                            <input type="date" class="form-control" id="start_at" name="start_at" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_at" class="form-label">Ngày Kết Thúc</label>
+                            <input type="date" class="form-control" id="end_at" name="end_at" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô Tả</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-primary">Lưu Khuyến Mãi</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-                            
-     <script>
-    $(document).ready(function () {
-    let today = new Date().toISOString().split('T')[0];
-    $('#start_at').attr('min', today);
-    $('#end_at').attr('min', today);
-});
-    </script>
-    
-    <script>
-$('#addPromotionForm').on('submit', function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
 
-    $.ajax({
-        url: 'addPromotion',
-        method: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            if (response === "duplicate") {
-                alert("Tên khuyến mãi đã tồn tại.");
-            } else if (response === "blankDescription") {
-                alert("Mô tả phải từ 10-100 ký tự.");
-            } else if (response === "invalidPercentage") {
-                alert("Phần trăm khuyến mãi không hợp lệ.");
-            }else if (response === "startMustAfterLastEnd") {
-                alert("Ngày bắt đầu phải sau ngày kết thúc khuyến mãi trước.");
-            } else if (response === "success") {
-                alert("Thêm khuyến mãi thành công!");
-                $('#addPromotionModal').modal('hide');
-                location.reload();
-            } else {
-                alert("Đã xảy ra lỗi bất ngờ!");
-            }
-        },
-        error: function() {
-            alert("Lỗi kết nối máy chủ.");
+
+
+
+    <script>
+        function openUpdateModal(button) {
+            $('#update_id').val($(button).data('id'));
+            $('#update_title').val($(button).data('title'));
+            $('#update_percentage').val($(button).data('percentage'));
+            $('#update_start_at').val($(button).data('start'));
+            $('#update_end_at').val($(button).data('end'));
+            $('#update_description').val($(button).data('description'));
+
+            $('#updatePromotionModal').modal('show');
         }
-    });
-});
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            let today = new Date().toISOString().split('T')[0];
+            $('#start_at').attr('min', today);
+            $('#end_at').attr('min', today);
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const today = new Date().toISOString().split('T')[0];
+            $('input[name="start_at"]').attr('min', today);
+            $('input[name="end_at"]').attr('min', today);
+        });
+
+    </script>
+
+    <script>
+        $('#addPromotionForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: 'addPromotion',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response === "duplicate") {
+                        alert("Tên khuyến mãi đã tồn tại.");
+                    } else if (response === "blankDescription") {
+                        alert("Mô tả phải từ 10-100 ký tự.");
+                    } else if (response === "invalidPercentage") {
+                        alert("Phần trăm khuyến mãi không hợp lệ.");
+                    } else if (response === "startMustAfterLastEnd") {
+                        alert("Ngày bắt đầu phải sau ngày kết thúc khuyến mãi trước.");
+                    } else if (response === "invalidDate") {
+                        alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
+                    } else if (response === "success") {
+                        alert("Thêm khuyến mãi thành công!");
+                        $('#addPromotionModal').modal('hide');
+                        location.reload();
+                    } else {
+                        alert("Đã xảy ra lỗi bất ngờ!");
+                    }
+                },
+                error: function () {
+                    alert("Lỗi kết nối máy chủ.");
+                }
+            });
+        });
+
+    </script>
+    <script>
+        $(document).on('submit', '.updatePromotionForm', function (e) {
+            e.preventDefault(); // Quan trọng! Không để form reload
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: 'updatePromotion',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.trim() === "startMustAfterLastEnd") {
+                        alert("Ngày bắt đầu phải sau ngày kết thúc khuyến mãi trước.");
+                    } else if (response === "duplicate") {
+                        alert("Tên khuyến mãi đã tồn tại.");
+                    } else if (response.trim() === "success") {
+                        alert("Cập nhật thành công!");
+                        $('.modal').modal('hide');
+                        location.reload();
+                    } else if (response === "invalidDate") {
+                        alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
+                    } else if (response === "blankDescription") {
+                        alert("Mô tả phải từ 10-100 ký tự.");
+                    } else {
+                        alert(response);
+                    }
+                },
+                error: function () {
+                    alert("Lỗi kết nối máy chủ.");
+                }
+            });
+        });
+
     </script>
 
 
