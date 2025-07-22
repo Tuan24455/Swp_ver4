@@ -321,6 +321,136 @@ public class ServiceDao {
 
         return list;
     }
+    
+public List<Service> filterServicesWithSearchAndPagination(String searchQuery, String type, Double minPrice, Double maxPrice, int pageNumber, int pageSize) {
+    List<Service> list = new ArrayList<>();
+    StringBuilder sql = new StringBuilder(
+            "SELECT s.*, st.service_type FROM Services s " +
+            "JOIN ServiceTypes st ON s.service_type_id = st.id " +
+            "WHERE s.isDeleted = 0"
+    );
+
+    List<Object> params = new ArrayList<>();
+
+    // Nếu có tìm kiếm, thêm điều kiện tìm kiếm vào SQL
+    if (searchQuery != null && !searchQuery.isEmpty()) {
+        sql.append(" AND s.service_name LIKE ?");
+        params.add("%" + searchQuery + "%");  // Sử dụng LIKE để tìm kiếm chuỗi khớp
+    }
+
+    // Thêm điều kiện lọc theo loại dịch vụ nếu có
+    if (type != null && !type.isEmpty()) {
+        sql.append(" AND st.service_type = ?");
+        params.add(type);
+    }
+
+    // Thêm điều kiện lọc theo giá tối thiểu nếu có
+    if (minPrice != null) {
+        sql.append(" AND s.service_price >= ?");
+        params.add(minPrice);
+    }
+
+    // Thêm điều kiện lọc theo giá tối đa nếu có
+    if (maxPrice != null) {
+        sql.append(" AND s.service_price <= ?");
+        params.add(maxPrice);
+    }
+
+    // Thêm phần phân trang vào truy vấn
+    int offset = (pageNumber - 1) * pageSize;
+    sql.append(" ORDER BY s.id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+    // Thêm offset và pageSize vào tham số truy vấn
+    params.add(offset);
+    params.add(pageSize);
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+        // Gán giá trị cho các tham số trong câu truy vấn
+        for (int i = 0; i < params.size(); i++) {
+            ps.setObject(i + 1, params.get(i));
+        }
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Service s = new Service();
+                s.setId(rs.getInt("id"));
+                s.setName(rs.getString("service_name"));
+                s.setTypeId(rs.getInt("service_type_id"));
+                s.setTypeName(rs.getString("service_type"));
+                s.setPrice(rs.getDouble("service_price"));
+                s.setDescription(rs.getString("description"));
+                s.setImageUrl(rs.getString("image_url"));
+                list.add(s);
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+
+
+    
+ public int getTotalServices(String searchQuery, String type, Double minPrice, Double maxPrice) {
+    StringBuilder sql = new StringBuilder(
+            "SELECT COUNT(*) FROM Services s " +
+            "JOIN ServiceTypes st ON s.service_type_id = st.id " +
+            "WHERE s.isDeleted = 0"
+    );
+
+    List<Object> params = new ArrayList<>();
+
+    // Thêm điều kiện lọc theo tên dịch vụ (tìm kiếm theo tên)
+    if (searchQuery != null && !searchQuery.isEmpty()) {
+        sql.append(" AND s.service_name LIKE ?");
+        params.add("%" + searchQuery + "%");  // Tìm kiếm theo tên dịch vụ có chứa searchQuery
+    }
+
+    // Thêm điều kiện lọc theo loại dịch vụ nếu có
+    if (type != null && !type.isEmpty()) {
+        sql.append(" AND st.service_type = ?");
+        params.add(type);
+    }
+
+    // Thêm điều kiện lọc theo giá tối thiểu nếu có
+    if (minPrice != null) {
+        sql.append(" AND s.service_price >= ?");
+        params.add(minPrice);
+    }
+
+    // Thêm điều kiện lọc theo giá tối đa nếu có
+    if (maxPrice != null) {
+        sql.append(" AND s.service_price <= ?");
+        params.add(maxPrice);
+    }
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+        // Gán giá trị cho các tham số trong câu truy vấn
+        for (int i = 0; i < params.size(); i++) {
+            ps.setObject(i + 1, params.get(i));
+        }
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1); // Trả về tổng số dịch vụ
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return 0;
+}
+
+
+
 
     // test thử 
     public static void main(String[] args) {

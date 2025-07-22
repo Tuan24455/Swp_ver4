@@ -326,10 +326,7 @@
                                 <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
                                 <c:set var="endEntry" value="${startEntry + rooms.size() - 1}" />
 
-                                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                                    <small class="text-muted mb-2 mb-md-0">
-                                        Showing ${startEntry} to ${endEntry} of ${totalRooms} entries
-                                    </small>
+                                <div class="d-flex justify-content-end align-items-center mt-3 flex-wrap">
 
                                     <nav aria-label="Room pagination">
                                         <ul class="pagination pagination-sm mb-0">

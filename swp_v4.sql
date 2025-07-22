@@ -82,7 +82,8 @@ CREATE TABLE Promotion (
     percentage DECIMAL(5, 2),
     start_at DATE,
     end_at DATE,
-    description NVARCHAR(MAX)
+    description NVARCHAR(MAX),
+	isDeleted BIT DEFAULT 0
 );
 
 -- Bảng đặt phòng
