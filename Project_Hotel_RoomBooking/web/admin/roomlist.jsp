@@ -19,17 +19,6 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
-        <!--        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-        
-        
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
-
-        <!--         CSS Summernote 
-                <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
-        
-                 jQuery và JS Summernote 
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>-->
 
         <!-- jQuery (bắt buộc) -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -327,7 +316,7 @@
                                                                     <div class="col-12">
                                                                         <label class="form-label">Description</label>
                                                                         <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
-                                                                        
+
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -466,7 +455,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Mô tả phòng</label>
-                                        <textarea class="form-control" name="description" id="addDescription" rows="5" placeholder="Nhập các tiện ích, đặc điểm phòng..." ></textarea>
+                                        <textarea class="form-control" name="description" id="addDescription" rows="5" placeholder="Nhập các tiện ích, đặc điểm phòng..."  ></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -506,7 +495,13 @@
                     const form = this;
                     const formData = new FormData(form);
                     const descriptionValue = $('#addDescription').summernote('code');
-                    formData.set("description", descriptionValue);
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = descriptionValue;
+                    const plainText = tempDiv.textContent || tempDiv.innerText || "";
+                    if (plainText.trim().length === 0) {
+                        alert("Mô tả không được để trống!");
+                        return;
+                    }
 
                     try {
                         // Gửi yêu cầu AJAX tới Servlet

@@ -193,15 +193,15 @@ public class addRoom extends HttpServlet {
         String imageUrl = "images/rooms/" + fileName;
 
         // Tạo đối tượng Room và insert vào DB
-        Room room = new Room();
-        room.setRoomNumber(String.valueOf(roomNumber));
-        room.setRoomTypeId(roomTypeId);
-        room.setFloor(floor);
-        room.setCapacity(capacity);
-        room.setRoomPrice(price);
-        room.setRoomStatus(status);
-        room.setDescription(description);
-        room.setImageUrl(imageUrl);
+        Room room = new Room(String.valueOf(roomNumber), roomTypeId, price, status, capacity, description, imageUrl, floor);
+//        room.setRoomNumber(String.valueOf(roomNumber));
+//        room.setRoomTypeId(roomTypeId);
+//        room.setFloor(floor);
+//        room.setCapacity(capacity);
+//        room.setRoomPrice(price);
+//        room.setRoomStatus(status);
+//        room.setDescription(description);
+//        room.setImageUrl(imageUrl);
 
         boolean isSuccess = dao.insertRoom(room);
         if (isSuccess) {
