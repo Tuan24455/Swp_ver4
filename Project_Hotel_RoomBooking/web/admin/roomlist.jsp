@@ -71,10 +71,10 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Total Rooms</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Tổng số phòng</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${countAll}</h2>
                                     <p class="card-text text-info">
-                                        <i class="fas fa-bed me-1"></i> All room types
+                                        <i class="fas fa-bed me-1"></i> Tất cả các kiẻu phòng
                                     </p>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Available</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Đang trống</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Available'] != null ? statusCounts['Available'] : 0}</h2>
                                     <p class="card-text text-success">
                                         <i class="fas fa-check-circle me-1"></i> Ready for booking
@@ -93,7 +93,7 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Occupied</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Đang sử dụng</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Occupied'] != null ? statusCounts['Occupied'] : 0}</h2>
                                     <p class="card-text text-warning">
                                         <i class="fas fa-user me-1"></i> Currently booked
@@ -104,7 +104,7 @@
                         <div class="col-xl-3 col-md-6">
                             <div class="card kpi-card shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Maintenance</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Bảo trì</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}</h2>
                                     <p class="card-text text-danger">
                                         <i class="fas fa-tools me-1"></i> Under maintenance
@@ -133,10 +133,10 @@
                             <label class="form-label">Tình trạng</label>
                             <select name="roomStatus" class="form-select">
                                 <option value="">Tất cả</option>
-                                <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
+                                <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Đang trống</option>
+                                <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Đang sử dụng</option>
+                                <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Đang dọn dẹp</option>
                             </select>
                         </div>
 
@@ -157,7 +157,7 @@
                     <!-- Rooms Table -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-white border-bottom py-3">
-                            <h5 class="mb-0">All Rooms</h5>
+                            <h5 class="mb-0">Danh sách phòng</h5>
                         </div>
                         <div class="card-body">
                             <div
@@ -174,7 +174,7 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        placeholder="Search rooms..."
+                                        placeholder="Tìm phòng..."
                                         />
                                 </div>
                             </div>
@@ -183,14 +183,13 @@
                                 <table class="table table-striped table-hover align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Image</th>
-                                            <th>Room Number</th>
-                                            <th>Room Type</th>
-                                            <th>Floor</th>
-                                            <th>Capacity</th>
-                                            <th>Price/Night</th>
-                                            <th>Status</th>
-                                            <th>Last Cleaned</th>
+                                            <th>Ảnh</th>
+                                            <th>Số phòng</th>
+                                            <th>Kiểu phòng</th>
+                                            <th>Tầng</th>
+                                            <th>Sức chứa</th>
+                                            <th>Giá phòng / đêm</th>
+                                            <th>Trạng thái</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -204,7 +203,7 @@
                                                 <td>${r.roomTypeName}</td>
                                                 <td>${r.floor}</td>
                                                 <td>${r.capacity}</td>
-                                                <td>$${r.roomPrice}</td>
+                                                <td>${r.roomPrice}đ</td>
                                                 <td>
                                                     <span class="badge
                                                           ${r.roomStatus == 'Available' ? 'bg-light text-dark' : 
@@ -214,7 +213,6 @@
                                                               ${r.roomStatus}
                                                           </span>
                                                     </td>
-                                                    <td>2025-05-25</td>
                                                     <td>
                                                         <div class="btn-group" role="group">
                                                             <button class="btn btn-sm btn-outline-primary" title="View Details">
@@ -444,7 +442,6 @@
                                         <label class="form-label">Trạng thái</label>
                                         <select class="form-select" name="status" required>
                                             <option value="Available">Trống</option>
-                                            <option value="Occupied">Đang sử dụng</option>
                                             <option value="Maintenance">Bảo trì</option>
                                             <option value="Cleaning">Đang dọn dẹp</option>
                                         </select>
