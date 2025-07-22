@@ -382,9 +382,9 @@
                                                                           location.reload();
                                                                       } else if (result === "duplicate") {
                                                                           alert("Tên dịch vụ đã tồn tại!");
-                                                                      } else if (result === "invalidPrice") {
+                                                                      } else if (result ==="invalidPrice") {
                                                                           alert("Giá phải là số dương lớn hơn 0!");
-                                                                      } else if (result=="blankDescription") {
+                                                                      } else if (result==="blankDescription") {
 	                                                                  alert("Mô tả Không được để trống !");
                                                                       } else {
                                                                           alert("Có lỗi xảy ra khi thêm dịch vụ.");

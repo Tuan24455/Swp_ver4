@@ -21,6 +21,8 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
             />
         <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body>
         <div class="d-flex" id="wrapper">
@@ -74,19 +76,11 @@
                 </div>
 
                 <!-- Filter Section -->
-                <form method="get" action="promotionsList"  class="mb-4">
+                <form method="get" action="promotionsList"  class="mb-4" >
                     <input type="hidden" name="page" value="1" />
 
                     <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="" ${paramStatus == null ? 'selected' : ''}>All Status</option>
-                                <option value="active" ${paramStatus == 'active' ? 'selected' : ''}>Active</option>
-                                <option value="expired" ${paramStatus == 'expired' ? 'selected' : ''}>Expired</option>
-                                <option value="upcoming" ${paramStatus == 'upcoming' ? 'selected' : ''}>Upcoming</option>
-                            </select>
-                        </div>
+
                         <div class="col-md-3">
                             <label class="form-label">Start Date</label>
                             <input type="date" class="form-control" name="startDate" value="${paramStartDate}" />
@@ -98,34 +92,20 @@
                         <div class="col-md-3">
                             <label class="form-label d-block">&nbsp;</label>    
                             <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Tìm Kiếm 
+                                <i class="fas fa-search me-2"></i>Lọc
                             </button>
                         </div>
                     </div>
-
                 </form>
 
 
                 <!-- Promotions Table -->
                 <div class="card shadow-sm">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="mb-0">All Promotions</h5>
+                        <h5 class="mb-0">Thông tin khuyến mãi</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                            <div class="d-flex align-items-center mb-2 mb-md-0">
-                                <span class="me-2 text-muted">Show</span>
-                                <select
-                                    class="form-select form-select-sm"
-                                    style="width: auto"
-                                    >
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                                <span class="ms-2 text-muted">entries</span>
-                            </div>
                             <div
                                 class="input-group search-table-input"
                                 style="width: 250px"
@@ -197,41 +177,7 @@
                             </table>
                         </div>
 
-                        <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
-                        <c:set var="endEntry" value="${startEntry + pro.size() - 1}" />
 
-                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                            <small class="text-muted mb-2 mb-md-0">
-                                Showing ${startEntry} to ${endEntry} of ${totalPromotions} entries
-                            </small>
-
-                            <nav aria-label="Promotion pagination">
-                                <ul class="pagination pagination-sm mb-0">
-                                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                        <a class="page-link"
-                                           href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage - 1}">
-                                            Previous
-                                        </a>
-                                    </li>
-
-                                    <c:forEach begin="1" end="${totalPages}" var="p">
-                                        <li class="page-item ${p == currentPage ? 'active' : ''}">
-                                            <a class="page-link"
-                                               href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${p}">
-                                                ${p}
-                                            </a>
-                                        </li>
-                                    </c:forEach>
-
-                                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                        <a class="page-link"
-                                           href="promotionsList?status=${paramStatus}&startDate=${paramStartDate}&endDate=${paramEndDate}&page=${currentPage + 1}">
-                                            Next
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
 
                     </div>
                 </div>
@@ -243,53 +189,47 @@
 
 
 
-    <!-- Add Promotion Modal -->
-    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form id="promotionForm" action="${pageContext.request.contextPath}/addPromotion" method="post">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addPromotionLabel">Add New Promotion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Modal Thêm Khuyến Mãi -->
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPromotionModalLabel">Thêm Khuyến Mãi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPromotionForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Tiêu Đề</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
                     </div>
-
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" id="title" name="title" class="form-control" required />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="percentage" class="form-label">Percentage (%)</label>
-                                <input type="number" id="percentage" name="percentage" class="form-control" min="0" max="100" required />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="start_at" class="form-label">Start Date</label>
-                                <input type="date" id="start_at" name="start_at" class="form-control" required />
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="end_at" class="form-label">End Date</label>
-                                <input type="date" id="end_at" name="end_at" class="form-control" required />
-                            </div>
-
-                            <div class="col-12">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
+                    <div class="mb-3">
+                        <label for="percentage" class="form-label">Tỷ Lệ Giảm Giá (%)</label>
+                        <input type="number" class="form-control" id="percentage" name="percentage" min="0" max="100" required>
                     </div>
-
+                    <div class="mb-3">
+                        <label for="start_at" class="form-label">Ngày Bắt Đầu</label>
+                        <input type="date" class="form-control" id="start_at" name="start_at" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end_at" class="form-label">Ngày Kết Thúc</label>
+                        <input type="date" class="form-control" id="end_at" name="end_at" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Mô Tả</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Promotion</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu Khuyến Mãi</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+</div>
+
+
 
 
     <!-- Update Promotion Modal -->
@@ -345,45 +285,49 @@
             </div>
         </div>
     </div>
-    <script>
-        function openEditModal(button) {
-            const id = button.getAttribute('data-id');
-            const title = button.getAttribute('data-title');
-            const percentage = button.getAttribute('data-percentage');
-            const startAt = button.getAttribute('data-start-at');
-            const endAt = button.getAttribute('data-end-at');
-            const description = button.getAttribute('data-description');
 
-            document.getElementById('update_id').value = id;
-            document.getElementById('update_title').value = title;
-            document.getElementById('update_percentage').value = percentage;
-            document.getElementById('update_start_at').value = startAt.substring(0, 10);
-            document.getElementById('update_end_at').value = endAt.substring(0, 10);
-            document.getElementById('update_description').value = description;
-
-            var myModal = new bootstrap.Modal(document.getElementById('updatePromotionModal'));
-            myModal.show();
-        }
+                            
+     <script>
+    $(document).ready(function () {
+    let today = new Date().toISOString().split('T')[0];
+    $('#start_at').attr('min', today);
+    $('#end_at').attr('min', today);
+});
     </script>
-
+    
     <script>
-        function validatePromotionForm(formId, startDateId, endDateId) {
-            const form = document.getElementById(formId);
-            form.addEventListener('submit', function (event) {
-                const startDate = new Date(document.getElementById(startDateId).value);
-                const endDate = new Date(document.getElementById(endDateId).value);
+$('#addPromotionForm').on('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
 
-                if (endDate <= startDate) {
-                    event.preventDefault();  // Ngăn submit
-                    alert('End Date phải lớn hơn Start Date!');
-                    document.getElementById(endDateId).focus();
-                }
-            });
+    $.ajax({
+        url: 'addPromotion',
+        method: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            if (response === "duplicate") {
+                alert("Tên khuyến mãi đã tồn tại.");
+            } else if (response === "blankDescription") {
+                alert("Mô tả phải từ 10-100 ký tự.");
+            } else if (response === "invalidPercentage") {
+                alert("Phần trăm khuyến mãi không hợp lệ.");
+            }else if (response === "startMustAfterLastEnd") {
+                alert("Ngày bắt đầu phải sau ngày kết thúc khuyến mãi trước.");
+            } else if (response === "success") {
+                alert("Thêm khuyến mãi thành công!");
+                $('#addPromotionModal').modal('hide');
+                location.reload();
+            } else {
+                alert("Đã xảy ra lỗi bất ngờ!");
+            }
+        },
+        error: function() {
+            alert("Lỗi kết nối máy chủ.");
         }
-
-        // Gọi cho cả 2 form add và update
-        validatePromotionForm('promotionForm', 'start_at', 'end_at');
-        validatePromotionForm('updatePromotionForm', 'update_start_at', 'update_end_at');
+    });
+});
     </script>
 
 

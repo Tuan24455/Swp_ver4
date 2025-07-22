@@ -228,5 +228,73 @@ public class PromotionDao {
 
         return list;
     }
+    
+public boolean checkPromotionTitleExists(String title) {
+    boolean exists = false;
+    String sql = "SELECT COUNT(*) FROM Promotion WHERE title = ?";
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, title); // Gán giá trị tên khuyến mãi vào câu lệnh SQL
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next() && rs.getInt(1) > 0) {
+                exists = true; // Nếu tìm thấy ít nhất một khuyến mãi trùng tên
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return exists;
+}
+
+    
+public boolean checkPromotionOverlap(Date startDate, Date endDate) {
+    boolean exists = false;
+
+    // Đảm bảo rằng startDate và endDate là java.sql.Date
+    java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+    java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+
+    String sql = "SELECT COUNT(*) FROM Promotion WHERE (start_at < ? AND end_at > ?) OR (start_at < ? AND end_at > ?)";
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        // Kiểm tra khuyến mãi trùng thời gian
+        ps.setDate(1, sqlEndDate);   // Điều kiện 1: Khuyến mãi kết thúc sau ngày bắt đầu của khuyến mãi mới
+        ps.setDate(2, sqlStartDate); // Điều kiện 2: Khuyến mãi bắt đầu trước ngày kết thúc của khuyến mãi mới
+        ps.setDate(3, sqlStartDate); // Điều kiện 3: Khuyến mãi bắt đầu trước ngày kết thúc của khuyến mãi mới
+        ps.setDate(4, sqlEndDate);   // Điều kiện 4: Khuyến mãi kết thúc sau ngày bắt đầu của khuyến mãi mới
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next() && rs.getInt(1) > 0) {
+                exists = true; // Nếu có ít nhất một khuyến mãi trùng thời gian
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return exists;
+}
+
+public Date getLastPromotionEndDate() {
+    Date latestEnd = null;
+    String sql = "SELECT MAX(end_at) FROM Promotion";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+            latestEnd = rs.getDate(1);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return latestEnd;
+}
+
 
 }

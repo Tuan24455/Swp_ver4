@@ -8,12 +8,14 @@ import dao.PromotionDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import model.Promotion;
 
@@ -21,6 +23,7 @@ import model.Promotion;
  *
  * @author Phạm Quốc Tuấn
  */
+@MultipartConfig
 @WebServlet(name = "addPromotion", urlPatterns = {"/addPromotion"})
 public class addPromotion extends HttpServlet {
 
@@ -76,48 +79,79 @@ public class addPromotion extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PromotionDao dao = new PromotionDao();
-        request.setCharacterEncoding("UTF-8"); // đảm bảo nhận đúng ký tự Unicode
-        String title = request.getParameter("title");
-        String percentageStr = request.getParameter("percentage");
-        String startAtStr = request.getParameter("start_at");
-        String endAtStr = request.getParameter("end_at");
-        String description = request.getParameter("description");
-
-        double percentage = 0;
-        Date startAt = null;
-        Date endAt = null;
+        response.setContentType("text/plain");
+        request.setCharacterEncoding("UTF-8");
 
         try {
-            percentage = Double.parseDouble(percentageStr);
+            String title = request.getParameter("title");
+            String description = request.getParameter("description");
+            String percentageStr = request.getParameter("percentage");
+            String startAtStr = request.getParameter("start_at");
+            String endAtStr = request.getParameter("end_at");
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            startAt = sdf.parse(startAtStr);
-            endAt = sdf.parse(endAtStr);
+            // Tuấn - test logserver
+            System.out.println("title: " + title);
+            System.out.println("description: " + description);
+            System.out.println("percentage: " + percentageStr);
+            System.out.println("startAt: " + startAtStr);
+            System.out.println("endAt: " + endAtStr);
 
-            // Tạo đối tượng Promotion
-            Promotion promotion = new Promotion();
-            promotion.setTitle(title);
-            promotion.setPercentage(percentage);
-            promotion.setStartAt(startAt);
-            promotion.setEndAt(endAt);
-            promotion.setDescription(description);
-
-            boolean success = dao.insertPromotion(promotion);
-
-            if (success) {
-                // Thêm thành công, chuyển về trang danh sách promotions
-                response.sendRedirect(request.getContextPath() + "/promotionList");
-            } else {
-                request.setAttribute("error", "Failed to add promotion.");
-                request.getRequestDispatcher("/admin/promotionsList.jsp").forward(request, response);
+            if (title == null || percentageStr == null || startAtStr == null || endAtStr == null) {
+                response.getWriter().write("error");
+                return;
             }
-        } catch (NumberFormatException | ParseException e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Invalid input format.");
-            request.getRequestDispatcher("/promotions.jsp").forward(request, response);
-        }
 
+            double percentage = Double.parseDouble(percentageStr);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date startAt = new java.sql.Date(sdf.parse(startAtStr).getTime());
+            Date endAt = new java.sql.Date(sdf.parse(endAtStr).getTime());
+
+            if (description == null || description.length() < 10 || description.length() > 100) {
+                response.getWriter().write("blankDescription");
+                return;
+            }
+
+            PromotionDao dao = new PromotionDao();
+            if (dao.checkPromotionTitleExists(title)) {
+                response.getWriter().write("duplicate");
+                return;
+            }
+
+//            if (dao.checkPromotionOverlap(startAt, endAt)) {
+//                response.getWriter().write("overlap");
+//                return;
+//            }
+            // Kiểm tra ngày cuối cùng khuyến mãi tồn tai
+            Date lastEnd = dao.getLastPromotionEndDate();
+            if (lastEnd != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(lastEnd);
+                cal.add(Calendar.DATE, 1);
+                Date nextValidStart = cal.getTime();
+
+                SimpleDateFormat sdfCheck = new SimpleDateFormat("yyyy-MM-dd");
+                String userStart = sdfCheck.format(startAt);
+                String mustStart = sdfCheck.format(nextValidStart);
+
+                if (!userStart.equals(mustStart)) {
+                    response.getWriter().write("startMustAfterLastEnd");
+                    return;
+                }
+            }
+
+            Promotion Pro = new Promotion(title, percentage, startAt, endAt, description);
+
+            dao.insertPromotion(Pro);
+            response.getWriter().write("success");
+
+        } catch (NumberFormatException e) {
+            response.getWriter().write("invalidPercentage");
+        } catch (ParseException e) {
+            response.getWriter().write("invalidDate");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().write("error");
+        }
     }
 
     /**
