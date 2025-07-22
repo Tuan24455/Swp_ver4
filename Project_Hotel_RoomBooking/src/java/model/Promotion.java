@@ -19,6 +19,28 @@ public class Promotion {
     private String description;
 
     // Getter and Setter methods
+    
+    public Promotion() {
+    }
+
+    public Promotion(String title, double percentage, Date startAt, Date endAt, String description) {
+        this.title = title;
+        this.percentage = percentage;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.description = description;
+    }
+
+    public Promotion(int id, String title, double percentage, Date startAt, Date endAt, String description) {
+        this.id = id;
+        this.title = title;
+        this.percentage = percentage;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.description = description;
+    }
+    
+    
 
     public int getId() {
         return id;

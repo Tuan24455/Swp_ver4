@@ -42,7 +42,7 @@ class ProfileManager {
         const changePasswordForm = document.getElementById("changePasswordForm");
         if (changePasswordForm) {
             changePasswordForm.addEventListener("submit", (e) => this.handleChangePasswordSubmit(e));
-            
+
             // Thêm validation real-time cho các trường mật khẩu
             const currentPasswordField = changePasswordForm.querySelector('input[name="currentPassword"]');
             const newPasswordField = changePasswordForm.querySelector('input[name="newPassword"]');
@@ -157,9 +157,9 @@ class ProfileManager {
     // Hàm kiểm tra validation cho từng trường mật khẩu
     validatePasswordField(fieldName, value, confirmValue = null) {
         const field = document.querySelector(`input[name="${fieldName}"]`);
-        const errorElement = field.parentNode.parentNode.querySelector('.invalid-feedback') || 
-                            this.createPasswordErrorElement(field.parentNode.parentNode);
-        
+        const errorElement = field.parentNode.parentNode.querySelector('.invalid-feedback') ||
+                this.createPasswordErrorElement(field.parentNode.parentNode);
+
         let isValid = true;
         let errorMessage = '';
 
@@ -170,8 +170,8 @@ class ProfileManager {
                     errorMessage = 'Vui lòng nhập mật khẩu hiện tại.';
                 } else {
                     // Lấy mật khẩu từ session (giả sử được truyền vào hidden input hoặc biến JS)
-                    const currentUserPassword = document.getElementById('currentUserPassword')?.value || 
-                                              window.userPassword || '';
+                    const currentUserPassword = document.getElementById('currentUserPassword')?.value ||
+                            window.userPassword || '';
                     if (value !== currentUserPassword) {
                         isValid = false;
                         errorMessage = 'Mật khẩu cũ không đúng.';
@@ -291,8 +291,10 @@ class ProfileManager {
         });
 
         inputs.forEach((input) => {
-            input.removeAttribute("readonly");
-            input.removeAttribute("disabled");
+            if (input.name !== "userName") {
+                input.removeAttribute("readonly");
+                input.removeAttribute("disabled");
+            }
             this.clearFieldError(input);
         });
 
@@ -338,7 +340,7 @@ class ProfileManager {
             toast.show();
         } else {
             alert(message);
-        }
+    }
     }
 
     handleProfileSubmit(e) {
@@ -364,7 +366,7 @@ class ProfileManager {
         }
 
         this.showToast("Thông tin đã được cập nhật thành công!", "success");
-         e.target.submit(); // Bỏ comment nếu bạn muốn submit form chính
+        e.target.submit(); // Bỏ comment nếu bạn muốn submit form chính
     }
 
     async handleAvatarFileSelect(input) {
@@ -535,7 +537,7 @@ class ProfileManager {
 
         // Nếu tất cả validation đều pass, submit form
         this.showToast("Đang xử lý đổi mật khẩu...", "info");
-        
+
         // Submit form
         e.target.submit();
     }

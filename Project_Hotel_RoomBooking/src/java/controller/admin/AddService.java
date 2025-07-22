@@ -96,6 +96,11 @@ public class AddService extends HttpServlet {
                 response.getWriter().write("invalidPrice");
                 return;
             }
+            if (description.isEmpty() || description.isBlank()) {
+                response.getWriter().write("blankDescription");
+                return;
+            }
+            
 
             // Xử lý ảnh
             Part imagePart = request.getPart("image");

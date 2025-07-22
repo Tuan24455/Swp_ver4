@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import model.Room;
@@ -61,43 +62,59 @@ public class RoomList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    String roomType = request.getParameter("roomType");
-    String roomStatus = request.getParameter("roomStatus");
-    String floorStr = request.getParameter("floor");
-    String pageStr = request.getParameter("page");
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        try {
+            String roomType = request.getParameter("roomType");
+            String roomStatus = request.getParameter("roomStatus");
+            String floorStr = request.getParameter("floor");
+            String pageStr = request.getParameter("page");
 
-    Integer floor = (floorStr != null && !floorStr.isEmpty()) ? Integer.parseInt(floorStr) : null;
-    int page = (pageStr != null && !pageStr.isEmpty()) ? Integer.parseInt(pageStr) : 1;
-    int pageSize = 10;
+            Integer floor = (floorStr != null && !floorStr.isEmpty()) ? Integer.parseInt(floorStr) : null;
+            int page = (pageStr != null && !pageStr.isEmpty()) ? Integer.parseInt(pageStr) : 1;
+            int pageSize = 10;
 
-    RoomDao dao = new RoomDao();
+            RoomDao dao = new RoomDao();
+            int countAll = dao.getTotalRooms();
 
-    // Lọc phòng
-    List<Room> filteredRooms = dao.filterRooms(roomType, roomStatus, floor);
-    int totalFiltered = filteredRooms.size();
-    int totalPages = (int) Math.ceil((double) totalFiltered / pageSize);
+            List<Room> filteredRooms = dao.filterRooms(roomType, roomStatus, floor);
+            int totalFiltered = filteredRooms.size();
+            int totalPages = (int) Math.ceil((double) totalFiltered / pageSize);
 
-    // Phân trang
-    int fromIndex = (page - 1) * pageSize;
-    int toIndex = Math.min(fromIndex + pageSize, totalFiltered);
-    List<Room> paginatedRooms = filteredRooms.subList(fromIndex, toIndex);
+            // Fix lỗi nếu trang vượt quá số trang
+            if (page > totalPages && totalPages > 0) {
+                page = totalPages;
+            }
 
-    // Thống kê
-    Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
+            int fromIndex = (page - 1) * pageSize;
+            int toIndex = Math.min(fromIndex + pageSize, totalFiltered);
 
-    request.setAttribute("rooms", paginatedRooms); // chỉ gán phần phân trang
-    request.setAttribute("roomTypes", dao.getAllRoomTypes());
-    request.setAttribute("statusCounts", statusCounts);
-    request.setAttribute("totalRooms", totalFiltered);
-    request.setAttribute("currentPage", page);
-    request.setAttribute("totalPages", totalPages);
-    request.setAttribute("pageSize", pageSize);
+            List<Room> paginatedRooms = new ArrayList<>();
+            if (fromIndex < totalFiltered) {
+                paginatedRooms = filteredRooms.subList(fromIndex, toIndex);
+            }
 
-    // Lưu lại điều kiện lọc để giữ lại trên giao diện
-    request.setAttribute("paramRoomType", roomType);
-    request.setAttribute("paramRoomStatus", roomStatus);
-    request.setAttribute("paramFloor", floorStr);
-        request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
+            Map<String, Integer> statusCounts = dao.getRoomStatusCounts();
+
+            request.setAttribute("rooms", paginatedRooms);
+            request.setAttribute("roomTypes", dao.getAllRoomTypes());
+            request.setAttribute("statusCounts", statusCounts);
+            request.setAttribute("totalRooms", totalFiltered);
+            request.setAttribute("countAll", countAll);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("paramRoomType", roomType);
+            request.setAttribute("paramRoomStatus", roomStatus);
+            request.setAttribute("paramFloor", floorStr);
+
+            request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setContentType("text/plain");
+            response.getWriter().write("Lỗi server: " + e.getMessage());
+        }
     }
 
     /**

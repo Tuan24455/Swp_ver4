@@ -28,7 +28,13 @@ public class Booking {
     private String vnp_BankCode;     // Bank code from VNPay
     private String vnp_Amount;       // Payment amount in VND
 
-    // Getter and Setter methods
+    // Thêm fields cần cho dashboard (từ query join)
+    private String customer; // Tên khách (full_name từ Users)
+    private String checkIn; // check_in_date (String format YYYY-MM-DD)
+    private String checkOut; // check_out_date (String format YYYY-MM-DD)
+    private String statusClass; // 'bg-success', etc. (cho màu badge)
+
+    // Getter and Setter methods (cũ giữ nguyên, thêm mới)
 
     public int getId() {
         return id;
@@ -156,5 +162,46 @@ public class Booking {
 
     public void setVnp_Amount(String vnp_Amount) {
         this.vnp_Amount = vnp_Amount;
+    }
+
+    // Getters/Setters mới cho dashboard
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(String checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public String getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(String checkOut) {
+        this.checkOut = checkOut;
+    }
+
+    public String getStatusClass() {
+        return statusClass;
+    }
+
+    public void setStatusClass(String statusClass) {
+        this.statusClass = statusClass;
+    }
+
+    // Constructor mới cho Booking
+    public Booking(String roomNumber, String customer, String checkInDate, String checkOutDate, String status) {
+        this.customer = customer;
+        this.checkIn = checkInDate;
+        this.checkOut = checkOutDate;
+        this.status = status;
     }
 }

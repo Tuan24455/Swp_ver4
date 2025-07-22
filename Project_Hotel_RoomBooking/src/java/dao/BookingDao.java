@@ -89,7 +89,9 @@ public class BookingDao extends DBContext {
             ResultSet rs = ps.executeQuery();
             
             while (rs.next()) {
-                Booking booking = new Booking();
+                
+                // Correctly use the Booking constructor with String arguments
+                Booking booking = new Booking(rs.getString("room_number"), rs.getString("customer"), rs.getString("check_in_date"), rs.getString("check_out_date"), rs.getString("status"));
                 booking.setId(rs.getInt("id"));
                 booking.setUserId(rs.getInt("user_id"));
                 booking.setCreatedAt(rs.getTimestamp("created_at"));
