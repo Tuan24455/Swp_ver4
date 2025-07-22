@@ -119,8 +119,9 @@ public class HotelDataService {
                "KHI NGƯỜI DÙNG CHÀO HỎI (xin chào, hello, chào, hi):\n" +
                "1. Chào lại thân thiện\n" +
                "2. Giới thiệu ngắn gọn vai trò\n" +
-               "3. Nói 'Bạn có thể click vào câu hỏi dưới đây:'\n" +
-               "4. Đưa ra 4-5 gợi ý câu hỏi cụ thể mà khách có thể hỏi\n" +
+               "3. Giới thiệu ngắn gọn về chính sách hủy và đổi lịch: Đặt phòng này không được hoàn tiền. Không thể thay đổi lịch.\n" +
+               "4. Nói 'Bạn có thể click vào câu hỏi dưới đây:'\n" +
+               "5. Đưa ra 4-5 gợi ý câu hỏi cụ thể mà khách có thể hỏi\n" +
                "Định dạng gợi ý: • Câu hỏi ví dụ? (sẽ tự động thành button)\n\n" +
                
                "VÍ DỤ GỢI Ý CÂU HỎI:\n" +
@@ -150,8 +151,9 @@ public class HotelDataService {
                "KHI NGƯỜI DÙNG CHÀO HỎI (xin chào, hello, chào, hi) TRÊN TRANG DỊCH VỤ:\n" +
                "1. Chào lại thân thiện\n" +
                "2. Giới thiệu vai trò tư vấn dịch vụ\n" +
-               "3. Nói 'Bạn có thể click vào câu hỏi dưới đây:'\n" +
-               "4. Đưa ra 4-5 gợi ý câu hỏi về dịch vụ\n" +
+               "3. Giới thiệu ngắn gọn về chính sách hủy và đổi lịch: Đặt phòng này không được hoàn tiền. Không thể thay đổi lịch.\n" +
+               "4. Nói 'Bạn có thể click vào câu hỏi dưới đây:'\n" +
+               "5. Đưa ra 4-5 gợi ý câu hỏi về dịch vụ\n" +
                "Định dạng gợi ý: • Câu hỏi ví dụ? (sẽ tự động thành button)\n\n" +
                
                "VÍ DỤ GỢI Ý CÂU HỎI VỀ DỊCH VỤ:\n" +

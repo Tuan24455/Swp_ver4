@@ -592,7 +592,7 @@
             <div class="message bot">
                 <div class="avatar"><i class="fas fa-robot"></i></div>
                 <div>
-                    <div class="bubble">Xin chào! Tôi là trợ lý ảo của khách sạn. Tôi có thể giúp gì cho bạn?<br><br>Bạn có thể click vào câu hỏi dưới đây:<br><button class="suggestion-btn" onclick="sendSuggestion('Phòng nào rẻ nhất?')">Phòng nào rẻ nhất?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Giờ nhận phòng là mấy giờ?')">Giờ nhận phòng là mấy giờ?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Khách sạn có những dịch vụ gì?')">Khách sạn có những dịch vụ gì?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Có phòng nào cho 5 người không?')">Có phòng nào cho 5 người không?</button></div>
+                    <div class="bubble">Chào bạn! Mình là trợ lý ảo của Hệ thống quản lý khách sạn, rất vui được hỗ trợ bạn. Xin lưu ý rằng đặt phòng tại khách sạn chúng tôi hiện không được hoàn tiền và không thể thay đổi lịch. Tôi có thể giúp gì cho bạn?<br><br>Bạn có thể click vào câu hỏi dưới đây:<br><button class="suggestion-btn" onclick="sendSuggestion('Phòng nào rẻ nhất?')">Phòng nào rẻ nhất?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Giờ nhận phòng là mấy giờ?')">Giờ nhận phòng là mấy giờ?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Khách sạn có những dịch vụ gì?')">Khách sạn có những dịch vụ gì?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Có phòng nào cho 5 người không?')">Có phòng nào cho 5 người không?</button></div>
                     <div class="time">Bây giờ</div>
                 </div>
             </div>
@@ -711,8 +711,7 @@
                         messages.innerHTML = '<div class="message bot">' +
                             '<div class="avatar"><i class="fas fa-robot"></i></div>' +
                             '<div>' +
-                                '<div class="bubble">Xin chào! Tôi là trợ lý ảo của khách sạn. Tôi có thể giúp gì cho bạn?<br><br>Bạn có thể click vào câu hỏi dưới đây:<br><button class="suggestion-btn" onclick="sendSuggestion(\'Phòng nào rẻ nhất?\')">Phòng nào rẻ nhất?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Giờ nhận phòng là mấy giờ?\')">Giờ nhận phòng là mấy giờ?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Khách sạn có những dịch vụ gì?\')">Khách sạn có những dịch vụ gì?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Có phòng nào cho 5 người không?\')">Có phòng nào cho 5 người không?</button></div>' +
-                                '<div class="time">Bây giờ</div>' +
+                                '<div class="bubble">Chào bạn! Mình là trợ lý ảo của Hệ thống quản lý khách sạn, rất vui được hỗ trợ bạn. Xin lưu ý rằng đặt phòng tại khách sạn chúng tôi hiện không được hoàn tiền và không thể thay đổi lịch. Tôi có thể giúp gì cho bạn?<br><br>Bạn có thể click vào câu hỏi dưới đây:<br><button class="suggestion-btn" onclick="sendSuggestion(\'Phòng nào rẻ nhất?\')">Phòng nào rẻ nhất?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Giờ nhận phòng là mấy giờ?\')">Giờ nhận phòng là mấy giờ?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Khách sạn có những dịch vụ gì?\')">Khách sạn có những dịch vụ gì?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Có phòng nào cho 5 người không?\')">Có phòng nào cho 5 người không?</button></div>' +'<div class="time">Bây giờ</div>' +
                             '</div>' +
                         '</div>';
                         
