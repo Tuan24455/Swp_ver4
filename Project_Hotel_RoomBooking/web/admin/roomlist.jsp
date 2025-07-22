@@ -19,10 +19,29 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
-        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+        <!--        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+        
+        
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
 
+        <!--         CSS Summernote 
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+        
+                 jQuery và JS Summernote 
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>-->
 
+        <!-- jQuery (bắt buộc) -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Bootstrap (CSS + JS) -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Summernote CSS + JS -->
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
 
     </head>
     <body>
@@ -308,9 +327,7 @@
                                                                     <div class="col-12">
                                                                         <label class="form-label">Description</label>
                                                                         <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
-<!--                                                                        <script>
-                                                                            CKEDITOR.replace('editDescription${r.id}');
-                                                                        </script>-->
+                                                                        
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -466,50 +483,21 @@
 
 
             <script>
-                let ckeditor;
-
-                // Plugin xử lý ảnh base64 (nếu muốn upload ảnh bằng base64)
-                class Base64UploadAdapter {
-                    constructor(loader) {
-                        this.loader = loader;
-                    }
-
-                    upload() {
-                        return this.loader.file
-                                .then(file => {
-                                    return new Promise((resolve, reject) => {
-                                        const reader = new FileReader();
-                                        reader.onload = () => resolve({default: reader.result});
-                                        reader.onerror = error => reject(error);
-                                        reader.readAsDataURL(file);
-                                    });
-                                });
-                    }
-
-                    abort() {}
-                }
-
-                function MyCustomUploadAdapterPlugin(editor) {
-                    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                        return new Base64UploadAdapter(loader);
-                    };
-                }
-
-                // Khởi tạo CKEditor khi mở modal
-                $('#addRoomModal').on('shown.bs.modal', function () {
-                    if (!ckeditor) {
-                        ClassicEditor
-                                .create(document.querySelector('#addDescription'), {
-                                    extraPlugins: [MyCustomUploadAdapterPlugin]
-                                })
-                                .then(editor => {
-                                    ckeditor = editor;
-                                })
-                                .catch(error => {
-                                    console.error('Error initializing CKEditor:', error);
-                                });
-                    }
+                $(document).ready(function () {
+                    $('#addDescription').summernote({
+                        placeholder: 'Nhập mô tả phòng ở đây...',
+                        tabsize: 2,
+                        height: 300,
+                        toolbar: [
+                            ['style', ['bold', 'italic', 'underline', 'clear']],
+                            ['font', ['fontsize', 'color']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['insert', ['picture', 'link']],
+                            ['view', ['fullscreen', 'codeview']]
+                        ]
+                    });
                 });
+
 
                 // Submit form
                 document.querySelector("#addRoomForm").addEventListener("submit", async function (e) {
@@ -517,7 +505,7 @@
 
                     const form = this;
                     const formData = new FormData(form);
-                    const descriptionValue = ckeditor.getData();
+                    const descriptionValue = $('#addDescription').summernote('code');
                     formData.set("description", descriptionValue);
 
                     try {
