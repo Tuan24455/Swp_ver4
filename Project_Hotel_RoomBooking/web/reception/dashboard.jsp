@@ -107,32 +107,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               <div id="calendar"></div>
             </div>
           </div>
-
-          <!-- Phần Hành Động Nhanh -->
-          <div class="row mt-4">
-            <div class="col-lg-6">
-              <div class="card shadow-sm">
-                <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2 text-warning"></i>Hành Động Nhanh
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <div class="d-grid gap-2">
-                    <a href="#" class="btn btn-outline-primary"
-                      ><i class="fas fa-calendar-plus me-2"></i>Đặt Phòng Mới</a
-                    >
-                    <a href="#" class="btn btn-outline-info"
-                      ><i class="fas fa-door-open me-2"></i>Quản Lý Phòng</a
-                    >
-                    <a href="#" class="btn btn-outline-success"
-                      ><i class="fas fa-users-cog me-2"></i>Quản Lý Nhân Viên</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -203,11 +177,9 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     </div>
 
     <!-- Debugging: Display roomBookings data -->
-    <div class="container-fluid py-4">
+
       <div class="card shadow-sm">
-        <div class="card-header bg-white border-bottom">
-          <h5 class="mb-0">Debugging Room Bookings Data</h5>
-        </div>
+
         <div class="card-body">
           <pre>
             <c:forEach var="entry" items="${roomBookings}">
@@ -218,8 +190,8 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             </c:forEach>
           </pre>
         </div>
-      </div>
-    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       // Menu toggle functionality
