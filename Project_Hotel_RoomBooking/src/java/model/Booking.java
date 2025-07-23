@@ -186,3 +186,4 @@ public class Booking {
     public void setVnp_Amount(String vnp_Amount) {
         this.vnp_Amount = vnp_Amount;
     }
+}
