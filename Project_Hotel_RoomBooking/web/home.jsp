@@ -3,26 +3,20 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Trang chủ - Hệ thống quản lý khách sạn</title>
-
     <!-- CSS Files -->
     <!--<link rel="stylesheet" href="customer/customer.css" />-->
     <link rel="stylesheet" href="css/home-enhanced.css" />
-
     <!-- External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
     <!-- Animate.css for smooth animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
     <!-- Custom Styles for Chatbox -->
     <style>
         /* Chat Bubble */
@@ -50,7 +44,6 @@
             color: white;
             font-size: 24px;
         }
-
         /* Chatbox Frame */
         #chatbox-frame {
             position: fixed;
@@ -151,7 +144,6 @@
         #chatbox-frame .chat-messages .message .bubble li {
             margin: 3px 0;
         }
-        
         /* Suggestion buttons styling */
         .suggestion-btn {
             display: inline-block;
@@ -215,13 +207,11 @@
             cursor: pointer;
             margin-left: 10px;
         }
-        
         /* Typing indicator animation */
         .typing-dots {
             animation: typing 1.4s infinite;
             font-size: 18px;
         }
-        
         @keyframes typing {
             0%, 60%, 100% {
                 opacity: 0.2;
@@ -229,6 +219,13 @@
             30% {
                 opacity: 1;
             }
+        }
+        /* Container for suggestion buttons inside bubble (for dynamic buttons) */
+        .suggestions-container {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px; /* Khoảng cách giữa các nút */
         }
     </style>
 </head>
@@ -259,10 +256,8 @@
     </c:if>
     <!-- Background overlay for better readability -->
     <div class="background-overlay"></div>
-
     <!-- Header -->
     <jsp:include page="customer/includes/header.jsp"/>
-
     <main class="main-content">
         <!-- Hero Section -->
         <section class="hero-section animate__animated animate__fadeInDown">
@@ -276,7 +271,6 @@
                 </div>
             </div>
         </section>
-
         <!-- Filter Section -->
         <section class="filter-section">
             <div class="container">
@@ -287,7 +281,6 @@
                         <i class="fas fa-chevron-down ms-2 filter-arrow"></i>
                     </button>
                 </div>
-
                 <!-- Enhanced Filter Modal -->
                 <div id="filterModal" class="filter-modal">
                     <div class="filter-modal-content animate__animated">
@@ -297,7 +290,6 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-
                         <form method="post" action="home" class="filter-form">
                             <div class="filter-grid">
                                 <!-- Room Type Filter -->
@@ -321,7 +313,6 @@
                                         </c:forEach>
                                     </div>
                                 </div>
-
                                 <!-- Date Filter -->
                                 <div class="filter-group">
                                     <div class="filter-group-header">
@@ -335,7 +326,6 @@
                                             <input type="date" name="checkin" class="form-input"
                                                    value="${param.checkin != null ? param.checkin : checkin}" />
                                         </div>
-
                                         <!-- Ngày trả phòng -->
                                         <div class="input-group">
                                             <label class="input-label">Ngày trả phòng</label>
@@ -344,7 +334,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Price Filter -->
                                 <div class="filter-group">
                                     <div class="filter-group-header">
@@ -364,7 +353,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Capacity Filter -->
                                 <div class="filter-group">
                                     <div class="filter-group-header">
@@ -376,7 +364,6 @@
                                                min="1" max="10" class="form-input" placeholder="Số người">
                                     </div>
                                 </div>
-
                                 <!-- Sort Filter -->
                                 <div class="filter-group">
                                     <div class="filter-group-header">
@@ -390,14 +377,12 @@
                                     </select>
                                 </div>
                             </div>
-
                             <!-- Hiển thị lỗi nếu có -->
                             <c:if test="${not empty error}">
                                 <div class="alert alert-danger text-center mb-3" role="alert">
                                     ${error}
                                 </div>
                             </c:if>
-
                             <!-- Filter Actions -->
                             <div class="filter-actions">
                                 <button type="button" class="btn btn-reset" onclick="resetFilter()">
@@ -412,7 +397,6 @@
                 </div>
             </div>
         </section>
-
         <!-- Room List Section -->
         <section class="room-list-section">
             <div class="container">
@@ -428,7 +412,6 @@
                         </p>
                     </c:if>
                 </div>
-
                 <!-- Room Grid -->
                 <div class="room-grid">
                     <c:choose>
@@ -444,7 +427,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="room-content">
                                         <div class="room-header">
                                             <h5 class="room-number">
@@ -452,7 +434,6 @@
                                             </h5>
                                             <div class="room-type-badge">${room.getRoomTypeName()}</div>
                                         </div>
-
                                         <div class="room-details">
                                             <div class="room-detail-item">
                                                 <i class="fas fa-users text-primary"></i>
@@ -465,7 +446,6 @@
                                                 </span>
                                             </div>
                                         </div>
-
                                         <div class="room-description">
                                             <c:choose>
                                                 <c:when test="${fn:length(room.getDescription()) > 80}">
@@ -476,7 +456,6 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
-
                                         <div class="room-actions">
                                             <a href="room-detail?id=${room.getId()}" class="btn btn-view-detail">
                                                 <i class="fas fa-eye me-2"></i>Xem chi tiết
@@ -502,7 +481,6 @@
                 </div>
             </div>
         </section>
-
         <!-- Enhanced Pagination -->
         <c:if test="${totalPages > 1}">
             <section class="pagination-section">
@@ -518,7 +496,6 @@
                                     <span class="d-none d-sm-inline ms-1">Trước</span>
                                 </button>
                             </li>
-
                             <!-- Page Numbers -->
                             <c:forEach var="i" begin="1" end="${totalPages}">
                                 <li class="pagination-item ${i == currentPage ? 'active' : ''}">
@@ -527,7 +504,6 @@
                                     </button>
                                 </li>
                             </c:forEach>
-
                             <!-- Next Button -->
                             <li class="pagination-item ${currentPage == totalPages ? 'disabled' : ''}">
                                 <button class="pagination-link" type="button" 
@@ -539,7 +515,6 @@
                             </li>
                         </ul>
                     </nav>
-
                     <!-- Pagination Info -->
                     <div class="pagination-info text-center mt-3">
                         <span class="pagination-text">
@@ -550,7 +525,6 @@
             </section>
         </c:if>
     </main>
-
     <!-- Hidden Pagination Form -->
     <form id="paginationForm" method="post" action="home" style="display: none;">
         <input type="hidden" name="page" id="paginationPage" />
@@ -562,15 +536,12 @@
             </c:if>
         </c:forEach>
     </form>
-
     <!-- Footer -->
     <jsp:include page="customer/includes/footer.jsp"/>
-
     <!-- Chat Bubble -->
     <div id="chat-bubble" onclick="toggleChatbox()">
         <i class="fas fa-comment-dots"></i>
     </div>
-
     <!-- Chatbox Frame -->
     <div id="chatbox-frame">
         <div class="chat-header">
@@ -588,12 +559,19 @@
             </div>
         </div>
         <div class="chat-messages" id="chat-messages">
-            <!-- Tin nhắn mẫu giống hình ảnh -->
+            <!-- Tin nhắn mẫu giống hình ảnh - ĐÃ CẬP NHẬT -->
             <div class="message bot">
                 <div class="avatar"><i class="fas fa-robot"></i></div>
                 <div>
-                    <div class="bubble">Chào bạn! Mình là trợ lý ảo của Hệ thống quản lý khách sạn, rất vui được hỗ trợ bạn. Xin lưu ý rằng đặt phòng tại khách sạn chúng tôi hiện không được hoàn tiền và không thể thay đổi lịch. Tôi có thể giúp gì cho bạn?<br><br>Bạn có thể click vào câu hỏi dưới đây:<br><button class="suggestion-btn" onclick="sendSuggestion('Phòng nào rẻ nhất?')">Phòng nào rẻ nhất?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Giờ nhận phòng là mấy giờ?')">Giờ nhận phòng là mấy giờ?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Khách sạn có những dịch vụ gì?')">Khách sạn có những dịch vụ gì?</button><br><button class="suggestion-btn" onclick="sendSuggestion('Có phòng nào cho 5 người không?')">Có phòng nào cho 5 người không?</button></div>
+                    <div class="bubble">Chào bạn! Mình là trợ lý ảo của Hệ thống quản lý khách sạn, rất vui được hỗ trợ bạn. Xin lưu ý rằng đặt phòng tại khách sạn chúng tôi hiện không được hoàn tiền và không thể thay đổi lịch. Tôi có thể giúp gì cho bạn?</div>
                     <div class="time">Bây giờ</div>
+                    <!-- Các nút gợi ý riêng lẻ - ĐÃ CẬP NHẬT -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">
+                        <button class="suggestion-btn" onclick="sendSuggestion('Phòng nào rẻ nhất?')">Phòng nào rẻ nhất?</button>
+                        <button class="suggestion-btn" onclick="sendSuggestion('Giờ nhận phòng và trả phòng là mấy giờ?')">Giờ nhận/trả phòng?</button>
+                        <button class="suggestion-btn" onclick="sendSuggestion('Khách sạn có những dịch vụ gì?')">Dịch vụ khách sạn?</button>
+                        <button class="suggestion-btn" onclick="sendSuggestion('Giá phòng Presidential Suite bao nhiêu?')">Giá Presidential Suite?</button>
+                    </div>
                 </div>
             </div>
             <div class="message bot">
@@ -609,12 +587,10 @@
             <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/home-enhanced.js"></script>
-    
     <!-- Script for Chatbox Toggle and Send Message -->
     <script>
         function sendSuggestion(question) {
@@ -623,7 +599,6 @@
             input.value = question;
             sendMessage();
         }
-        
         function toggleChatbox() {
             var chatbox = document.getElementById('chatbox-frame');
             if (chatbox.style.display === 'none' || chatbox.style.display === '') {
@@ -634,24 +609,19 @@
                 chatbox.classList.remove('animate__animated', 'animate__fadeInUp');
             }
         }
-
         function sendMessage() {
             var input = document.getElementById('chat-input');
             var messageText = input.value.trim();
             if (messageText) {
                 console.log('Sending user message: ' + messageText);
-
                 var messages = document.getElementById('chat-messages');
                 var time = 'Bây giờ';
-
                 // Add user message to chat
                 addUserMessage(messages, messageText, time);
                 input.value = '';
                 messages.scrollTop = messages.scrollHeight;
-
                 // Show typing indicator
                 showTypingIndicator(messages);
-
                 // Send message to server
                 fetch('/Project_Hotel_RoomBooking/chatbot', {
                     method: 'POST',
@@ -667,7 +637,6 @@
                 .then(data => {
                     // Remove typing indicator
                     removeTypingIndicator();
-                    
                     if (data.success) {
                         // Add bot response
                         addBotMessage(messages, data.message, time);
@@ -687,12 +656,10 @@
                 console.log('No message to send');
             }
         }
-
         function clearChatSession() {
             if (confirm('Bạn có chắc muốn xóa cuộc trò chuyện này? Hành động này không thể hoàn tác.')) {
                 var input = document.getElementById('chat-input');
                 var messages = document.getElementById('chat-messages');
-                
                 // Send clear command to server
                 fetch('/Project_Hotel_RoomBooking/chatbot', {
                     method: 'POST',
@@ -707,14 +674,20 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.action === 'clear_chat') {
-                        // Clear the chat UI
+                        // Clear the chat UI - ĐÃ CẬP NHẬT
                         messages.innerHTML = '<div class="message bot">' +
                             '<div class="avatar"><i class="fas fa-robot"></i></div>' +
                             '<div>' +
-                                '<div class="bubble">Chào bạn! Mình là trợ lý ảo của Hệ thống quản lý khách sạn, rất vui được hỗ trợ bạn. Xin lưu ý rằng đặt phòng tại khách sạn chúng tôi hiện không được hoàn tiền và không thể thay đổi lịch. Tôi có thể giúp gì cho bạn?<br><br>Bạn có thể click vào câu hỏi dưới đây:<br><button class="suggestion-btn" onclick="sendSuggestion(\'Phòng nào rẻ nhất?\')">Phòng nào rẻ nhất?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Giờ nhận phòng là mấy giờ?\')">Giờ nhận phòng là mấy giờ?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Khách sạn có những dịch vụ gì?\')">Khách sạn có những dịch vụ gì?</button><br><button class="suggestion-btn" onclick="sendSuggestion(\'Có phòng nào cho 5 người không?\')">Có phòng nào cho 5 người không?</button></div>' +'<div class="time">Bây giờ</div>' +
+                                '<div class="bubble">Chào bạn! Mình là trợ lý ảo của Hệ thống quản lý khách sạn, rất vui được hỗ trợ bạn. Xin lưu ý rằng đặt phòng tại khách sạn chúng tôi hiện không được hoàn tiền và không thể thay đổi lịch. Tôi có thể giúp gì cho bạn?</div>' +
+                                '<div class="time">Bây giờ</div>' +
+                                '<div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">' +
+                                    '<button class="suggestion-btn" onclick="sendSuggestion(\'Phòng nào rẻ nhất?\')">Phòng nào rẻ nhất?</button>' +
+                                    '<button class="suggestion-btn" onclick="sendSuggestion(\'Giờ nhận phòng và trả phòng là mấy giờ?\')">Giờ nhận/trả phòng?</button>' +
+                                    '<button class="suggestion-btn" onclick="sendSuggestion(\'Khách sạn có những dịch vụ gì?\')">Dịch vụ khách sạn?</button>' +
+                                    '<button class="suggestion-btn" onclick="sendSuggestion(\'Giá phòng Presidential Suite bao nhiêu?\')">Giá Presidential Suite?</button>' +
+                                '</div>' +
                             '</div>' +
                         '</div>';
-                        
                         // Show success message
                         addBotMessage(messages, data.message, 'Bây giờ');
                     }
@@ -727,11 +700,9 @@
                 });
             }
         }
-
         function addUserMessage(messages, messageText, time) {
             var userMessage = document.createElement('div');
             userMessage.className = 'message user';
-
             var contentDiv = document.createElement('div');
             var bubble = document.createElement('div');
             bubble.className = 'bubble';
@@ -739,106 +710,117 @@
             var timeDiv = document.createElement('div');
             timeDiv.className = 'time';
             timeDiv.textContent = time;
-
             contentDiv.appendChild(bubble);
             contentDiv.appendChild(timeDiv);
-
             var avatarDiv = document.createElement('div');
             avatarDiv.className = 'avatar';
             var icon = document.createElement('i');
             icon.className = 'fas fa-user';
             avatarDiv.appendChild(icon);
-
             userMessage.appendChild(contentDiv);
             userMessage.appendChild(avatarDiv);
             messages.appendChild(userMessage);
         }
-
         function addBotMessage(messages, messageText, time) {
             var botMessage = document.createElement('div');
             botMessage.className = 'message bot';
-
             var botAvatarDiv = document.createElement('div');
             botAvatarDiv.className = 'avatar';
             var botIcon = document.createElement('i');
             botIcon.className = 'fas fa-robot';
             botAvatarDiv.appendChild(botIcon);
-
             var botContentDiv = document.createElement('div');
+            
+            // Create bubble for text content
             var botBubble = document.createElement('div');
             botBubble.className = 'bubble';
-            
+
             // Parse markdown links and convert to HTML
             var processedText = parseMarkdownLinks(messageText);
-            botBubble.innerHTML = processedText;
-            
+
+            // Separate text content from buttons
+            var lines = processedText.split('<br>');
+            var textLines = [];
+            var buttonHtmls = [];
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                // Kiểm tra nếu dòng là một nút button (bắt đầu bằng <button)
+                if (line.startsWith('<button')) {
+                    buttonHtmls.push(line);
+                } else if (line.length > 0) {
+                    textLines.push(line);
+                }
+            }
+
+            // Set text content
+            botBubble.innerHTML = textLines.join('<br>');
+
+            // Create container for buttons if they exist (for dynamic buttons from AI)
+            if (buttonHtmls.length > 0) {
+                var suggestionsContainer = document.createElement('div');
+                suggestionsContainer.className = 'suggestions-container'; // Apply custom styling
+                suggestionsContainer.innerHTML = buttonHtmls.join('');
+                botBubble.appendChild(suggestionsContainer);
+            }
+
             var botTimeDiv = document.createElement('div');
             botTimeDiv.className = 'time';
             botTimeDiv.textContent = time;
 
             botContentDiv.appendChild(botBubble);
             botContentDiv.appendChild(botTimeDiv);
-
             botMessage.appendChild(botAvatarDiv);
             botMessage.appendChild(botContentDiv);
             messages.appendChild(botMessage);
         }
-
         function parseMarkdownLinks(text) {
             // Convert markdown links [text](url) to HTML links
             var linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
             var processedText = text.replace(linkRegex, '<a href="$2" target="_blank" style="color: #007bff; text-decoration: underline;">$1</a>');
-            
+
             // Convert bullet points (•) to clickable suggestion buttons
-            var lines = processedText.split('\n');
+            var lines = processedText.split('\n'); // Use \n for line breaks
             var result = [];
-            
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
-                
                 if (line.startsWith('•')) {
                     var questionText = line.substring(1).trim();
-                    result.push('<button class="suggestion-btn" onclick="sendSuggestion(\'' + questionText.replace(/'/g, "\\'") + '\')">' + questionText + '</button>');
+                    // Escape single quotes for onclick attribute
+                    var escapedQuestion = questionText.replace(/'/g, "\\'");
+                    result.push('<button class="suggestion-btn" onclick="sendSuggestion(\'' + escapedQuestion + '\')">' + questionText + '</button>');
                 } else if (line.length > 0) {
                     result.push(line);
                 }
             }
-            
             return result.join('<br>');
         }
-
         function showTypingIndicator(messages) {
             var typingMessage = document.createElement('div');
             typingMessage.className = 'message bot typing-indicator';
             typingMessage.id = 'typing-indicator';
-
             var botAvatarDiv = document.createElement('div');
             botAvatarDiv.className = 'avatar';
             var botIcon = document.createElement('i');
             botIcon.className = 'fas fa-robot';
             botAvatarDiv.appendChild(botIcon);
-
             var botContentDiv = document.createElement('div');
             var botBubble = document.createElement('div');
             botBubble.className = 'bubble';
             botBubble.innerHTML = '<span class="typing-dots">●●●</span>';
             botBubble.style.backgroundColor = '#f0f0f0';
-
             botContentDiv.appendChild(botBubble);
-
             typingMessage.appendChild(botAvatarDiv);
             typingMessage.appendChild(botContentDiv);
             messages.appendChild(typingMessage);
             messages.scrollTop = messages.scrollHeight;
         }
-
         function removeTypingIndicator() {
             var typingIndicator = document.getElementById('typing-indicator');
             if (typingIndicator) {
                 typingIndicator.remove();
             }
         }
-
         // Enter để gửi
         document.getElementById('chat-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -846,7 +828,6 @@
             }
         });
     </script>
-    
     <!-- Show payment result message if exists -->
     <c:if test="${not empty param.message}">    
         <script>
