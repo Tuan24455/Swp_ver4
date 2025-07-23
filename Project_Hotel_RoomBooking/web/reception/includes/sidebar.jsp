@@ -103,7 +103,7 @@
                class="list-group-item list-group-item-action py-3 ${param.activePage == 'account-settings' ? 'active' : ''}">
                 <i class="fas fa-user-cog me-2"></i> Cài đặt tài khoản
             </a>
-            <a href="${pageContext.request.contextPath}/admin/logout"
+            <a href="${pageContext.request.contextPath}/logout"
                class="list-group-item list-group-item-action py-3 text-danger"
                onclick="return confirm('Bạn có chắc muốn đăng xuất không?')">
                 <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
