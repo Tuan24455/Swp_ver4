@@ -8,21 +8,22 @@ import dao.PromotionDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Promotion;
 
 /**
  *
  * @author Phạm Quốc Tuấn
  */
+@MultipartConfig
 @WebServlet(name = "updatePromotion", urlPatterns = {"/updatePromotion"})
 public class updatePromotion extends HttpServlet {
 
@@ -78,46 +79,82 @@ public class updatePromotion extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PromotionDao dao = new PromotionDao();
+
+        response.setContentType("text/plain");
         request.setCharacterEncoding("UTF-8");
 
-        String idStr = request.getParameter("id");
-        String title = request.getParameter("title");
-        String percentageStr = request.getParameter("percentage");
-        String startAtStr = request.getParameter("start_at");
-        String endAtStr = request.getParameter("end_at");
-        String description = request.getParameter("description");
-
         try {
-            int id = Integer.parseInt(idStr);
+            int id = Integer.parseInt(request.getParameter("id"));
+            String title = request.getParameter("title");
+            String description = request.getParameter("description");
+            String percentageStr = request.getParameter("percentage");
+            String startAtStr = request.getParameter("start_at");
+            String endAtStr = request.getParameter("end_at");
+
             double percentage = Double.parseDouble(percentageStr);
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date startAt = sdf.parse(startAtStr);
-            Date endAt = sdf.parse(endAtStr);
+            Date startAt = new java.sql.Date(sdf.parse(startAtStr).getTime());
+            Date endAt = new java.sql.Date(sdf.parse(endAtStr).getTime());
 
-            // Tạo đối tượng Promotion cần cập nhật
-            Promotion promotion = new Promotion();
-            promotion.setId(id);
-            promotion.setTitle(title);
-            promotion.setPercentage(percentage);
-            promotion.setStartAt(startAt);
-            promotion.setEndAt(endAt);
-            promotion.setDescription(description);
+            PromotionDao dao = new PromotionDao();
 
-            boolean success = dao.updatePromotion(promotion);
-
-            if (success) {
-                response.sendRedirect(request.getContextPath() + "/promotionList");
-            } else {
-                request.setAttribute("error", "Cập nhật khuyến mãi thất bại.");
-                request.getRequestDispatcher("/admin/Promotionlist.jsp").forward(request, response);
+            // Validate mô tả
+            if (description == null || description.length() < 10 || description.length() > 100) {
+                response.getWriter().write("blankDescription");
+                return;
             }
 
-        } catch (NumberFormatException | ParseException e) {
+            // Kiểm tra tên có bị trùng ở promotion khác không
+            if (dao.checkPromotionTitleExistsForUpdate(id, title)) {
+                response.getWriter().write("duplicate");
+                return;
+            }
+
+//            // Kiểm tra khoảng thời gian có trùng với promotion khác không
+//            if (dao.checkPromotionOverlapForUpdate(id, startAt, endAt)) {
+//                response.getWriter().write("overlap");
+//                return;
+//            }
+            if (!startAt.before(endAt)) {
+                response.getWriter().write("invalidDateRange");
+                return;
+            }
+
+             Date lastEnd = dao.getLastPromotionEndDateForUpdate(id);
+            if (lastEnd != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(lastEnd);
+                cal.add(Calendar.DATE, 1);
+                Date nextValidStart = cal.getTime();
+
+                SimpleDateFormat sdfCheck = new SimpleDateFormat("yyyy-MM-dd");
+                String userStart = sdfCheck.format(startAt);
+                String mustStart = sdfCheck.format(nextValidStart);
+
+                if (!userStart.equals(mustStart)) {
+                    response.getWriter().write("startMustAfterLastEnd");
+                    return;
+                }
+            }
+
+            // 5️⃣ Kiểm tra không trùng thời gian với promotion khác
+            if (dao.checkPromotionOverlapForUpdate(id, startAt, endAt)) {
+                response.getWriter().write("overlap");
+                return;
+            }
+
+            // Update
+            Promotion p = new Promotion(id, title, percentage, startAt, endAt, description);
+            dao.updatePromotion(id, title, percentage, startAt, endAt, description);
+            response.getWriter().write("success");
+
+        } catch (NumberFormatException e) {
+            response.getWriter().write("invalidPercentage");
+        } catch (ParseException e) {
+            response.getWriter().write("invalidDate");
+        } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Dữ liệu nhập vào không hợp lệ.");
-            request.getRequestDispatcher("/admin/Promotionlist.jsp").forward(request, response);
+            response.getWriter().write("error");
         }
     }
 

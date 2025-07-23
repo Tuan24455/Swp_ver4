@@ -58,15 +58,53 @@ public class ServiceList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        String searchQuery = request.getParameter("searchQuery");
+        
+        // Xử lý chuỗi tìm kiếm để loại bỏ các dấu cách (khoảng trắng)
+        if (searchQuery != null) {
+            searchQuery = searchQuery.trim(); 
+            searchQuery = searchQuery.replaceAll("\\s+", " "); 
+        }
+
         String type = request.getParameter("type");
         String minRaw = request.getParameter("minPrice");
         String maxRaw = request.getParameter("maxPrice");
+        String pageParam = request.getParameter("page");
 
+        // Nếu không có tham số page, mặc định trang là 1
+        int pageNumber = (pageParam != null && !pageParam.isEmpty()) ? Integer.parseInt(pageParam) : 1;
+        int pageSize = 10;  // Số lượng dịch vụ mỗi trang
+
+        // Chuyển đổi các tham số giá trị
         Double min = (minRaw != null && !minRaw.isEmpty()) ? Double.parseDouble(minRaw) : null;
         Double max = (maxRaw != null && !maxRaw.isEmpty()) ? Double.parseDouble(maxRaw) : null;
+
         ServiceDao dao = new ServiceDao();
-        List<Service> services = dao.filterServices_02(type, min, max);
+        List<Service> services = dao.filterServicesWithSearchAndPagination(searchQuery, type, min, max, pageNumber, pageSize);
+
+        if (services.isEmpty()) {
+            request.setAttribute("noResultsMessage", "Không tìm thấy dịch vụ nào khớp với tìm kiếm của bạn.");
+        }
+
+        int totalServices = dao.getTotalServices(searchQuery, type, min, max);
+
+        // Tính tổng số trang
+        int totalPages = (int) Math.ceil((double) totalServices / pageSize);
+
+        // Gửi dữ liệu đến JSP
         request.setAttribute("services", services);
+        request.setAttribute("totalServices", totalServices);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", pageNumber);
+        request.setAttribute("paramSearchQuery", searchQuery);  // Truyền giá trị tìm kiếm vào request
+
+        // Truyền các tham số bộ lọc vào JSP để giữ lại dữ liệu sau khi tìm kiếm
+        request.setAttribute("paramType", type);
+        request.setAttribute("paramMinPrice", min);
+        request.setAttribute("paramMaxPrice", max);
+
+        // Forward request đến JSP
         request.getRequestDispatcher("admin/serviceList.jsp").forward(request, response);
     }
 

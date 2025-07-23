@@ -61,8 +61,8 @@
                             <span class="dropdown-item"
                                   >${sessionScope.user.getFullName()} (Staff)</span
                             >
-                            <a href="reception/dashboard.jsp" class="dropdown-item"
-                               ><i class="fa-solid fa-table-columns"></i>Daskboard</a
+                            <a href="reception/dashboard" class="dropdown-item"
+                               ><i class="fa-solid fa-table-columns"></i>Dashboard</a
                             >
                             <a href="logout" class="dropdown-item"
                                ><i class="fas fa-sign-out-alt"></i> Đăng xuất</a

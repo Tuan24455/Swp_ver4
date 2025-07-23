@@ -13,6 +13,10 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
         <style>
             .room-card {
                 transition: transform 0.2s;
@@ -39,6 +43,8 @@
                 padding: 20px;
                 margin-bottom: 20px;
             }
+
+
         </style>
     </head>
     <body>
@@ -78,93 +84,111 @@
 
                     <!-- Room Statistics Cards -->
                     <div class="row g-4 mb-4">
+                        <!-- Phòng trống -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card kpi-card shadow-sm">
+                            <div class="card border border-success rounded-4 shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Available</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Available'] != null ? statusCounts['Available'] : 0}</h2>
-                                    <p class="card-text text-success">
-                                        <i class="fas fa-check-circle me-1"></i> Ready for booking
-                                    </p>
+                                    <h6 class="text-muted">Phòng trống</h6>
+                                    <h2 class="text-success fw-bold">
+                                        ${statusCounts['Available'] != null ? statusCounts['Available'] : 0}
+                                    </h2>
+                                    <div class="text-success">
+                                        <i class="fas fa-door-open me-2"></i> Sẵn sàng đặt
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Có khách -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card kpi-card shadow-sm">
+                            <div class="card border border-warning rounded-4 shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Occupied</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Occupied'] != null ? statusCounts['Occupied'] : 0}</h2>
-                                    <p class="card-text text-warning">
-                                        <i class="fas fa-user me-1"></i> Currently booked
-                                    </p>
+                                    <h6 class="text-muted">Có khách</h6>
+                                    <h2 class="text-warning fw-bold">
+                                        ${statusCounts['Occupied'] != null ? statusCounts['Occupied'] : 0}
+                                    </h2>
+                                    <div class="text-warning">
+                                        <i class="fas fa-user-check me-2"></i> Đang sử dụng
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Bảo trì -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card kpi-card shadow-sm">
+                            <div class="card border border-danger rounded-4 shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Maintenance</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}</h2>
-                                    <p class="card-text text-danger">
-                                        <i class="fas fa-tools me-1"></i> Under maintenance
-                                    </p>
+                                    <h6 class="text-muted">Bảo trì</h6>
+                                    <h2 class="text-danger fw-bold">
+                                        ${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}
+                                    </h2>
+                                    <div class="text-danger">
+                                        <i class="fas fa-tools me-2"></i> Đang bảo trì
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Dọn dẹp -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card kpi-card shadow-sm">
+                            <div class="card border border-info rounded-4 shadow-sm">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Cleaning</h6>
-                                    <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Cleaning'] != null ? statusCounts['Cleaning'] : 0}</h2>
-                                    <p class="card-text text-danger">
-                                        <i class="fas fa-tools me-1"></i> Under maintenance
-                                    </p>
+                                    <h6 class="text-muted">Dọn dẹp</h6>
+                                    <h2 class="text-info fw-bold">
+                                        ${statusCounts['Cleaning'] != null ? statusCounts['Cleaning'] : 0}
+                                    </h2>
+                                    <div class="text-info">
+                                        <i class="fas fa-broom me-2"></i> Đang dọn phòng
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+
                     <!-- Filter Options -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">Filter by Status</label>
-                                    <select
-                                        class="form-select"
-                                        id="statusFilter"
-                                        onchange="filterRooms()"
-                                        >
-                                        <option value="">All Status</option>
-                                        <option value="Available">Available</option>
-                                        <option value="Occupied">Occupied</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="Cleaning">Cleaning</option>
+                    <div class="card shadow-sm mb-4 border-0 bg-transparent">
+                        <div class="card-body rounded-4 text-white" style="background-color: blanchedalmond;">
+                            <h5 class="mb-3 fw-semibold">
+                                <i class="fas fa-filter me-2 text-primary"></i> Bộ lọc phòng
+                            </h5>
+                            <div class="row g-4">
+                                <!-- Filter by Status -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold text-secondary">
+                                        <i class="fas fa-info-circle me-1"></i> Trạng thái
+                                    </label>
+                                    <select class="form-select rounded-pill" id="statusFilter" onchange="filterRooms()">
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="Available">Trống</option>
+                                        <option value="Occupied">Có khách</option>
+                                        <option value="Maintenance">Bảo trì</option>
+                                        <option value="Cleaning">Dọn dẹp</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Filter by Floor</label>
-                                    <select
-                                        class="form-select"
-                                        id="floorFilter"
-                                        onchange="filterRooms()"
-                                        >
-                                        <option value="">All Floors</option>
-                                        <option value="1">1st Floor</option>
-                                        <option value="2">2nd Floor</option>
-                                        <option value="3">3rd Floor</option>
-                                        <option value="4">4th Floor</option>
-                                        <option value="5">5th Floor</option>
+
+                                <!-- Filter by Floor -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold text-secondary">
+                                        <i class="fas fa-building me-1"></i> Tầng
+                                    </label>
+                                    <select class="form-select rounded-pill" id="floorFilter" onchange="filterRooms()">
+                                        <option value="">Tất cả các tầng</option>
+                                        <option value="1">Tầng 1</option>
+                                        <option value="2">Tầng 2</option>
+                                        <option value="3">Tầng 3</option>
+                                        <option value="4">Tầng 4</option>
+                                        <option value="5">Tầng 5</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Filter by Type</label>
-                                    <select
-                                        class="form-select"
-                                        id="typeFilter"
-                                        onchange="filterRooms()"
-                                        >
-                                        <option value="">All Types</option>
+
+                                <!-- Filter by Type -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold text-secondary">
+                                        <i class="fas fa-bed me-1"></i> Loại phòng
+                                    </label>
+                                    <select class="form-select rounded-pill" id="typeFilter" onchange="filterRooms()">
+                                        <option value="">Tất cả loại phòng</option>
                                         <option value="Standard Room">Standard</option>
                                         <option value="Deluxe Room">Deluxe</option>
                                         <option value="Suite">Suite</option>
@@ -175,6 +199,8 @@
                         </div>
                     </div>
 
+
+
                     <!-- Floor 1 -->
                     <div class="floor-section">
                         <h5 class="mb-3"><i class="fas fa-building me-2"></i>Tầng 1</h5>
@@ -182,116 +208,178 @@
                             <c:forEach var="r" items="${room1}">
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div
-                                        class="card room-card room-available shadow-sm"
+                                        class="card room-card shadow-sm
+                                        <c:choose>
+                                            <c:when test="${r.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>
+                                            <c:when test="${r.roomTypeName == 'Deluxe Room'}">border-success bg-light</c:when>
+                                            <c:when test="${r.roomTypeName == 'Suite'}">border-danger bg-light</c:when>
+                                            <c:when test="${r.roomTypeName == 'Presidential Suite'}">border-warning bg-light</c:when>
+                                            <c:otherwise>border-secondary</c:otherwise>
+                                        </c:choose>"
                                         data-room="${r.roomNumber}"
                                         data-status="${r.roomStatus}"
-                                        data-floor="1"
+                                        data-floor="2"
                                         data-type="${r.roomTypeName}"
                                         >
                                         <div class="card-body">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center mb-2"
-                                                >
+                                            <!-- Số phòng + trạng thái -->
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <h6 class="card-title mb-0">${r.roomNumber}</h6>
-                                                <span class="badge bg-success">${r.roomStatus}</span>
+                                                <c:choose>
+                                                    <c:when test="${r.roomStatus == 'Available'}">
+                                                        <span class="badge bg-success">Đang trống</span>
+                                                    </c:when>
+                                                    <c:when test="${r.roomStatus == 'Occupied'}">
+                                                        <span class="badge bg-danger">Đang có khách</span>
+                                                    </c:when>
+                                                    <c:when test="${r.roomStatus == 'Maintenance'}">
+                                                        <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    </c:when>
+                                                    <c:when test="${r.roomStatus == 'Cleaning'}">
+                                                        <span class="badge bg-info text-dark">Đang dọn dẹp</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-secondary">Không xác định</span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
-                                            <p class="card-text text-muted small mb-2">${r.roomTypeName}</p>
-                                            <div
-                                                class="d-flex justify-content-between align-items-center"
-                                                >
 
+                                            <!-- Loại phòng (icon & màu) -->
+                                            <p class="card-text fw-bold mb-2">
+                                                <c:choose>
+                                                    <c:when test="${r.roomTypeName == 'Standard Room'}">
+                                                        <i class="fas fa-bed text-primary me-1"></i>
+                                                        <span class="text-primary">${r.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r.roomTypeName == 'Deluxe Room'}">
+                                                        <i class="fas fa-bath text-success me-1"></i>
+                                                        <span class="text-success">${r.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r.roomTypeName == 'Suite'}">
+                                                        <i class="fas fa-couch text-danger me-1"></i>
+                                                        <span class="text-danger">${r.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r.roomTypeName == 'Presidential Suite'}">
+                                                        <i class="fas fa-crown text-warning me-1"></i>
+                                                        <span class="text-warning">${r.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-question-circle text-muted me-1"></i>
+                                                        <span class="text-muted">${r.roomTypeName}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+
+                                            <!-- Nút xem -->
+                                            <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group btn-group-sm">
                                                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal${r.id}">
-                                                        <i class="fas fa-eye"></i> View Details
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                                 <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
                                 <div class="modal fade" id="viewRoomModal${r.id}" tabindex="-1" aria-labelledby="viewRoomLabel${r.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <form action="updateStatusRoom" method="post">
+                                                <!-- Header -->
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="viewRoomLabel${r.id}">Room Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="viewRoomLabel${r.id}">
+                                                        <i class="fas fa-door-open me-2"></i> Chi tiết phòng ${r.roomNumber}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
 
+                                                <!-- Body -->
                                                 <div class="modal-body">
                                                     <input type="hidden" name="roomId" value="${r.id}" />
 
-                                                    <div class="row g-3">
-                                                        <!-- Room Number -->
+                                                    <div class="row g-4">
+                                                        <!-- Số phòng -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Number</label>
-                                                            <p class="form-control-plaintext">${r.roomNumber}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Số phòng</label>
+                                                            <input type="text" class="form-control text-primary fw-bold" value="${r.roomNumber}" readonly>
                                                         </div>
 
-                                                        <!-- Room Type -->
+                                                        <!-- Loại phòng -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Type</label>
-                                                            <p class="form-control-plaintext">${r.roomTypeName}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Loại phòng</label>
+                                                            <input type="text" class="form-control" value="${r.roomTypeName}" readonly>
                                                         </div>
 
-                                                        <!-- Floor -->
+                                                        <!-- Tầng -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Floor</label>
-                                                            <p class="form-control-plaintext">${r.floor} Floor</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Tầng</label>
+                                                            <input type="text" class="form-control" value="${r.floor}" readonly>
                                                         </div>
 
-                                                        <!-- Capacity -->
+                                                        <!-- Sức chứa -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Capacity</label>
-                                                            <p class="form-control-plaintext">${r.capacity} Guests</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Sức chứa</label>
+                                                            <input type="text" class="form-control" value="${r.capacity} khách" readonly>
                                                         </div>
 
-                                                        <!-- Price -->
+                                                        <!-- Giá phòng -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Price</label>
-                                                            <p class="form-control-plaintext">${r.roomPrice}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Giá phòng</label>
+                                                            <input type="text" class="form-control text-success fw-bold" value="${r.roomPrice} VNĐ" readonly>
                                                         </div>
 
-                                                        <!-- cho phép chỉnh sửa trạng thái) -->
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                <option value="Occupied" ${r.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                <option value="Cleaning" ${r.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                            </select>
-                                                        </div>
+                                                        <!-- Trạng thái -->
+                                                        <c:choose>
+                                                            <c:when test="${r.roomStatus == 'Occupied'}">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <input type="text" class="form-control text-danger fw-bold" value="Đang có khách" readonly>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="Available"   ${r.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
+                                                                        <option value="Occupied"    ${r.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
+                                                                        <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                                                        <option value="Cleaning"    ${r.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp</option>
+                                                                    </select>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
 
-                                                        <!-- Image -->
+                                                        <!-- Hình ảnh -->
                                                         <div class="col-md-12">
-                                                            <label class="form-label">Image</label>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Hình ảnh</label>
                                                             <div class="mb-2">
-                                                                <img src="${pageContext.request.contextPath}/${r.imageUrl}" width="100" class="rounded" />
+                                                                <img src="${pageContext.request.contextPath}/${r.imageUrl}" width="150" class="rounded shadow-sm border" />
                                                             </div>
                                                         </div>
 
-                                                        <!-- Description -->
+                                                        <!-- Mô tả -->
                                                         <div class="col-12">
-                                                            <label class="form-label">Description</label>
-                                                            <p class="form-control-plaintext">${r.description}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Mô tả</label>
+                                                            <c:out value="${r.description}" escapeXml="false" />
                                                         </div>
                                                     </div>
                                                 </div>
 
+                                                <!-- Footer -->
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Status</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                    <c:if test="${r.roomStatus != 'Occupied'}">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-sync-alt me-1"></i> Cập nhật trạng thái
+                                                        </button>
+                                                    </c:if>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                             </c:forEach>            
                         </div>
                     </div>
@@ -303,113 +391,169 @@
                             <c:forEach var="r2" items="${room2}">
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div
-                                        class="card room-card room-maintenance shadow-sm"
+                                        class="card room-card shadow-sm
+                                        <c:choose>
+                                            <c:when test="${r2.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>
+                                            <c:when test="${r2.roomTypeName == 'Deluxe Room'}">border-success bg-light</c:when>
+                                            <c:when test="${r2.roomTypeName == 'Suite'}">border-danger bg-light</c:when>
+                                            <c:when test="${r2.roomTypeName == 'Presidential Suite'}">border-warning bg-light</c:when>
+                                            <c:otherwise>border-secondary</c:otherwise>
+                                        </c:choose>"
                                         data-room="${r2.roomNumber}"
                                         data-status="${r2.roomStatus}"
                                         data-floor="2"
                                         data-type="${r2.roomTypeName}"
                                         >
                                         <div class="card-body">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center mb-2"
-                                                >
+                                            <!-- Số phòng + trạng thái -->
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <h6 class="card-title mb-0">${r2.roomNumber}</h6>
-                                                <span class="badge bg-danger">${r2.roomStatus}</span>
+                                                <c:choose>
+                                                    <c:when test="${r2.roomStatus == 'Available'}">
+                                                        <span class="badge bg-success">Đang trống</span>
+                                                    </c:when>
+                                                    <c:when test="${r2.roomStatus == 'Occupied'}">
+                                                        <span class="badge bg-danger">Đang có khách</span>
+                                                    </c:when>
+                                                    <c:when test="${r2.roomStatus == 'Maintenance'}">
+                                                        <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    </c:when>
+                                                    <c:when test="${r2.roomStatus == 'Cleaning'}">
+                                                        <span class="badge bg-info text-dark">Đang dọn dẹp</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-secondary">Không xác định</span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
-                                            <p class="card-text text-muted small mb-2">${r2.roomTypeName}</p>
-                                            <div
-                                                class="d-flex justify-content-between align-items-center"
-                                                >
-                                                <small class="text-muted">Issue: AC repair</small>
+
+                                            <!-- Loại phòng (nổi bật với icon + viền màu) -->
+                                            <!-- Loại phòng (nổi bật với icon + viền màu) -->
+                                            <p class="card-text fw-bold mb-2">
+                                                <c:choose>
+                                                    <c:when test="${r2.roomTypeName == 'Standard Room'}">
+                                                        <i class="fas fa-bed text-primary me-1"></i>
+                                                        <span class="text-primary">${r2.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r2.roomTypeName == 'Deluxe Room'}">
+                                                        <i class="fas fa-bath text-success me-1"></i>
+                                                        <span class="text-success">${r2.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r2.roomTypeName == 'Suite'}">
+                                                        <i class="fas fa-couch text-danger me-1"></i>
+                                                        <span class="text-danger">${r2.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r2.roomTypeName == 'Presidential Suite'}">
+                                                        <i class="fas fa-crown text-warning me-1"></i>
+                                                        <span class="text-warning">${r2.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-question-circle text-muted me-1"></i>
+                                                        <span class="text-muted">${r2.roomTypeName}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+
+
+                                            <!-- Nút xem -->
+                                            <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group btn-group-sm">
                                                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal${r2.id}">
-                                                        <i class="fas fa-eye"></i> View Details
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                                        
-                                 <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
+
+                                <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
                                 <div class="modal fade" id="viewRoomModal${r2.id}" tabindex="-1" aria-labelledby="viewRoomLabel${r2.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <form action="updateStatusRoom" method="post">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="viewRoomLabel${r2.id}">Room Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="viewRoomLabel${r2.id}">
+                                                        <i class="fas fa-door-open me-2"></i> Chi tiết phòng ${r2.roomNumber}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
 
                                                 <div class="modal-body">
                                                     <input type="hidden" name="roomId" value="${r2.id}" />
-
-                                                    <div class="row g-3">
-                                                        <!-- Room Number -->
+                                                    <div class="row g-4">
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Number</label>
-                                                            <p class="form-control-plaintext">${r2.roomNumber}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Số phòng</label>
+                                                            <input type="text" class="form-control text-primary fw-bold" value="${r2.roomNumber}" readonly>
                                                         </div>
 
-                                                        <!-- Room Type -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Type</label>
-                                                            <p class="form-control-plaintext">${r2.roomTypeName}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Loại phòng</label>
+                                                            <input type="text" class="form-control" value="${r2.roomTypeName}" readonly>
                                                         </div>
 
-                                                        <!-- Floor -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Floor</label>
-                                                            <p class="form-control-plaintext">${r2.floor} Floor</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Tầng</label>
+                                                            <input type="text" class="form-control" value="${r2.floor}" readonly>
                                                         </div>
 
-                                                        <!-- Capacity -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Capacity</label>
-                                                            <p class="form-control-plaintext">${r2.capacity} Guests</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Sức chứa</label>
+                                                            <input type="text" class="form-control" value="${r2.capacity} khách" readonly>
                                                         </div>
 
-                                                        <!-- Price -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Price</label>
-                                                            <p class="form-control-plaintext">${r2.roomPrice}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Giá phòng</label>
+                                                            <input type="text" class="form-control text-success fw-bold" value="${r2.roomPrice} VNĐ" readonly>
                                                         </div>
 
-                                                        <!-- cho phép chỉnh sửa trạng thái) -->
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="Available" ${r2.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                <option value="Occupied" ${r2.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                <option value="Maintenance" ${r2.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                <option value="Cleaning" ${r2.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                            </select>
-                                                        </div>
+                                                        <c:choose>
+                                                            <c:when test="${r2.roomStatus == 'Occupied'}">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <input type="text" class="form-control text-danger fw-bold" value="Đang có khách" readonly>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="Available"   ${r2.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
+                                                                        <option value="Occupied"    ${r2.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
+                                                                        <option value="Maintenance" ${r2.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                                                        <option value="Cleaning"    ${r2.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
+                                                                    </select>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
 
-                                                        <!-- Image -->
                                                         <div class="col-md-12">
-                                                            <label class="form-label">Image</label>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Hình ảnh</label>
                                                             <div class="mb-2">
-                                                                <img src="${pageContext.request.contextPath}/${r2.imageUrl}" width="100" class="rounded" />
+                                                                <img src="${pageContext.request.contextPath}/${r2.imageUrl}" width="150" class="rounded shadow-sm border" />
                                                             </div>
                                                         </div>
 
-                                                        <!-- Description -->
                                                         <div class="col-12">
-                                                            <label class="form-label">Description</label>
-                                                            <p class="form-control-plaintext">${r2.description}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Mô tả</label>
+                                                            <c:out value="${r2.description}" escapeXml="false" />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Status</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                    <c:if test="${r2.roomStatus != 'Occupied'}">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-sync-alt me-1"></i> Cập nhật trạng thái
+                                                        </button>
+                                                    </c:if>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
+
 
                             </c:forEach>
                         </div>
@@ -422,108 +566,154 @@
                             <c:forEach var="r3" items="${room3}">
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div
-                                        class="card room-card room-maintenance shadow-sm"
+                                        class="card room-card shadow-sm
+                                        <c:choose>
+                                            <c:when test="${r3.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>
+                                            <c:when test="${r3.roomTypeName == 'Deluxe Room'}">border-success bg-light</c:when>
+                                            <c:when test="${r3.roomTypeName == 'Suite'}">border-danger bg-light</c:when>
+                                            <c:when test="${r3.roomTypeName == 'Presidential Suite'}">border-warning bg-light</c:when>
+                                            <c:otherwise>border-secondary</c:otherwise>
+                                        </c:choose>"
                                         data-room="${r3.roomNumber}"
                                         data-status="${r3.roomStatus}"
                                         data-floor="3"
                                         data-type="${r3.roomTypeName}"
                                         >
                                         <div class="card-body">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center mb-2"
-                                                >
+                                            <!-- Số phòng + trạng thái -->
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <h6 class="card-title mb-0">${r3.roomNumber}</h6>
-                                                <span class="badge bg-danger">${r3.roomStatus}</span>
+                                                <c:choose>
+                                                    <c:when test="${r3.roomStatus == 'Available'}">
+                                                        <span class="badge bg-success">Đang trống</span>
+                                                    </c:when>
+                                                    <c:when test="${r3.roomStatus == 'Occupied'}">
+                                                        <span class="badge bg-danger">Đang có khách</span>
+                                                    </c:when>
+                                                    <c:when test="${r3.roomStatus == 'Maintenance'}">
+                                                        <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    </c:when>
+                                                    <c:when test="${r3.roomStatus == 'Cleaning'}">
+                                                        <span class="badge bg-info text-dark">Đang dọn dẹp</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-secondary">Không xác định</span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
-                                            <p class="card-text text-muted small mb-2">${r3.roomTypeName}</p>
-                                            <div
-                                                class="d-flex justify-content-between align-items-center"
-                                                >
-                                                <small class="text-muted">Issue: AC repair</small>
+
+                                            <!-- Loại phòng -->
+                                            <p class="card-text fw-bold mb-2">
+                                                <c:choose>
+                                                    <c:when test="${r3.roomTypeName == 'Standard Room'}">
+                                                        <i class="fas fa-bed text-primary me-1"></i>
+                                                        <span class="text-primary">${r3.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r3.roomTypeName == 'Deluxe Room'}">
+                                                        <i class="fas fa-bath text-success me-1"></i>
+                                                        <span class="text-success">${r3.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r3.roomTypeName == 'Suite'}">
+                                                        <i class="fas fa-couch text-danger me-1"></i>
+                                                        <span class="text-danger">${r3.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r3.roomTypeName == 'Presidential Suite'}">
+                                                        <i class="fas fa-crown text-warning me-1"></i>
+                                                        <span class="text-warning">${r3.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-question-circle text-muted me-1"></i>
+                                                        <span class="text-muted">${r3.roomTypeName}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+
+                                            <!-- Nút xem -->
+                                            <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group btn-group-sm">
                                                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal${r3.id}">
-                                                        <i class="fas fa-eye"></i> View Details
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                                        
-                                                                                         <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
+
+                                <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
                                 <div class="modal fade" id="viewRoomModal${r3.id}" tabindex="-1" aria-labelledby="viewRoomLabel${r3.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <form action="updateStatusRoom" method="post">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="viewRoomLabel${r3.id}">Room Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="viewRoomLabel${r3.id}">
+                                                        <i class="fas fa-door-open me-2"></i> Chi tiết phòng ${r3.roomNumber}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
 
                                                 <div class="modal-body">
                                                     <input type="hidden" name="roomId" value="${r3.id}" />
-
-                                                    <div class="row g-3">
-                                                        <!-- Room Number -->
+                                                    <div class="row g-4">
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Number</label>
-                                                            <p class="form-control-plaintext">${r3.roomNumber}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Số phòng</label>
+                                                            <input type="text" class="form-control text-primary fw-bold" value="${r3.roomNumber}" readonly>
                                                         </div>
-
-                                                        <!-- Room Type -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Type</label>
-                                                            <p class="form-control-plaintext">${r3.roomTypeName}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Loại phòng</label>
+                                                            <input type="text" class="form-control" value="${r3.roomTypeName}" readonly>
                                                         </div>
-
-                                                        <!-- Floor -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Floor</label>
-                                                            <p class="form-control-plaintext">${r3.floor} Floor</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Tầng</label>
+                                                            <input type="text" class="form-control" value="${r3.floor}" readonly>
                                                         </div>
-
-                                                        <!-- Capacity -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Capacity</label>
-                                                            <p class="form-control-plaintext">${r3.capacity} Guests</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Sức chứa</label>
+                                                            <input type="text" class="form-control" value="${r3.capacity} khách" readonly>
                                                         </div>
-
-                                                        <!-- Price -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Price</label>
-                                                            <p class="form-control-plaintext">${r3.roomPrice}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Giá phòng</label>
+                                                            <input type="text" class="form-control text-success fw-bold" value="${r3.roomPrice} VNĐ" readonly>
                                                         </div>
-
-                                                        <!-- cho phép chỉnh sửa trạng thái) -->
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="Available" ${r3.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                <option value="Occupied" ${r3.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                <option value="Maintenance" ${r3.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                <option value="Cleaning" ${r3.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <!-- Image -->
+                                                        <c:choose>
+                                                            <c:when test="${r3.roomStatus == 'Occupied'}">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <input type="text" class="form-control text-danger fw-bold" value="Đang có khách" readonly>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="Available"   ${r3.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
+                                                                        <option value="Occupied"    ${r3.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
+                                                                        <option value="Maintenance" ${r3.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                                                        <option value="Cleaning"    ${r3.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
+                                                                    </select>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                         <div class="col-md-12">
-                                                            <label class="form-label">Image</label>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Hình ảnh</label>
                                                             <div class="mb-2">
-                                                                <img src="${pageContext.request.contextPath}/${r3.imageUrl}" width="100" class="rounded" />
+                                                                <img src="${pageContext.request.contextPath}/${r3.imageUrl}" width="150" class="rounded shadow-sm border" />
                                                             </div>
                                                         </div>
-
-                                                        <!-- Description -->
                                                         <div class="col-12">
-                                                            <label class="form-label">Description</label>
-                                                            <p class="form-control-plaintext">${r3.description}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Mô tả</label>
+                                                            <c:out value="${r3.description}" escapeXml="false" />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Status</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                    <c:if test="${r3.roomStatus != 'Occupied'}">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-sync-alt me-1"></i> Cập nhật trạng thái
+                                                        </button>
+                                                    </c:if>
                                                 </div>
                                             </form>
                                         </div>
@@ -540,108 +730,149 @@
                             <c:forEach var="r4" items="${room4}">
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div
-                                        class="card room-card room-maintenance shadow-sm"
+                                        class="card room-card shadow-sm
+                                        <c:choose>
+                                            <c:when test="${r4.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>
+                                            <c:when test="${r4.roomTypeName == 'Deluxe Room'}">border-success bg-light</c:when>
+                                            <c:when test="${r4.roomTypeName == 'Suite'}">border-danger bg-light</c:when>
+                                            <c:when test="${r4.roomTypeName == 'Presidential Suite'}">border-warning bg-light</c:when>
+                                            <c:otherwise>border-secondary</c:otherwise>
+                                        </c:choose>"
                                         data-room="${r4.roomNumber}"
                                         data-status="${r4.roomStatus}"
                                         data-floor="4"
                                         data-type="${r4.roomTypeName}"
                                         >
                                         <div class="card-body">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center mb-2"
-                                                >
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <h6 class="card-title mb-0">${r4.roomNumber}</h6>
-                                                <span class="badge bg-danger">${r4.roomStatus}</span>
+                                                <c:choose>
+                                                    <c:when test="${r4.roomStatus == 'Available'}">
+                                                        <span class="badge bg-success">Đang trống</span>
+                                                    </c:when>
+                                                    <c:when test="${r4.roomStatus == 'Occupied'}">
+                                                        <span class="badge bg-danger">Đang có khách</span>
+                                                    </c:when>
+                                                    <c:when test="${r4.roomStatus == 'Maintenance'}">
+                                                        <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    </c:when>
+                                                    <c:when test="${r4.roomStatus == 'Cleaning'}">
+                                                        <span class="badge bg-info text-dark">Đang dọn dẹp</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-secondary">Không xác định</span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
-                                            <p class="card-text text-muted small mb-2">${r4.roomTypeName}</p>
-                                            <div
-                                                class="d-flex justify-content-between align-items-center"
-                                                >
-                                                <small class="text-muted">Issue: AC repair</small>
+                                            <p class="card-text fw-bold mb-2">
+                                                <c:choose>
+                                                    <c:when test="${r4.roomTypeName == 'Standard Room'}">
+                                                        <i class="fas fa-bed text-primary me-1"></i>
+                                                        <span class="text-primary">${r4.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r4.roomTypeName == 'Deluxe Room'}">
+                                                        <i class="fas fa-bath text-success me-1"></i>
+                                                        <span class="text-success">${r4.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r4.roomTypeName == 'Suite'}">
+                                                        <i class="fas fa-couch text-danger me-1"></i>
+                                                        <span class="text-danger">${r4.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r4.roomTypeName == 'Presidential Suite'}">
+                                                        <i class="fas fa-crown text-warning me-1"></i>
+                                                        <span class="text-warning">${r4.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-question-circle text-muted me-1"></i>
+                                                        <span class="text-muted">${r4.roomTypeName}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group btn-group-sm">
                                                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal${r4.id}">
-                                                        <i class="fas fa-eye"></i> View Details
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                                        
-                                 <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
+
+                                <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
                                 <div class="modal fade" id="viewRoomModal${r4.id}" tabindex="-1" aria-labelledby="viewRoomLabel${r4.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <form action="updateStatusRoom" method="post">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="viewRoomLabel${r4.id}">Room Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="viewRoomLabel${r4.id}">
+                                                        <i class="fas fa-door-open me-2"></i> Chi tiết phòng ${r4.roomNumber}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
 
                                                 <div class="modal-body">
                                                     <input type="hidden" name="roomId" value="${r4.id}" />
-
-                                                    <div class="row g-3">
-                                                        <!-- Room Number -->
+                                                    <div class="row g-4">
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Number</label>
-                                                            <p class="form-control-plaintext">${r4.roomNumber}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Số phòng</label>
+                                                            <input type="text" class="form-control text-primary fw-bold" value="${r4.roomNumber}" readonly>
                                                         </div>
-
-                                                        <!-- Room Type -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Type</label>
-                                                            <p class="form-control-plaintext">${r4.roomTypeName}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Loại phòng</label>
+                                                            <input type="text" class="form-control" value="${r4.roomTypeName}" readonly>
                                                         </div>
-
-                                                        <!-- Floor -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Floor</label>
-                                                            <p class="form-control-plaintext">${r4.floor} Floor</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Tầng</label>
+                                                            <input type="text" class="form-control" value="${r4.floor}" readonly>
                                                         </div>
-
-                                                        <!-- Capacity -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Capacity</label>
-                                                            <p class="form-control-plaintext">${r4.capacity} Guests</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Sức chứa</label>
+                                                            <input type="text" class="form-control" value="${r4.capacity} khách" readonly>
                                                         </div>
-
-                                                        <!-- Price -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Price</label>
-                                                            <p class="form-control-plaintext">${r4.roomPrice}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Giá phòng</label>
+                                                            <input type="text" class="form-control text-success fw-bold" value="${r4.roomPrice} VNĐ" readonly>
                                                         </div>
-
-                                                        <!-- cho phép chỉnh sửa trạng thái) -->
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="Available" ${r4.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                <option value="Occupied" ${r4.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                <option value="Maintenance" ${r4.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                <option value="Cleaning" ${r4.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <!-- Image -->
+                                                        <c:choose>
+                                                            <c:when test="${r4.roomStatus == 'Occupied'}">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <input type="text" class="form-control text-danger fw-bold" value="Đang có khách" readonly>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="Available"   ${r4.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
+                                                                        <option value="Occupied"    ${r4.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
+                                                                        <option value="Maintenance" ${r4.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                                                        <option value="Cleaning"    ${r4.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
+                                                                    </select>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                         <div class="col-md-12">
-                                                            <label class="form-label">Image</label>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Hình ảnh</label>
                                                             <div class="mb-2">
-                                                                <img src="${pageContext.request.contextPath}/${r4.imageUrl}" width="100" class="rounded" />
+                                                                <img src="${pageContext.request.contextPath}/${r4.imageUrl}" width="150" class="rounded shadow-sm border" />
                                                             </div>
                                                         </div>
-
-                                                        <!-- Description -->
                                                         <div class="col-12">
-                                                            <label class="form-label">Description</label>
-                                                            <p class="form-control-plaintext">${r4.description}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Mô tả</label>
+                                                            <c:out value="${r4.description}" escapeXml="false" />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Status</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                    <c:if test="${r4.roomStatus != 'Occupied'}">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-sync-alt me-1"></i> Cập nhật trạng thái
+                                                        </button>
+                                                    </c:if>
                                                 </div>
                                             </form>
                                         </div>
@@ -658,108 +889,149 @@
                             <c:forEach var="r5" items="${room5}">
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div
-                                        class="card room-card room-maintenance shadow-sm"
+                                        class="card room-card shadow-sm
+                                        <c:choose>
+                                            <c:when test="${r5.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>
+                                            <c:when test="${r5.roomTypeName == 'Deluxe Room'}">border-success bg-light</c:when>
+                                            <c:when test="${r5.roomTypeName == 'Suite'}">border-danger bg-light</c:when>
+                                            <c:when test="${r5.roomTypeName == 'Presidential Suite'}">border-warning bg-light</c:when>
+                                            <c:otherwise>border-secondary</c:otherwise>
+                                        </c:choose>"
                                         data-room="${r5.roomNumber}"
                                         data-status="${r5.roomStatus}"
                                         data-floor="5"
                                         data-type="${r5.roomTypeName}"
                                         >
                                         <div class="card-body">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center mb-2"
-                                                >
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <h6 class="card-title mb-0">${r5.roomNumber}</h6>
-                                                <span class="badge bg-danger">${r5.roomStatus}</span>
+                                                <c:choose>
+                                                    <c:when test="${r5.roomStatus == 'Available'}">
+                                                        <span class="badge bg-success">Đang trống</span>
+                                                    </c:when>
+                                                    <c:when test="${r5.roomStatus == 'Occupied'}">
+                                                        <span class="badge bg-danger">Đang có khách</span>
+                                                    </c:when>
+                                                    <c:when test="${r5.roomStatus == 'Maintenance'}">
+                                                        <span class="badge bg-warning text-dark">Bảo trì</span>
+                                                    </c:when>
+                                                    <c:when test="${r5.roomStatus == 'Cleaning'}">
+                                                        <span class="badge bg-info text-dark">Đang dọn dẹp</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-secondary">Không xác định</span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
-                                            <p class="card-text text-muted small mb-2">${r5.roomTypeName}</p>
-                                            <div
-                                                class="d-flex justify-content-between align-items-center"
-                                                >
-                                                <small class="text-muted">Issue: AC repair</small>
+                                            <p class="card-text fw-bold mb-2">
+                                                <c:choose>
+                                                    <c:when test="${r5.roomTypeName == 'Standard Room'}">
+                                                        <i class="fas fa-bed text-primary me-1"></i>
+                                                        <span class="text-primary">${r5.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r5.roomTypeName == 'Deluxe Room'}">
+                                                        <i class="fas fa-bath text-success me-1"></i>
+                                                        <span class="text-success">${r5.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r5.roomTypeName == 'Suite'}">
+                                                        <i class="fas fa-couch text-danger me-1"></i>
+                                                        <span class="text-danger">${r5.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:when test="${r5.roomTypeName == 'Presidential Suite'}">
+                                                        <i class="fas fa-crown text-warning me-1"></i>
+                                                        <span class="text-warning">${r5.roomTypeName}</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fas fa-question-circle text-muted me-1"></i>
+                                                        <span class="text-muted">${r5.roomTypeName}</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group btn-group-sm">
                                                     <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal${r5.id}">
-                                                        <i class="fas fa-eye"></i> View Details
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                                        
-                                 <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
+
+                                <!-- Modal để Xem và Cập nhật Trạng thái phòng -->
                                 <div class="modal fade" id="viewRoomModal${r5.id}" tabindex="-1" aria-labelledby="viewRoomLabel${r5.id}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <form action="updateStatusRoom" method="post">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="viewRoomLabel${r5.id}">Room Details</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h5 class="modal-title" id="viewRoomLabel${r5.id}">
+                                                        <i class="fas fa-door-open me-2"></i> Chi tiết phòng ${r5.roomNumber}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
 
                                                 <div class="modal-body">
                                                     <input type="hidden" name="roomId" value="${r5.id}" />
-
-                                                    <div class="row g-3">
-                                                        <!-- Room Number -->
+                                                    <div class="row g-4">
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Number</label>
-                                                            <p class="form-control-plaintext">${r5.roomNumber}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Số phòng</label>
+                                                            <input type="text" class="form-control text-primary fw-bold" value="${r5.roomNumber}" readonly>
                                                         </div>
-
-                                                        <!-- Room Type -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Room Type</label>
-                                                            <p class="form-control-plaintext">${r5.roomTypeName}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Loại phòng</label>
+                                                            <input type="text" class="form-control" value="${r5.roomTypeName}" readonly>
                                                         </div>
-
-                                                        <!-- Floor -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Floor</label>
-                                                            <p class="form-control-plaintext">${r5.floor} Floor</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Tầng</label>
+                                                            <input type="text" class="form-control" value="${r5.floor}" readonly>
                                                         </div>
-
-                                                        <!-- Capacity -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Capacity</label>
-                                                            <p class="form-control-plaintext">${r5.capacity} Guests</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Sức chứa</label>
+                                                            <input type="text" class="form-control" value="${r5.capacity} khách" readonly>
                                                         </div>
-
-                                                        <!-- Price -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">Price</label>
-                                                            <p class="form-control-plaintext">${r5.roomPrice}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Giá phòng</label>
+                                                            <input type="text" class="form-control text-success fw-bold" value="${r5.roomPrice} VNĐ" readonly>
                                                         </div>
-
-                                                        <!-- cho phép chỉnh sửa trạng thái) -->
-                                                        <div class="col-md-6">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" class="form-select" required>
-                                                                <option value="Available" ${r5.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                <option value="Occupied" ${r5.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                <option value="Maintenance" ${r5.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                <option value="Cleaning" ${r5.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <!-- Image -->
+                                                        <c:choose>
+                                                            <c:when test="${r5.roomStatus == 'Occupied'}">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <input type="text" class="form-control text-danger fw-bold" value="Đang có khách" readonly>
+                                                                </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="Available"   ${r5.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
+                                                                        <option value="Occupied"    ${r5.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
+                                                                        <option value="Maintenance" ${r5.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                                                        <option value="Cleaning"    ${r5.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
+                                                                    </select>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                         <div class="col-md-12">
-                                                            <label class="form-label">Image</label>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Hình ảnh</label>
                                                             <div class="mb-2">
-                                                                <img src="${pageContext.request.contextPath}/${r5.imageUrl}" width="100" class="rounded" />
+                                                                <img src="${pageContext.request.contextPath}/${r5.imageUrl}" width="150" class="rounded shadow-sm border" />
                                                             </div>
                                                         </div>
-
-                                                        <!-- Description -->
                                                         <div class="col-12">
-                                                            <label class="form-label">Description</label>
-                                                            <p class="form-control-plaintext">${r5.description}</p>
+                                                            <label class="form-label text-secondary fw-semibold text-uppercase small">Mô tả</label>
+                                                            <c:out value="${r5.description}" escapeXml="false" />
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update Status</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                    <c:if test="${r5.roomStatus != 'Occupied'}">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-sync-alt me-1"></i> Cập nhật trạng thái
+                                                        </button>
+                                                    </c:if>
                                                 </div>
                                             </form>
                                         </div>

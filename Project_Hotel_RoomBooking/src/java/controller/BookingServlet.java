@@ -35,7 +35,9 @@ public class BookingServlet extends HttpServlet {
             String[] selectedServices = request.getParameterValues("selectedServices");
             
             // Create booking object
-            Booking booking = new Booking();
+            Booking booking = new Booking(String.valueOf(roomId), user.getFullName(), checkIn.toString(), checkOut.toString(), "Pending");
+            
+            // Set additional booking properties
             booking.setUserId(user.getId());
             booking.setCreatedAt(new Date(System.currentTimeMillis()));
             booking.setStatus("Pending");

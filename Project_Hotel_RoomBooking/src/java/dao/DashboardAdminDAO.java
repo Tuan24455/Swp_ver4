@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class DashboardAdminDAO {
 
@@ -159,73 +162,89 @@ public class DashboardAdminDAO {
         return bookings;
     }
 
-    // Method để lấy data cho chart theo period (với fix đồng bộ labels, fill 0 cho missing)
+    // Method để lấy data cho chart theo period (sửa: generate full labels để fill missing chính xác hơn, khớp schema DATETIME)
     public Map<String, Object> getRevenueAndBookingData(String period) {
         Map<String, Object> data = new HashMap<>();
-        Map<String, Double> revenueMap = new HashMap<>();  // Để lưu revenue theo label
-        Map<String, Integer> bookingMap = new HashMap<>(); // Để lưu bookings theo label
-        Set<String> allLabels = new TreeSet<>();  // Để merge labels unique và sort
+        Map<String, Double> revenueMap = new HashMap<>();  // Lưu revenue theo label
+        Map<String, Integer> bookingMap = new HashMap<>(); // Lưu bookings theo label
+        List<String> labels = new ArrayList<>();  // List labels đầy đủ (sẽ generate trước)
 
         String sqlRevenue = "";
         String sqlBooking = "";
 
+        // Generate full labels dựa trên period (sử dụng java.time để calculate dates)
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter dateFormatter;
+        long range;
+        ChronoUnit unit;
+
         if ("weekly".equals(period)) {
-            // Doanh thu và booking theo 7 ngày gần nhất
+            // Weekly: 7 ngày gần nhất, labels format 'yyyy-MM-dd'
+            dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            range = 7;
+            unit = ChronoUnit.DAYS;
             sqlRevenue = "SELECT CONVERT(VARCHAR(10), transaction_date, 120) AS label, SUM(amount) AS revenue " +
-                         "FROM Transactions WHERE status = 'Paid' AND transaction_date >= DATEADD(DAY, -7, GETDATE()) " +
+                         "FROM Transactions WHERE status = N'Paid' AND transaction_date >= DATEADD(DAY, -7, GETDATE()) " +
                          "GROUP BY CONVERT(VARCHAR(10), transaction_date, 120) ORDER BY label";
             sqlBooking = "SELECT CONVERT(VARCHAR(10), created_at, 120) AS label, COUNT(*) AS bookings " +
-                         "FROM Bookings WHERE status = 'Confirmed' AND created_at >= DATEADD(DAY, -7, GETDATE()) " +
+                         "FROM Bookings WHERE status = N'Confirmed' AND created_at >= DATEADD(DAY, -7, GETDATE()) " +
                          "GROUP BY CONVERT(VARCHAR(10), created_at, 120) ORDER BY label";
         } else if ("monthly".equals(period)) {
-            // Theo 12 tháng gần nhất
+            // Monthly: 12 tháng gần nhất, labels format 'yyyy-MM'
+            dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            range = 12;
+            unit = ChronoUnit.MONTHS;
             sqlRevenue = "SELECT CONVERT(VARCHAR(7), transaction_date, 120) AS label, SUM(amount) AS revenue " +
-                         "FROM Transactions WHERE status = 'Paid' AND transaction_date >= DATEADD(MONTH, -12, GETDATE()) " +
+                         "FROM Transactions WHERE status = N'Paid' AND transaction_date >= DATEADD(MONTH, -12, GETDATE()) " +
                          "GROUP BY CONVERT(VARCHAR(7), transaction_date, 120) ORDER BY label";
             sqlBooking = "SELECT CONVERT(VARCHAR(7), created_at, 120) AS label, COUNT(*) AS bookings " +
-                         "FROM Bookings WHERE status = 'Confirmed' AND created_at >= DATEADD(MONTH, -12, GETDATE()) " +
+                         "FROM Bookings WHERE status = N'Confirmed' AND created_at >= DATEADD(MONTH, -12, GETDATE()) " +
                          "GROUP BY CONVERT(VARCHAR(7), created_at, 120) ORDER BY label";
         } else if ("yearly".equals(period)) {
-            // Theo 5 năm gần nhất
+            // Yearly: 5 năm gần nhất, labels format 'yyyy'
+            dateFormatter = DateTimeFormatter.ofPattern("yyyy");
+            range = 5;
+            unit = ChronoUnit.YEARS;
             sqlRevenue = "SELECT YEAR(transaction_date) AS label, SUM(amount) AS revenue " +
-                         "FROM Transactions WHERE status = 'Paid' AND transaction_date >= DATEADD(YEAR, -5, GETDATE()) " +
+                         "FROM Transactions WHERE status = N'Paid' AND transaction_date >= DATEADD(YEAR, -5, GETDATE()) " +
                          "GROUP BY YEAR(transaction_date) ORDER BY label";
             sqlBooking = "SELECT YEAR(created_at) AS label, COUNT(*) AS bookings " +
-                         "FROM Bookings WHERE status = 'Confirmed' AND created_at >= DATEADD(YEAR, -5, GETDATE()) " +
+                         "FROM Bookings WHERE status = N'Confirmed' AND created_at >= DATEADD(YEAR, -5, GETDATE()) " +
                          "GROUP BY YEAR(created_at) ORDER BY label";
         } else {
-            return data;  // Period không hợp lệ
+            return data;  // Period không hợp lệ, trả empty
+        }
+
+        // Generate full labels (tất cả dates/tháng/năm trong range, dù có data hay không)
+        for (long i = range - 1; i >= 0; i--) {
+            LocalDate date = today.minus(i, unit);
+            labels.add(date.format(dateFormatter));
         }
 
         try (Connection conn = new DBContext().getConnection()) {
-            // Query revenue
+            // Query revenue và put vào map
             try (PreparedStatement ps = conn.prepareStatement(sqlRevenue);
                  ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String label = rs.getString("label");
                     revenueMap.put(label, rs.getDouble("revenue"));
-                    allLabels.add(label);
                 }
             }
-            // Query bookings
+            // Query bookings và put vào map
             try (PreparedStatement ps = conn.prepareStatement(sqlBooking);
                  ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String label = rs.getString("label");
                     bookingMap.put(label, rs.getInt("bookings"));
-                    allLabels.add(label);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error querying chart data: " + e.getMessage());  // Sửa: dùng System.err thay printStackTrace cho logging đơn giản
         }
 
-        // Chuyển allLabels thành list sort
-        List<String> labels = new ArrayList<>(allLabels);
+        // Fill data với 0 nếu missing (dựa trên full labels đã generate)
         List<Double> revenueData = new ArrayList<>();
         List<Integer> bookingData = new ArrayList<>();
-
-        // Fill data, dùng 0 nếu missing
         for (String label : labels) {
             revenueData.add(revenueMap.getOrDefault(label, 0.0));
             bookingData.add(bookingMap.getOrDefault(label, 0));
