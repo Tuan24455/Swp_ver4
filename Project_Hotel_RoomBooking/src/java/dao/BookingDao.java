@@ -148,9 +148,9 @@ public class BookingDao extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                
-                // Correctly use the Booking constructor with String arguments
-                Booking booking = new Booking(rs.getString("room_number"), rs.getString("customer"), rs.getString("check_in_date"), rs.getString("check_out_date"), rs.getString("status"));
+                Booking booking = new Booking();
+
+
                 booking.setId(rs.getInt("id"));
                 booking.setUserId(rs.getInt("user_id"));
                 booking.setUserName(rs.getString("full_name"));
@@ -563,8 +563,8 @@ public void addBooking(Booking booking) {
 }
 
 
-    
-    
+
+
      public static void main(String[] args) {
         try {
             BookingDao dao = new BookingDao();
