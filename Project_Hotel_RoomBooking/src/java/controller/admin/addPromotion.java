@@ -117,23 +117,14 @@ public class addPromotion extends HttpServlet {
                 return;
             }
 
-//            if (dao.checkPromotionOverlap(startAt, endAt)) {
-//                response.getWriter().write("overlap");
-//                return;
-//            }
+            if (dao.checkPromotionOverlap(startAt, endAt)) {
+                response.getWriter().write("overlap");
+                return;
+            }
             // Kiểm tra ngày cuối cùng khuyến mãi tồn tai
             Date lastEnd = dao.getLastPromotionEndDate();
             if (lastEnd != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(lastEnd);
-                cal.add(Calendar.DATE, 1);
-                Date nextValidStart = cal.getTime();
-
-                SimpleDateFormat sdfCheck = new SimpleDateFormat("yyyy-MM-dd");
-                String userStart = sdfCheck.format(startAt);
-                String mustStart = sdfCheck.format(nextValidStart);
-
-                if (!userStart.equals(mustStart)) {
+                if(!startAt.after(lastEnd)){
                     response.getWriter().write("startMustAfterLastEnd");
                     return;
                 }

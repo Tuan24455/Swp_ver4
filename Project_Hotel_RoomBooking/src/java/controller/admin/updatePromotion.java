@@ -120,18 +120,9 @@ public class updatePromotion extends HttpServlet {
                 return;
             }
 
-             Date lastEnd = dao.getLastPromotionEndDateForUpdate(id);
+            Date lastEnd = dao.getLastPromotionEndDateForUpdate(id);
             if (lastEnd != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(lastEnd);
-                cal.add(Calendar.DATE, 1);
-                Date nextValidStart = cal.getTime();
-
-                SimpleDateFormat sdfCheck = new SimpleDateFormat("yyyy-MM-dd");
-                String userStart = sdfCheck.format(startAt);
-                String mustStart = sdfCheck.format(nextValidStart);
-
-                if (!userStart.equals(mustStart)) {
+                if(startAt.after(lastEnd)){
                     response.getWriter().write("startMustAfterLastEnd");
                     return;
                 }

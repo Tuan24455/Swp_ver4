@@ -357,10 +357,12 @@
                         alert("Tên khuyến mãi đã tồn tại.");
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự.");
+                    } else if(response === "overlap"){
+                        alert("Thời gian khuyến mãi trùng với khuyến mãi hiện có ");   
                     } else if (response === "invalidPercentage") {
                         alert("Phần trăm khuyến mãi không hợp lệ.");
                     } else if (response === "startMustAfterLastEnd") {
-                        alert("Ngày bắt đầu phải sau ngày kết thúc khuyến mãi trước.");
+                        alert("Ngày bắt đầu khuyến mãi đang tồn tại khuyến mãi khác ! ");
                     } else if (response === "invalidDate") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
                     } else if (response === "success") {
@@ -401,6 +403,8 @@
                         location.reload();
                     } else if (response === "invalidDate") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
+                    } else if(response ==="invalidDateRange"){
+                        alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");    
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự.");
                     } else {
