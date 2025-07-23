@@ -280,7 +280,7 @@
                                                                         onclick="editUser(${user.id}, this)">
                                                                     <i class="fas fa-edit"></i>
                                                                 </button>
-                                                                <c:if test="${user.role != 'Admin'}">
+                                                                <c:if test="${user.role != 'Admin' && user.role != 'Customer'}">
                                                                     <button class="btn btn-sm btn-outline-danger" 
                                                                             title="Xóa" 
                                                                             onclick="deleteUser(${user.id}, '${user.fullName}')">
@@ -449,7 +449,6 @@
                                     </label>
                                     <select class="form-select" id="role" name="role">
                                         <option value="Reception">Nhân viên lễ tân</option>
-                                        <option value="Customer">Khách hàng</option>
                                     </select>
                                     <div class="invalid-feedback">Vui lòng chọn vai trò</div>
                                 </div>
@@ -488,7 +487,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="sendWelcomeEmail" name="sendWelcomeEmail" checked>
                                         <label class="form-check-label" for="sendWelcomeEmail">
-                                            <i class="fas fa-envelope me-1"></i>Gửi email chào mừng cho người dùng mới
+                                            <i class="fas fa-envelope me-1"></i>Gửi email chào mừng cho nhân viên mới
                                         </label>
                                     </div>
                                 </div>
