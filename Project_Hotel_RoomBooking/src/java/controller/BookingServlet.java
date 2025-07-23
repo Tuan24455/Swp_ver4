@@ -41,3 +41,30 @@ public class BookingServlet extends HttpServlet {
             booking.setUserId(user.getId());
             booking.setCreatedAt(new Date(System.currentTimeMillis()));
             booking.setStatus("Pending");
+
+            // Set total price
+            double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
+            booking.setTotalPrices(totalAmount);
+
+            // Save booking
+            BookingDao bookingDao = new BookingDao();
+            int bookingId = bookingDao.createBooking(booking, roomId, checkIn, checkOut, selectedServices);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            if (bookingId > 0) {
+                // Booking successful, redirect to VNPay payment
+                String paymentUrl = VNPayService.createPaymentUrl(request, bookingId, (long)booking.getTotalPrices());
+                response.sendRedirect(paymentUrl);
+            } else {
+                // Booking failed
+                response.sendRedirect(request.getContextPath() + "/error.jsp?message=Booking failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // In lỗi ra console
+            response.sendRedirect(request.getContextPath() + "/error.jsp?message=" + e.getMessage());
+        }
+    }
+}
