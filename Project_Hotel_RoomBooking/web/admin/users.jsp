@@ -732,12 +732,6 @@
                                                         const contextPath = '<%= request.getContextPath() %>';
 
                                                         // ---------------- Helper Functions ---------------- //
-                                                        function isValidFullName(name) {
-                                                            const trimmed = name.trim();
-                                                            const nameRegex = /^[\p{L} ]+$/u; // Hỗ trợ Unicode (tên có dấu)
-                                                            return trimmed.length >= 2 && nameRegex.test(trimmed);
-                                                        }
-
                                                         function isValidUsername(value) {
                                                             return /^\w+$/.test(value) && value.length >= 8;
                                                         }
@@ -773,10 +767,10 @@
                                                             const value = input.value.trim();
                                                             switch (input.id) {
                                                                 case 'fullName':
-                                                                    return [isValidFullName(value), 'Họ và tên phải dài hơn 2 ký tự, chỉ chứa chữ cái và khoảng trắng'];
+                                                                    return [value.length > 0, 'Vui lòng nhập họ và tên'];
                                                                 case 'userName':
                                                                     if (!value) {
-                                                                        return [isValidUserName(value), 'Tên đăng nhập phải lớn hơn hoặc bằng 8 ký tự'];
+                                                                        return [false, 'Vui lòng nhập tên đăng nhập'];
                                                                     }
                                                                     return [/^\w+$/.test(value) && value.length >= 8, 'Tên đăng nhập phải ≥ 8 ký tự, chỉ gồm chữ cái, số, gạch dưới'];
                                                                 case 'email':
@@ -1201,6 +1195,18 @@
                                                             }
                                                         }
 
+                                                        function exportUsers() {
+                                                            window.location.href = 'exportUsers';
+                                                        }
+
+                                                        // Select all functionality
+                                                        document.getElementById('selectAll')?.addEventListener('change', function () {
+                                                            const checkboxes = document.querySelectorAll('.row-checkbox');
+                                                            checkboxes.forEach(checkbox => {
+                                                                checkbox.checked = this.checked;
+                                                            });
+                                                        });
+
                                                         // Auto-hide alerts
                                                         setTimeout(() => {
                                                             const alerts = document.querySelectorAll('.alert');
@@ -1513,7 +1519,7 @@
                                                                 }
                                                             };
 
-                                                            validateField(fullName, isValidFullName(fullName.value), 'Họ và tên chỉ chứa chữ cái và khoảng trắng, tối thiểu 2 ký tự');
+                                                            validateField(fullName, fullName.value.trim().length > 0, 'Vui lòng nhập họ và tên');
                                                             validateField(userName, isValidUsername(userName.value.trim()), 'Tên đăng nhập phải ≥ 8 ký tự, chỉ gồm chữ cái, số, gạch dưới');
                                                             validateField(birth, isAtLeast18YearsOld(birth.value), 'Người dùng phải đủ 18 tuổi');
                                                             validateField(email, isValidEmail(email.value.trim()), 'Email không hợp lệ');

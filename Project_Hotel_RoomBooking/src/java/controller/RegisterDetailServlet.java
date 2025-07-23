@@ -37,13 +37,6 @@ public class RegisterDetailServlet extends HttpServlet {
         UserDao dao = new UserDao();
 
         // Kiểm tra email hợp lệ
-        if (!InputValidator.isValidFullName(fullName)) {
-            request.setAttribute("error", "Tên không hợp lệ.");
-            backToForm(request, response, username, password);
-            return;
-        }
-
-        // Kiểm tra email hợp lệ
         if (!InputValidator.isValidEmail(email)) {
             request.setAttribute("error", "Email không hợp lệ.");
             backToForm(request, response, username, password);

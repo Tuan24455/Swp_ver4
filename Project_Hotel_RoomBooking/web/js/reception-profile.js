@@ -39,7 +39,7 @@ class ProfileManager {
 
     toggleEditMode() {
         this.isEditMode = !this.isEditMode;
-        const inputs = this.personalInfoForm.querySelectorAll("input:not([type='hidden']), select, textarea");
+        const inputs = document.querySelectorAll('#personalInfoForm input:not([type="hidden"]), select, textarea');
 
         if (this.isEditMode) {
             inputs.forEach(input => {
@@ -52,13 +52,7 @@ class ProfileManager {
             this.editBtn.innerHTML = '<i class="fas fa-times"></i> Hủy';
             this.showActions();
         } else {
-            inputs.forEach(input => {
-                if (input.tagName.toLowerCase() === "select") {
-                    input.setAttribute("disabled", "disabled");
-                } else {
-                    input.setAttribute("readonly", "readonly");
-                }
-            });
+            inputs.forEach(input => input.setAttribute("readonly", "readonly"));
             this.restoreOriginalFormData();
             this.editBtn.innerHTML = '<i class="fas fa-edit"></i> Chỉnh sửa';
             this.hideActions();
@@ -75,31 +69,42 @@ class ProfileManager {
     restoreOriginalFormData() {
         Object.entries(this.originalFormData).forEach(([name, value]) => {
             const input = this.personalInfoForm.querySelector(`[name="${name}"]`);
-            if (input) input.value = value;
+            if (input)
+                input.value = value;
         });
     }
 
     showActions() {
         const actions = this.personalInfoForm.querySelector(".form-actions");
-        if (actions) actions.style.display = "flex";
+        if (actions)
+            actions.style.display = "flex";
     }
 
     hideActions() {
         const actions = this.personalInfoForm.querySelector(".form-actions");
-        if (actions) actions.style.display = "none";
+        if (actions)
+            actions.style.display = "none";
     }
 
     async submitPersonalInfo(e) {
         e.preventDefault();
-        if (!this.validatePersonalInfoForm()) return;
+        if (!this.validatePersonalInfoForm())
+            return;
 
-        const formData = new URLSearchParams(new FormData(this.personalInfoForm));
+        const formData = new URLSearchParams(new FormData(this.personalInfoForm)); // 👉 Gửi như form thường
 
         try {
             this.setLoading(this.personalInfoForm, true);
+            console.log("=== FORM SUBMIT DEBUG ===");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
             const response = await fetch(`${CONTEXT_PATH}/receptionInfor`, {
                 method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded" // ✅ Quan trọng
+                },
                 body: formData
             });
 
@@ -118,94 +123,43 @@ class ProfileManager {
     }
 
     validatePersonalInfoForm() {
-        const inputs = this.personalInfoForm.querySelectorAll(
-            'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
-        );
-        let isFormValid = true;
+        const requiredFields = this.personalInfoForm.querySelectorAll("input[required]:not([readonly]), select[required], textarea[required]");
+        let valid = true;
 
-        inputs.forEach(input => {
-            const isValid = this.validateField(input);
-            if (!isValid) isFormValid = false;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                this.showError(field, "Trường bắt buộc");
+                valid = false;
+            } else {
+                this.clearError(field);
+            }
         });
 
-        return isFormValid;
-    }
+        // ✅ Kiểm tra người dùng phải đủ 18 tuổi
+        const birthInput = this.personalInfoForm.querySelector('[name="birth"]');
+        if (birthInput && birthInput.value) {
+            const birthDate = new Date(birthInput.value);
+            const today = new Date();
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const isBirthdayPassed = today.getMonth() > birthDate.getMonth() ||
+                    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+            const actualAge = isBirthdayPassed ? age : age - 1;
 
-    validateField(input) {
-        this.clearError(input);
-        const value = input.value.trim();
-        const name = input.name;
-        let isValid = true;
-        let message = "";
-
-        if (name === "fullName") {
-            const nameRegex = /^[\p{L} ]+$/u;
-            if (!value) {
-                isValid = false;
-                message = "Họ tên không được để trống.";
-            } else if (value.length < 2) {
-                isValid = false;
-                message = "Họ tên phải có ít nhất 2 ký tự.";
-            } else if (!nameRegex.test(value)) {
-                isValid = false;
-                message = "Họ tên chỉ được chứa chữ cái và khoảng trắng.";
-            }
-        } else if (name === "email") {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!value) {
-                isValid = false;
-                message = "Email không được để trống.";
-            } else if (!emailRegex.test(value)) {
-                isValid = false;
-                message = "Email không hợp lệ.";
-            }
-        } else if (name === "phone") {
-            const phoneRegex = /^[0-9]{10,11}$/;
-            if (value && !phoneRegex.test(value)) {
-                isValid = false;
-                message = "Số điện thoại không hợp lệ (10–11 chữ số).";
-            }
-        } else if (name === "birth") {
-            if (value) {
-                const birthDate = new Date(value);
-                const today = new Date();
-                if (isNaN(birthDate.getTime())) {
-                    isValid = false;
-                    message = "Ngày sinh không hợp lệ.";
-                } else {
-                    let age = today.getFullYear() - birthDate.getFullYear();
-                    const m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-                    if (age < 18 || age > 100) {
-                        isValid = false;
-                        message = "Tuổi phải từ 18 đến 100.";
-                    }
-                }
+            if (actualAge < 18) {
+                this.showError(birthInput, "Bạn phải đủ 18 tuổi");
+                valid = false;
+            } else {
+                this.clearError(birthInput);
             }
         }
 
-        if (!isValid) {
-            this.showError(input, message);
-        }
-
-        return isValid;
-    }
-
-    realTimeValidation() {
-        const inputs = this.personalInfoForm.querySelectorAll(
-            'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
-        );
-
-        inputs.forEach(input => {
-            input.addEventListener("blur", () => this.validateField(input));
-        });
+        return valid;
     }
 
     handleAvatarUpload(e) {
         const file = e.target.files[0];
-        if (!file) return;
+        if (!file)
+            return;
 
         const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
         if (!validTypes.includes(file.type)) {
@@ -252,69 +206,6 @@ class ProfileManager {
         }
     }
 
-    validatePasswordForm() {
-        const currentInput = document.getElementById("currentPassword");
-        const newInput = document.getElementById("newPassword");
-        const confirmInput = document.getElementById("confirmPassword");
-        const realCurrentPassword = document.getElementById("currentUserPassword")?.value;
-
-        let valid = true;
-
-        if (currentInput.value !== realCurrentPassword) {
-            this.showError(currentInput, "Mật khẩu hiện tại không đúng");
-            valid = false;
-        } else {
-            this.clearError(currentInput);
-        }
-
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$/;
-        if (!passwordRegex.test(newInput.value)) {
-            this.showError(newInput, "Mật khẩu phải dài 8–16 ký tự, gồm chữ hoa, thường và số");
-            valid = false;
-        } else {
-            this.clearError(newInput);
-        }
-
-        if (confirmInput.value !== newInput.value) {
-            this.showError(confirmInput, "Mật khẩu xác nhận không khớp");
-            valid = false;
-        } else {
-            this.clearError(confirmInput);
-        }
-
-        return valid;
-    }
-
-    async submitPassword(e) {
-        e.preventDefault();
-        if (!this.validatePasswordForm()) return;
-
-        const formData = new URLSearchParams(new FormData(this.passwordForm));
-        try {
-            this.setLoading(this.passwordForm, true);
-
-            const response = await fetch(`${CONTEXT_PATH}/changeReceptionPassword`, {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                this.showMessage("Đổi mật khẩu thành công!", "success");
-                this.passwordForm.reset();
-            } else {
-                this.showMessage(result.message || "Đổi mật khẩu thất bại", "error");
-            }
-        } catch (err) {
-            console.error(err);
-            this.showMessage("Đã xảy ra lỗi", "error");
-        } finally {
-            this.setLoading(this.passwordForm, false);
-        }
-    }
-
     showMessage(msg, type = "info") {
         const alert = document.createElement("div");
         alert.className = `alert alert-${type === "error" ? "danger" : type} alert-message fade-in`;
@@ -332,20 +223,43 @@ class ProfileManager {
         const error = document.createElement("div");
         error.className = "error-message";
         error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
-        if (!field.parentElement.querySelector(".error-message")) {
-            field.parentElement.appendChild(error);
-        }
         field.classList.add("shake");
+        field.parentElement.appendChild(error);
         setTimeout(() => field.classList.remove("shake"), 500);
     }
 
     clearError(field) {
         const error = field.parentElement.querySelector(".error-message");
-        if (error) error.remove();
+        if (error)
+            error.remove();
+    }
+
+    realTimeValidation() {
+        const email = this.personalInfoForm.querySelector('[name="email"]');
+        const phone = this.personalInfoForm.querySelector('[name="phone"]');
+        if (email) {
+            email.addEventListener("blur", () => {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!re.test(email.value))
+                    this.showError(email, "Email không hợp lệ");
+                else
+                    this.clearError(email);
+            });
+        }
+        if (phone) {
+            phone.addEventListener("blur", () => {
+                const re = /^[0-9]{10,11}$/;
+                if (!re.test(phone.value))
+                    this.showError(phone, "SĐT không hợp lệ");
+                else
+                    this.clearError(phone);
+            });
+        }
     }
 
     setLoading(target, on) {
-        if (!target) return;
+        if (!target)
+            return;
         target.classList.toggle("loading", on);
         target.style.pointerEvents = on ? "none" : "auto";
     }
@@ -370,8 +284,79 @@ class ProfileManager {
             setTimeout(() => section.classList.add("fade-in"), i * 200);
         });
     }
+    validatePasswordForm() {
+        const currentInput = document.getElementById("currentPassword");
+        const newInput = document.getElementById("newPassword");
+        const confirmInput = document.getElementById("confirmPassword");
+        const realCurrentPassword = document.getElementById("currentUserPassword")?.value;
+
+        let valid = true;
+
+        // Kiểm tra mật khẩu hiện tại
+        if (currentInput.value !== realCurrentPassword) {
+            this.showError(currentInput, "Mật khẩu hiện tại không đúng");
+            valid = false;
+        } else {
+            this.clearError(currentInput);
+        }
+
+        // Biểu thức kiểm tra độ mạnh mật khẩu mới
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$/;
+
+        if (!passwordRegex.test(newInput.value)) {
+            this.showError(newInput, "Mật khẩu phải dài 8–16 ký tự, gồm chữ hoa, thường và số");
+            valid = false;
+        } else {
+            this.clearError(newInput);
+        }
+
+        // Kiểm tra xác nhận mật khẩu
+        if (confirmInput.value !== newInput.value) {
+            this.showError(confirmInput, "Mật khẩu xác nhận không khớp");
+            valid = false;
+        } else {
+            this.clearError(confirmInput);
+        }
+
+        return valid;
+    }
+
+    async submitPassword(event) {
+        event.preventDefault();
+
+        if (!this.validatePasswordForm())
+            return;
+
+        const formData = new URLSearchParams(new FormData(this.passwordForm));
+
+        try {
+            this.setLoading(this.passwordForm, true);
+
+            const response = await fetch(`${CONTEXT_PATH}/changeReceptionPassword`, {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showMessage("Đổi mật khẩu thành công!", "success");
+                this.passwordForm.reset();
+            } else {
+                this.showMessage(result.message || "Đổi mật khẩu thất bại", "error");
+            }
+        } catch (err) {
+            console.error(err);
+            this.showMessage("Đã xảy ra lỗi", "error");
+        } finally {
+            this.setLoading(this.passwordForm, false);
+        }
+    }
+
 }
 
+// Init khi DOM đã sẵn sàng
 document.addEventListener("DOMContentLoaded", () => {
     window.profileManager = new ProfileManager();
 });
