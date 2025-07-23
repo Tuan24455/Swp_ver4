@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -24,24 +23,20 @@
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Bootstrap shadow-sm */
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
-
         .btn-view-detail:hover {
             background-color: #45a049; /* Darker green on hover */
             box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15); /* Bootstrap shadow */
         }
-
         .service-card {
             border: 1px solid #ccc; /* Added border for better visual separation */
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
             overflow: hidden; /* Ensures image doesn't overflow */
         }
-
         .service-image img {
             width: 100%;
             height: auto; /* Maintain aspect ratio */
             object-fit: cover; /* Cover the entire container */
         }
-
         .service-price-badge {
             position: absolute;
             top: 10px;
@@ -51,28 +46,27 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
-        
         .total-price-display {
             border: 2px solid #e9ecef;
             border-radius: 10px;
         }
-        
         .price-display {
             font-size: 1.25rem !important;
         }
-        
         .button-group .btn {
             padding: 12px 24px;
             font-weight: 600;
             border-radius: 8px;
         }
+        
+        .section-title {
+            color: #000000 !important;
+        }
     </style>
 </head>
 <body>
     <div class="background-overlay"></div>
-
     <jsp:include page="customer/includes/header.jsp"/>
-
     <main class="main-content">
         <section class="hero-section animate__animated animate__fadeInDown">
             <div class="container">
@@ -82,19 +76,22 @@
                 </div>
             </div>
         </section>
-
         <section class="service-detail-section">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 animate__animated animate__fadeInLeft">
+                    <!-- Image Section -->
+                    <div class="col-lg-6">
                         <div class="service-image-container">
                             <img src="${service.imageUrl}" alt="${service.name}" class="main-image img-fluid rounded shadow">
                         </div>
                     </div>
-
-                    <div class="col-lg-6 animate__animated animate__fadeInRight">
-                        <div class="service-info-container d-flex">
-                            <div>
+                    <!-- Information and Payment Section -->
+                    <div class="col-lg-6">
+                        <!-- Service Details and Payment Form in Single White Box -->
+                        <div class="bg-white p-4 rounded shadow-sm">
+                            <!-- Service Details -->
+                            <div class="mb-4">
+                                <h3 class="section-title">Thanh Toán Dịch Vụ</h3>
                                 <h3>Tên Dịch Vụ</h3>
                                 <p>${service.name}</p>
                                 <h3>Giá Dịch Vụ</h3>
@@ -102,23 +99,38 @@
                                 <h3>Mô tả dịch vụ</h3>
                                 <p>${service.description}</p>
                             </div>
+
+                            <!-- Payment Form -->
+                            <div class="payment-section">
+                            
+                                <form id="paymentForm" class="mt-3">
+                                    <div class="mb-3">
+                                        <label for="usageDate" class="form-label">Ngày sử dụng</label>
+                                        <input type="date" class="form-control" id="usageDate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="quantity" class="form-label">Số lượng</label>
+                                        <input type="number" class="form-control" id="quantity" value="1" min="1" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Thanh Toán</button>
+                                </form>
+                            </div>
                         </div>
-
-                        <!-- Remove booking section -->
-
                     </div>
                 </div>
-
                 <!-- Customer Reviews Section -->
                 <section class="customer-reviews mt-5">
-                    <h3 class="section-title text-center"><i class="fas fa-comments me-2"></i>Đánh giá của khách hàng</h3>
+                    
                     <div class="section-divider"></div>
+                    
+                                            
                     <div class="row mt-4 justify-content-center">
                         <div class="col-12 col-lg-10">
                             <div class="bg-white rounded shadow-sm p-4">
                                 <c:choose>
                                     <c:when test="${not empty reviews}">
                                         <c:forEach var="review" items="${reviews}">
+                                            <h3 class="section-title text-center"><i class="fas fa-comments me-2"></i>Đánh giá của khách hàng</h3>
                                             <div class="review-item mb-4 border-bottom pb-3">
                                                 <div class="d-flex align-items-center mb-2">
                                                     <i class="fas fa-user-circle fa-2x text-secondary me-3"></i>
@@ -146,21 +158,25 @@
                         </div>
                     </div>
                 </section>
-
                 <!-- Related Services Section -->
                 <section class="related-services mt-5">
-                    <h3 class="section-title text-center"><i class="fas fa-thumbs-up me-2"></i>Dịch vụ tương tự</h3>
+                    
                     <div class="section-divider"></div>
+                    
                     <div class="row mt-4 justify-content-center">
+                        
                         <div class="col-12 col-lg-10">
+                            
                             <div class="bg-white rounded shadow-sm p-4">
                                 <c:choose>
                                     <c:when test="${not empty relatedServices}">
                                         <div class="row">
+                                            <h3 class="section-title text-center"><i class="fas fa-thumbs-up me-2"></i>Dịch vụ tương tự</h3>
                                             <c:forEach var="relatedService" items="${relatedServices}" varStatus="status">
                                                 <div class="col-md-4 mb-4">
                                                     <a href="serviceDetail?id=${relatedService.id}" class="text-decoration-none">
                                                         <div class="service-card animate__animated animate__fadeInUp">
+                                                            
                                                             <div class="service-image">
                                                                 <img src="${relatedService.imageUrl}" alt="${relatedService.name}" class="img-fluid">
                                                                 <div class="service-price-badge">
@@ -199,9 +215,7 @@
             </div>
         </section>
     </main>
-
     <jsp:include page="customer/includes/footer.jsp"/>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/home-enhanced.js"></script>
     <script>
@@ -210,16 +224,20 @@
             if (bookingDateInput) {
                 bookingDateInput.min = new Date().toISOString().split('T')[0];
             }
-
             const quantityInput = document.getElementById('quantity');
-            if (quantityInput) {
-                const basePrice = parseFloat("${service.price}");
-                quantityInput.addEventListener('change', function() {
-                    const quantity = parseInt(this.value) || 1;
-                    const totalPrice = basePrice * quantity;
-                    document.querySelector('.price-display').textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' VND';
-                });
-            }
+            const servicePrice = parseFloat("${service.price}");
+            const totalPriceDisplay = document.querySelector('.price-display');
+            quantityInput.addEventListener('input', function() {
+                const quantity = parseInt(this.value) || 1;
+                const totalPrice = servicePrice * quantity;
+                totalPriceDisplay.textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' VND';
+            });
+            const paymentForm = document.getElementById('paymentForm');
+            paymentForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                // Handle payment processing here
+                alert('Thanh toán thành công!');
+            });
         });
     </script>
 </body>
