@@ -98,12 +98,16 @@ class ProfileManager {
         let message = "";
 
         if (name === "fullName") {
+            const nameRegex = /^[\p{L} ]+$/u;
             if (!value) {
                 isValid = false;
                 message = "Họ tên không được để trống.";
             } else if (value.length < 2) {
                 isValid = false;
                 message = "Họ tên phải có ít nhất 2 ký tự.";
+            } else if (!nameRegex.test(value)) {
+                isValid = false;
+                message = "Họ tên chỉ được chứa chữ cái và khoảng trắng.";
             }
         } else if (name === "email") {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

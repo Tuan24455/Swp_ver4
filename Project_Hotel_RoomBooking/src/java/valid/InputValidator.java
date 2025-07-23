@@ -104,4 +104,13 @@ public class InputValidator {
         }
     }
 
+    public static boolean isValidFullName(String fullName) {
+        if (fullName == null) {
+            return false;
+        }
+        String trimmedFullName = fullName.trim();
+        // Check if the trimmed string is not empty and contains only letters and spaces
+        return !trimmedFullName.isEmpty() && trimmedFullName.matches("^[\\p{L} ]+$");
+    }
+
 }
