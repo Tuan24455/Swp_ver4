@@ -20,52 +20,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         width: 40px;
         height: 40px;
       }
-      /* Custom CSS cho phần bộ lọc (từ tin nhắn trước) */
-      .filter-card .input-group {
-        border: 1px solid #ced4da; /* Border mặc định */
-        border-radius: 0.375rem;
-        transition: border-color 0.3s ease;
-      }
-      
-      .filter-card .input-group:focus-within {
-        border-color: #0d6efd; /* Màu primary khi focus */
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-      }
-      
-      .filter-card .form-control {
-        border: none; /* Xóa border input để hợp nhất với group */
-      }
-      
-      .filter-card .input-group-text {
-        background-color: #f8f9fa; /* Nền nhẹ cho icon */
-        border: none;
-      }
-      
-      .filter-card .btn-primary {
-        transition: background-color 0.3s ease, transform 0.2s ease;
-      }
-      
-      .filter-card .btn-primary:hover {
-        background-color: #0b5ed7; /* Darker primary on hover */
-        transform: translateY(-2px); /* Effect nâng nhẹ */
-      }
-      
-      .filter-card .form-label {
-        font-weight: 500; /* Bold label */
-        margin-bottom: 0.5rem;
-      }
-      
-      /* Validation styles (thêm class 'is-invalid' bằng JS nếu cần) */
-      .filter-card .is-invalid .input-group {
-        border-color: #dc3545;
-      }
-      
-      /* Responsive: Stack vertically on small screens */
-      @media (max-width: 767px) {
-        .filter-card .row > div {
-          margin-bottom: 1rem;
-        }
-      }
     </style>
   </head>
   <body>
@@ -81,25 +35,34 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         <jsp:include page="includes/navbar.jsp" />
 
         <div class="container-fluid py-4">
-          <!-- Bộ lọc tìm kiếm (đã bỏ filter loại phòng và CSS lại) -->
+          <!-- Bộ lọc tìm kiếm -->
           <div class="card shadow-sm mb-4">
-            <div class="card-body bg-light filter-card">
+            <div class="card-body bg-light">
               <div class="row g-3 align-items-center">
-                <div class="col-md-4 col-12">
+                <div class="col-md-3">
                   <label for="fromDate" class="form-label">Từ Ngày</label>
                   <div class="input-group">
                     <input type="date" class="form-control" id="fromDate">
-                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                   </div>
                 </div>
-                <div class="col-md-4 col-12">
+                <div class="col-md-3">
                   <label for="toDate" class="form-label">Đến Ngày</label>
                   <div class="input-group">
                     <input type="date" class="form-control" id="toDate">
-                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                   </div>
                 </div>
-                <div class="col-md-4 col-12 d-flex align-items-end">
+                <div class="col-md-4">
+                  <label for="roomType" class="form-label">Loại Phòng</label>
+                  <div class="input-group">
+                    <select class="form-select" id="roomType">
+                      <option value="" ${selectedRoomType == null ? 'selected' : ''}>Tất Cả Loại Phòng</option>
+                      <c:forEach items="${roomTypes}" var="type">
+                        <option value="${type.id}" ${selectedRoomType == type.id ? 'selected' : ''}>${type.roomType}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
                   <button class="btn btn-primary w-100" id="filterButton">Lọc</button>
                 </div>
               </div>
@@ -137,7 +100,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             </div>
           </div>
           
-          <!-- Current Bookings Table (đã bỏ Summary Footer) -->
+          <!-- Current Bookings Table -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
               <h5 class="mb-0">
@@ -224,7 +187,16 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   </tbody>
                 </table>
               </div>
-              <!-- Summary Footer đã bị bỏ hoàn toàn -->
+
+              <!-- Summary Footer -->
+              <div class="row mt-3 pt-3 border-top">
+                <div class="col-md-6">
+                  <!-- Phần tử này sẽ được cập nhật bởi JavaScript -->
+                </div>
+                <div class="col-md-6 text-end">
+                  <!-- Phần tử này sẽ được cập nhật bởi JavaScript -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
