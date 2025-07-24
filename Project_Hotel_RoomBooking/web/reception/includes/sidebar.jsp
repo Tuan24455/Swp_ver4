@@ -83,6 +83,9 @@
             <a href="${pageContext.request.contextPath}/bookingList" class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}">
                 <i class="fas fa-calendar-check me-2"></i> Quản lý đặt phòng
             </a>
+            <a href="${pageContext.request.contextPath}/reception/serviceManagement" class="list-group-item list-group-item-action py-3 ${param.activePage == 'service-management' ? 'active' : ''}">
+                <i class="fas fa-concierge-bell me-2"></i> Quản lý đặt dịch vụ
+            </a>
         </div>
 
         <div class="list-group list-group-flush">
