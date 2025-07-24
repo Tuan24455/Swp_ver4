@@ -46,8 +46,8 @@ public class CheckRoomAvailabilityServlet extends HttpServlet {
             }
 
             if (isAvailable) {
-                // Forward to booking detail page with all parameters
-                response.sendRedirect(request.getContextPath() + "/customer/bookingDetail.jsp"
+                // Redirect to BookingDetailServlet to handle promotions and data
+                response.sendRedirect(request.getContextPath() + "/booking-detail"
                     + "?roomId=" + roomId
                     + "&roomNumber=" + roomNumber
                     + "&roomType=" + roomType
