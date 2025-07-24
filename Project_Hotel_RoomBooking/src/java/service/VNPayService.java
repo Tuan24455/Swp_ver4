@@ -80,12 +80,12 @@ public class VNPayService {
         return paymentUrl;
     }
 
-    public static String createServicePaymentUrl(HttpServletRequest req, String serviceBookingRef, long amount, String serviceName) throws UnsupportedEncodingException {
+    public static String createServicePaymentUrl(HttpServletRequest req, int serviceBookingId, long amount, String serviceName) throws UnsupportedEncodingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
         
-        String vnp_TxnRef = serviceBookingRef + "_" + VNPayConfig.getRandomNumber(8);
+        String vnp_TxnRef = "SVC_" + serviceBookingId + "_" + VNPayConfig.getRandomNumber(8);
         String vnp_IpAddr = VNPayConfig.getIpAddress(req);
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
         
@@ -100,7 +100,7 @@ public class VNPayService {
         vnp_Params.put("vnp_OrderInfo", "Thanh toan dich vu: " + serviceName);
         vnp_Params.put("vnp_OrderType", orderType);
         vnp_Params.put("vnp_Locale", "vn");
-        vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
+        vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ServiceReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));

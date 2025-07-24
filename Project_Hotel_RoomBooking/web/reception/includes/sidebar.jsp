@@ -83,6 +83,9 @@
             <a href="${pageContext.request.contextPath}/bookingList" class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}">
                 <i class="fas fa-calendar-check me-2"></i> Quản lý đặt phòng
             </a>
+            <a href="${pageContext.request.contextPath}/reception/serviceManagement" class="list-group-item list-group-item-action py-3 ${param.activePage == 'service-management' ? 'active' : ''}">
+                <i class="fas fa-concierge-bell me-2"></i> Quản lý đặt dịch vụ
+            </a>
         </div>
 
         <div class="list-group list-group-flush">
@@ -103,7 +106,7 @@
                class="list-group-item list-group-item-action py-3 ${param.activePage == 'account-settings' ? 'active' : ''}">
                 <i class="fas fa-user-cog me-2"></i> Cài đặt tài khoản
             </a>
-            <a href="${pageContext.request.contextPath}/admin/logout"
+            <a href="${pageContext.request.contextPath}/logout"
                class="list-group-item list-group-item-action py-3 text-danger"
                onclick="return confirm('Bạn có chắc muốn đăng xuất không?')">
                 <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất

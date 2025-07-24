@@ -5,7 +5,7 @@ package config;
  */
 public class GeminiConfig {
     // Gemini API endpoint
-    public static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+    public static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     
     // API Key from ApiKeys class
     public static final String API_KEY = ApiKeys.GEMINI_API_KEY;

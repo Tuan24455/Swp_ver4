@@ -23,7 +23,7 @@ public class PurchaseReportDAO extends DBContext {
                 + "    s.service_name AS [Dịch Vụ],\n"
                 + "    sb.booking_date AS [Ngày Đặt],\n"
                 + "    sb.quantity AS [Số Lượng],\n"
-                + "    (sb.total_amount / sb.quantity) AS [Đơn Giá],\n"
+                + "    s.service_price AS [Đơn Giá],\n"
                 + "    sb.total_amount AS [Tổng Tiền],\n"
                 + "    sb.status AS [Trạng Thái]\n"
                 + "FROM \n"
@@ -125,10 +125,10 @@ public class PurchaseReportDAO extends DBContext {
                 + "    s.service_name AS serviceName,\n"
                 + "    sb.booking_date AS bookingDate,\n"
                 + "    sb.quantity AS quantity,\n"
-                + "    (sb.total_amount / sb.quantity) AS unitPrice,\n"
+                + "    s.service_price AS unitPrice,\n"
                 + "    sb.total_amount AS totalAmount,\n"
                 + "    sb.status AS status,\n"
-                + "    sb.note AS note\n"
+                + "    '' AS note\n"
                 + "FROM \n"
                 + "    ServiceBookings sb\n"
                 + "    INNER JOIN Users u ON sb.user_id = u.id\n"
@@ -671,6 +671,150 @@ public class PurchaseReportDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return total;
+    }
+
+    // Method lấy báo cáo hóa đơn dịch vụ chi tiết với filter đơn giản
+    public List<Map<String, Object>> getServiceInvoiceDetailsReport(Date dateFrom, Date dateTo, String serviceType, String status, String guestType, int page, int pageSize) {
+        List<Map<String, Object>> serviceData = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    sb.id AS [Số Hóa Đơn],\n"
+                + "    u.full_name AS [Tên Khách],\n"
+                + "    s.service_name AS [Dịch Vụ],\n"
+                + "    sb.booking_date AS [Ngày Đặt],\n"
+                + "    sb.quantity AS [Số Lượng],\n"
+                + "    s.service_price AS [Đơn Giá],\n"
+                + "    sb.total_amount AS [Tổng Tiền],\n"
+                + "    sb.status AS [Trạng Thái]\n"
+                + "FROM ServiceBookings sb\n"
+                + "INNER JOIN Users u ON sb.user_id = u.id\n"
+                + "INNER JOIN Services s ON sb.service_id = s.id\n"
+                + "WHERE 1=1\n";
+        
+        List<Object> params = new ArrayList<>();
+        
+        // Add date filters
+        if (dateFrom != null) {
+            sql += " AND sb.booking_date >= ?\n";
+            params.add(dateFrom);
+        }
+        if (dateTo != null) {
+            sql += " AND sb.booking_date <= ?\n";
+            params.add(dateTo);
+        }
+        
+        // Add service type filter
+        if (serviceType != null && !serviceType.trim().isEmpty()) {
+            sql += " AND s.service_name LIKE ?\n";
+            params.add("%" + serviceType + "%");
+        }
+        
+        // Add status filter
+        if (status != null && !status.trim().isEmpty()) {
+            sql += " AND sb.status = ?\n";
+            params.add(status);
+        }
+        
+        // Add guest type filter
+        if (guestType != null && !guestType.trim().isEmpty()) {
+            sql += " AND u.role = ?\n";
+            params.add(guestType);
+        }
+        
+        sql += "ORDER BY sb.booking_date DESC\n"
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        
+        params.add((page - 1) * pageSize);
+        params.add(pageSize);
+        
+        System.out.println("DAO SQL: " + sql);
+        System.out.println("DAO Params: " + params);
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                ResultSetMetaData md = rs.getMetaData();
+                int columns = md.getColumnCount();
+
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    for (int i = 1; i <= columns; i++) {
+                        row.put(md.getColumnLabel(i), rs.getObject(i));
+                    }
+                    serviceData.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getServiceInvoiceDetailsReport: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        System.out.println("DAO returned " + serviceData.size() + " records");
+        return serviceData;
+    }
+
+    // Method đếm tổng số service invoices với filter
+    public int getTotalServiceInvoiceDetailsCount(Date dateFrom, Date dateTo, String serviceType, String status, String guestType) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM ServiceBookings sb\n"
+                + "INNER JOIN Users u ON sb.user_id = u.id\n"
+                + "INNER JOIN Services s ON sb.service_id = s.id\n"
+                + "WHERE 1=1\n";
+        
+        List<Object> params = new ArrayList<>();
+        
+        // Add date filters
+        if (dateFrom != null) {
+            sql += " AND sb.booking_date >= ?\n";
+            params.add(dateFrom);
+        }
+        if (dateTo != null) {
+            sql += " AND sb.booking_date <= ?\n";
+            params.add(dateTo);
+        }
+        
+        // Add service type filter
+        if (serviceType != null && !serviceType.trim().isEmpty()) {
+            sql += " AND s.service_name LIKE ?\n";
+            params.add("%" + serviceType + "%");
+        }
+        
+        // Add status filter
+        if (status != null && !status.trim().isEmpty()) {
+            sql += " AND sb.status = ?\n";
+            params.add(status);
+        }
+        
+        // Add guest type filter
+        if (guestType != null && !guestType.trim().isEmpty()) {
+            sql += " AND u.role = ?\n";
+            params.add(guestType);
+        }
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getTotalServiceInvoiceDetailsCount: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
         return total;
     }
 }

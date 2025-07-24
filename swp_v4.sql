@@ -66,6 +66,24 @@ CREATE TABLE Services (
     FOREIGN KEY (service_type_id) REFERENCES ServiceTypes(id)
 );
 
+
+CREATE TABLE ServiceBookings (
+        id INT IDENTITY(1,1) PRIMARY KEY,
+        user_id INT NOT NULL,
+        service_id INT NOT NULL,
+        booking_date DATETIME NOT NULL,
+        usage_date DATE NOT NULL,
+        quantity INT NOT NULL DEFAULT 1,
+        total_amount DECIMAL(10, 2) NOT NULL,
+        status NVARCHAR(50) NOT NULL DEFAULT 'Pending',
+        created_at DATETIME NOT NULL DEFAULT GETDATE(),
+        note NVARCHAR(MAX) NULL,
+        
+        -- Foreign key constraints
+        CONSTRAINT FK_ServiceBookings_Users FOREIGN KEY (user_id) REFERENCES Users(id),
+        CONSTRAINT FK_ServiceBookings_Services FOREIGN KEY (service_id) REFERENCES Services(id)
+    );
+
 -- Đánh giá dịch vụ
 CREATE TABLE ServiceReviews (
     id INT PRIMARY KEY IDENTITY(1,1),
@@ -196,32 +214,75 @@ VALUES
 (N'Shuttle');
 
 -- Dữ liệu cho bảng Services (giữ nguyên)
-INSERT INTO Services (service_name, service_type_id, service_price, description, image_url) 
-VALUES 
-(N'Buffet', 1, 200000, N'Ăn sáng buffet tại nhà hàng', 'https://image.url'),
-(N'Spa thư giãn', 2, 500000, N'Massage thư giãn', 'https://image.url'),
-(N'Phòng tập', 3, 150000, N'Phòng gym với thiết bị hiện đại', 'https://image.url'),
-(N'Dịch vụ đưa đón', 4, 300000, N'Đưa đón khách từ sân bay', 'https://image.url'),
-(N'Pizza', 1, 80000, N'Món ăn nhanh tại nhà hàng', 'https://image.url'),
-(N'Massage mặt', 2, 250000, N'Massage mặt thư giãn', 'https://image.url'),
-(N'Trung tâm thể dục', 3, 120000, N'Đưa khách vào trung tâm thể dục', 'https://image.url'),
-(N'Đưa đón sân bay', 4, 400000, N'Dịch vụ đưa đón sân bay', 'https://image.url'),
-(N'Chè', 1, 50000, N'Món chè ngọt', 'https://image.url'),
-(N'Trị liệu', 2, 600000, N'Dịch vụ trị liệu phục hồi', 'https://image.url');
+INSERT INTO Services (service_name, service_type_id, service_price, description, image_url)
+VALUES
+(N'Mì Quảng', 1, 70000, N'Món mì Quảng đặc trưng với nước dùng đậm đà, sợi mì vàng óng, tôm, thịt heo, trứng cút và rau sống phong phú.', 'https://image.url'),
+(N'Bánh xèo', 1, 65000, N'Chiếc bánh xèo vàng giòn, nhân tôm thịt, ăn kèm với rau sống và nước mắm chua ngọt đặc trưng.', 'https://image.url'),
+(N'Phở bò Hà Nội', 1, 60000, N'Tô phở bò nóng hổi với nước dùng trong veo, thơm lừng, sợi phở mềm dai, thịt bò tái ngọt mềm.', 'https://image.url'),
+(N'Bún chả Hà Nội', 1, 75000, N'Bún đi kèm với chả nướng thơm phức, nem cua bể và nước mắm pha chua ngọt, tạo nên hương vị đặc trưng của Hà Nội.', 'https://image.url'),
+(N'Bánh mì thịt nướng', 1, 35000, N'Chiếc bánh mì giòn rụm, bên trong là thịt heo nướng ướp gia vị đậm đà, pate, chả, đồ chua và rau thơm.', 'https://image.url'),
+(N'Gỏi cuốn tôm thịt', 1, 45000, N'Các cuốn bún tươi, tôm, thịt heo luộc, rau sống, được cuốn trong bánh tráng trong, chấm với nước mắm pha.', 'https://image.url'),
+(N'Bánh cuốn Thanh Trì', 1, 50000, N'Bánh cuốn nóng hổi, tráng mỏng, nhân thịt mộc nhĩ, ăn kèm chả lụa, hành khô và nước mắm pha.', 'https://image.url'),
+(N'Cơm tấm sườn bì chả', 1, 55000, N'Xuất sắc với sườn nướng cháy cạnh, bì giòn, chả trứng, ăn kèm cơm tấm và đồ chua.', 'https://image.url'),
+(N'Bún bò Huế', 1, 80000, N'Lẩu bún bò với nước dùng đỏ au, cay nồng, sợi bún to, giò heo, tiết lợn và rau sống đặc trưng.', 'https://image.url'),
+(N'Cháo gà', 1, 40000, N'Món cháo nóng, sánh mịn nấu từ gạo và thịt gà, ăn kèm hành lá, ngò, tiêu và quẩy giòn.', 'https://image.url'),
+(N'Bánh tôm Hồ Tây', 1, 90000, N'Những con tôm tươi được裹 trong bột, chiên giòn, ăn kèm nước mắm chua ngọt và rau sống.', 'https://image.url'),
+(N'Bún riêu cua', 1, 60000, N'Bún với nước dùng từ cua đồng, gạch cua vàng ươm, đậu rán, chả, và cà chua, tạo nên hương vị đậm đà.', 'https://image.url'),
+(N'Bánh tráng trộn', 1, 25000, N'Món ăn vặt hấp dẫn với bánh tráng, khô bò, trứng cút, xoài xanh, hành phi, ruốc, và sốt me.', 'https://image.url'),
+(N'Nem nướng Nha Trang', 1, 85000, N'Nem nướng được nướng trên than hoa, dậy mùi thơm, ăn kèm bún, rau sống và nước lèo đặc biệt.', 'https://image.url'),
+(N'Xôi gà', 1, 35000, N'Xôi nếp dẻo thơm, rưới mỡ hành, phủ lên trên là thịt gà xé phay và hành khô, có thể thêm chà bông.', 'https://image.url'),
+(N'Hủ tiếu Nam Vang', 1, 65000, N'Nước dùng ngọt thanh từ xương heo và tôm khô, sợi hủ tiếu dai, tôm, thịt, trứng cút và tim heo.', 'https://image.url'),
+(N'Bánh ướt lòng gà', 1, 55000, N'Món ăn dân dã với bánh ướt tráng mỏng, lòng gà luộc, ăn kèm rau thơm và mắm nêm.', 'https://image.url'),
+(N'Chè đậu trắng', 1, 30000, N'Chè ngọt thanh từ đậu trắng, nấu với đường phèn, có thể thêm trân châu hoặc thạch.', 'https://image.url'),
+(N'Bánh canh ghẹ', 1, 120000, N'Sợi bánh canh to, dai, nước dùng ngọt từ ghẹ, thịt ghẹ nhiều và tươi ngon.', 'https://image.url'),
+(N'Phở gà', 1, 55000, N'Biến thể nhẹ nhàng của phở, với nước dùng trong, ngọt từ xương gà, sợi phở, thịt gà xé và hành lá.', 'https://image.url');
+(N'Buffet', 1, 200000, N'Tận hưởng bữa sáng buffet phong phú với đa dạng món Á - Âu, từ bánh mì nóng hổi, cháo dinh dưỡng đến các món Âu như trứng, xúc xích, salad tươi ngon và nhiều lựa chọn nước uống.', 'https://image.url'),
+(N'Spa thư giãn', 2, 500000, N'Giải tỏa mọi căng thẳng với liệu pháp massage thư giãn chuyên sâu, giúp cơ thể phục hồi năng lượng, lưu thông khí huyết và mang lại cảm giác sảng khoái.', 'https://image.url'),
+(N'Phòng tập', 3, 150000, N'Rèn luyện sức khỏe trong không gian hiện đại, đầy đủ ánh sáng tự nhiên và trang thiết bị tập luyện cardio, tạ tay chuyên nghiệp, phù hợp cho mọi nhu cầu từ tập luyện cơ bản đến nâng cao.', 'https://image.url'),
+(N'Dịch vụ đưa đón', 4, 300000, N'Tiện nghi và an toàn với dịch vụ đưa đón tận nơi, xe đời mới, lái xe thân thiện và am hiểu địa phương, giúp bạn di chuyển thuận tiện từ sân bay đến khách sạn.', 'https://image.url'),
+(N'Pizza', 1, 80000, N'Thưởng thức những chiếc pizza nóng giòn, thơm lừng với nhân phô mai kéo sợi, topping phong phú từ xúc xích, giăm bông, rau củ tươi ngon, nướng than củ đặc trưng.', 'https://image.url'),
+(N'Massage mặt', 2, 250000, N'Chăm sóc làn da với liệu pháp massage mặt thư giãn, giúp tái tạo tế bào, giảm căng thẳng cho vùng mặt và cổ, mang lại làn da tươi tắn, rạng ngời.', 'https://image.url'),
+(N'Trung tâm thể dục', 3, 120000, N'Mở rộng trải nghiệm tập luyện với quyền truy cập vào trung tâm thể dục đối tác hiện đại, đầy đủ máy móc và lớp học nhóm (yoga, aerobic...).', 'https://image.url'),
+(N'Đưa đón sân bay', 4, 400000, N'Dịch vụ đưa đón riêng tư, tiện lợi từ sân bay đến khách sạn và ngược lại, với xe đời mới, lái xe chuyên nghiệp, giúp bạn bắt đầu hoặc kết thúc chuyến đi thật suôn sẻ.', 'https://image.url'),
+(N'Chè', 1, 50000, N'Thanh mát và ngọt ngào với các loại chè truyền thống Việt Nam, được nấu công phu từ đậu xanh, hạt sen, củ năng, thạch dẻo, nước cốt dừa thơm béo và topping đa dạng.', 'https://image.url'),
+(N'Trị liệu', 2, 600000, N'Phục hồi sức khỏe toàn diện với các liệu pháp trị liệu chuyên sâu như châm cứu, xoa bóp bấm huyệt, detox cơ thể, giúp giảm đau nhức, cải thiện giấc ngủ và tăng cường hệ miễn dịch.', 'https://image.url');
 
 -- Dữ liệu cho bảng ServiceReviews (giữ nguyên)
-INSERT INTO ServiceReviews (service_id, quality, comment) 
-VALUES 
-(1, 5, N'Dịch vụ ăn uống rất tốt, món ăn ngon miệng.'),
-(2, 4, N'Massage thư giãn khá tốt, nhưng không gian có thể cải thiện.'),
-(3, 5, N'Phòng gym đầy đủ thiết bị và không gian thoải mái.'),
-(4, 5, N'Nhân viên nhiệt tình, đưa đón rất đúng giờ.'),
-(5, 4, N'Pizza ngon nhưng cần cải thiện thêm về chất lượng.'),
-(6, 5, N'Massage mặt rất thư giãn và tốt cho sức khỏe.'),
-(7, 4, N'Phòng tập đầy đủ nhưng còn thiếu thiết bị.'),
-(8, 5, N'Dịch vụ đưa đón tuyệt vời, xe đẹp và sạch sẽ.'),
-(9, 4, N'Chè ngon nhưng không đa dạng.'),
-(10, 5, N'Trị liệu phục hồi tốt, sẽ quay lại lần sau.');
+INSERT INTO ServiceReviews (service_id, quality, comment)
+VALUES
+-- 10 đánh giá ban đầu (đã được cải thiện)
+(1, 5, N'Thực đơn buffet vô cùng đa dạng và phong phú, từ các món Á đến Âu đều được chế biến tươi ngon và hấp dẫn. Nhân viên phục vụ tận tình, không gian ấm cúng, là điểm nhấn tuyệt vời cho buổi sáng tại khách sạn.'),
+(2, 4, N'Liệu pháp massage thư giãn giúp cơ thể sảng khoái và giảm căng thẳng hiệu quả. Tuy nhiên, phòng trị liệu hơi nhỏ và thiếu sự riêng tư, nếu được cải thiện sẽ hoàn hảo hơn.'),
+(3, 5, N'Phòng tập thể dục hiện đại, sạch sẽ và đầy đủ mọi thiết bị từ cardio đến tạ. Không gian mở, có cửa sổ lớn đón ánh sáng tự nhiên, tạo cảm giác thoải mái khi tập luyện.'),
+(4, 5, N'Chuyến đi vô cùng thuận tiện và an toàn. Tài xế lịch sự, đúng giờ, xe đời mới và được vệ sinh sạch sẽ. Dịch vụ đưa đón đã giúp chuyến đi của tôi khởi đầu một cách hoàn hảo.'),
+(5, 4, N'Chiếc pizza có đế mỏng giòn và nhân phô mai kéo sợi rất ngon. Tuy nhiên, phần topping hải sản có thể được bổ sung thêm để tăng độ phong phú và tươi ngon.'),
+(6, 5, N'Chăm sóc da mặt bằng liệu pháp massage thư giãn thực sự là một trải nghiệm tuyệt vời. Làn da trở nên mịn màng, tươi tắn và cảm giác thư giãn sâu sau 60 phút.'),
+(7, 4, N'Việc được truy cập vào trung tâm thể dục đối tác là một điểm cộng lớn. Thiết bị hiện đại, nhưng số lượng máy cardio còn hạn chế, đặc biệt vào giờ cao điểm.'),
+(8, 5, N'Dịch vụ đưa đón sân bay được tổ chức chuyên nghiệp. Xe sang trọng, tài xế đón tận cửa ga, giúp hành lý và hướng dẫn nhanh chóng. Một trải nghiệm đẳng cấp.'),
+(9, 4, N'Chè đậu xanh và chè thập cẩm được nấu ngọt thanh, rất hợp khẩu vị. Chỉ tiếc là thực đơn chè còn đơn điệu, nếu có thêm nhiều loại chè đặc sản khác thì sẽ tuyệt vời hơn.'),
+(10, 5, N'Liệu pháp trị liệu chuyên sâu giúp tôi phục hồi nhanh chóng sau một tuần làm việc căng thẳng. Cảm giác thư giãn và tái tạo năng lượng rất rõ rệt. Tôi sẽ quay lại vào lần tới.'),
+
+-- 20 đánh giá mới
+(11, 5, N'Bữa sáng kiểu Mỹ đầy đủ và chất lượng, trứng ốp la và thịt xông khói được nấu vừa ăn, tạo năng lượng tuyệt vời cho một ngày mới.'),
+(12, 5, N'Nhà hàng hải sản phục vụ những món tôm hùm và sò điệp tươi sống, được chế biến ngay tại chỗ. Chất lượng và dịch vụ đều xuất sắc.'),
+(13, 4, N'Cocktail tại quầy bar có hương vị độc đáo và được pha chế đẹp mắt. Không gian âm nhạc sôi động, tuy nhiên giá cả hơi cao so với mặt bằng chung.'),
+(14, 5, N'Đồ ăn nhẹ buổi chiều là một điểm nhấn tinh tế. Trà Anh, bánh ngọt và trái cây tươi được phục vụ chu đáo, tạo cảm giác được chăm sóc tận tình.'),
+(15, 5, N'Bữa tối tại nhà hàng sang trọng là một trải nghiệm đẳng cấp. Món ăn được trình bày như tác phẩm nghệ thuật, hương vị tinh tế và dịch vụ chu đáo.'),
+(16, 4, N'Buffet tối có nhiều lựa chọn hấp dẫn, đặc biệt là các món nướng. Tuy nhiên, một số món hải sản có thể được bổ sung thêm để tăng độ tươi ngon.'),
+(17, 5, N'Pizza nướng bằng củi có đế giòn rụm, hương thơm đặc trưng và nhân phô mai béo ngậy. Một lựa chọn ẩm thực tuyệt vời cho buổi tối.'),
+(18, 5, N'Món ăn Việt truyền thống như phở và bún chả được nấu đúng vị Hà Nội, mang lại hương vị quê nhà thân quen và ấm áp.'),
+(19, 5, N'Nước ép trái cây tươi được ép theo yêu cầu, rất thơm ngon và tốt cho sức khỏe. Là lựa chọn lý tưởng cho những ai yêu thích lối sống lành mạnh.'),
+(20, 5, N'Món chay được chế biến công phu, đa dạng và đầy đủ dinh dưỡng. Thật ấn tượng với sự sáng tạo của đầu bếp.'),
+(21, 5, N'Spa toàn thân là một liệu pháp hoàn hảo, kết hợp massage, tẩy tế bào chết và xông hơi. Cơ thể được thư giãn hoàn toàn và tinh thần sảng khoái.'),
+(22, 4, N'Chăm sóc da mặt chuyên sâu giúp cải thiện rõ rệt tình trạng da. Tuy nhiên, liệu trình hơi dài, nếu có gói ngắn hơn sẽ phù hợp với nhiều người.'),
+(23, 5, N'Liệu pháp đá nóng giúp giảm đau cơ và lưu thông máu rất hiệu quả. Cảm giác ấm áp và thư giãn lan tỏa khắp cơ thể.'),
+(24, 5, N'Chăm sóc tóc và da đầu bằng thảo dược giúp tóc bóng mượt và giảm căng thẳng đầu óc. Một trải nghiệm thư giãn tuyệt vời.'),
+(25, 5, N'Gói chăm sóc sau sinh rất toàn diện, hỗ trợ phụ nữ phục hồi sức khỏe và vóc dáng một cách an toàn và hiệu quả.'),
+(26, 5, N'Gội đầu dưỡng sinh với kỹ thuật bấm huyệt giúp giải tỏa căng thẳng và lưu thông khí huyết, mang lại cảm giác sảng khoái.'),
+(27, 5, N'Tắm bùn khoáng giúp làn da trở nên mịn màng và sạch sâu. Không gian yên tĩnh, tạo cảm giác thư giãn tuyệt đối.'),
+(28, 4, N'Chăm sóc móng tay chân chuyên nghiệp, sơn gel bền đẹp. Tuy nhiên, thời gian chờ đợi hơi lâu do đông khách.'),
+(29, 5, N'Liệu pháp trẻ hóa làn da sử dụng công nghệ hiện đại, giúp làm mờ nếp nhăn và se khít lỗ chân lông rõ rệt.'),
+(30, 5, N'Xông hơi thảo dược giúp giải độc cơ thể và thư giãn tinh thần. Mùi hương thảo dược tự nhiên rất dễ chịu.');
 
 -- Dữ liệu cho bảng Promotion (sửa: thay năm từ 2025 thành 2024 để test với ngày hiện tại)
 INSERT INTO Promotion (title, percentage, start_at, end_at, description) 

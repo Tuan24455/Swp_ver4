@@ -109,7 +109,7 @@
 
                         <div class="form-group">
                             <label for="gender">Giới tính</label>
-                            <select id="gender" name="gender" readonly>
+                            <select id="gender" name="gender" disable>
                                 <option value="Nam" ${user.gender == 'Nam' || user.gender == 'Male' ? 'selected' : ''}>Nam</option>
                                 <option value="Nữ" ${user.gender == 'Nữ' || user.gender == 'Female' ? 'selected' : ''}>Nữ</option>
                                 <option value="Khác" ${user.gender == 'Khác' || user.gender == 'Other' ? 'selected' : ''}>Khác</option>
