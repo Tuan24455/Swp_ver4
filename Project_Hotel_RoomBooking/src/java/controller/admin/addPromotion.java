@@ -105,15 +105,16 @@ public class addPromotion extends HttpServlet {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date startAt = new java.sql.Date(sdf.parse(startAtStr).getTime());
             Date endAt = new java.sql.Date(sdf.parse(endAtStr).getTime());
-
+            
+            description= description.trim();
             if (description == null || description.length() < 10 || description.length() > 100) {
                 response.getWriter().write("blankDescription");
                 return;
             }
-            
-            title = title.trim(); 
-            if (!title.matches("^[\\p{L}\\p{N} ]+$")) {
-                response.getWriter().write("invalidTitle");
+
+            title = title.trim();
+            if (!title.matches("^[a-zA-Z0-9 ]+$")) {
+                response.getWriter().write("invalidTitleFormat");
                 return;
             }
 
@@ -123,17 +124,20 @@ public class addPromotion extends HttpServlet {
                 return;
             }
 
-            if (dao.checkPromotionOverlap(startAt, endAt)) {
-                response.getWriter().write("overlap");
+            if (startAt.after(endAt)) {
+                response.getWriter().write("invalidDateRange");
                 return;
             }
 
-            // Kiểm tra ngày cuối cùng khuyến mãi tồn tai
-            Date lastEnd = dao.getLastPromotionEndDate();
-            if (lastEnd != null) {
-               if(startAt.after(lastEnd)){
-                response.getWriter().write("startMustAfterLastEnd");
-               }
+//            Date lastEnd = dao.getLastPromotionEndDate();
+//            if (lastEnd != null && !startAt.after(lastEnd)) {
+//                response.getWriter().write("startMustAfterLastEnd");
+//                return;
+//            }
+
+            if (dao.checkPromotionOverlap(startAt, endAt)) {
+                response.getWriter().write("overlap");
+                return;
             }
 
             Promotion Pro = new Promotion(title, percentage, startAt, endAt, description);

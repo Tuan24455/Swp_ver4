@@ -355,8 +355,8 @@
                 success: function (response) {
                     if (response === "duplicate") {
                         alert("Tên khuyến mãi đã tồn tại.");
-                    } else if(response === "invalidTitle"){
-                        alert("Tên không được chứa kí tự đặc biệt !")
+                    } else if(response === "invalidTitleFormat"){
+                        alert("Tên không được chứa kí tự đặc biệt !");
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự.");
                     } else if(response === "overlap"){
@@ -365,7 +365,7 @@
                         alert("Phần trăm khuyến mãi không hợp lệ.");
                     } else if (response === "startMustAfterLastEnd") {
                         alert("Ngày bắt đầu khuyến mãi đang tồn tại khuyến mãi khác ! ");
-                    } else if (response === "invalidDate") {
+                    } else if (response === "invalidDateRange") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
                     } else if (response === "success") {
                         alert("Thêm khuyến mãi thành công ❤");
@@ -403,12 +403,12 @@
                         alert("Cập nhật thành công ❤️");
                         $('.modal').modal('hide');
                         location.reload();
-                    } else if (response === "invalidDate") {
+                    } else if (response === "invalidDateRange") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
-                    } else if(Response === "overlap"){
-                        alert("Khuyến mãi đã trùng với khuyến mãi hiện có !")    
-                    } else if(response ==="invalidDateRange"){
-                        alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");    
+                    } else if(response === "overlap"){
+                        alert("Khuyến mãi đã trùng với khuyến mãi hiện có !");   
+                    } else if(response ==="invalidTitleFormat"){
+                        alert("Tên khuyến mãi không được chứa các kí tự đăcj biệt !");    
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự !");
                     } else {

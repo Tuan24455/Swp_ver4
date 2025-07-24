@@ -97,43 +97,34 @@ public class updatePromotion extends HttpServlet {
             Date endAt = new java.sql.Date(sdf.parse(endAtStr).getTime());
 
             PromotionDao dao = new PromotionDao();
-            
+            description = description.trim();
             if (description == null || description.length() < 10 || description.length() > 100) {
                 response.getWriter().write("blankDescription");
                 return;
             }
 
-            // Kiểm tra tên có bị trùng ở promotion khác không
+            title = title.trim();
+
+            if (!title.matches("^[a-zA-Z0-9 ]+$")) {
+                response.getWriter().write("invalidTitleFormat");
+                return;
+            }
+
             if (dao.checkPromotionTitleExistsForUpdate(id, title)) {
                 response.getWriter().write("duplicate");
                 return;
             }
-//
-//            // Kiểm tra khoảng thời gian có trùng với promotion khác không
-//            if (dao.checkPromotionOverlapForUpdate(id, startAt, endAt)) {
-//                response.getWriter().write("overlap");
-//                return;
-//            }
-            if (!startAt.before(endAt)) {
+
+            if (startAt.after(endAt)) {
                 response.getWriter().write("invalidDateRange");
                 return;
             }
-
-            Date lastEnd = dao.getLastPromotionEndDateForUpdate(id);
-            if (lastEnd != null) {
-                if(startAt.after(lastEnd)){
-                    response.getWriter().write("startMustAfterLastEnd");
-                    return;
-                }
-            }
-
-            // 5️⃣ Kiểm tra không trùng thời gian với promotion khác
             if (dao.checkPromotionOverlapForUpdate(id, startAt, endAt)) {
                 response.getWriter().write("overlap");
                 return;
             }
 
-            // Update
+            // Cập nhật
             Promotion p = new Promotion(id, title, percentage, startAt, endAt, description);
             dao.updatePromotion(id, title, percentage, startAt, endAt, description);
             response.getWriter().write("success");
