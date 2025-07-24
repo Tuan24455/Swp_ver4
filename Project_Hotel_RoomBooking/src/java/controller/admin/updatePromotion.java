@@ -97,8 +97,7 @@ public class updatePromotion extends HttpServlet {
             Date endAt = new java.sql.Date(sdf.parse(endAtStr).getTime());
 
             PromotionDao dao = new PromotionDao();
-
-            // Validate mô tả
+            
             if (description == null || description.length() < 10 || description.length() > 100) {
                 response.getWriter().write("blankDescription");
                 return;
@@ -109,7 +108,7 @@ public class updatePromotion extends HttpServlet {
                 response.getWriter().write("duplicate");
                 return;
             }
-
+//
 //            // Kiểm tra khoảng thời gian có trùng với promotion khác không
 //            if (dao.checkPromotionOverlapForUpdate(id, startAt, endAt)) {
 //                response.getWriter().write("overlap");
@@ -120,18 +119,9 @@ public class updatePromotion extends HttpServlet {
                 return;
             }
 
-             Date lastEnd = dao.getLastPromotionEndDateForUpdate(id);
+            Date lastEnd = dao.getLastPromotionEndDateForUpdate(id);
             if (lastEnd != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(lastEnd);
-                cal.add(Calendar.DATE, 1);
-                Date nextValidStart = cal.getTime();
-
-                SimpleDateFormat sdfCheck = new SimpleDateFormat("yyyy-MM-dd");
-                String userStart = sdfCheck.format(startAt);
-                String mustStart = sdfCheck.format(nextValidStart);
-
-                if (!userStart.equals(mustStart)) {
+                if(startAt.after(lastEnd)){
                     response.getWriter().write("startMustAfterLastEnd");
                     return;
                 }
