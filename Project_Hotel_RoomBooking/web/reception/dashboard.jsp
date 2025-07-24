@@ -168,7 +168,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             >
               Đóng
             </button>
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" onclick="redirectToRoomStatus()">
               Chỉnh Sửa Đặt Phòng
             </button>
           </div>
@@ -252,6 +252,11 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           document.getElementById("roomDetailModal")
         );
         modal.show();
+      }
+
+      // Function to redirect to room status page
+      function redirectToRoomStatus() {
+        window.location.href = '${pageContext.request.contextPath}/roomStatus';
       }
 
       // Load booking data via AJAX to avoid JSP JSON escaping issues
