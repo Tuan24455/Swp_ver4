@@ -200,7 +200,7 @@ public class PromotionDao {
 
     // Kiểm tra trùng thời gian cho Thêm mới
     public boolean checkPromotionOverlap(Date startDate, Date endDate) {
-        String sql = "SELECT COUNT(*) FROM Promotion WHERE isDeleted = 0 AND (start_at < ? AND end_at > ?) OR (start_at < ? AND end_at > ?)";
+        String sql = "SELECT COUNT(*) FROM Promotion WHERE isDeleted = 0 AND ((start_at < ? AND end_at > ?) OR (start_at < ? AND end_at > ?))";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setDate(1, new java.sql.Date(endDate.getTime()));

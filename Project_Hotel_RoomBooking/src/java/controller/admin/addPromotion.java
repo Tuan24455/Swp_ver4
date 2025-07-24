@@ -110,6 +110,12 @@ public class addPromotion extends HttpServlet {
                 response.getWriter().write("blankDescription");
                 return;
             }
+            
+            title = title.trim(); 
+            if (!title.matches("^[\\p{L}\\p{N} ]+$")) {
+                response.getWriter().write("invalidTitle");
+                return;
+            }
 
             PromotionDao dao = new PromotionDao();
             if (dao.checkPromotionTitleExists(title)) {
@@ -121,13 +127,13 @@ public class addPromotion extends HttpServlet {
                 response.getWriter().write("overlap");
                 return;
             }
+
             // Kiểm tra ngày cuối cùng khuyến mãi tồn tai
             Date lastEnd = dao.getLastPromotionEndDate();
             if (lastEnd != null) {
-                if(!startAt.after(lastEnd)){
-                    response.getWriter().write("startMustAfterLastEnd");
-                    return;
-                }
+               if(startAt.after(lastEnd)){
+                response.getWriter().write("startMustAfterLastEnd");
+               }
             }
 
             Promotion Pro = new Promotion(title, percentage, startAt, endAt, description);
