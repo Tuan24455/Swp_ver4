@@ -218,23 +218,21 @@ public class PromotionDao {
         return false;
     }
 
- public Date getLastPromotionEndDateForUpdate(int id) {
-    Date latestEnd = null;
-    String sql = "SELECT MAX(end_at) FROM Promotion WHERE id <> ? AND isDeleted = 0";
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+    public Date getLastPromotionEndDateForUpdate(int id) {
+        Date latestEnd = null;
+        String sql = "SELECT MAX(end_at) FROM Promotion WHERE id <> ? AND isDeleted = 0";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            latestEnd = rs.getDate(1);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                latestEnd = rs.getDate(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return latestEnd;
     }
-    return latestEnd;
-}
-
 
     // Lấy ngày kết thúc cuối cùng
     public Date getLastPromotionEndDate() {
@@ -250,107 +248,101 @@ public class PromotionDao {
         }
         return latestEnd;
     }
-    
+
     public boolean checkPromotionOverlapForUpdate(int id, Date startDate, Date endDate) {
-    String sql = "SELECT COUNT(*) FROM Promotion " +
-                 "WHERE isDeleted = 0 AND id <> ? " +
-                 "AND ((start_at < ? AND end_at > ?) OR (start_at < ? AND end_at > ?))";
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "SELECT COUNT(*) FROM Promotion "
+                + "WHERE isDeleted = 0 AND id <> ? "
+                + "AND ((start_at < ? AND end_at > ?) OR (start_at < ? AND end_at > ?))";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setInt(1, id);
-        ps.setDate(2, new java.sql.Date(endDate.getTime()));
-        ps.setDate(3, new java.sql.Date(startDate.getTime()));
-        ps.setDate(4, new java.sql.Date(startDate.getTime()));
-        ps.setDate(5, new java.sql.Date(endDate.getTime()));
+            ps.setInt(1, id);
+            ps.setDate(2, new java.sql.Date(endDate.getTime()));
+            ps.setDate(3, new java.sql.Date(startDate.getTime()));
+            ps.setDate(4, new java.sql.Date(startDate.getTime()));
+            ps.setDate(5, new java.sql.Date(endDate.getTime()));
 
-        ResultSet rs = ps.executeQuery();
-        if (rs.next() && rs.getInt(1) > 0) {
-            return true;
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-    return false;
-}
-    
+
     public List<Promotion> searchFilterPaginate(String title, Date startDate, Date endDate, int offset, int pageSize) {
-    List<Promotion> list = new ArrayList<>();
-    String sql = "SELECT * FROM Promotion WHERE isDeleted = 0"
-            + (title != null && !title.isEmpty() ? " AND title LIKE ?" : "")
-            + (startDate != null ? " AND start_at >= ?" : "")
-            + (endDate != null ? " AND end_at <= ?" : "")
-            + " ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        List<Promotion> list = new ArrayList<>();
+        String sql = "SELECT * FROM Promotion WHERE isDeleted = 0"
+                + (title != null && !title.isEmpty() ? " AND title LIKE ?" : "")
+                + (startDate != null ? " AND start_at >= ?" : "")
+                + (endDate != null ? " AND end_at <= ?" : "")
+                + " ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        int idx = 1;
-        if (title != null && !title.isEmpty()) {
-            ps.setString(idx++, "%" + title + "%");
-        }
-        if (startDate != null) {
-            ps.setDate(idx++, new java.sql.Date(startDate.getTime()));
-        }
-        if (endDate != null) {
-            ps.setDate(idx++, new java.sql.Date(endDate.getTime()));
-        }
-        ps.setInt(idx++, offset);
-        ps.setInt(idx++, pageSize);
+            int idx = 1;
+            if (title != null && !title.isEmpty()) {
+                ps.setString(idx++, "%" + title + "%");
+            }
+            if (startDate != null) {
+                ps.setDate(idx++, new java.sql.Date(startDate.getTime()));
+            }
+            if (endDate != null) {
+                ps.setDate(idx++, new java.sql.Date(endDate.getTime()));
+            }
+            ps.setInt(idx++, offset);
+            ps.setInt(idx++, pageSize);
 
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Promotion p = new Promotion();
-            p.setId(rs.getInt("id"));
-            p.setTitle(rs.getString("title"));
-            p.setPercentage(rs.getDouble("percentage"));
-            p.setStartAt(rs.getDate("start_at"));
-            p.setEndAt(rs.getDate("end_at"));
-            p.setDescription(rs.getString("description"));
-            list.add(p);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Promotion p = new Promotion();
+                p.setId(rs.getInt("id"));
+                p.setTitle(rs.getString("title"));
+                p.setPercentage(rs.getDouble("percentage"));
+                p.setStartAt(rs.getDate("start_at"));
+                p.setEndAt(rs.getDate("end_at"));
+                p.setDescription(rs.getString("description"));
+                list.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
 
-public int countTotal(String title, Date startDate, Date endDate) {
-    String sql = "SELECT COUNT(*) FROM Promotion WHERE isDeleted = 0"
-            + (title != null && !title.isEmpty() ? " AND title LIKE ?" : "")
-            + (startDate != null ? " AND start_at >= ?" : "")
-            + (endDate != null ? " AND end_at <= ?" : "");
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+    public int countTotal(String title, Date startDate, Date endDate) {
+        String sql = "SELECT COUNT(*) FROM Promotion WHERE isDeleted = 0"
+                + (title != null && !title.isEmpty() ? " AND title LIKE ?" : "")
+                + (startDate != null ? " AND start_at >= ?" : "")
+                + (endDate != null ? " AND end_at <= ?" : "");
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        int idx = 1;
-        if (title != null && !title.isEmpty()) {
-            ps.setString(idx++, "%" + title + "%");
+            int idx = 1;
+            if (title != null && !title.isEmpty()) {
+                ps.setString(idx++, "%" + title + "%");
+            }
+            if (startDate != null) {
+                ps.setDate(idx++, new java.sql.Date(startDate.getTime()));
+            }
+            if (endDate != null) {
+                ps.setDate(idx++, new java.sql.Date(endDate.getTime()));
+            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        if (startDate != null) {
-            ps.setDate(idx++, new java.sql.Date(startDate.getTime()));
-        }
-        if (endDate != null) {
-            ps.setDate(idx++, new java.sql.Date(endDate.getTime()));
-        }
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return 0;
     }
-    return 0;
-}
-
 
     // Lấy tất cả promotion đang active (trong thời gian hiệu lực)
     public List<Promotion> getActivePromotions() {
         List<Promotion> list = new ArrayList<>();
         String SQL_SELECT_ACTIVE = "SELECT * FROM Promotion WHERE start_at <= GETDATE() AND end_at >= GETDATE()";
-        
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_ACTIVE); 
-             ResultSet rs = pstmt.executeQuery()) {
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_ACTIVE); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Promotion p = new Promotion();
@@ -368,14 +360,13 @@ public int countTotal(String title, Date startDate, Date endDate) {
         }
         return list;
     }
-    
+
     // Lấy promotion theo title (mã giảm giá)
     public Promotion getPromotionByTitle(String title) {
         String SQL_SELECT = "SELECT * FROM Promotion WHERE title = ? AND start_at <= GETDATE() AND end_at >= GETDATE()";
         Promotion p = null;
-        
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
 
             pstmt.setString(1, title);
             ResultSet rs = pstmt.executeQuery();
@@ -396,5 +387,43 @@ public int countTotal(String title, Date startDate, Date endDate) {
         return p;
     }
 
+    public Promotion getLastAddedValidPromotion() {
+        Promotion latestPromotion = null;
+        // SQL để lấy promotion cuối cùng (giả sử ID tăng dần) và chưa bị xóa
+        // Corrected SQL for SQL Server: Use TOP 1 instead of LIMIT 1
+        String SQL_SELECT_LAST = "SELECT TOP 1 * FROM Promotion WHERE isDeleted = 0 ORDER BY id DESC";
 
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_LAST); ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) { // Only one result expected
+                Promotion p = new Promotion();
+                p = new Promotion();
+                p.setId(rs.getInt("id"));
+                p.setTitle(rs.getString("title"));
+                p.setPercentage(rs.getDouble("percentage"));
+                p.setStartAt(rs.getDate("start_at")); // SQL Date
+                p.setEndAt(rs.getDate("end_at"));     // SQL Date
+                p.setDescription(rs.getString("description"));
+
+                // Chuyển đổi java.sql.Date sang java.util.Date để so sánh dễ hơn
+                // Note: For more robust date/time handling, consider java.time API (LocalDate, LocalDateTime)
+                // and java.sql.Timestamp if your database stores time components.
+                Date promoStart = new Date(p.getStartAt().getTime());
+                Date promoEnd = new Date(p.getEndAt().getTime());
+                Date currentTime = new Date(); // Thời điểm hiện tại
+
+                // Kiểm tra xem thời điểm hiện tại có nằm trong thời gian hiệu lực không
+                // Using .after() and .before() means the promotion is not valid *on* the start/end exact timestamp.
+                // If it should be inclusive, you might consider:
+                // (currentTime.compareTo(promoStart) >= 0 && currentTime.compareTo(promoEnd) <= 0)
+                if (currentTime.after(promoStart) && currentTime.before(promoEnd)) {
+                    latestPromotion = p; // Promotion hợp lệ
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getLastAddedValidPromotion: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return latestPromotion;
+    }
 }
