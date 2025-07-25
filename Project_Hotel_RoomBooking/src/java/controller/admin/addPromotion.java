@@ -113,7 +113,7 @@ public class addPromotion extends HttpServlet {
             }
 
             title = title.trim();
-            if (!title.matches("^[a-zA-Z0-9 ]+$")) {
+            if (!title.matches("^[\\p{L}0-9 ]+$")) {
                 response.getWriter().write("invalidTitleFormat");
                 return;
             }
