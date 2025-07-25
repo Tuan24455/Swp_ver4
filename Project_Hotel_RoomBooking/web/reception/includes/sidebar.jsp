@@ -77,9 +77,6 @@
             <a href="${pageContext.request.contextPath}/reception/dashboard.jsp" class="list-group-item list-group-item-action py-3 ${param.activePage == 'dashboard' ? 'active' : ''}">
                 <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
             </a>
-            <a href="${pageContext.request.contextPath}/customerList" class="list-group-item list-group-item-action py-3 ${param.activePage == 'users' ? 'active' : ''}">
-                <i class="fas fa-hotel me-2"></i> Quản lý khách hàng
-            </a>
             <a href="${pageContext.request.contextPath}/bookingList" class="list-group-item list-group-item-action py-3 ${param.activePage == 'bookings' ? 'active' : ''}">
                 <i class="fas fa-calendar-check me-2"></i> Quản lý đặt phòng
             </a>
