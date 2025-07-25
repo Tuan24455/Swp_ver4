@@ -1,6 +1,5 @@
 package controller;
 
-import dao.PromotionDao;
 import dao.ServiceDao;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -13,7 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import model.Promotion;
 import model.Service;
 
 @WebServlet(name = "ServiceServlet", urlPatterns = {"/service"})
@@ -31,15 +29,11 @@ public class ServiceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response, true);
-    }
-
-    private void processRequest(HttpServletRequest request, HttpServletResponse response, boolean isPost)
+    }    private void processRequest(HttpServletRequest request, HttpServletResponse response, boolean isPost)
             throws ServletException, IOException {
         ServiceDao serviceDao = new ServiceDao();
         List<Service> services;
         Map<Integer, String> serviceTypes = serviceDao.getDistinctServiceTypes();
-        PromotionDao pdao = new PromotionDao();
-        Promotion promotion = pdao.getLastAddedValidPromotion();
 
         if (isPost) {
             // Xử lý lọc dịch vụ
@@ -65,7 +59,7 @@ public class ServiceServlet extends HttpServlet {
         List<Service> pagedList = services.subList(start, end);
 
         // Đặt thuộc tính cho JSP
-        setRequestAttributes(request, serviceTypes, pagedList, currentPage, totalPages, totalItems, promotion);
+        setRequestAttributes(request, serviceTypes, pagedList, currentPage, totalPages, totalItems);
         request.getRequestDispatcher("service.jsp").forward(request, response);
     }
 
@@ -126,21 +120,17 @@ public class ServiceServlet extends HttpServlet {
         } catch (NumberFormatException ignored) {
         }
         return currentPage;
-    }
-
-    private void setRequestAttributes(HttpServletRequest request,
+    }    private void setRequestAttributes(HttpServletRequest request,
             Map<Integer, String> serviceTypes,
             List<Service> pagedList,
             int currentPage,
             int totalPages,
-            int totalItems,
-            Promotion promotion) {
+            int totalItems) {
         request.setAttribute("serviceTypes", serviceTypes);
         request.setAttribute("serviceList", pagedList);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("totalItems", totalItems);
-        request.setAttribute("promotion", promotion);
 
         String sort = request.getParameter("sort");
         if (sort != null && !sort.isEmpty()) {

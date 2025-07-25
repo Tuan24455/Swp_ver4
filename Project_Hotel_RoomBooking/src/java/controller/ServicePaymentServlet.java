@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -60,13 +61,23 @@ public class ServicePaymentServlet extends HttpServlet {
             }
             
             // Parse usage date
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            dateFormat.setLenient(false);
             java.util.Date usageDate;
             try {
                 usageDate = dateFormat.parse(usageDateStr);
                 
-                // Check if usage date is in the future
+                // Check if usage date is before today
                 java.util.Date today = new java.util.Date();
+                // Reset time part for today
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(today);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                today = cal.getTime();
+                
                 if (usageDate.before(today)) {
                     response.sendRedirect("serviceDetail?id=" + serviceId + "&error=pastDate");
                     return;
@@ -184,4 +195,4 @@ public class ServicePaymentServlet extends HttpServlet {
             response.sendRedirect("service.jsp");
         }
     }
-} 
+}

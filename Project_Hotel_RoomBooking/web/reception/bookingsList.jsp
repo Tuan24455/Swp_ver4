@@ -2,6 +2,9 @@
          pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
          prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<jsp:useBean id="todayDate" class="java.util.Date" scope="page" />
+<fmt:formatDate value="${todayDate}" pattern="yyyy-MM-dd" var="today" />
+<fmt:formatDate value="${todayDate}" pattern="dd/MM/yyyy" var="todayFormatted" />
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -39,6 +42,14 @@
                 background-color: var(--light-gray);
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 color: var(--text-primary);
+            }
+            #alert-container {
+                position: fixed;
+                top: 160px; /* below top navbar */
+                left: 10000;
+                right: 0;
+                width: 20%;
+                z-index: 1050; /* above sidebar */
             }
             .section-card {
                 background: white;
@@ -154,6 +165,7 @@
         </style>
     </head>
     <body>
+        <div id="alert-container"></div>
         <div class="d-flex" id="wrapper">
             <jsp:include page="includes/sidebar.jsp">
                 <jsp:param name="activePage" value="bookings" />
@@ -227,9 +239,6 @@
                 <div class="section-card">
                     <div class="section-header">
                         <span>Quản lý đặt phòng</span>
-                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                            <i class="fas fa-plus me-2"></i>Thêm đặt phòng mới
-                        </button>
                     </div>
                     <div class="section-content">
                         <div class="table-responsive">
@@ -248,6 +257,8 @@
                                 </thead>
                                 <tbody>
                                     <c:forEach var="booking" items="${bookings}">
+                                        <fmt:parseDate value="${booking.checkIn}" pattern="yyyy-MM-dd" var="bookingCheckInDate" />
+                                        <fmt:formatDate value="${bookingCheckInDate}" pattern="dd/MM/yyyy" var="bookingCheckInFormatted" />
                                         <tr>
                                             <td>#${booking.id}</td>
                                             <td>${booking.customer}</td>
@@ -264,41 +275,62 @@
                                                 <c:choose>
                                                     <c:when test="${booking.status eq 'pending' or booking.status eq 'Pending Payment'}">
                                                         <button type="button" class="btn-action btn-view" title="Check-in" 
-                                                            onclick="alert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-in-alt"></i> Check-in
                                                         </button>
                                                         <button type="button" class="btn-action btn-cancel" title="Check-out"
-                                                            onclick="alert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-out-alt"></i> Check-out
                                                         </button>
                                                     </c:when>
                                                     <c:when test="${booking.status eq 'Payment Failed'}">
                                                         <button type="button" class="btn-action btn-view" title="Check-in"
-                                                            onclick="alert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-in-alt"></i> Check-in
                                                         </button>
                                                         <button type="button" class="btn-action btn-cancel" title="Check-out"
-                                                            onclick="alert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-out-alt"></i> Check-out
                                                         </button>
                                                     </c:when>                                                    <c:when test="${booking.status eq 'confirmed' or booking.status eq 'Confirmed' or 
                                                                   booking.status eq 'Check-in' or booking.status eq 'checkin' or
                                                                   booking.status eq 'Check-out' or booking.status eq 'checkout' or
                                                                   booking.status eq 'completed' or booking.status eq 'Completed'}">
-                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
-                                                            <input type="hidden" name="action" value="checkin"/>
-                                                            <input type="hidden" name="bookingId" value="${booking.id}"/>
-                                                            <button type="submit" class="btn-action btn-view" title="Check-in">
-                                                                <i class="fas fa-sign-in-alt"></i> Check-in
-                                                            </button>
-                                                        </form>
-                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
-                                                            <input type="hidden" name="action" value="checkout"/>
-                                                            <input type="hidden" name="bookingId" value="${booking.id}"/>
-                                                            <button type="submit" class="btn-action btn-cancel" title="Check-out">
-                                                                <i class="fas fa-sign-out-alt"></i> Check-out
-                                                            </button>
-                                                        </form>
+                                                        <c:choose>
+                                                            <c:when test="${bookingCheckInDate.time <= todayDate.time}">
+                                                                <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                                    <input type="hidden" name="action" value="checkin"/>
+                                                                    <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                                    <button type="submit" class="btn-action btn-view" title="Check-in">
+                                                                        <i class="fas fa-sign-in-alt"></i> Check-in
+                                                                    </button>
+                                                                </form>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <button type="button" class="btn-action btn-view" title="Check-in"
+                                                                    onclick="showAlert('Booking #${booking.id} đang có lịch check-in là ${bookingCheckInFormatted} và hôm nay là ${todayFormatted}, không cho phép check-in trước ngày khách đặt')">
+                                                                    <i class="fas fa-sign-in-alt"></i> Check-in
+                                                                </button>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                        <!-- Replace checkout form with conditional logic -->
+                                                        <c:choose>
+                                                            <c:when test="${booking.status eq 'Check-in' or booking.status eq 'checkin'}">
+                                                                <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                                    <input type="hidden" name="action" value="checkout"/>
+                                                                    <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                                    <button type="submit" class="btn-action btn-cancel" title="Check-out">
+                                                                        <i class="fas fa-sign-out-alt"></i> Check-out
+                                                                    </button>
+                                                                </form>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <button type="button" class="btn-action btn-cancel" title="Check-out"
+                                                                    onclick="showAlert('Booking #${booking.id} chỉ cho phép check-out khi phòng đang ở trạng thái check-in')">
+                                                                    <i class="fas fa-sign-out-alt"></i> Check-out
+                                                                </button>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <button type="button" class="btn-action btn-view" title="Check-in" disabled>
@@ -425,6 +457,24 @@
                             .getElementById("sidebar-wrapper")
                             .classList.toggle("toggled");
                 });
+
+        function showAlert(message) {
+            const container = document.getElementById('alert-container');
+            // Clear existing alerts to prevent stacking
+            container.innerHTML = '';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show m-3';
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+            container.appendChild(alertDiv);
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                alertDiv.classList.add('hide');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
     </script>
 </body>
 </html>

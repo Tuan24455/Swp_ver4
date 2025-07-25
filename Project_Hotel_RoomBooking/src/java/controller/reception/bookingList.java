@@ -53,7 +53,7 @@ public class bookingList extends HttpServlet {
             boolean ok = false;
             if ("checkin".equals(action)) {
                 ok = dao.updateBookingStatus(bookingId, "Check-in");
-                msg = ok ? "Booking #" + bookingId + " checked in successfully." : "Failed to check in booking #" + bookingId + ".";
+                msg = ok ? "Booking #" + bookingId + " check-in thành công" : "Booking #" + bookingId + " check-in thất bại";
             } else if ("checkout".equals(action)) {
                 ok = dao.updateBookingStatus(bookingId, "Check-out");
                 msg = ok ? "Booking #" + bookingId + " checked out successfully." : "Failed to check out booking #" + bookingId + ".";
