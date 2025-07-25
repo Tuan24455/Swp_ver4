@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Room;
 
 /**
  *
@@ -69,20 +70,27 @@ public class deleteRoom extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if ("delete".equals(action)) {
-            int roomId = Integer.parseInt(request.getParameter("roomId"));
-            RoomDao dao = new RoomDao();
-            boolean isDeleted = dao.deleteRoom(roomId);
-            if (isDeleted) {
-                // Redirect back to the room list after successful deletion
-                response.sendRedirect(request.getContextPath() + "/roomList");
-            } else {
-                // Handle the error (perhaps redirect with an error message)
-                request.setAttribute("errorMessage", "Error deleting the room.");
-                request.getRequestDispatcher("admin/roomList.jsp").forward(request, response);
-            }
+         int roomId = Integer.parseInt(request.getParameter("roomId"));
+
+        RoomDao dao = new RoomDao();
+        Room room = dao.getRoomById(roomId);
+
+        response.setContentType("text/plain;charset=UTF-8");
+        if (!room.getRoomStatus().equals("Available") && !room.getRoomStatus().equals("Maintenance")) {
+            response.getWriter().write("invalidStatus");
+            return;
         }
+        if (dao.hasFutureBookings(roomId)) {
+            response.getWriter().write("hasFutureBookings");
+            return;
+        }
+        boolean deleted = dao.deleteRoom(roomId);
+        if (deleted) {
+            response.getWriter().write("success");
+        } else {
+            response.getWriter().write("error");
+        }
+        
     }
     /** 
      * Returns a short description of the servlet.

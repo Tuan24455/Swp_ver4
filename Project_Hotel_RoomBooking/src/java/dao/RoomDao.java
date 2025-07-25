@@ -496,24 +496,27 @@ public class RoomDao {
         return false;
     }
 
-    public boolean hasFutureBookings(int roomId) {
-        String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
-                + "JOIN Bookings b ON brd.booking_id = b.id "
-                + "WHERE brd.room_id = ? AND b.status IN (N'Confirmed', N'Confirmed') "
-                + "AND brd.check_out_date >= GETDATE()";
+public boolean hasFutureBookings(int roomId) {
+    String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
+               + "JOIN Bookings b ON brd.booking_id = b.id "
+               + "WHERE brd.room_id = ? "
+               + "AND b.status IN (N'Confirmed', N'Check in') "
+               + "AND brd.check_out_date >= CAST(GETDATE() AS DATE)"; // >= hôm nay
 
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = new DBContext().getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, roomId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ps.setInt(1, roomId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
         }
-
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return false;
+}
+
 
 }
