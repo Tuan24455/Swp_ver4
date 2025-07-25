@@ -333,4 +333,21 @@ public class DashboardAdminDAO {
         result.put("serviceAmounts", finalServiceAmounts);
         return result;
     }
+      // Method to get total amount from Transactions with status = 'Confirmed'
+    public double getRoomRevenueFromTransactions() {
+        String sql = "SELECT SUM(amount) AS total_amount " +
+                     "FROM Transactions " +
+                     "WHERE status IN ('Confirmed', 'Paid')";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                double amount = rs.getDouble("total_amount");
+                return rs.wasNull() ? 0.0 : amount;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }
