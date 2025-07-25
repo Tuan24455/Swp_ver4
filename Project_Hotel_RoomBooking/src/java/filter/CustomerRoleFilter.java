@@ -25,7 +25,7 @@ import model.User;
  * @author ADMIN
  */
 @WebFilter(filterName = "CustomerRoleFilter", urlPatterns = {"/bookingDetail.jsp", "/bookingHistory.jsp", "/customerInfor.jsp", "/booking",
-    "/transaction-history.jsp", "/booking-detail", "/process-payment", "/changePassword", "/delete",
+    "/transaction-history.jsp", "/booking-detail", "/booking-confirmation", "/process-payment", "/changePassword", "/delete",
     "/deleteimg", "/information", "/bookingHistory", "/transaction-history.jsp"})
 public class CustomerRoleFilter implements Filter {
 
