@@ -188,86 +188,81 @@ public class RoomDao {
     // Lấy tổng số phòng (không bao gồm phòng đã xóa)
     public int getTotalRooms() {
         String sql = "SELECT COUNT(*) AS total FROM Rooms WHERE isDelete = 0";
-        
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
-            
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
             if (rs.next()) {
                 return rs.getInt("total");
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
-    
+
     // Lấy tổng số phòng theo loại phòng
     public int getTotalRoomsByType(int roomTypeId) {
         String sql = "SELECT COUNT(*) AS total FROM Rooms WHERE room_type_id = ? AND isDelete = 0";
-        
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setInt(1, roomTypeId);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("total");
                 }
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
 
     // Lấy số phòng theo trạng thái cụ thể
     public int getRoomCountByStatus(String status) {
         String sql = "SELECT COUNT(*) AS total FROM Rooms WHERE room_status = ? AND isDelete = 0";
-        
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, status);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("total");
                 }
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
-    
+
     // Lấy số phòng theo trạng thái và loại phòng
     public int getRoomCountByStatusAndType(String status, int roomTypeId) {
         String sql = "SELECT COUNT(*) AS total FROM Rooms WHERE room_status = ? AND room_type_id = ? AND isDelete = 0";
-        
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, status);
             ps.setInt(2, roomTypeId);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("total");
                 }
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return 0;
     }
 
@@ -447,60 +442,78 @@ public class RoomDao {
 
         return rooms;
     }
+
     // Bên lễ tân - Tuấn
     public List<Room> getRoomsByFloor(int floor) {
-    List<Room> rooms = new ArrayList<>();
-    String sql = "SELECT r.*, rt.room_type AS room_type_name "
-               + "FROM Rooms r "
-               + "JOIN RoomTypes rt ON r.room_type_id = rt.id "
-               + "WHERE r.isDelete = 0 AND r.floor = ?";  // Lọc theo tầng
+        List<Room> rooms = new ArrayList<>();
+        String sql = "SELECT r.*, rt.room_type AS room_type_name "
+                + "FROM Rooms r "
+                + "JOIN RoomTypes rt ON r.room_type_id = rt.id "
+                + "WHERE r.isDelete = 0 AND r.floor = ?";  // Lọc theo tầng
 
-    try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setInt(1, floor);  // Thiết lập tham số tầng
+            ps.setInt(1, floor);  // Thiết lập tham số tầng
 
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Room room = new Room();
-                room.setId(rs.getInt("id"));
-                room.setRoomNumber(rs.getString("room_number"));
-                room.setRoomTypeId(rs.getInt("room_type_id"));
-                room.setRoomTypeName(rs.getString("room_type_name"));
-                room.setRoomPrice(rs.getDouble("room_price"));
-                room.setRoomStatus(rs.getString("room_status"));
-                room.setCapacity(rs.getInt("capacity"));
-                room.setDescription(rs.getString("description"));
-                room.setImageUrl(rs.getString("image_url"));
-                room.setFloor(rs.getInt("floor"));
-                room.setDeleted(rs.getBoolean("isDelete"));
-                rooms.add(room);  // Thêm phòng vào danh sách
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Room room = new Room();
+                    room.setId(rs.getInt("id"));
+                    room.setRoomNumber(rs.getString("room_number"));
+                    room.setRoomTypeId(rs.getInt("room_type_id"));
+                    room.setRoomTypeName(rs.getString("room_type_name"));
+                    room.setRoomPrice(rs.getDouble("room_price"));
+                    room.setRoomStatus(rs.getString("room_status"));
+                    room.setCapacity(rs.getInt("capacity"));
+                    room.setDescription(rs.getString("description"));
+                    room.setImageUrl(rs.getString("image_url"));
+                    room.setFloor(rs.getInt("floor"));
+                    room.setDeleted(rs.getBoolean("isDelete"));
+                    rooms.add(room);  // Thêm phòng vào danh sách
+                }
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return rooms;  // Trả về danh sách phòng của tầng yêu cầu
     }
 
-    return rooms;  // Trả về danh sách phòng của tầng yêu cầu
-}
-    
     public boolean isRoomNumberExists(int roomNumber) {
-    String sql = "SELECT COUNT(*) FROM Rooms WHERE room_number = ? AND isDelete = 0";
+        String sql = "SELECT COUNT(*) FROM Rooms WHERE room_number = ? AND isDelete = 0";
 
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, roomNumber);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1) > 0;
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, roomNumber);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return false;
     }
 
-    return false;
-}
+    public boolean hasFutureBookings(int roomId) {
+        String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
+                + "JOIN Bookings b ON brd.booking_id = b.id "
+                + "WHERE brd.room_id = ? AND b.status IN (N'Confirmed', N'Confirmed') "
+                + "AND brd.check_out_date >= GETDATE()";
 
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            ps.setInt(1, roomId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 }

@@ -102,18 +102,6 @@ public class addRoom extends HttpServlet {
             response.getWriter().write("invalidRoomType");
             return;
         }
-        if (floorRaw == null || floorRaw.isEmpty()) {
-            response.getWriter().write("invalidFloor");
-            return;
-        }
-        if (capacityRaw == null || capacityRaw.isEmpty()) {
-            response.getWriter().write("invalidCapacity");
-            return;
-        }
-        if (priceRaw == null || priceRaw.isEmpty()) {
-            response.getWriter().write("invalidPrice");
-            return;
-        }
         if (description == null || description.trim().isEmpty()) {
             response.getWriter().write("emptyDescription");
             return;

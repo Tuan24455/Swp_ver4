@@ -214,39 +214,43 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                                               <c:when test="${r.roomStatus == 'Available'}">Đang trống</c:when>
                                                               <c:when test="${r.roomStatus == 'Occupied'}">Đang sử dụng</c:when>
                                                               <c:when test="${r.roomStatus == 'Maintenance'}"> Đang bảo trì</c:when>
-                                        
+
                                                               <c:otherwise>Không xác định</c:otherwise>
                                                           </c:choose>
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
-                                                        <button class="btn btn-sm btn-outline-primary" title="View Details">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
+                                                    <div class="d-flex gap-1">
+                                                        <!-- Nút chỉnh sửa -->
                                                         <button
+                                                            type="button"
                                                             class="btn btn-sm btn-outline-warning"
-                                                            title="Edit"
+                                                            title="Chỉnh sửa"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#editRoomModal${r.id}">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
 
-                                                        <form action="${pageContext.request.contextPath}/deleteRoom" method="POST" style="display:inline;" class="delete-form" data-room-number="${r.roomNumber}">
+                                                        <form action="${pageContext.request.contextPath}/deleteRoom"
+                                                              method="POST"
+                                                              class="m-0 p-0"
+                                                              data-room-number="${r.roomNumber}">
                                                             <input type="hidden" name="roomId" value="${r.id}" />
                                                             <input type="hidden" name="action" value="delete" />
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
                                                     </div>
                                                 </td>
+
+
                                             </tr>          
                                         </tbody>  
                                         <div class="modal fade" id="editRoomModal${r.id}" tabindex="-1" aria-labelledby="updateRoomLabel${r.id}" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
-                                                    <form action="updateRoom" method="post" enctype="multipart/form-data">
+                                                    <form action="updateRoom" method="post" enctype="multipart/form-data" class="updateRoomForm">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="updateRoomLabel${r.id}">Cập nhật phòng</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -258,55 +262,57 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
 
                                                             <div class="row g-3">
                                                                 <div class="col-md-6">
-                                                                    <label class="form-label">Room Number</label>
+                                                                    <label class="form-label">Số phòng</label>
                                                                     <input type="text" class="form-control" name="roomNumber" value="${r.roomNumber}" required />
                                                                 </div>
 
                                                                 <div class="col-md-6">
-                                                                    <label class="form-label">Room Type</label>
+                                                                    <label class="form-label">Loại phòng</label>
                                                                     <select name="roomType" class="form-select" required>
-                                                                        <option value="Standard Room" ${r.roomTypeName == 'Standard Room' ? 'selected' : ''}>Standard Room</option>
-                                                                        <option value="Deluxe Room" ${r.roomTypeName == 'Deluxe Room' ? 'selected' : ''}>Deluxe Room</option>
-                                                                        <option value="Suite" ${r.roomTypeName == 'Suite' ? 'selected' : ''}>Suite</option>
-                                                                        <option value="Presidential Suite" ${r.roomTypeName == 'Presidential Suite' ? 'selected' : ''}>Presidential Suite</option>
+                                                                        <option value="1" ${r.roomTypeName == 'Standard Room' ? 'selected' : ''}>Standard Room</option>
+                                                                        <option value="2" ${r.roomTypeName == 'Deluxe Room' ? 'selected' : ''}>Deluxe Room</option>
+                                                                        <option value="3" ${r.roomTypeName == 'Suite' ? 'selected' : ''}>Suite</option>
+                                                                        <option value="4" ${r.roomTypeName == 'Presidential Suite' ? 'selected' : ''}>Presidential Suite</option>
                                                                     </select>
                                                                 </div>
 
                                                                 <div class="col-md-6">
-                                                                    <label class="form-label">Floor</label>
-                                                                    <select class="form-select" name="floor" required>
-                                                                        <option value="1" <c:if test="${r.floor == 1}">selected</c:if>>1st Floor</option>
-                                                                        <option value="2" <c:if test="${r.floor == 2}">selected</c:if>>2nd Floor</option>
-                                                                        <option value="3" <c:if test="${r.floor == 3}">selected</c:if>>3rd Floor</option>
-                                                                        <option value="4" <c:if test="${r.floor == 4}">selected</c:if>>4th Floor</option>
-                                                                        <option value="5" <c:if test="${r.floor == 5}">selected</c:if>>5th Floor</option>
-                                                                        </select>
-                                                                    </div>
+                                                                    <label class="form-label">Tầng</label>
+                                                                    <input type="text" class="form-control" name="floor_display" value="Tầng ${r.floor}" readonly>
+                                                                    <input type="hidden" name="floor" value="${r.floor}">
+                                                                </div>
 
-                                                                    <div class="col-md-6">
-                                                                        <label class="form-label">Capacity</label>
-                                                                        <select class="form-select" name="capacity" required>
-                                                                            <option value="1" ${r.capacity == 1 ? 'selected' : ''}>1 Guest</option>
-                                                                        <option value="2" ${r.capacity == 2 ? 'selected' : ''}>2 Guests</option>
-                                                                        <option value="3" ${r.capacity == 3 ? 'selected' : ''}>3 Guests</option>
-                                                                        <option value="4" ${r.capacity == 4 ? 'selected' : ''}>4 Guests</option>
-                                                                        <option value="6" ${r.capacity == 6 ? 'selected' : ''}>6 Guests</option>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Sức chứa</label>
+                                                                    <select class="form-select" name="capacity" required>
+                                                                        <option value="1" ${r.capacity == 1 ? 'selected' : ''}>1 người</option>
+                                                                        <option value="2" ${r.capacity == 2 ? 'selected' : ''}>2 người</option>
+                                                                        <option value="3" ${r.capacity == 3 ? 'selected' : ''}>3 người</option>
+                                                                        <option value="4" ${r.capacity == 4 ? 'selected' : ''}>4 người</option>
+                                                                        <option value="6" ${r.capacity == 6 ? 'selected' : ''}>6 người</option>
                                                                     </select>
                                                                 </div>
 
                                                                 <div class="col-md-6">
-                                                                    <label class="form-label">Price</label>
+                                                                    <label class="form-label">Giá phòng / đêm</label>
                                                                     <input type="number" class="form-control" step="0.01" name="price" value="${r.roomPrice}" required />
                                                                 </div>
 
                                                                 <div class="col-md-6">
-                                                                    <label class="form-label">Status</label>
-                                                                    <select name="status" class="form-select" required>
-                                                                        <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                        <option value="Occupied" ${r.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                        <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                        <option value="Cleaning" ${r.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                                    </select>
+                                                                    <label class="form-label">Tình trạng</label>
+                                                                    <c:choose>
+                                                                        <c:when test="${r.roomStatus == 'Occupied'}">
+                                                                            <input type="text" class="form-control" value="Đang được sử dụng" readonly />
+                                                                            <input type="hidden" name="status" value="Occupied" />
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <select name="status" class="form-select" required>
+                                                                                <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Đang trống</option>
+                                                                                <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
+                                                                            </select>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+
                                                                 </div>
 
                                                                 <div class="col-md-12">
@@ -319,7 +325,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
 
                                                                 <div class="col-12">
                                                                     <label class="form-label">Description</label>
-                                                                    <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
+                                                                    <textarea class="form-control editDescription" name="description" rows="5">${r.description}</textarea>
 
                                                                 </div>
                                                             </div>
@@ -409,7 +415,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                     <input type="text" class="form-control" name="roomNumber" required />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Room Type</label>
+                                    <label class="form-label">Loại phòng</label>
                                     <select class="form-select" name="roomType" required>
                                         <option value="">Chọn loại phòng</option>
                                         <option value="1">Standard Room</option>
@@ -445,7 +451,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                     <input type="number" class="form-control" name="price" step="0.01" required />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Trạng thái</label>
+                                    <label class="form-label">Tình trạng</label>
                                     <select class="form-select" name="status" required>
                                         <option value="Available">Phòng trống</option>
                                         <option value="Maintenance">Bảo trì</option>
@@ -475,6 +481,96 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
 
         <script>
             $(document).ready(function () {
+                // Khi modal được mở thì khởi tạo Summernote nếu chưa có
+                $(document).on('shown.bs.modal', '.modal', function () {
+                    const textarea = $(this).find('.editDescription');
+                    if (!textarea.hasClass('summernote-enabled')) {
+                        textarea.addClass('summernote-enabled');
+                        textarea.summernote({
+                            placeholder: 'Nhập mô tả phòng...',
+                            tabsize: 2,
+                            height: 300,
+                            toolbar: [
+                                ['style', ['bold', 'italic', 'underline', 'clear']],
+                                ['font', ['fontsize', 'color']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['insert', ['picture', 'link']],
+                                ['view', ['fullscreen', 'codeview']]
+                            ]
+                        });
+                    }
+                });
+
+                // Gửi form cập nhật bằng AJAX
+                $(document).on("submit", ".updateRoomForm", async function (e) {
+                    e.preventDefault();
+                    const form = this;
+
+                    const roomId = $(form).find('input[name="roomId"]').val();
+                    const descriptionTextarea = $(form).find('textarea[name="description"]');
+                    const descriptionValue = $(descriptionTextarea).summernote('code');
+
+                    // Kiểm tra nội dung rỗng
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = descriptionValue;
+                    const plainText = tempDiv.textContent || tempDiv.innerText || "";
+                    const containsImage = tempDiv.querySelector('img') !== null;
+
+                    if (plainText.trim().length === 0 && !containsImage) {
+                        alert("Mô tả không được để trống!");
+                        return;
+                    }
+
+                    descriptionTextarea.val(descriptionValue); // gán lại vào textarea để submit
+
+                    const formData = new FormData(form);
+
+                    try {
+                        const response = await fetch("updateRoom", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        const result = await response.text();
+                        console.log("Server response:", result);
+
+                        switch (result) {
+                            case 'success':
+                                alert("Cập nhật phòng thành công!");
+                                $('#editRoomModal' + roomId).modal('hide');
+                                location.reload();
+                                break;
+                            case 'roomBookedFuture':
+                                alert("Phòng đã có lịch đặt trong tương lai. Không thể sửa trạng thái.");
+                                break;
+                            case 'invalidRoomNumber':
+                                alert("Số phòng phải từ 100 đến 999.");
+                                break;
+                            case 'invalidRoomFloor':
+                                alert("Số phòng không khớp với tầng đã chọn.");
+                                break;
+                            case 'invalidPrice':
+                                alert("Giá phòng phải là số dương lớn hơn 500000");
+                                break;
+                            case 'tooLongDescription':
+                                alert("Mô tả không được quá 1000 ký tự!");
+                                break;
+                            case 'invalidImage':
+                                alert("Ảnh phòng phải là JPG, PNG hoặc JPEG.");
+                                break;
+                            default:
+                                alert("Lỗi không xác định: " + result);
+                        }
+                    } catch (err) {
+                        alert("Lỗi kết nối máy chủ.");
+                        console.error(err);
+                    }
+                });
+            });
+        </script>
+
+        <script>
+            $(document).ready(function () {
                 $('#addDescription').summernote({
                     placeholder: 'Nhập mô tả phòng ở đây...',
                     tabsize: 2,
@@ -488,35 +584,31 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                     ]
                 });
             });
-
-
-            // Submit form
             document.querySelector("#addRoomForm").addEventListener("submit", async function (e) {
                 e.preventDefault();
-
                 const form = this;
-                const formData = new FormData(form);
+                // Lấy mô tả từ Summernote
                 const descriptionValue = $('#addDescription').summernote('code');
+                // Kiểm tra mô tả (có chữ hoặc ảnh)
                 const tempDiv = document.createElement("div");
                 tempDiv.innerHTML = descriptionValue;
                 const plainText = tempDiv.textContent || tempDiv.innerText || "";
-                if (plainText.trim().length === 0) {
+                const containsImage = tempDiv.querySelector('img') !== null;
+                if (plainText.trim().length === 0 && !containsImage) {
                     alert("Mô tả không được để trống!");
                     return;
                 }
 
+                // Đồng bộ Summernote vào textarea thật
+                document.querySelector('textarea[name="description"]').value = descriptionValue;
+                const formData = new FormData(form);
                 try {
-                    // Gửi yêu cầu AJAX tới Servlet
                     const response = await fetch("addRoom", {
                         method: "POST",
                         body: formData
                     });
-
-                    // Nhận kết quả trả về từ Servlet
                     const result = await response.text();
-                    console.log(result);  // Debug: Kiểm tra kết quả trả về từ Servlet
-
-                    // Xử lý các kết quả trả về từ Servlet
+                    console.log(result);
                     switch (result) {
                         case 'success':
                             alert("Thêm phòng thành công!");

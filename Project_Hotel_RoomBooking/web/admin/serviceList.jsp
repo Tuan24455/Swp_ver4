@@ -186,21 +186,29 @@
                                             <td>${s.price}</td>
                                             <td>${s.description}</td>
                                             <td>
-                                                <div class="btn-group" role="group">           
-                                                    <button class="btn btn-sm btn-outline-warning" title="Edit" type="button"
-                                                            data-bs-toggle="modal" data-bs-target="#editServiceModal${s.id}" style="margin-right: 10px;">
+                                                <div class="d-flex align-items-center gap-2">                                    
+                                                    <button class="btn btn-sm btn-outline-warning"
+                                                            title="Chỉnh sửa"
+                                                            type="button"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editServiceModal${s.id}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <form action="deleteService" method="post" style="display:inline;" 
-                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                                                    <form action="deleteService"
+                                                          method="post"
+                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');"
+                                                          class="m-0 p-0">
                                                         <input type="hidden" name="id" value="${s.id}" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
                                                 </div>
                                             </td>
+
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -363,50 +371,50 @@
 
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
-                                                              // Khởi tạo CKEditor
-                                                              let editor;
-                                                              ClassicEditor
-                                                                      .create(document.querySelector('#description'), {
-                                                                          toolbar: [
-                                                                              'heading', '|',
-                                                                              'bold', 'italic', 'bulletedList', 'numberedList', '|',
-                                                                              'undo', 'redo'
-                                                                          ]
-                                                                      })
-                                                                      .then(e => editor = e)
-                                                                      .catch(error => console.error(error));
-                                                              // Gắn sự kiện khi form submit
-                                                              document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
-                                                                  e.preventDefault(); // ❌ Chặn reload
+                  // Khởi tạo CKEditor
+                  let editor;
+                  ClassicEditor
+                          .create(document.querySelector('#description'), {
+                              toolbar: [
+                                  'heading', '|',
+                                  'bold', 'italic', 'bulletedList', 'numberedList', '|',
+                                  'undo', 'redo'
+                              ]
+                          })
+                          .then(e => editor = e)
+                          .catch(error => console.error(error));
+                  // Gắn sự kiện khi form submit
+                  document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
+                      e.preventDefault(); // ❌ Chặn reload
 
-                                                                  const form = this;
-                                                                  const formData = new FormData(form);
-                                                                  formData.set("description", editor.getData());
-                                                                  try {
-                                                                      const response = await fetch("addService", {
-                                                                          method: "POST",
-                                                                          body: formData
-                                                                      });
-                                                                      const result = await response.text();
-                                                                      if (result === "success") {
-                                                                          alert("Thêm dịch vụ thành công!");
-                                                                          location.reload();
-                                                                      } else if (result === "duplicate") {
-                                                                          alert("Tên dịch vụ đã tồn tại!");
-                                                                      } else if (result === "invalidPrice") {
-                                                                          alert("Giá phải bắt đầu từ 100000");
-                                                                      } else if (result === "blankDescription") {
-                                                                          alert("Mô tả Không được để trống !");
-                                                                      } else if (result === "invalidNameFormat") {
-                                                                          alert("Tên dịch vụ không hợp lệ !");
-                                                                      } else {
-                                                                          alert("Có lỗi xảy ra khi thêm dịch vụ.");
-                                                                      }
-                                                                  } catch (err) {
-                                                                      alert("Lỗi kết nối máy chủ.");
-                                                                      console.error(err);
-                                                                  }
-                                                              });
+                      const form = this;
+                      const formData = new FormData(form);
+                      formData.set("description", editor.getData());
+                      try {
+                          const response = await fetch("addService", {
+                              method: "POST",
+                              body: formData
+                          });
+                          const result = await response.text();
+                          if (result === "success") {
+                              alert("Thêm dịch vụ thành công!");
+                              location.reload();
+                          } else if (result === "duplicate") {
+                              alert("Tên dịch vụ đã tồn tại!");
+                          } else if (result === "invalidPrice") {
+                              alert("Giá phải bắt đầu từ 100000");
+                          } else if (result === "blankDescription") {
+                              alert("Mô tả Không được để trống !");
+                          } else if (result === "invalidNameFormat") {
+                              alert("Tên dịch vụ không hợp lệ !");
+                          } else {
+                              alert("Có lỗi xảy ra khi thêm dịch vụ.");
+                          }
+                      } catch (err) {
+                          alert("Lỗi kết nối máy chủ.");
+                          console.error(err);
+                      }
+                  });
     </script>
     <script>
         const ckeditors = {};
