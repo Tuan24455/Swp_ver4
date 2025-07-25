@@ -131,16 +131,7 @@ CREATE TABLE BookingRoomDetails (
     FOREIGN KEY (room_id) REFERENCES Rooms(id)
 );
 
--- Chi tiết đặt dịch vụ
-CREATE TABLE BookingServiceDetail (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    booking_id INT,
-    service_id INT,
-    quantity INT,
-    prices DECIMAL(10, 2),
-    FOREIGN KEY (booking_id) REFERENCES Bookings(id),
-    FOREIGN KEY (service_id) REFERENCES Services(id)
-);
+
 
 -- Bảng giao dịch thanh toán
 CREATE TABLE Transactions (
