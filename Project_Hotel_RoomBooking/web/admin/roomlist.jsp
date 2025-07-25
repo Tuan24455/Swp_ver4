@@ -160,24 +160,17 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                             <h5 class="mb-0">Danh sách phòng</h5>
                         </div>
                         <div class="card-body">
-                            <div
-                                class="d-flex justify-content-between align-items-center mb-3 flex-wrap"
-                                >
-
-                                <div
-                                    class="input-group search-table-input"
-                                    style="width: 250px"
-                                    >
-                                    <span class="input-group-text"
-                                          ><i class="fas fa-search"></i
-                                        ></span>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Tìm phòng..."
-                                        />
+                            <form method="get" action="roomList" class="mb-3" style="max-width: 400px;">
+                                <div class="input-group">
+                                    <input type="text" name="roomNumberSearch" class="form-control" placeholder="Nhập số phòng..." value="${param.roomNumberSearch}" />
+                                    <input type="hidden" name="page" value="1" />
+                                    <button class="btn btn-outline-primary" type="submit">🔍 Tìm kiếm</button>
                                 </div>
-                            </div>
+                            </form>
+
+
+
+
 
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover align-middle">

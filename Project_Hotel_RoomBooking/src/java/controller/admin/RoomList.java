@@ -68,6 +68,7 @@ public class RoomList extends HttpServlet {
             String roomType = request.getParameter("roomType");
             String roomStatus = request.getParameter("roomStatus");
             String floorStr = request.getParameter("floor");
+            String roomNumberSearch = request.getParameter("roomNumberSearch");
             String pageStr = request.getParameter("page");
 
             Integer floor = (floorStr != null && !floorStr.isEmpty()) ? Integer.parseInt(floorStr) : null;
@@ -77,7 +78,7 @@ public class RoomList extends HttpServlet {
             RoomDao dao = new RoomDao();
             int countAll = dao.getTotalRooms();
 
-            List<Room> filteredRooms = dao.filterRooms(roomType, roomStatus, floor);
+            List<Room> filteredRooms = dao.filterRooms(roomType, roomStatus, floor, roomNumberSearch);
             int totalFiltered = filteredRooms.size();
             int totalPages = (int) Math.ceil((double) totalFiltered / pageSize);
 
@@ -107,6 +108,7 @@ public class RoomList extends HttpServlet {
             request.setAttribute("paramRoomType", roomType);
             request.setAttribute("paramRoomStatus", roomStatus);
             request.setAttribute("paramFloor", floorStr);
+            request.setAttribute("paramRoomNumberSearch", roomNumberSearch);
 
             request.getRequestDispatcher("admin/roomlist.jsp").forward(request, response);
 
