@@ -42,14 +42,13 @@
                 background-color: var(--light-gray);
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 color: var(--text-primary);
-            }
-            #alert-container {
+            }            #alert-container {
                 position: fixed;
-                top: 160px; /* below top navbar */
-                left: 10000;
-                right: 0;
-                width: 20%;
-                z-index: 1050; /* above sidebar */
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                width: 720px;
+                z-index: 10150;
             }
             .section-card {
                 background: white;
@@ -169,21 +168,8 @@
         <div class="d-flex" id="wrapper">
             <jsp:include page="includes/sidebar.jsp">
                 <jsp:param name="activePage" value="bookings" />
-            </jsp:include>
-
-            <!-- Main Content -->
-            <div id="page-content-wrapper" class="flex-fill">
-                <!-- Top Navigation -->
-                <nav
-                    class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-                    >
-                    <div class="container-fluid">
-                        <div class="d-flex align-items-center gap-3">
-                            <span id="current-date" class="fw-semibold text-muted">Thứ Ba, 24 tháng 6, 2025</span>
-                            <span id="current-time" class="fw-semibold">16:56:28</span>
-                        </div>
-                    </div>
-                </nav>
+            </jsp:include>            <!-- Main Content -->
+            <div id="page-content-wrapper" class="flex-fill">             
 
                 <!-- Thông báo từ servlet -->
                 <c:if test="${not empty message}">
@@ -365,14 +351,7 @@
     <div class="modal fade" id="addBookingModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Booking</h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        ></button>
-                </div>
+                
                 <div class="modal-body">
                     <form>
                         <div class="row g-3">
@@ -445,19 +424,9 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sidebar toggle functionality
-        document
-                .getElementById("menu-toggle")
-                .addEventListener("click", function () {
-                    document
-                            .getElementById("sidebar-wrapper")
-                            .classList.toggle("toggled");
-                });
-
+        // Function to show alerts
         function showAlert(message) {
             const container = document.getElementById('alert-container');
             // Clear existing alerts to prevent stacking
@@ -475,6 +444,14 @@
                 setTimeout(() => alertDiv.remove(), 150);
             }, 5000);
         }
+
+        // Initialize clock when DOM is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize immediately
+            updateDateTime();
+            // Update time every second
+            setInterval(updateDateTime, 1000);
+        });
     </script>
 </body>
 </html>
