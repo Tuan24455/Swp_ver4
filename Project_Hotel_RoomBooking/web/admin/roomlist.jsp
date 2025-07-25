@@ -115,7 +115,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                     </div>
 
                     <!-- Filter Section -->
-                    <form method="get" action="roomList" class="row g-3 mb-4">
+                    <form method="post" action="roomList" class="row g-3 mb-4">
                         <input type="hidden" name="page" value="1" />
                         <div class="col-md-3">
                             <label class="form-label">Loại phòng</label>
@@ -136,7 +136,6 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                 <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Đang trống</option>
                                 <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Đang sử dụng</option>
                                 <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
-                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Đang dọn dẹp</option>
                             </select>
                         </div>
 
@@ -160,7 +159,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                             <h5 class="mb-0">Danh sách phòng</h5>
                         </div>
                         <div class="card-body">
-                            <form method="get" action="roomList" class="mb-3" style="max-width: 400px;">
+                            <form method="post" action="roomList" class="mb-3" style="max-width: 400px;">
                                 <div class="input-group">
                                     <input type="text" name="roomNumberSearch" class="form-control" placeholder="Nhập số phòng..." value="${param.roomNumberSearch}" />
                                     <input type="hidden" name="page" value="1" />

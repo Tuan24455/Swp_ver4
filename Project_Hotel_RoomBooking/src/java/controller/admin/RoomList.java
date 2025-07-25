@@ -62,8 +62,23 @@ public class RoomList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        doPost(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+
         try {
             String roomType = request.getParameter("roomType");
             String roomStatus = request.getParameter("roomStatus");
@@ -82,7 +97,6 @@ public class RoomList extends HttpServlet {
             int totalFiltered = filteredRooms.size();
             int totalPages = (int) Math.ceil((double) totalFiltered / pageSize);
 
-            // Fix lỗi nếu trang vượt quá số trang
             if (page > totalPages && totalPages > 0) {
                 page = totalPages;
             }
@@ -117,20 +131,6 @@ public class RoomList extends HttpServlet {
             response.setContentType("text/plain");
             response.getWriter().write("Lỗi server: " + e.getMessage());
         }
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
     }
 
     /**

@@ -236,16 +236,6 @@ VALUES
 (N'Chè đậu trắng', 1, 30000, N'Chè ngọt thanh từ đậu trắng, nấu với đường phèn, có thể thêm trân châu hoặc thạch.', 'https://image.url'),
 (N'Bánh canh ghẹ', 1, 120000, N'Sợi bánh canh to, dai, nước dùng ngọt từ ghẹ, thịt ghẹ nhiều và tươi ngon.', 'https://image.url'),
 (N'Phở gà', 1, 55000, N'Biến thể nhẹ nhàng của phở, với nước dùng trong, ngọt từ xương gà, sợi phở, thịt gà xé và hành lá.', 'https://image.url');
-(N'Buffet', 1, 200000, N'Tận hưởng bữa sáng buffet phong phú với đa dạng món Á - Âu, từ bánh mì nóng hổi, cháo dinh dưỡng đến các món Âu như trứng, xúc xích, salad tươi ngon và nhiều lựa chọn nước uống.', 'https://image.url'),
-(N'Spa thư giãn', 2, 500000, N'Giải tỏa mọi căng thẳng với liệu pháp massage thư giãn chuyên sâu, giúp cơ thể phục hồi năng lượng, lưu thông khí huyết và mang lại cảm giác sảng khoái.', 'https://image.url'),
-(N'Phòng tập', 3, 150000, N'Rèn luyện sức khỏe trong không gian hiện đại, đầy đủ ánh sáng tự nhiên và trang thiết bị tập luyện cardio, tạ tay chuyên nghiệp, phù hợp cho mọi nhu cầu từ tập luyện cơ bản đến nâng cao.', 'https://image.url'),
-(N'Dịch vụ đưa đón', 4, 300000, N'Tiện nghi và an toàn với dịch vụ đưa đón tận nơi, xe đời mới, lái xe thân thiện và am hiểu địa phương, giúp bạn di chuyển thuận tiện từ sân bay đến khách sạn.', 'https://image.url'),
-(N'Pizza', 1, 80000, N'Thưởng thức những chiếc pizza nóng giòn, thơm lừng với nhân phô mai kéo sợi, topping phong phú từ xúc xích, giăm bông, rau củ tươi ngon, nướng than củ đặc trưng.', 'https://image.url'),
-(N'Massage mặt', 2, 250000, N'Chăm sóc làn da với liệu pháp massage mặt thư giãn, giúp tái tạo tế bào, giảm căng thẳng cho vùng mặt và cổ, mang lại làn da tươi tắn, rạng ngời.', 'https://image.url'),
-(N'Trung tâm thể dục', 3, 120000, N'Mở rộng trải nghiệm tập luyện với quyền truy cập vào trung tâm thể dục đối tác hiện đại, đầy đủ máy móc và lớp học nhóm (yoga, aerobic...).', 'https://image.url'),
-(N'Đưa đón sân bay', 4, 400000, N'Dịch vụ đưa đón riêng tư, tiện lợi từ sân bay đến khách sạn và ngược lại, với xe đời mới, lái xe chuyên nghiệp, giúp bạn bắt đầu hoặc kết thúc chuyến đi thật suôn sẻ.', 'https://image.url'),
-(N'Chè', 1, 50000, N'Thanh mát và ngọt ngào với các loại chè truyền thống Việt Nam, được nấu công phu từ đậu xanh, hạt sen, củ năng, thạch dẻo, nước cốt dừa thơm béo và topping đa dạng.', 'https://image.url'),
-(N'Trị liệu', 2, 600000, N'Phục hồi sức khỏe toàn diện với các liệu pháp trị liệu chuyên sâu như châm cứu, xoa bóp bấm huyệt, detox cơ thể, giúp giảm đau nhức, cải thiện giấc ngủ và tăng cường hệ miễn dịch.', 'https://image.url');
 
 -- Dữ liệu cho bảng ServiceReviews (giữ nguyên)
 INSERT INTO ServiceReviews (service_id, quality, comment)
