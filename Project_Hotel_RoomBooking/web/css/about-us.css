@@ -1,0 +1,236 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jul 25, 2025, 9:40:13 AM
+    Author     : ADMIN
+*/
+
+/* Base Styles */
+body {
+    background-color: #ffffff;
+    background-image: url("images/system/Background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Member Card Styles */
+.member-card {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.member-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 20px;
+    border: 3px solid #e9ecef;
+    transition: border-color 0.3s ease;
+}
+
+.member-card:hover .member-img {
+    border-color: #0d6efd;
+}
+
+/* Contact Information Section */
+.contact-info-section {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.contact-icon i {
+    color: #0d6efd;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-icon:hover i {
+    color: #0b5ed7;
+    transform: scale(1.1);
+}
+
+/* Typography */
+.text-justify {
+    text-align: justify;
+    line-height: 1.6;
+}
+
+.lead {
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+/* Section Headings */
+h1, h2 {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Member Information */
+.member-card h5 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.member-card p {
+    margin-bottom: 0.5rem;
+    color: #6c757d;
+}
+
+.member-card p:last-child {
+    color: #495057;
+    font-style: italic;
+}
+
+/* Contact Information Styling */
+.contact-info-section h6 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.contact-info-section p {
+    color: #6c757d;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* Container and Layout */
+.container {
+    max-width: 1200px;
+}
+
+main {
+    min-height: calc(100vh - 200px);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .member-card {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+    }
+    
+    .member-img {
+        margin-bottom: 15px;
+        margin-right: 0;
+        align-self: center;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .contact-info-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    main {
+        margin: 1rem auto;
+        border-radius: 10px;
+    }
+    
+    .member-card {
+        padding: 15px;
+    }
+    
+    .contact-info-section {
+        padding: 15px;
+    }
+    
+    .contact-icon i {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Animation for smooth loading */
+.member-card, .contact-info-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Additional enhancements */
+.contact-content {
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Focus states for accessibility */
+.member-card:focus-within {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-image: none;
+        background-color: white;
+    }
+    
+    .member-card, .contact-info-section {
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+}

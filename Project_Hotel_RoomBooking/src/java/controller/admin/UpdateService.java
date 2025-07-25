@@ -88,11 +88,12 @@ public class UpdateService extends HttpServlet {
             String oldImageUrl = request.getParameter("oldImageUrl");
 
             ServiceDao dao = new ServiceDao();
-            // Validate: tên không rỗng
-            if (name == null || name.trim().isEmpty()) {
+            
+            name = name.trim().replaceAll("\\s{2,}", " ");
+            if(!name.matches("^[\\p{L}0-9 ]+$")){
                 response.getWriter().write("invalidName");
                 return;
-            }
+            } 
 
             // Kiểm tra trùng tên (trừ chính nó)
             if (dao.checkNameExistsExceptId(name.trim(), id)) {
@@ -100,7 +101,6 @@ public class UpdateService extends HttpServlet {
                 return;
             }
 
-            // Validate: giá
             double price;
             try {
                 price = Double.parseDouble(priceRaw);
@@ -113,7 +113,6 @@ public class UpdateService extends HttpServlet {
                 return;
             }
 
-            // Validate: loại dịch vụ
             if (typeRaw == null || typeRaw.isEmpty()) {
                 response.getWriter().write("invalidType");
                 return;

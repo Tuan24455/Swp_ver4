@@ -52,9 +52,6 @@
                                 <button class="btn btn-light btn-enhanced" data-bs-toggle="modal" data-bs-target="#addUserModal">
                                     <i class="fas fa-plus me-2"></i>Thêm nhân viên mới
                                 </button>
-                                <button class="btn btn-outline-light btn-enhanced" onclick="exportUsers()">
-                                    <i class="fas fa-download me-2"></i>Xuất Excel
-                                </button>
                             </div>
                         </div>
                     </div>

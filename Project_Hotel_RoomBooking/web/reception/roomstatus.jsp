@@ -343,7 +343,6 @@
                                                                     <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
                                                                     <select name="status" class="form-select" required>
                                                                         <option value="Available"   ${r.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
-                                                                        <option value="Occupied"    ${r.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
                                                                         <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
                                                                         <option value="Cleaning"    ${r.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp</option>
                                                                     </select>
@@ -519,7 +518,6 @@
                                                                     <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
                                                                     <select name="status" class="form-select" required>
                                                                         <option value="Available"   ${r2.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
-                                                                        <option value="Occupied"    ${r2.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
                                                                         <option value="Maintenance" ${r2.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
                                                                         <option value="Cleaning"    ${r2.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
                                                                     </select>
@@ -687,7 +685,6 @@
                                                                     <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
                                                                     <select name="status" class="form-select" required>
                                                                         <option value="Available"   ${r3.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
-                                                                        <option value="Occupied"    ${r3.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
                                                                         <option value="Maintenance" ${r3.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
                                                                         <option value="Cleaning"    ${r3.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
                                                                     </select>
@@ -846,7 +843,6 @@
                                                                     <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
                                                                     <select name="status" class="form-select" required>
                                                                         <option value="Available"   ${r4.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
-                                                                        <option value="Occupied"    ${r4.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
                                                                         <option value="Maintenance" ${r4.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
                                                                         <option value="Cleaning"    ${r4.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
                                                                     </select>
@@ -891,7 +887,7 @@
                                     <div
                                         class="card room-card shadow-sm
                                         <c:choose>
-                                            <c:when test="${r5.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>
+                                            <c:when test="${r5.roomTypeName == 'Standard Room'}">border-primary bg-light</c:when>                                               
                                             <c:when test="${r5.roomTypeName == 'Deluxe Room'}">border-success bg-light</c:when>
                                             <c:when test="${r5.roomTypeName == 'Suite'}">border-danger bg-light</c:when>
                                             <c:when test="${r5.roomTypeName == 'Presidential Suite'}">border-warning bg-light</c:when>
@@ -1005,7 +1001,6 @@
                                                                     <label class="form-label text-secondary fw-semibold text-uppercase small">Trạng thái</label>
                                                                     <select name="status" class="form-select" required>
                                                                         <option value="Available"   ${r5.roomStatus == 'Available'   ? 'selected' : ''}>Đang trống</option>
-                                                                        <option value="Occupied"    ${r5.roomStatus == 'Occupied'    ? 'selected' : ''}>Đang có khách</option>
                                                                         <option value="Maintenance" ${r5.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
                                                                         <option value="Cleaning"    ${r5.roomStatus == 'Cleaning'    ? 'selected' : ''}>Đang dọn dẹp </option>
                                                                     </select>
@@ -1044,7 +1039,6 @@
             </div>
         </div>
 
-        <!-- Room Details Modal -->
         <!-- Room Details Modal -->
         <div class="modal fade" id="roomDetailsModal" tabindex="-1">
             <div class="modal-dialog modal-lg">

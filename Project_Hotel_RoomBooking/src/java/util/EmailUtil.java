@@ -72,7 +72,7 @@ public class EmailUtil {
         MimeMessage message = new MimeMessage(session);
 
         // Set the sender, encoding the sender name for proper display
-        String encodedSenderName = MimeUtility.encodeText("Hệ thống của bạn", "UTF-8", "B"); // You can customize this sender name
+        String encodedSenderName = MimeUtility.encodeText("Hệ thống khách sạn", "UTF-8", "B"); // You can customize this sender name
         message.setFrom(new InternetAddress(SENDER_EMAIL, encodedSenderName));
 
         // Set the recipient

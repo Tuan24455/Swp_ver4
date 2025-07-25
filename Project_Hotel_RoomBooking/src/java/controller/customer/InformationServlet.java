@@ -63,7 +63,7 @@ public class InformationServlet extends HttpServlet {
             Date birth = InputValidator.parseDate(birthStr);
 
             // Cập nhật lại user object
-            user.setFullName(fullName);
+            user.setFullName(fullName.trim().replaceAll("\\s+", " "));
             user.setEmail(email);
             user.setPhone(phone);
             user.setAddress(address);
