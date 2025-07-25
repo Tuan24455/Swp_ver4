@@ -11,12 +11,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Booking;
 
 @WebServlet(name = "BookingListServlet", urlPatterns = {"/bookingList"})
-public class bookingList extends HttpServlet {
+public class BookingListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BookingDao dao = new BookingDao(); // DAO for bookings
+        BookingDao dao = new BookingDao();
         List<Booking> bookings = dao.getAllBookingsWithDetails();
         // Map status to CSS classes
         for (Booking b : bookings) {
@@ -30,10 +30,6 @@ public class bookingList extends HttpServlet {
                 css = "status-cancelled";
             } else if ("completed".equalsIgnoreCase(status)) {
                 css = "status-completed";
-            } else if ("check-in".equalsIgnoreCase(status) || "checkin".equalsIgnoreCase(status)) {
-                css = "status-checkin";
-            } else if ("check-out".equalsIgnoreCase(status) || "checkout".equalsIgnoreCase(status)) {
-                css = "status-checkout";
             }
             b.setStatusClass(css);
         }
@@ -52,10 +48,10 @@ public class bookingList extends HttpServlet {
             BookingDao dao = new BookingDao();
             boolean ok = false;
             if ("checkin".equals(action)) {
-                ok = dao.updateBookingStatus(bookingId, "Check-in");
+                ok = dao.updateBookingStatus(bookingId, "confirmed");
                 msg = ok ? "Booking #" + bookingId + " checked in successfully." : "Failed to check in booking #" + bookingId + ".";
             } else if ("checkout".equals(action)) {
-                ok = dao.updateBookingStatus(bookingId, "Check-out");
+                ok = dao.updateBookingStatus(bookingId, "completed");
                 msg = ok ? "Booking #" + bookingId + " checked out successfully." : "Failed to check out booking #" + bookingId + ".";
             }
             if (!ok) {
