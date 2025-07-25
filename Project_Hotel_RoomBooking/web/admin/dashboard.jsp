@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
 prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="com.google.gson.Gson" %>
 <!DOCTYPE html>
 <html lang="vi">
   <head>
@@ -192,87 +193,31 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Charts Row -->
+          </div>          <!-- Revenue Comparison Chart -->
           <div class="row g-4 mb-4">
-            <!-- Revenue Chart -->
             <div class="col-xl-8">
-              <div class="chart-card">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-3"
-                >
-                  <h5 class="card-title mb-0">
-                    Phân Tích Doanh Thu & Đặt Phòng
-                  </h5>
-                  <div class="btn-group" role="group">
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary btn-period active"
-                      onclick="updateChart('weekly')"
-                    >
-                      Tuần
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary btn-period"
-                      onclick="updateChart('monthly')"
-                    >
-                      Tháng
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary btn-period"
-                      onclick="updateChart('yearly')"
-                    >
-                      Năm
-                    </button>
-                  </div>
-                </div>
-                <div class="chart-container">
-                  <canvas id="revenueChart"></canvas>
-                </div>
-              </div>
-            </div>
-
-            <!-- Room Status Chart -->
-            <div class="col-xl-4">
-              <div class="chart-card">
-                <h5 class="card-title mb-3">Trạng Thái Phòng</h5>
-                <div class="chart-container" style="height: 300px">
-                  <canvas id="roomStatusChart"></canvas>
-                </div>
-                <div class="mt-3">
-                  <div class="row text-center">
-                    <div class="col-4">
-                      <div class="text-success">
-                        <strong>${occupiedRooms}</strong>
-                        <small class="d-block text-muted">Đã Đặt</small>
-                      </div>
+              <div class="chart-card">                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="card-title mb-0">Doanh Thu Đặt Phòng vs Doanh Thu Dịch Vụ</h5>
+                  <div class="chart-legend d-flex gap-3">
+                    <div class="d-flex align-items-center">
+                      <div class="legend-color" style="width: 12px; height: 12px; background-color: #ff6b9d; margin-right: 5px;"></div>
+                      <small>Doanh Thu Đặt Phòng</small>
                     </div>
-                    <div class="col-4">
-                      <div class="text-primary">
-                        <strong>${vacantRooms}</strong>
-                        <small class="d-block text-muted">Trống</small>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="text-warning">
-                        <strong>${maintenanceRooms}</strong>
-                        <small class="d-block text-muted">Bảo Trì</small>
-                      </div>
+                    <div class="d-flex align-items-center">
+                      <div class="legend-color" style="width: 12px; height: 12px; background-color: #4ecdc4; margin-right: 5px;"></div>
+                      <small>Doanh Thu Dịch Vụ</small>
                     </div>
                   </div>
+                </div>
+                <div class="chart-container" style="position: relative; width: 100%; height: 400px;">
+                  <canvas id="revenueComparisonChart"></canvas>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Quick Stats & Recent Activity -->
+          <!-- Recent Bookings -->
           <div class="row g-4 mb-4">
-
-
-            <!-- Recent Bookings -->
             <div class="col-xl-8">
               <div class="table-card">
                 <div class="card-header bg-white border-0 pb-0">
@@ -382,19 +327,242 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/dashboard.js"></script>
-
-    <script>
-      // Initialize room status chart with server data after page load
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    <script src="js/dashboard.js"></script>    <script>
+      // Initialize revenue comparison chart
       document.addEventListener('DOMContentLoaded', function() {
-          // Wait for dashboard.js to initialize charts, then update with server data
-          setTimeout(() => {
-              if (window.initRoomStatusWithServerData) {
-                  window.initRoomStatusWithServerData(${occupiedRooms}, ${vacantRooms}, ${maintenanceRooms});
+          const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
+          
+          // Prepare chart data with server data or fallback to sample data
+          var labels = [], roomAmounts = [], serviceAmounts = [];
+          
+          // Check if we have server data
+          <c:choose>
+            <c:when test="${not empty yearlyRevenueData and not empty yearlyRevenueData.years}">
+              // Use server data
+              <c:forEach var="year" items="${yearlyRevenueData.years}">
+                labels.push("${year}");
+              </c:forEach>
+              <c:forEach var="amount" items="${yearlyRevenueData.roomAmounts}">
+                roomAmounts.push(${amount});
+              </c:forEach>
+              <c:forEach var="amount" items="${yearlyRevenueData.serviceAmounts}">
+                serviceAmounts.push(${amount});
+              </c:forEach>
+            </c:when>
+            <c:otherwise>
+              // Fallback sample data if no server data
+              labels = ['2020', '2021', '2022', '2023', '2024'];
+              roomAmounts = [53000000, 117000000, 79000000, 56000000, 45000000];
+              serviceAmounts = [43000000, 105000000, 76000000, 50000000, 33000000];
+            </c:otherwise>
+          </c:choose>
+          
+          const chartData = {
+              labels: labels,
+              datasets: [{
+                  label: 'Doanh Thu Đặt Phòng',
+                  data: roomAmounts,
+                  backgroundColor: '#ff6b9d',
+                  borderColor: '#ff6b9d',
+                  borderWidth: 1
+              }, {
+                  label: 'Doanh Thu Dịch Vụ',
+                  data: serviceAmounts,
+                  backgroundColor: '#4ecdc4',
+                  borderColor: '#4ecdc4',
+                  borderWidth: 1
+              }]
+          };
+
+          const config = {
+              type: 'bar',
+              data: chartData,
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                      legend: {
+                          display: false
+                      },
+                      title: {
+                          display: true,
+                          text: 'Doanh Thu Đặt Phòng vs Doanh Thu Dịch Vụ',
+                          font: {
+                              size: 16,
+                              weight: 'normal'
+                          },
+                          color: '#6c757d'
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          ticks: {
+                              stepSize: 20000000,
+                              font: {
+                                  size: 12
+                              },
+                              color: '#6c757d',
+                              callback: function(value) {
+                                  return (value / 1000000).toLocaleString() + 'M đ';
+                              }
+                          },
+                          grid: {
+                              color: '#e9ecef'
+                          }
+                      },
+                      x: {
+                          ticks: {
+                              font: {
+                                  size: 12
+                              },
+                              color: '#6c757d'
+                          },
+                          grid: {
+                              display: false
+                          }
+                      }
+                  },
+                  elements: {
+                      bar: {
+                          borderRadius: 2
+                      }
+                  },
+                  interaction: {
+                      intersect: false,
+                      mode: 'index'
+                  }
               }
-          }, 500);
+          };
+
+          new Chart(ctx, config);
       });
-    </script>
+    </script><!-- Room Status Modals -->
+    <!-- Occupied Rooms Modal -->
+    <div class="modal fade" id="occupiedModal" tabindex="-1" aria-labelledby="occupiedModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="occupiedModalLabel">Phòng Đã Đặt</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <c:choose>
+              <c:when test="${not empty occupiedRoomsList}">
+                <table class="table">
+                  <thead>
+                    <tr><th>Số phòng</th><th>Tầng</th><th>Tên khách hàng</th></tr>
+                  </thead>
+                  <tbody>
+                    <c:forEach var="room" items="${occupiedRoomsList}">
+                      <tr>
+                        <td>${room.roomNumber}</td>
+                        <td>${room.floor}</td>
+                        <td>${room.customerName}</td>
+                      </tr>
+                    </c:forEach>
+                  </tbody>
+                </table>
+              </c:when>
+              <c:otherwise>
+                <div class="text-center py-4">
+                  <i class="fas fa-bed fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">Hiện tại không có phòng nào đã được đặt.</p>
+                </div>
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vacant Rooms Modal -->
+    <div class="modal fade" id="vacantModal" tabindex="-1" aria-labelledby="vacantModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="vacantModalLabel">Phòng Trống</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <c:choose>
+              <c:when test="${not empty vacantRoomsList}">
+                <table class="table">
+                  <thead>
+                    <tr><th>Số phòng</th><th>Tầng</th></tr>
+                  </thead>
+                  <tbody>
+                    <c:forEach var="room" items="${vacantRoomsList}">
+                      <tr>
+                        <td>${room.roomNumber}</td>
+                        <td>${room.floor}</td>
+                      </tr>
+                    </c:forEach>
+                  </tbody>
+                </table>
+              </c:when>
+              <c:otherwise>
+                <div class="text-center py-4">
+                  <i class="fas fa-door-open fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">Hiện tại không có phòng trống.</p>
+                </div>
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maintenance Rooms Modal -->
+    <div class="modal fade" id="maintenanceModal" tabindex="-1" aria-labelledby="maintenanceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="maintenanceModalLabel">Phòng Bảo Trì</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <c:choose>
+              <c:when test="${not empty maintenanceRoomsList}">
+                <table class="table">
+                  <thead>
+                    <tr><th>Số phòng</th><th>Tầng</th></tr>
+                  </thead>
+                  <tbody>
+                    <c:forEach var="room" items="${maintenanceRoomsList}">
+                      <tr>
+                        <td>${room.roomNumber}</td>
+                        <td>${room.floor}</td>
+                      </tr>
+                    </c:forEach>
+                  </tbody>
+                </table>
+              </c:when>
+              <c:otherwise>
+                <div class="text-center py-4">
+                  <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">Hiện tại không có phòng đang bảo trì.</p>
+                </div>
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+  function showRoomsModal(status) {
+    console.log('Clicked on:', status); // Debug log
+    var modalId = status + 'Modal';
+    var modalEl = document.getElementById(modalId);
+    console.log('Modal element:', modalEl); // Debug log
+    if (modalEl) {
+      var modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    } else {
+      console.error('Modal not found:', modalId);
+    }
+  }
+</script>
   </body>
 </html>
