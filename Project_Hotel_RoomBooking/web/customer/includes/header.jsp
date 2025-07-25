@@ -36,7 +36,7 @@
                                ><i class="fas fa-sign-in-alt"></i> Login</a
                             >
                             <a href="${pageContext.request.contextPath}/register.jsp" class="dropdown-item"
-                               ><i class="fas fa-user-plus"></i> Register</a
+                               ><i class="fas fa-usr-plus"></i> Register</a
                             >
                         </c:when>
 
@@ -47,14 +47,12 @@
                             <a href="information" class="dropdown-item"
                                ><i class="fas fa-user"></i> Thông tin cá nhân</a
                             >
-                            <a href="transaction-history.jsp" class="dropdown-item"
-                               ><i class="fas fa-history"></i> Lịch sử chi tiêu</a
-                            ><a href="bookingHistory" class="dropdown-item"
-                                ><i class="fa-solid fa-list"></i> Danh sách đặt hàng</a
+                            <a href="bookingHistory" class="dropdown-item"
+                               ><i class="fa-solid fa-list"></i> Lịch sử đặt lịch</a
                             ><a href="servicePayment?action=history" class="dropdown-item"
                                 ><i class="fas fa-concierge-bell"></i> Lịch sử đặt dịch vụ</a
                             >
-                            <a href="logout" class="dropdown-item"
+                            <a href="${pageContext.request.contextPath}/logout" class="dropdown-item"
                                ><i class="fas fa-sign-out-alt"></i> Đăng xuất</a
                             >
                         </c:when>

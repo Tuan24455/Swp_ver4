@@ -336,7 +336,7 @@
 
                         <div class="mb-3">
                             <label for="service_price" class="form-label">Giá (VNĐ)</label>
-                            <input type="number" class="form-control" id="service_price" name="service_price"  required>
+                            <input type="number" class="form-control" id="service_price" name="service_price" min="100000" step="50000" required>
                         </div>
 
                         <div class="mb-3">
@@ -369,13 +369,12 @@
                                                                       .create(document.querySelector('#description'), {
                                                                           toolbar: [
                                                                               'heading', '|',
-                                                                              'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                                                              'bold', 'italic', 'bulletedList', 'numberedList', '|',
                                                                               'undo', 'redo'
                                                                           ]
                                                                       })
                                                                       .then(e => editor = e)
                                                                       .catch(error => console.error(error));
-
                                                               // Gắn sự kiện khi form submit
                                                               document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
                                                                   e.preventDefault(); // ❌ Chặn reload
@@ -383,24 +382,23 @@
                                                                   const form = this;
                                                                   const formData = new FormData(form);
                                                                   formData.set("description", editor.getData());
-
                                                                   try {
                                                                       const response = await fetch("addService", {
                                                                           method: "POST",
                                                                           body: formData
                                                                       });
-
                                                                       const result = await response.text();
-
                                                                       if (result === "success") {
                                                                           alert("Thêm dịch vụ thành công!");
                                                                           location.reload();
                                                                       } else if (result === "duplicate") {
                                                                           alert("Tên dịch vụ đã tồn tại!");
                                                                       } else if (result === "invalidPrice") {
-                                                                          alert("Giá phải là số dương lớn hơn 0!");
+                                                                          alert("Giá phải bắt đầu từ 100000");
                                                                       } else if (result === "blankDescription") {
                                                                           alert("Mô tả Không được để trống !");
+                                                                      } else if (result === "invalidNameFormat") {
+                                                                          alert("Tên dịch vụ không hợp lệ !");
                                                                       } else {
                                                                           alert("Có lỗi xảy ra khi thêm dịch vụ.");
                                                                       }
@@ -412,7 +410,6 @@
     </script>
     <script>
         const ckeditors = {};
-
         // Khởi tạo CKEditor khi modal mở
         document.querySelectorAll('[id^="editServiceModal"]').forEach(modal => {
             modal.addEventListener('shown.bs.modal', function () {
@@ -420,19 +417,17 @@
                 const textarea = document.getElementById("editDescription" + id);
                 if (!ckeditors[id]) {
                     ClassicEditor.create(textarea, {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+                        toolbar: ['heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
                     })
                             .then(editor => ckeditors[id] = editor)
                             .catch(error => console.error(error));
                 }
             });
         });
-
         // Xử lý submit form chỉnh sửa dịch vụ
         document.querySelectorAll('form[action="updateService"]').forEach(form => {
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-
                 const formData = new FormData(this);
                 const serviceIdInput = form.querySelector('input[name="id"]');
                 if (!serviceIdInput) {
@@ -442,7 +437,6 @@
 
                 const serviceId = serviceIdInput.value;
                 const editor = ckeditors[serviceId];
-
                 // Validate: loại dịch vụ
                 const typeSelect = form.querySelector('select[name="service_type_id"]');
                 if (!typeSelect || !typeSelect.value) {
@@ -484,13 +478,11 @@
 
                 // Gán lại mô tả vào formData
                 formData.set("description", description);
-
                 try {
                     const res = await fetch("updateService", {
                         method: "POST",
                         body: formData
                     });
-
                     const result = await res.text();
                     if (result === "success") {
                         alert("Cập nhật dịch vụ thành công!");
@@ -499,6 +491,8 @@
                         alert("Tên dịch vụ đã tồn tại!");
                     } else if (result === "invalidPrice") {
                         alert("Giá không hợp lệ!");
+                    } else if (result === "invalidName") {
+                        alert("Tên dịch vụ không hợp lệ !");
                     } else if (result === "invalidDescription") {
                         alert("Mô tả không hợp lệ!");
                     } else {

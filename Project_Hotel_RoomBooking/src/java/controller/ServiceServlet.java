@@ -1,5 +1,6 @@
 package controller;
 
+import dao.PromotionDao;
 import dao.ServiceDao;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import model.Promotion;
 import model.Service;
 
 @WebServlet(name = "ServiceServlet", urlPatterns = {"/service"})
@@ -36,6 +38,8 @@ public class ServiceServlet extends HttpServlet {
         ServiceDao serviceDao = new ServiceDao();
         List<Service> services;
         Map<Integer, String> serviceTypes = serviceDao.getDistinctServiceTypes();
+        PromotionDao pdao = new PromotionDao();
+        Promotion promotion = pdao.getLastAddedValidPromotion();
 
         if (isPost) {
             // Xử lý lọc dịch vụ
@@ -61,7 +65,7 @@ public class ServiceServlet extends HttpServlet {
         List<Service> pagedList = services.subList(start, end);
 
         // Đặt thuộc tính cho JSP
-        setRequestAttributes(request, serviceTypes, pagedList, currentPage, totalPages, totalItems);
+        setRequestAttributes(request, serviceTypes, pagedList, currentPage, totalPages, totalItems, promotion);
         request.getRequestDispatcher("service.jsp").forward(request, response);
     }
 
@@ -75,7 +79,8 @@ public class ServiceServlet extends HttpServlet {
             for (String idStr : typeIdParams) {
                 try {
                     selectedTypes.add(Integer.valueOf(idStr));
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
@@ -87,7 +92,8 @@ public class ServiceServlet extends HttpServlet {
             if (priceToStr != null && !priceToStr.isEmpty()) {
                 priceTo = Double.valueOf(priceToStr);
             }
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
 
         request.setAttribute("selectedTypes", selectedTypes);
         request.setAttribute("priceFrom", priceFromStr);
@@ -110,29 +116,35 @@ public class ServiceServlet extends HttpServlet {
             String pageStr = request.getParameter("page");
             if (pageStr != null) {
                 currentPage = Integer.parseInt(pageStr);
-                if (currentPage < 1) currentPage = 1;
-                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) {
+                    currentPage = 1;
+                }
+                if (currentPage > totalPages) {
+                    currentPage = totalPages;
+                }
             }
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
         return currentPage;
     }
 
-    private void setRequestAttributes(HttpServletRequest request, 
-            Map<Integer, String> serviceTypes, 
-            List<Service> pagedList, 
-            int currentPage, 
+    private void setRequestAttributes(HttpServletRequest request,
+            Map<Integer, String> serviceTypes,
+            List<Service> pagedList,
+            int currentPage,
             int totalPages,
-            int totalItems) {
+            int totalItems,
+            Promotion promotion) {
         request.setAttribute("serviceTypes", serviceTypes);
         request.setAttribute("serviceList", pagedList);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("totalItems", totalItems);
-        
+        request.setAttribute("promotion", promotion);
+
         String sort = request.getParameter("sort");
         if (sort != null && !sort.isEmpty()) {
             request.setAttribute("sort", sort);
         }
     }
 }
-

@@ -24,11 +24,11 @@ import model.User;
  *
  * @author ADMIN
  */
-@WebFilter(urlPatterns = {"/admin", "/additem", "/addUser", "/bookingreport", "/admin/dashboard",
-    "/promotionList", "/purchasereport", "/ratingreport", "/roomList", "/addPromotion",
-    "/addRoom", "/deletePromotion", "/deleteRoom", "/updatePromotion", "/updateRoom",
-    "/userList"})
-public class AdminFilter implements Filter {
+@WebFilter(filterName = "ReceptionRoleFilter", urlPatterns = {"/reception/*", "/reception/dashboard",
+    "/receptionInfor", "/bookingList", "/roomStatus",
+    "/updateStatusRoom", "/roomstatus.jsp", "/receptionInfor.jsp",
+    "/dashboard.jsp", "/customerList.jsp", "/bookingsList.jsp"})
+public class ReceptionRoleFilter implements Filter {
 
     private static final boolean debug = true;
 
@@ -37,13 +37,13 @@ public class AdminFilter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public AdminFilter() {
+    public ReceptionRoleFilter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AdminFilter:DoBeforeProcessing");
+            log("ReceptionRoleFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -71,7 +71,7 @@ public class AdminFilter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AdminFilter:DoAfterProcessing");
+            log("ReceptionRoleFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -107,10 +107,11 @@ public class AdminFilter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("AdminFilter:doFilter()");
+            log("ReceptionRoleFilter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
+
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession ses = req.getSession();
@@ -119,7 +120,7 @@ public class AdminFilter implements Filter {
         User user = (User) ses.getAttribute("user");
         if (user == null) {
             res.sendRedirect(contextPath + "/LoginAuth.jsp");
-        } else if (!user.getRole().equalsIgnoreCase("Admin")) {
+        } else if (!user.getRole().equalsIgnoreCase("Reception")) {
             res.sendRedirect(contextPath + "/RoleAuth.jsp");
         }
 
@@ -178,7 +179,7 @@ public class AdminFilter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("AdminFilter:Initializing filter");
+                log("ReceptionRoleFilter:Initializing filter");
             }
         }
     }
@@ -189,9 +190,9 @@ public class AdminFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("AdminFilter()");
+            return ("ReceptionRoleFilter()");
         }
-        StringBuffer sb = new StringBuffer("AdminFilter(");
+        StringBuffer sb = new StringBuffer("ReceptionRoleFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

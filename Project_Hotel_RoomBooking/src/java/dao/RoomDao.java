@@ -25,7 +25,7 @@ public class RoomDao {
         String sql = "SELECT r.*, rt.room_type AS room_type_name "
                 + "FROM Rooms r "
                 + "JOIN RoomTypes rt ON r.room_type_id = rt.id "
-                + "WHERE r.isDelete = 0";
+                + "WHERE r.isDelete = 0 AND r.room_status != N'Maintenance' AND r.room_status != N'Occupied' ";
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
@@ -365,7 +365,7 @@ public class RoomDao {
         StringBuilder sql = new StringBuilder(
                 "SELECT r.*, rt.room_type AS room_type_name "
                 + "FROM Rooms r JOIN RoomTypes rt ON r.room_type_id = rt.id "
-                + "WHERE r.isDelete = 0 AND r.room_status != N'Maintenance' "
+                + "WHERE r.isDelete = 0 AND r.room_status != N'Maintenance' AND r.room_status != N'Occupied' "
         );
 
         List<Object> params = new ArrayList<>();
