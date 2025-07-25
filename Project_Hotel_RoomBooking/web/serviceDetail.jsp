@@ -347,7 +347,7 @@
                                 <!-- Product Information -->
                                 <div class="info-row">
                                     <span class="info-label">Tình trạng</span>
-                                    <span class="info-value stock-status">Còn hàng</span>
+                                    <span class="info-value stock-status">Đang Hoạt Động</span>
                                 </div>
                                 
                                 <form id="paymentForm" action="servicePayment" method="post">

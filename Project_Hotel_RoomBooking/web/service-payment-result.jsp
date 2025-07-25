@@ -150,12 +150,9 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
               <h5 class="mb-4">
                 <i class="fas fa-receipt me-2"></i>Chi tiết giao dịch
               </h5>
-
               <div class="detail-row">
                 <span class="detail-label">Mã đặt dịch vụ:</span>
-                <span class="detail-value"
-                  >#SVC${fn:substringBefore(serviceBookingId, '_')}</span
-                >
+                <span class="detail-value">SVC_${serviceBookingId}</span>
               </div>
 
               <c:if test="${not empty amount}">
@@ -211,11 +208,10 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
               <h5 class="mb-4 text-danger">
                 <i class="fas fa-exclamation-triangle me-2"></i>Thông tin lỗi
               </h5>
-
               <c:if test="${not empty serviceBookingId}">
                 <div class="detail-row">
                   <span class="detail-label">Mã đặt dịch vụ:</span>
-                  <span class="detail-value">#SVC${serviceBookingId}</span>
+                  <span class="detail-value">SVC_${serviceBookingId}</span>
                 </div>
               </c:if>
 

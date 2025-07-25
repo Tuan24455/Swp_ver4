@@ -33,8 +33,21 @@ public class BookingReportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        try {
+          try {
+            // Get pagination parameters
+            String pageParam = request.getParameter("page");
+            int currentPage = 1;
+            int pageSize = 10; // Số record trên mỗi trang
+            
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    currentPage = Integer.parseInt(pageParam);
+                    if (currentPage < 1) currentPage = 1;
+                } catch (NumberFormatException e) {
+                    currentPage = 1;
+                }
+            }
+            
             // Get date range parameters
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
@@ -51,11 +64,18 @@ public class BookingReportServlet extends HttpServlet {
                 }
             }
             
+            // Lấy danh sách booking hiện tại theo bộ lọc với phân trang
+            List<Map<String, Object>> currentBookings = bookingDao.getFilteredBookingsPaginated(startDate, endDate, roomTypeId, currentPage, pageSize);
             
+            // Lấy tổng số records để tính pagination
+            int totalRecords = bookingDao.getTotalFilteredBookingsCount(startDate, endDate, roomTypeId);
+            int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
             
-            // Lấy danh sách booking hiện tại theo bộ lọc
-            List<Map<String, Object>> currentBookings = bookingDao.getFilteredBookings(startDate, endDate, roomTypeId);
             request.setAttribute("currentBookings", currentBookings);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("totalRecords", totalRecords);
+            request.setAttribute("pageSize", pageSize);
 
             // Lấy tổng khách và tổng doanh thu theo bộ lọc
             Map<String, Object> bookingSummary = bookingDao.getFilteredBookingSummary(startDate, endDate, roomTypeId);
