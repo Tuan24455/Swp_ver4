@@ -146,10 +146,60 @@
             .btn-edit {
                 background-color: var(--warning-color);
                 color: white;
-            }
-            .btn-cancel {
+            }            .btn-cancel {
                 background-color: var(--danger-color);
                 color: white;
+            }
+            
+            /* Date validation styling */
+            .invalid-feedback {
+                display: none;
+                color: #dc3545;
+                font-size: 80%;
+                margin-top: 4px;
+            }
+            .is-invalid {
+                border-color: #dc3545;
+                padding-right: calc(1.5em + 0.75rem);
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right calc(0.375em + 0.1875rem) center;
+                background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+            }
+            
+            /* Pagination Styling */
+            .pagination-container {
+                padding: 1rem 0;
+                font-size: 0.9rem;
+            }
+            .pagination {
+                margin-bottom: 0;
+            }
+            .pagination .page-link {
+                color: var(--text-primary);
+                border-radius: 4px;
+                margin: 0 2px;
+                transition: all 0.2s ease;
+            }
+            .pagination .page-item.active .page-link {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
+                color: white;
+            }
+            .pagination .page-item.disabled .page-link {
+                color: var(--text-secondary);
+                opacity: 0.6;
+            }
+            .pagination .page-link:hover {
+                background-color: var(--medium-gray);
+                transform: translateY(-2px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            .pagination .page-item.active .page-link:hover {
+                background-color: var(--primary-hover);
+            }
+            .pagination-info {
+                color: var(--text-secondary);
             }
         </style>
     </head>
@@ -187,39 +237,48 @@
                         ${error}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                </c:if>
-
-                <!-- Filter Section -->
+                </c:if>                <!-- Filter Section -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label">Status</label>
-                                <select class="form-select">
-                                    <option value="">All Status</option>
-                                    <option value="confirmed">Confirmed</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="cancelled">Cancelled</option>
-                                    <option value="completed">Completed</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Check-in Date</label>
-                                <input type="date" class="form-control" />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Check-out Date</label>
-                                <input type="date" class="form-control" />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">&nbsp;</label>
-                                <div class="d-grid">
-                                    <button class="btn btn-outline-primary">
-                                        <i class="fas fa-search me-2"></i>Filter
-                                    </button>
+                        <form action="${pageContext.request.contextPath}/bookingList" method="get">                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Status</label>                                    <select class="form-select" name="status">
+                                        <option value="">All Status</option>
+                                        <option value="confirmed" ${statusFilter eq 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                                        <option value="pending" ${statusFilter eq 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="Pending Payment" ${statusFilter eq 'Pending Payment' ? 'selected' : ''}>Pending Payment</option>
+                                        <option value="Payment Failed" ${statusFilter eq 'Payment Failed' ? 'selected' : ''}>Payment Failed</option>
+                                        <option value="cancelled" ${statusFilter eq 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                        <option value="completed" ${statusFilter eq 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="check-in" ${statusFilter eq 'check-in' ? 'selected' : ''}>Check-in</option>
+                                        <option value="check-out" ${statusFilter eq 'check-out' ? 'selected' : ''}>Check-out</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Check-in Date</label>
+                                    <input type="date" class="form-control" id="checkInDateFilter" name="checkInDate" value="${checkInDate}" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Check-out Date</label>
+                                    <input type="date" class="form-control" id="checkOutDateFilter" name="checkOutDate" value="${checkOutDate}" />
+                                    <div class="invalid-feedback" id="dateErrorMsg">
+                                        Check-out date must be after check-in date
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-grid">
+                                        <button type="submit" id="filterButton" class="btn btn-outline-primary">
+                                            <i class="fas fa-search me-2"></i>Filter
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <!-- Keep current page if set -->
+                            <c:if test="${not empty currentPage}">
+                                <input type="hidden" name="page" value="${currentPage}" />
+                            </c:if>
+                        </form>
                     </div>
                 </div>
 
@@ -284,10 +343,13 @@
                                                     </c:when>                                                    <c:when test="${booking.status eq 'confirmed' or booking.status eq 'Confirmed' or 
                                                                   booking.status eq 'Check-in' or booking.status eq 'checkin' or
                                                                   booking.status eq 'Check-out' or booking.status eq 'checkout' or
-                                                                  booking.status eq 'completed' or booking.status eq 'Completed'}">
-                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                                  booking.status eq 'completed' or booking.status eq 'Completed'}">                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
                                                             <input type="hidden" name="action" value="checkin"/>
                                                             <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                            <input type="hidden" name="currentPage" value="${currentPage}"/>
+                                                            <input type="hidden" name="statusFilter" value="${statusFilter}"/>
+                                                            <input type="hidden" name="checkInDate" value="${checkInDate}"/>
+                                                            <input type="hidden" name="checkOutDate" value="${checkOutDate}"/>
                                                             <button type="submit" class="btn-action btn-view" title="Check-in">
                                                                 <i class="fas fa-sign-in-alt"></i> Check-in
                                                             </button>
@@ -295,6 +357,10 @@
                                                         <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
                                                             <input type="hidden" name="action" value="checkout"/>
                                                             <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                            <input type="hidden" name="currentPage" value="${currentPage}"/>
+                                                            <input type="hidden" name="statusFilter" value="${statusFilter}"/>
+                                                            <input type="hidden" name="checkInDate" value="${checkInDate}"/>
+                                                            <input type="hidden" name="checkOutDate" value="${checkOutDate}"/>
                                                             <button type="submit" class="btn-action btn-cancel" title="Check-out">
                                                                 <i class="fas fa-sign-out-alt"></i> Check-out
                                                             </button>
@@ -310,8 +376,7 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                        </tr>
-                                    </c:forEach>
+                                        </tr>                                    </c:forEach>
                                     <c:if test="${empty bookings}">
                                         <tr>
                                             <td colspan="8" class="text-center text-muted py-4">
@@ -323,6 +388,41 @@
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Pagination Controls -->
+                        <c:if test="${totalPages > 1}">
+                            <div class="pagination-container mt-4 d-flex justify-content-between align-items-center">
+                                <div class="pagination-info">
+                                    Hiển thị <strong>${(currentPage-1)*8 + 1}</strong> - <strong>${(currentPage-1)*8 + bookings.size()}</strong> 
+                                    trong tổng số <strong>${totalBookings}</strong> booking
+                                </div>
+                                <div class="pagination-buttons">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination mb-0">                            <!-- Previous button -->
+                                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                                <a class="page-link" href="${pageContext.request.contextPath}/bookingList?page=${currentPage - 1}${not empty statusFilter ? '&status='.concat(statusFilter) : ''}${not empty checkInDate ? '&checkInDate='.concat(checkInDate) : ''}${not empty checkOutDate ? '&checkOutDate='.concat(checkOutDate) : ''}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            
+                                            <!-- Page numbers -->
+                                            <c:forEach begin="1" end="${totalPages}" var="pageNum">
+                                                <li class="page-item ${pageNum == currentPage ? 'active' : ''}">
+                                                    <a class="page-link" href="${pageContext.request.contextPath}/bookingList?page=${pageNum}${not empty statusFilter ? '&status='.concat(statusFilter) : ''}${not empty checkInDate ? '&checkInDate='.concat(checkInDate) : ''}${not empty checkOutDate ? '&checkOutDate='.concat(checkOutDate) : ''}">${pageNum}</a>
+                                                </li>
+                                            </c:forEach>
+                                            
+                                            <!-- Next button -->
+                                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                                <a class="page-link" href="${pageContext.request.contextPath}/bookingList?page=${currentPage + 1}${not empty statusFilter ? '&status='.concat(statusFilter) : ''}${not empty checkInDate ? '&checkInDate='.concat(checkInDate) : ''}${not empty checkOutDate ? '&checkOutDate='.concat(checkOutDate) : ''}" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -413,9 +513,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Sidebar toggle functionality
         document
@@ -425,6 +523,47 @@
                             .getElementById("sidebar-wrapper")
                             .classList.toggle("toggled");
                 });
+        
+        // Date validation for filter form
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkInDateInput = document.getElementById('checkInDateFilter');
+            const checkOutDateInput = document.getElementById('checkOutDateFilter');
+            const filterForm = checkInDateInput.closest('form');
+            const dateErrorMsg = document.getElementById('dateErrorMsg');
+            
+            // Function to validate dates
+            function validateDates() {
+                if (checkInDateInput.value && checkOutDateInput.value) {
+                    const checkInDate = new Date(checkInDateInput.value);
+                    const checkOutDate = new Date(checkOutDateInput.value);
+                    
+                    if (checkOutDate < checkInDate) {
+                        checkOutDateInput.classList.add('is-invalid');
+                        dateErrorMsg.style.display = 'block';
+                        return false;
+                    } else {
+                        checkOutDateInput.classList.remove('is-invalid');
+                        dateErrorMsg.style.display = 'none';
+                        return true;
+                    }
+                }
+                return true; // If either date is not set, validation passes
+            }
+            
+            // Add event listeners
+            checkInDateInput.addEventListener('change', validateDates);
+            checkOutDateInput.addEventListener('change', validateDates);
+            
+            // Form submission validation
+            filterForm.addEventListener('submit', function(event) {
+                if (!validateDates()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
+            
+            // Initial validation
+            validateDates();
+        });
     </script>
 </body>
 </html>

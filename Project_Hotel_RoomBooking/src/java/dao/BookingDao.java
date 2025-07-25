@@ -166,4 +166,210 @@ public class BookingDao extends DBContext {
         }
         return bookings;
     }
+    
+    /**
+     * Lấy booking theo phân trang với thông tin phòng, khách, ngày nhận/trả, tổng tiền, trạng thái...
+     * @param pageNumber Số trang (1-based)
+     * @param pageSize Số lượng booking mỗi trang
+     * @return Danh sách booking theo trang
+     */
+    public List<Booking> getBookingsWithPagination(int pageNumber, int pageSize) {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT b.id AS booking_id, u.full_name AS customer, " +
+                "STRING_AGG(r.room_number, ', ') AS room_numbers, " +
+                "MIN(brd.check_in_date) AS check_in, " +
+                "MAX(brd.check_out_date) AS check_out, " +
+                "b.total_prices, b.status, b.created_at " +
+                "FROM Bookings b " +
+                "JOIN Users u ON b.user_id = u.id " +
+                "JOIN BookingRoomDetails brd ON brd.booking_id = b.id " +
+                "JOIN Rooms r ON brd.room_id = r.id " +
+                "JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+                "GROUP BY b.id, u.full_name, b.total_prices, b.status, b.created_at " +
+                "ORDER BY b.created_at DESC " +
+                "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            int offset = (pageNumber - 1) * pageSize;
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Booking booking = new Booking(
+                        rs.getString("room_numbers"),
+                        rs.getString("customer"),
+                        rs.getString("check_in"),
+                        rs.getString("check_out"),
+                        rs.getString("status")
+                    );
+                    booking.setId(rs.getInt("booking_id"));
+                    booking.setTotalPrices(rs.getDouble("total_prices"));
+                    booking.setStatus(rs.getString("status"));
+                    booking.setCreatedAt(rs.getTimestamp("created_at"));
+                    bookings.add(booking);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+    
+    /**
+     * Đếm tổng số booking trong hệ thống
+     * @return Tổng số booking
+     */
+    public int getTotalBookingsCount() {
+        String sql = "SELECT COUNT(DISTINCT b.id) AS total FROM Bookings b " +
+                "JOIN BookingRoomDetails brd ON brd.booking_id = b.id";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+      /**
+     * Đếm tổng số booking trong hệ thống với bộ lọc
+     * @param status Trạng thái booking cần lọc (null nếu không lọc)
+     * @param checkInDate Ngày check-in cần lọc (null nếu không lọc)
+     * @param checkOutDate Ngày check-out cần lọc (null nếu không lọc)
+     * @return Tổng số booking thỏa mãn điều kiện lọc
+     */
+    public int getFilteredBookingsCount(String status, java.sql.Date checkInDate, java.sql.Date checkOutDate) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT b.id) AS total FROM Bookings b " +
+                "JOIN BookingRoomDetails brd ON brd.booking_id = b.id " +
+                "JOIN Users u ON b.user_id = u.id " +
+                "JOIN Rooms r ON brd.room_id = r.id " +
+                "JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+                "WHERE 1=1");
+        
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND LOWER(b.status) = LOWER(?)");
+        }
+        
+        if (checkInDate != null) {
+            sql.append(" AND brd.check_in_date = ?");
+        }
+        
+        if (checkOutDate != null) {
+            sql.append(" AND brd.check_out_date = ?");
+        }
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            int paramIndex = 1;
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            
+            if (checkInDate != null) {
+                ps.setDate(paramIndex++, new java.sql.Date(checkInDate.getTime()));
+            }
+            
+            if (checkOutDate != null) {
+                ps.setDate(paramIndex++, new java.sql.Date(checkOutDate.getTime()));
+            }
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+      /**
+     * Lấy booking theo phân trang và bộ lọc với thông tin phòng, khách, ngày nhận/trả, tổng tiền, trạng thái...
+     * @param pageNumber Số trang (1-based)
+     * @param pageSize Số lượng booking mỗi trang
+     * @param status Trạng thái booking cần lọc (null nếu không lọc)
+     * @param checkInDate Ngày check-in cần lọc (null nếu không lọc)
+     * @param checkOutDate Ngày check-out cần lọc (null nếu không lọc)
+     * @return Danh sách booking theo trang và bộ lọc
+     */
+    public List<Booking> getFilteredBookingsWithPagination(int pageNumber, int pageSize, String status, 
+                                                          java.sql.Date checkInDate, java.sql.Date checkOutDate) {
+        List<Booking> bookings = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT b.id AS booking_id, u.full_name AS customer, " +
+                "STRING_AGG(r.room_number, ', ') AS room_numbers, " +
+                "MIN(brd.check_in_date) AS check_in, " +
+                "MAX(brd.check_out_date) AS check_out, " +
+                "b.total_prices, b.status, b.created_at " +
+                "FROM Bookings b " +
+                "JOIN Users u ON b.user_id = u.id " +
+                "JOIN BookingRoomDetails brd ON brd.booking_id = b.id " +
+                "JOIN Rooms r ON brd.room_id = r.id " +
+                "JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+                "WHERE 1=1");
+        
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND LOWER(b.status) = LOWER(?)");
+        }
+        
+        if (checkInDate != null) {
+            sql.append(" AND brd.check_in_date = ?");
+        }
+        
+        if (checkOutDate != null) {
+            sql.append(" AND brd.check_out_date = ?");
+        }
+        
+        sql.append(" GROUP BY b.id, u.full_name, b.total_prices, b.status, b.created_at " +
+                "ORDER BY b.created_at DESC " +
+                "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            int paramIndex = 1;
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            
+            if (checkInDate != null) {
+                ps.setDate(paramIndex++, new java.sql.Date(checkInDate.getTime()));
+            }
+            
+            if (checkOutDate != null) {
+                ps.setDate(paramIndex++, new java.sql.Date(checkOutDate.getTime()));
+            }
+            
+            int offset = (pageNumber - 1) * pageSize;
+            ps.setInt(paramIndex++, offset);
+            ps.setInt(paramIndex++, pageSize);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Booking booking = new Booking(
+                        rs.getString("room_numbers"),
+                        rs.getString("customer"),
+                        rs.getString("check_in"),
+                        rs.getString("check_out"),
+                        rs.getString("status")
+                    );
+                    booking.setId(rs.getInt("booking_id"));
+                    booking.setTotalPrices(rs.getDouble("total_prices"));
+                    booking.setStatus(rs.getString("status"));
+                    booking.setCreatedAt(rs.getTimestamp("created_at"));
+                    bookings.add(booking);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
 }
