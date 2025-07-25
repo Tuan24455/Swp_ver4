@@ -56,7 +56,7 @@
 
                     <!-- Page Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="h3 mb-0">Room Management</h1>
+                        <h1 class="h3 mb-0">Quản lí phòng</h1>
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
@@ -85,7 +85,7 @@
                                     <h6 class="card-subtitle mb-2 text-muted">Đang trống</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Available'] != null ? statusCounts['Available'] : 0}</h2>
                                     <p class="card-text text-success">
-                                        <i class="fas fa-check-circle me-1"></i> Ready for booking
+                                        <i class="fas fa-check-circle me-1"></i> Sẵn sàng để sử dụng
                                     </p>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                                     <h6 class="card-subtitle mb-2 text-muted">Đang sử dụng</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Occupied'] != null ? statusCounts['Occupied'] : 0}</h2>
                                     <p class="card-text text-warning">
-                                        <i class="fas fa-user me-1"></i> Currently booked
+                                        <i class="fas fa-user me-1"></i> Có khách khàng sử dụng
                                     </p>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
                                     <h6 class="card-subtitle mb-2 text-muted">Bảo trì</h6>
                                     <h2 class="card-title display-6 fw-bold mb-1">${statusCounts['Maintenance'] != null ? statusCounts['Maintenance'] : 0}</h2>
                                     <p class="card-text text-danger">
-                                        <i class="fas fa-tools me-1"></i> Under maintenance
+                                        <i class="fas fa-tools me-1"></i> Đang sửa chữa
                                     </p>
                                 </div>
                             </div>
@@ -210,348 +210,353 @@
                                                             (r.roomStatus == 'Occupied' ? 'bg-warning text-dark' : 
                                                             (r.roomStatus == 'Maintenance' ? 'bg-danger' :
                                                             (r.roomStatus == 'Cleaning' ? 'bg-info text-dark' : 'bg-secondary')))}">
-                                                              ${r.roomStatus}
-                                                          </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="btn-group" role="group">
-                                                            <button class="btn btn-sm btn-outline-primary" title="View Details">
-                                                                <i class="fas fa-eye"></i>
+                                                          <c:choose>
+                                                              <c:when test="${r.roomStatus == 'Available'}">Đang trống</c:when>
+                                                              <c:when test="${r.roomStatus == 'Occupied'}">Đang sử dụng</c:when>
+                                                              <c:when test="${r.roomStatus == 'Maintenance'}"> Đang bảo trì</c:when>
+                                        
+                                                              <c:otherwise>Không xác định</c:otherwise>
+                                                          </c:choose>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <button class="btn btn-sm btn-outline-primary" title="View Details">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-sm btn-outline-warning"
+                                                            title="Edit"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editRoomModal${r.id}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+
+                                                        <form action="${pageContext.request.contextPath}/deleteRoom" method="POST" style="display:inline;" class="delete-form" data-room-number="${r.roomNumber}">
+                                                            <input type="hidden" name="roomId" value="${r.id}" />
+                                                            <input type="hidden" name="action" value="delete" />
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                                <i class="fas fa-trash"></i>
                                                             </button>
-                                                            <button
-                                                                class="btn btn-sm btn-outline-warning"
-                                                                title="Edit"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#editRoomModal${r.id}">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-
-                                                            <form action="${pageContext.request.contextPath}/deleteRoom" method="POST" style="display:inline;" class="delete-form" data-room-number="${r.roomNumber}">
-                                                                <input type="hidden" name="roomId" value="${r.id}" />
-                                                                <input type="hidden" name="action" value="delete" />
-                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>          
-                                            </tbody>  
-                                            <div class="modal fade" id="editRoomModal${r.id}" tabindex="-1" aria-labelledby="updateRoomLabel${r.id}" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content">
-                                                        <form action="updateRoom" method="post" enctype="multipart/form-data">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="updateRoomLabel${r.id}">Cập nhật phòng</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-
-                                                            <div class="modal-body">
-                                                                <input type="hidden" name="roomId" value="${r.id}" />
-                                                                <input type="hidden" name="oldImageUrl" value="${r.imageUrl}" />
-
-                                                                <div class="row g-3">
-                                                                    <div class="col-md-6">
-                                                                        <label class="form-label">Room Number</label>
-                                                                        <input type="text" class="form-control" name="roomNumber" value="${r.roomNumber}" required />
-                                                                    </div>
-
-                                                                    <div class="col-md-6">
-                                                                        <label class="form-label">Room Type</label>
-                                                                        <select name="roomType" class="form-select" required>
-                                                                            <option value="Standard Room" ${r.roomTypeName == 'Standard Room' ? 'selected' : ''}>Standard Room</option>
-                                                                            <option value="Deluxe Room" ${r.roomTypeName == 'Deluxe Room' ? 'selected' : ''}>Deluxe Room</option>
-                                                                            <option value="Suite" ${r.roomTypeName == 'Suite' ? 'selected' : ''}>Suite</option>
-                                                                            <option value="Presidential Suite" ${r.roomTypeName == 'Presidential Suite' ? 'selected' : ''}>Presidential Suite</option>
-                                                                        </select>
-                                                                    </div>
-
-                                                                    <div class="col-md-6">
-                                                                        <label class="form-label">Floor</label>
-                                                                        <select class="form-select" name="floor" required>
-                                                                            <option value="1" <c:if test="${r.floor == 1}">selected</c:if>>1st Floor</option>
-                                                                            <option value="2" <c:if test="${r.floor == 2}">selected</c:if>>2nd Floor</option>
-                                                                            <option value="3" <c:if test="${r.floor == 3}">selected</c:if>>3rd Floor</option>
-                                                                            <option value="4" <c:if test="${r.floor == 4}">selected</c:if>>4th Floor</option>
-                                                                            <option value="5" <c:if test="${r.floor == 5}">selected</c:if>>5th Floor</option>
-                                                                            </select>
-                                                                        </div>
-
-                                                                        <div class="col-md-6">
-                                                                            <label class="form-label">Capacity</label>
-                                                                            <select class="form-select" name="capacity" required>
-                                                                                <option value="1" ${r.capacity == 1 ? 'selected' : ''}>1 Guest</option>
-                                                                            <option value="2" ${r.capacity == 2 ? 'selected' : ''}>2 Guests</option>
-                                                                            <option value="3" ${r.capacity == 3 ? 'selected' : ''}>3 Guests</option>
-                                                                            <option value="4" ${r.capacity == 4 ? 'selected' : ''}>4 Guests</option>
-                                                                            <option value="6" ${r.capacity == 6 ? 'selected' : ''}>6 Guests</option>
-                                                                        </select>
-                                                                    </div>
-
-                                                                    <div class="col-md-6">
-                                                                        <label class="form-label">Price</label>
-                                                                        <input type="number" class="form-control" step="0.01" name="price" value="${r.roomPrice}" required />
-                                                                    </div>
-
-                                                                    <div class="col-md-6">
-                                                                        <label class="form-label">Status</label>
-                                                                        <select name="status" class="form-select" required>
-                                                                            <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
-                                                                            <option value="Occupied" ${r.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
-                                                                            <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                                                                            <option value="Cleaning" ${r.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                                                        </select>
-                                                                    </div>
-
-                                                                    <div class="col-md-12">
-                                                                        <label class="form-label">Image</label>
-                                                                        <div class="mb-2">
-                                                                            <img src="${pageContext.request.contextPath}/${r.imageUrl}" width="100" class="rounded" />
-                                                                        </div>
-                                                                        <input type="file" class="form-control" name="roomImage" accept="image/*" />
-                                                                    </div>
-
-                                                                    <div class="col-12">
-                                                                        <label class="form-label">Description</label>
-                                                                        <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="submit" class="btn btn-primary">Update Room</button>
-                                                            </div>
                                                         </form>
                                                     </div>
+                                                </td>
+                                            </tr>          
+                                        </tbody>  
+                                        <div class="modal fade" id="editRoomModal${r.id}" tabindex="-1" aria-labelledby="updateRoomLabel${r.id}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <form action="updateRoom" method="post" enctype="multipart/form-data">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="updateRoomLabel${r.id}">Cập nhật phòng</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="roomId" value="${r.id}" />
+                                                            <input type="hidden" name="oldImageUrl" value="${r.imageUrl}" />
+
+                                                            <div class="row g-3">
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Room Number</label>
+                                                                    <input type="text" class="form-control" name="roomNumber" value="${r.roomNumber}" required />
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Room Type</label>
+                                                                    <select name="roomType" class="form-select" required>
+                                                                        <option value="Standard Room" ${r.roomTypeName == 'Standard Room' ? 'selected' : ''}>Standard Room</option>
+                                                                        <option value="Deluxe Room" ${r.roomTypeName == 'Deluxe Room' ? 'selected' : ''}>Deluxe Room</option>
+                                                                        <option value="Suite" ${r.roomTypeName == 'Suite' ? 'selected' : ''}>Suite</option>
+                                                                        <option value="Presidential Suite" ${r.roomTypeName == 'Presidential Suite' ? 'selected' : ''}>Presidential Suite</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Floor</label>
+                                                                    <select class="form-select" name="floor" required>
+                                                                        <option value="1" <c:if test="${r.floor == 1}">selected</c:if>>1st Floor</option>
+                                                                        <option value="2" <c:if test="${r.floor == 2}">selected</c:if>>2nd Floor</option>
+                                                                        <option value="3" <c:if test="${r.floor == 3}">selected</c:if>>3rd Floor</option>
+                                                                        <option value="4" <c:if test="${r.floor == 4}">selected</c:if>>4th Floor</option>
+                                                                        <option value="5" <c:if test="${r.floor == 5}">selected</c:if>>5th Floor</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Capacity</label>
+                                                                        <select class="form-select" name="capacity" required>
+                                                                            <option value="1" ${r.capacity == 1 ? 'selected' : ''}>1 Guest</option>
+                                                                        <option value="2" ${r.capacity == 2 ? 'selected' : ''}>2 Guests</option>
+                                                                        <option value="3" ${r.capacity == 3 ? 'selected' : ''}>3 Guests</option>
+                                                                        <option value="4" ${r.capacity == 4 ? 'selected' : ''}>4 Guests</option>
+                                                                        <option value="6" ${r.capacity == 6 ? 'selected' : ''}>6 Guests</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Price</label>
+                                                                    <input type="number" class="form-control" step="0.01" name="price" value="${r.roomPrice}" required />
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">Status</label>
+                                                                    <select name="status" class="form-select" required>
+                                                                        <option value="Available" ${r.roomStatus == 'Available' ? 'selected' : ''}>Available</option>
+                                                                        <option value="Occupied" ${r.roomStatus == 'Occupied' ? 'selected' : ''}>Occupied</option>
+                                                                        <option value="Maintenance" ${r.roomStatus == 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+                                                                        <option value="Cleaning" ${r.roomStatus == 'Cleaning' ? 'selected' : ''}>Cleaning</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="col-md-12">
+                                                                    <label class="form-label">Image</label>
+                                                                    <div class="mb-2">
+                                                                        <img src="${pageContext.request.contextPath}/${r.imageUrl}" width="100" class="rounded" />
+                                                                    </div>
+                                                                    <input type="file" class="form-control" name="roomImage" accept="image/*" />
+                                                                </div>
+
+                                                                <div class="col-12">
+                                                                    <label class="form-label">Description</label>
+                                                                    <textarea name="description" class="form-control" id="editDescription${r.id}" rows="3" required>${r.description}</textarea>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary">Update Room</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                            </div>                                                                  
+                                            </div>
+                                        </div>                                                                  
+                                    </c:forEach>
+
+                                </table>
+                            </div>
+                            <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
+                            <c:set var="endEntry" value="${startEntry + rooms.size() - 1}" />
+
+                            <div class="d-flex justify-content-end align-items-center mt-3 flex-wrap">
+
+                                <nav aria-label="Room pagination">
+                                    <ul class="pagination pagination-sm mb-0">
+                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                            <a class="page-link"
+                                               href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${currentPage - 1}">
+                                                Previous
+                                            </a>
+                                        </li>
+
+                                        <c:forEach begin="1" end="${totalPages}" var="p">
+                                            <li class="page-item ${p == currentPage ? 'active' : ''}">
+                                                <a class="page-link"
+                                                   href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${p}">
+                                                    ${p}
+                                                </a>
+                                            </li>
                                         </c:forEach>
 
-                                    </table>
-                                </div>
-                                <c:set var="startEntry" value="${(currentPage - 1) * pageSize + 1}" />
-                                <c:set var="endEntry" value="${startEntry + rooms.size() - 1}" />
-
-                                <div class="d-flex justify-content-end align-items-center mt-3 flex-wrap">
-
-                                    <nav aria-label="Room pagination">
-                                        <ul class="pagination pagination-sm mb-0">
-                                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                                <a class="page-link"
-                                                   href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${currentPage - 1}">
-                                                    Previous
-                                                </a>
-                                            </li>
-
-                                            <c:forEach begin="1" end="${totalPages}" var="p">
-                                                <li class="page-item ${p == currentPage ? 'active' : ''}">
-                                                    <a class="page-link"
-                                                       href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${p}">
-                                                        ${p}
-                                                    </a>
-                                                </li>
-                                            </c:forEach>
-
-                                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                                <a class="page-link"
-                                                   href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${currentPage + 1}">
-                                                    Next
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-
-
-
+                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                            <a class="page-link"
+                                               href="roomList?roomType=${paramRoomType}&roomStatus=${paramRoomStatus}&floor=${paramFloor}&page=${currentPage + 1}">
+                                                Next
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
-                        </div>
 
+
+
+                        </div>
                     </div>
+
                 </div>
             </div>
+        </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.delete-form').forEach(form => {
-                        form.addEventListener('submit', function (event) {
-                            const roomNumber = this.dataset.roomNumber;
-                            if (!confirm('Are you sure you want to delete the room "' + roomNumber + '"?')) {
-                                event.preventDefault();
-                            }
-                        });
-                    });
-                });
-            </script>
-
-            <!-- Add Room Modal -->
-            <div class="modal fade" id="addRoomModal" tabindex="-1">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Thêm phòng mới</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <form id="addRoomForm" enctype="multipart/form-data">
-                            <div class="modal-body">
-                                <div id="addRoomError" class="text-danger mb-2"></div>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Số phòng</label>
-                                        <input type="text" class="form-control" name="roomNumber" required />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Room Type</label>
-                                        <select class="form-select" name="roomType" required>
-                                            <option value="">Chọn loại phòng</option>
-                                            <option value="1">Standard Room</option>
-                                            <option value="2">Deluxe Room</option>
-                                            <option value="3">Suite</option>
-                                            <option value="4">Presidential Suite</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Tầng</label>
-                                        <select class="form-select" name="floor" required>
-                                            <option value="">Chọn tầng</option>
-                                            <option value="1">Tầng 1</option>
-                                            <option value="2">Tầng 2</option>
-                                            <option value="3">Tầng 3</option>
-                                            <option value="4">Tầng 4</option>
-                                            <option value="5">Tầng 5</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Sức chứa</label>
-                                        <select class="form-select" name="capacity" required>
-                                            <option value="">Chọn sức chứa</option>
-                                            <option value="1">1 người</option>
-                                            <option value="2">2 người</option>
-                                            <option value="3">3 người</option>
-                                            <option value="4">4 người</option>
-                                            <option value="6">6 người</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Giá phòng / đêm</label>
-                                        <input type="number" class="form-control" name="price" step="0.01" required />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Trạng thái</label>
-                                        <select class="form-select" name="status" required>
-                                            <option value="Available">Trống</option>
-                                            <option value="Maintenance">Bảo trì</option>
-                                            <option value="Cleaning">Đang dọn dẹp</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label">Ảnh phòng</label>
-                                        <input type="file" class="form-control" name="roomImage" accept="image/*" required />
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Mô tả phòng</label>
-                                        <textarea class="form-control" name="description" id="addDescription" rows="5" placeholder="Nhập các tiện ích, đặc điểm phòng..."  ></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                <button type="submit" class="btn btn-primary">Thêm phòng</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-            <script>
-                $(document).ready(function () {
-                    $('#addDescription').summernote({
-                        placeholder: 'Nhập mô tả phòng ở đây...',
-                        tabsize: 2,
-                        height: 300,
-                        toolbar: [
-                            ['style', ['bold', 'italic', 'underline', 'clear']],
-                            ['font', ['fontsize', 'color']],
-                            ['para', ['ul', 'ol', 'paragraph']],
-                            ['insert', ['picture', 'link']],
-                            ['view', ['fullscreen', 'codeview']]
-                        ]
-                    });
-                });
-
-
-                // Submit form
-                document.querySelector("#addRoomForm").addEventListener("submit", async function (e) {
-                    e.preventDefault();
-
-                    const form = this;
-                    const formData = new FormData(form);
-                    const descriptionValue = $('#addDescription').summernote('code');
-                    const tempDiv = document.createElement("div");
-                    tempDiv.innerHTML = descriptionValue;
-                    const plainText = tempDiv.textContent || tempDiv.innerText || "";
-                    if (plainText.trim().length === 0) {
-                        alert("Mô tả không được để trống!");
-                        return;
-                    }
-
-                    try {
-                        // Gửi yêu cầu AJAX tới Servlet
-                        const response = await fetch("addRoom", {
-                            method: "POST",
-                            body: formData
-                        });
-
-                        // Nhận kết quả trả về từ Servlet
-                        const result = await response.text();
-                        console.log(result);  // Debug: Kiểm tra kết quả trả về từ Servlet
-
-                        // Xử lý các kết quả trả về từ Servlet
-                        switch (result) {
-                            case 'success':
-                                alert("Thêm phòng thành công!");
-                                $('#addRoomModal').modal('hide');
-                                location.reload();
-                                break;
-                            case 'roomNumberExists':
-                                alert("Số phòng đã tồn tại!");
-                                break;
-                            case 'invalidPrice':
-                                alert("Giá phòng phải là số dương lớn hơn 500000");
-                                break;
-                            case 'emptyDescription':
-                                alert("Mô tả không được để trống!");
-                                break;
-                            case 'tooLongDescription':
-                                alert("Mô tả không được quá 1000 ký tự!");
-                                break;
-                            case 'invalidRoomNumber':
-                                alert("Số phòng phải từ 100 đến 999.");
-                                break;
-                            case 'invalidRoomFloor':
-                                alert("Số phòng không khớp với tầng đã chọn.");
-                                break;
-                            case 'invalidImage':
-                                alert("Ảnh phòng phải là JPG, PNG, JPEG.");
-                                break;
-                            default:
-                                alert("Có lỗi xảy ra khi thêm phòng.");
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.delete-form').forEach(form => {
+                    form.addEventListener('submit', function (event) {
+                        const roomNumber = this.dataset.roomNumber;
+                        if (!confirm('Are you sure you want to delete the room "' + roomNumber + '"?')) {
+                            event.preventDefault();
                         }
-                    } catch (err) {
-                        alert("Lỗi kết nối máy chủ.");
-                        console.error(err);
-                    }
+                    });
                 });
-            </script>
+            });
+        </script>
+
+        <!-- Add Room Modal -->
+        <div class="modal fade" id="addRoomModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thêm phòng mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="addRoomForm" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div id="addRoomError" class="text-danger mb-2"></div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Số phòng</label>
+                                    <input type="text" class="form-control" name="roomNumber" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Room Type</label>
+                                    <select class="form-select" name="roomType" required>
+                                        <option value="">Chọn loại phòng</option>
+                                        <option value="1">Standard Room</option>
+                                        <option value="2">Deluxe Room</option>
+                                        <option value="3">Suite</option>
+                                        <option value="4">Presidential Suite</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Tầng</label>
+                                    <select class="form-select" name="floor" required>
+                                        <option value="">Chọn tầng</option>
+                                        <option value="1">Tầng 1</option>
+                                        <option value="2">Tầng 2</option>
+                                        <option value="3">Tầng 3</option>
+                                        <option value="4">Tầng 4</option>
+                                        <option value="5">Tầng 5</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Sức chứa</label>
+                                    <select class="form-select" name="capacity" required>
+                                        <option value="">Chọn sức chứa</option>
+                                        <option value="1">1 người</option>
+                                        <option value="2">2 người</option>
+                                        <option value="3">3 người</option>
+                                        <option value="4">4 người</option>
+                                        <option value="6">6 người</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Giá phòng / đêm</label>
+                                    <input type="number" class="form-control" name="price" step="0.01" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Trạng thái</label>
+                                    <select class="form-select" name="status" required>
+                                        <option value="Available">Phòng trống</option>
+                                        <option value="Maintenance">Bảo trì</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Ảnh phòng</label>
+                                    <input type="file" class="form-control" name="roomImage" accept="image/*" required />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Mô tả phòng</label>
+                                    <textarea class="form-control" name="description" id="addDescription" rows="5" placeholder="Nhập các tiện ích, đặc điểm phòng..."  ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Thêm phòng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 
 
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        </body>
-    </html>
+        <script>
+            $(document).ready(function () {
+                $('#addDescription').summernote({
+                    placeholder: 'Nhập mô tả phòng ở đây...',
+                    tabsize: 2,
+                    height: 300,
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['fontsize', 'color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['picture', 'link']],
+                        ['view', ['fullscreen', 'codeview']]
+                    ]
+                });
+            });
+
+
+            // Submit form
+            document.querySelector("#addRoomForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const form = this;
+                const formData = new FormData(form);
+                const descriptionValue = $('#addDescription').summernote('code');
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = descriptionValue;
+                const plainText = tempDiv.textContent || tempDiv.innerText || "";
+                if (plainText.trim().length === 0) {
+                    alert("Mô tả không được để trống!");
+                    return;
+                }
+
+                try {
+                    // Gửi yêu cầu AJAX tới Servlet
+                    const response = await fetch("addRoom", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    // Nhận kết quả trả về từ Servlet
+                    const result = await response.text();
+                    console.log(result);  // Debug: Kiểm tra kết quả trả về từ Servlet
+
+                    // Xử lý các kết quả trả về từ Servlet
+                    switch (result) {
+                        case 'success':
+                            alert("Thêm phòng thành công!");
+                            $('#addRoomModal').modal('hide');
+                            location.reload();
+                            break;
+                        case 'roomNumberExists':
+                            alert("Số phòng đã tồn tại!");
+                            break;
+                        case 'invalidPrice':
+                            alert("Giá phòng phải là số dương lớn hơn 500000");
+                            break;
+                        case 'emptyDescription':
+                            alert("Mô tả không được để trống!");
+                            break;
+                        case 'tooLongDescription':
+                            alert("Mô tả không được quá 1000 ký tự!");
+                            break;
+                        case 'invalidRoomNumber':
+                            alert("Số phòng phải từ 100 đến 999.");
+                            break;
+                        case 'invalidRoomFloor':
+                            alert("Số phòng không khớp với tầng đã chọn.");
+                            break;
+                        case 'invalidImage':
+                            alert("Ảnh phòng phải là JPG, PNG, JPEG.");
+                            break;
+                        default:
+                            alert("Có lỗi xảy ra khi thêm phòng.");
+                    }
+                } catch (err) {
+                    alert("Lỗi kết nối máy chủ.");
+                    console.error(err);
+                }
+            });
+        </script>
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

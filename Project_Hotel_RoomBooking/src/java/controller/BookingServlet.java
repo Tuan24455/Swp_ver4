@@ -1,6 +1,7 @@
 package controller;
 
 import dao.BookingDao;
+import dao.PromotionDao;
 import java.io.IOException;
 import java.sql.Date;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
 import model.Booking;
+import model.Promotion;
 import service.VNPayService;
 
 @WebServlet(name = "BookingServlet", urlPatterns = {"/booking"})
@@ -36,7 +38,7 @@ public class BookingServlet extends HttpServlet {
             
             // Create booking object
             Booking booking = new Booking(String.valueOf(roomId), user.getFullName(), checkIn.toString(), checkOut.toString(), "Pending");
-            
+
             // Set additional booking properties
             booking.setUserId(user.getId());
             booking.setCreatedAt(new Date(System.currentTimeMillis()));

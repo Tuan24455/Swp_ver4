@@ -349,4 +349,36 @@ public class PromotionDao {
         return 0;
     }
 
+    // Lấy các mã khuyến mãi còn hiệu lực (trong khoảng thời gian hợp lệ)
+    public List<Promotion> getCurrentValidPromotions() {
+        List<Promotion> list = new ArrayList<>();
+        String SQL_SELECT = "SELECT * FROM Promotion WHERE isDeleted = 0 AND ? BETWEEN start_at AND end_at ORDER BY percentage DESC";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
+            
+            // Sử dụng ngày hiện tại
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+            pstmt.setDate(1, currentDate);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Promotion p = new Promotion();
+                    p.setId(rs.getInt("id"));
+                    p.setTitle(rs.getString("title"));
+                    p.setPercentage(rs.getDouble("percentage"));
+                    p.setStartAt(rs.getDate("start_at"));
+                    p.setEndAt(rs.getDate("end_at"));
+                    p.setDescription(rs.getString("description"));
+                    list.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getCurrentValidPromotions: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
+
 }
