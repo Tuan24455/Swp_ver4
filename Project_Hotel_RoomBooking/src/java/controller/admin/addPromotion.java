@@ -112,7 +112,7 @@ public class addPromotion extends HttpServlet {
                 return;
             }
 
-            title = title.trim();
+            title = title.replaceAll("\\s{2,}", " ");
             if (!title.matches("^[\\p{L}0-9 ]+$")) {
                 response.getWriter().write("invalidTitleFormat");
                 return;
