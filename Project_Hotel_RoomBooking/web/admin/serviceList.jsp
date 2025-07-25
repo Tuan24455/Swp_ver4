@@ -83,7 +83,7 @@
                 </div>
 
                 <!-- Filter Section -->
-                <form action="serviceList" method="get" class="mb-4">
+                <form action="serviceList" method="post" class="mb-4">
                     <input type="hidden" name="page" value="1" />
                     <div class="card shadow-sm border-0 rounded-4" style="background: #f5f9ff;">
                         <div class="card-body rounded-4">
@@ -153,7 +153,7 @@
                         <!-- Phần tìm kiếm dịch vụ -->
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                             <div class="input-group search-table-input" style="width: 250px">
-                                <form action="serviceList" method="get" class="d-flex">
+                                <form action="serviceList" method="post" class="d-flex">
                                     <input type="text" class="form-control" name="searchQuery" placeholder="Tìm dịch vụ..." value="${param.searchQuery}" />
                                     <button class="btn btn-outline-primary" type="submit">
                                         <i class="fas fa-search"></i>
