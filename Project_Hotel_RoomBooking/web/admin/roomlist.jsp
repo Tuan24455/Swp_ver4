@@ -115,7 +115,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                     </div>
 
                     <!-- Filter Section -->
-                    <form method="get" action="roomList" class="row g-3 mb-4">
+                    <form method="post" action="roomList" class="row g-3 mb-4">
                         <input type="hidden" name="page" value="1" />
                         <div class="col-md-3">
                             <label class="form-label">Loại phòng</label>
@@ -136,7 +136,6 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                 <option value="Available" ${param.roomStatus == 'Available' ? 'selected' : ''}>Đang trống</option>
                                 <option value="Occupied" ${param.roomStatus == 'Occupied' ? 'selected' : ''}>Đang sử dụng</option>
                                 <option value="Maintenance" ${param.roomStatus == 'Maintenance' ? 'selected' : ''}>Bảo trì</option>
-                                <option value="Cleaning" ${param.roomStatus == 'Cleaning' ? 'selected' : ''}>Đang dọn dẹp</option>
                             </select>
                         </div>
 
@@ -160,24 +159,17 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                             <h5 class="mb-0">Danh sách phòng</h5>
                         </div>
                         <div class="card-body">
-                            <div
-                                class="d-flex justify-content-between align-items-center mb-3 flex-wrap"
-                                >
-
-                                <div
-                                    class="input-group search-table-input"
-                                    style="width: 250px"
-                                    >
-                                    <span class="input-group-text"
-                                          ><i class="fas fa-search"></i
-                                        ></span>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Tìm phòng..."
-                                        />
+                            <form method="post" action="roomList" class="mb-3" style="max-width: 400px;">
+                                <div class="input-group">
+                                    <input type="text" name="roomNumberSearch" class="form-control" placeholder="Nhập số phòng..." value="${param.roomNumberSearch}" />
+                                    <input type="hidden" name="page" value="1" />
+                                    <button class="btn btn-outline-primary" type="submit">🔍 Tìm kiếm</button>
                                 </div>
-                            </div>
+                            </form>
+
+
+
+
 
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover align-middle">
@@ -193,8 +185,8 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <c:forEach var="r" items="${rooms}">
-                                        <tbody>                               
+                                    <tbody>
+                                        <c:forEach var="r" items="${rooms}">                                                                      
                                             <tr>
                                                 <td>
                                                     <img src="${r.imageUrl}" alt="Room Image" width="80" height="60" style="object-fit:cover; border-radius: 6px;" />
@@ -231,21 +223,20 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                                             <i class="fas fa-edit"></i>
                                                         </button>
 
-                                                        <form action="${pageContext.request.contextPath}/deleteRoom"
-                                                              method="POST"
-                                                              class="m-0 p-0"
-                                                              data-room-number="${r.roomNumber}">
-                                                            <input type="hidden" name="roomId" value="${r.id}" />                                                          
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-danger delete-room-btn"
+                                                                title="Xóa"
+                                                                data-room-id="${r.id}"
+                                                                data-room-number="${r.roomNumber}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
 
 
                                             </tr>          
-                                        </tbody>  
+                                        </tbody>
+
                                         <div class="modal fade" id="editRoomModal${r.id}" tabindex="-1" aria-labelledby="updateRoomLabel${r.id}" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
@@ -385,25 +376,26 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
         </div>
 
         <script>
-            document.querySelectorAll('form[action$="deleteRoom"]').forEach(form => {
-                form.addEventListener('submit', async function (e) {
-                    e.preventDefault();
+            $(document).ready(function () {
+                $(document).on('click', '.delete-room-btn', async function () {
+                    const roomId = $(this).data('room-id');
+                    const roomNumber = $(this).data('room-number');
 
-                    const roomNumber = this.getAttribute('data-room-number');
                     if (!confirm("Bạn có chắc chắn muốn xóa phòng số " + roomNumber + " không?")) {
                         return;
                     }
 
-                    const formData = new FormData(this);
+                    const formData = new FormData();
+                    formData.append("roomId", roomId);
+
                     try {
-                        const response = await fetch(this.action, {
+                        const response = await fetch("deleteRoom", {
                             method: "POST",
                             body: formData
                         });
 
                         const result = await response.text();
-
-                        switch (result) {
+                        switch (result.trim()) {
                             case "success":
                                 alert("Xóa phòng thành công!");
                                 location.reload();
@@ -414,8 +406,11 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                             case "hasFutureBookings":
                                 alert("Không thể xóa phòng vì đã có lịch đặt trong tương lai.");
                                 break;
+                            case "missingRoomId":
+                                alert("Thiếu thông tin mã phòng cần xóa.");
+                                break;
                             default:
-                            alert("Có lỗi xảy ra khi xóa phòng." + result + "!";
+                                alert("Có lỗi xảy ra khi xóa phòng. Phản hồi: " + result);
                         }
                     } catch (err) {
                         alert("Lỗi kết nối tới máy chủ.");
@@ -424,6 +419,8 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                 });
             });
         </script>
+
+
 
 
         <!-- Add Room Modal -->

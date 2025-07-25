@@ -78,7 +78,7 @@
                 <!-- Filter Section -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <form method="get" action="promotionList">
+                        <form method="post" action="promotionList">
                             <input type="hidden" name="page" value="1" />
                             <div class="row g-3 align-items-end">
                                 <div class="col-md-4 col-sm-6">
@@ -118,7 +118,7 @@
                                 ${requestScope.noResultsMessage}
                             </div>
                         </c:if>
-                        <form action="promotionList" method="get" class="d-flex mb-3" style="width: 300px;">
+                        <form action="promotionList" method="post" class="d-flex mb-3" style="width: 300px;">
                             <input type="text" class="form-control me-2" name="searchQuery"
                                    placeholder="Tìm khuyến mãi..."
                                    value="${sessionScope.promotionSearchQuery}" />

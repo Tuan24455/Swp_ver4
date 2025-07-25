@@ -236,4 +236,118 @@ public class DashboardAdminDAO {
         data.put("bookings", bookingData);
         return data;
     }
+
+    // Method to get yearly room revenue data from Transactions table
+    public Map<String, Object> getYearlyRoomRevenueData() {
+        Map<String, Object> data = new HashMap<>();
+        List<String> years = new ArrayList<>();
+        List<Double> amounts = new ArrayList<>();
+          String sql = "SELECT YEAR(transaction_date) as year, SUM(amount) as total_amount " +
+                     "FROM Transactions " +
+                     "WHERE status IN ('Confirmed', 'Paid') " +
+                     "GROUP BY YEAR(transaction_date) " +
+                     "ORDER BY YEAR(transaction_date)";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                years.add(String.valueOf(rs.getInt("year")));
+                amounts.add(rs.getDouble("total_amount"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        data.put("years", years);
+        data.put("amounts", amounts);
+        return data;
+    }
+    
+    // Method to get yearly service revenue data from ServiceBookings table
+    public Map<String, Object> getYearlyServiceRevenueData() {
+        Map<String, Object> data = new HashMap<>();
+        List<String> years = new ArrayList<>();
+        List<Double> amounts = new ArrayList<>();
+        
+        String sql = "SELECT YEAR(booking_date) as year, SUM(total_amount) as total_amount " +
+                     "FROM ServiceBookings " +
+                     "WHERE status = 'Confirmed' " +
+                     "GROUP BY YEAR(booking_date) " +
+                     "ORDER BY YEAR(booking_date)";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                years.add(String.valueOf(rs.getInt("year")));
+                amounts.add(rs.getDouble("total_amount"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        data.put("years", years);
+        data.put("amounts", amounts);
+        return data;
+    }
+      // Method to get combined yearly revenue data for chart
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getCombinedYearlyRevenueData() {
+        Map<String, Object> roomData = getYearlyRoomRevenueData();
+        Map<String, Object> serviceData = getYearlyServiceRevenueData();
+        
+        // Get all unique years
+        Set<String> allYears = new TreeSet<>();
+        allYears.addAll((List<String>) roomData.get("years"));
+        allYears.addAll((List<String>) serviceData.get("years"));
+        
+        // Create maps for easy lookup
+        Map<String, Double> roomAmountMap = new HashMap<>();
+        List<String> roomYears = (List<String>) roomData.get("years");
+        List<Double> roomAmounts = (List<Double>) roomData.get("amounts");
+        for (int i = 0; i < roomYears.size(); i++) {
+            roomAmountMap.put(roomYears.get(i), roomAmounts.get(i));
+        }
+        
+        Map<String, Double> serviceAmountMap = new HashMap<>();
+        List<String> serviceYears = (List<String>) serviceData.get("years");
+        List<Double> serviceAmounts = (List<Double>) serviceData.get("amounts");
+        for (int i = 0; i < serviceYears.size(); i++) {
+            serviceAmountMap.put(serviceYears.get(i), serviceAmounts.get(i));
+        }
+        
+        // Build final data
+        List<String> finalYears = new ArrayList<>(allYears);
+        List<Double> finalRoomAmounts = new ArrayList<>();
+        List<Double> finalServiceAmounts = new ArrayList<>();
+        
+        for (String year : finalYears) {
+            finalRoomAmounts.add(roomAmountMap.getOrDefault(year, 0.0));
+            finalServiceAmounts.add(serviceAmountMap.getOrDefault(year, 0.0));
+        }
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("years", finalYears);
+        result.put("roomAmounts", finalRoomAmounts);
+        result.put("serviceAmounts", finalServiceAmounts);
+        return result;
+    }
+      // Method to get total amount from Transactions with status = 'Confirmed'
+    public double getRoomRevenueFromTransactions() {
+        String sql = "SELECT SUM(amount) AS total_amount " +
+                     "FROM Transactions " +
+                     "WHERE status IN ('Confirmed', 'Paid')";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                double amount = rs.getDouble("total_amount");
+                return rs.wasNull() ? 0.0 : amount;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }

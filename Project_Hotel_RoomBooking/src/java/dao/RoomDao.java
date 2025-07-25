@@ -157,9 +157,17 @@ public class RoomDao {
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("✅ Room ID " + id + " has been soft-deleted successfully.");
+                return true;
+            } else {
+                System.out.println("⚠️ No room found with ID: " + id + " to delete.");
+            }
 
         } catch (SQLException e) {
+            System.out.println("❌ Error deleting room with ID: " + id);
             e.printStackTrace();
         }
 
@@ -287,7 +295,7 @@ public class RoomDao {
         return roomTypes;
     }
 
-    public List<Room> filterRooms(String roomTypeName, String status, Integer floor) {
+    public List<Room> filterRooms(String roomTypeName, String status, Integer floor, String roomNumberSearch) {
         List<Room> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT r.*, rt.room_type AS room_type_name FROM Rooms r ");
         sql.append("JOIN RoomTypes rt ON r.room_type_id = rt.id WHERE r.isDelete = 0 ");
@@ -301,8 +309,12 @@ public class RoomDao {
         if (floor != null) {
             sql.append("AND r.floor = ? ");
         }
+        if (roomNumberSearch != null && !roomNumberSearch.trim().isEmpty()) {
+            sql.append("AND r.room_number LIKE ? ");
+        }
 
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
             int index = 1;
             if (roomTypeName != null && !roomTypeName.isEmpty()) {
                 ps.setString(index++, roomTypeName);
@@ -312,6 +324,9 @@ public class RoomDao {
             }
             if (floor != null) {
                 ps.setInt(index++, floor);
+            }
+            if (roomNumberSearch != null && !roomNumberSearch.trim().isEmpty()) {
+                ps.setString(index++, "%" + roomNumberSearch.trim() + "%");
             }
 
             ResultSet rs = ps.executeQuery();
@@ -334,6 +349,7 @@ public class RoomDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
@@ -496,27 +512,25 @@ public class RoomDao {
         return false;
     }
 
-public boolean hasFutureBookings(int roomId) {
-    String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
-               + "JOIN Bookings b ON brd.booking_id = b.id "
-               + "WHERE brd.room_id = ? "
-               + "AND b.status IN (N'Confirmed', N'Check in') "
-               + "AND brd.check_out_date >= CAST(GETDATE() AS DATE)"; // >= hôm nay
+    public boolean hasFutureBookings(int roomId) {
+        String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
+                + "JOIN Bookings b ON brd.booking_id = b.id "
+                + "WHERE brd.room_id = ? "
+                + "AND b.status IN (N'Confirmed', N'Check in') "
+                + "AND brd.check_out_date >= CAST(GETDATE() AS DATE)"; // >= hôm nay
 
-    try (Connection conn = new DBContext().getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setInt(1, roomId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1) > 0;
+            ps.setInt(1, roomId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return false;
     }
-
-    return false;
-}
-
 
 }

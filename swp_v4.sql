@@ -271,6 +271,7 @@ VALUES
 (N'Chè', 1, 50000, N'Thanh mát và ngọt ngào với các loại chè truyền thống Việt Nam, được nấu công phu từ đậu xanh, hạt sen, củ năng, thạch dẻo, nước cốt dừa thơm béo và topping đa dạng.', 'https://image.url'),
 (N'Trị liệu', 2, 600000, N'Phục hồi sức khỏe toàn diện với các liệu pháp trị liệu chuyên sâu như châm cứu, xoa bóp bấm huyệt, detox cơ thể, giúp giảm đau nhức, cải thiện giấc ngủ và tăng cường hệ miễn dịch.', 'https://image.url');
 
+
 -- Dữ liệu cho bảng ServiceReviews (giữ nguyên)
 INSERT INTO ServiceReviews (service_id, quality, comment)
 VALUES
