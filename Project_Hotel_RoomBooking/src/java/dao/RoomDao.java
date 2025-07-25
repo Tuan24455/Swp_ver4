@@ -157,9 +157,17 @@ public class RoomDao {
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("✅ Room ID " + id + " has been soft-deleted successfully.");
+                return true;
+            } else {
+                System.out.println("⚠️ No room found with ID: " + id + " to delete.");
+            }
 
         } catch (SQLException e) {
+            System.out.println("❌ Error deleting room with ID: " + id);
             e.printStackTrace();
         }
 
@@ -496,27 +504,25 @@ public class RoomDao {
         return false;
     }
 
-public boolean hasFutureBookings(int roomId) {
-    String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
-               + "JOIN Bookings b ON brd.booking_id = b.id "
-               + "WHERE brd.room_id = ? "
-               + "AND b.status IN (N'Confirmed', N'Check in') "
-               + "AND brd.check_out_date >= CAST(GETDATE() AS DATE)"; // >= hôm nay
+    public boolean hasFutureBookings(int roomId) {
+        String sql = "SELECT COUNT(*) FROM BookingRoomDetails brd "
+                + "JOIN Bookings b ON brd.booking_id = b.id "
+                + "WHERE brd.room_id = ? "
+                + "AND b.status IN (N'Confirmed', N'Check in') "
+                + "AND brd.check_out_date >= CAST(GETDATE() AS DATE)"; // >= hôm nay
 
-    try (Connection conn = new DBContext().getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setInt(1, roomId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1) > 0;
+            ps.setInt(1, roomId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return false;
     }
-
-    return false;
-}
-
 
 }

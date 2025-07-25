@@ -8,6 +8,7 @@ import dao.RoomDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import model.Room;
  *
  * @author Phạm Quốc Tuấn
  */
+@MultipartConfig
 @WebServlet(name = "deleteRoom", urlPatterns = {"/deleteRoom"})
 public class deleteRoom extends HttpServlet {
 
@@ -74,37 +76,46 @@ public class deleteRoom extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            String roomIdRaw = request.getParameter("roomId");
+            if (roomIdRaw == null || roomIdRaw.trim().isEmpty()) {
+                response.getWriter().print("missingRoomId");
+                return;
+            }
             int roomId = Integer.parseInt(request.getParameter("roomId"));
 
             RoomDao dao = new RoomDao();
             Room room = dao.getRoomById(roomId);
 
             if (room == null) {
-                out.write("error");
+                out.print("Không thấy phòng nào ");
                 return;
             }
+
             if (!room.getRoomStatus().equals("Available") && !room.getRoomStatus().equals("Maintenance")) {
-                out.write("invalidStatus");
+                out.print("invalidStatus");
                 return;
             }
+
             if (dao.hasFutureBookings(roomId)) {
-                out.write("hasFutureBookings");
+                out.print("hasFutureBookings");
                 return;
             }
 
             boolean deleted = dao.deleteRoom(roomId);
             if (deleted) {
-                out.write("success");
+                out.print("success");
             } else {
-                out.write("error");
+                out.print("error");
             }
+
+            out.flush(); // ⚠️ Đảm bảo nội dung được gửi đi
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("error");
+            response.getWriter().print("error");
         }
-
     }
 
     /**
