@@ -199,24 +199,24 @@ public class PromotionDao {
     }
 
     // Kiểm tra trùng thời gian cho Thêm mới
-    public boolean checkPromotionOverlap(Date startDate, Date endDate) {
-        String sql = "SELECT COUNT(*) FROM Promotion WHERE isDeleted = 0 AND (start_at < ? AND end_at > ?) OR (start_at < ? AND end_at > ?)";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+public boolean checkPromotionOverlap(Date startDate, Date endDate) {
+    String sql = "SELECT COUNT(*) FROM Promotion WHERE isDeleted = 0 AND NOT (end_at < ? OR start_at > ?)";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setDate(1, new java.sql.Date(endDate.getTime()));
-            ps.setDate(2, new java.sql.Date(startDate.getTime()));
-            ps.setDate(3, new java.sql.Date(startDate.getTime()));
-            ps.setDate(4, new java.sql.Date(endDate.getTime()));
+        ps.setDate(1, new java.sql.Date(startDate.getTime())); // kết thúc cũ < bắt đầu mới
+        ps.setDate(2, new java.sql.Date(endDate.getTime()));   // bắt đầu cũ > kết thúc mới
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ResultSet rs = ps.executeQuery();
+        if (rs.next() && rs.getInt(1) > 0) {
+            return true;
         }
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return false;
+}
+
 
     public Date getLastPromotionEndDateForUpdate(int id) {
         Date latestEnd = null;
