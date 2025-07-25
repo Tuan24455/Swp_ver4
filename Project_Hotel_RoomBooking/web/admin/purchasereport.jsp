@@ -114,53 +114,66 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             <div class="col-lg-6">
               <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom py-3">
-                  <h5 class="mb-0">Doanh Thu Phòng</h5>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Doanh Thu Phòng</h5>
+                    <small class="text-muted">Dữ liệu từ cơ sở dữ liệu</small>
+                  </div>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
                       <thead class="table-light">
                         <tr>
-                          <th>Loại Phòng</th>
-                          <th>Số Đêm</th>
-                          <th>Doanh Thu</th>
-                          <th>Giá Trung Bình</th>
+                          <th><i class="fas fa-door-closed me-1"></i>Số Phòng</th>
+                          <th><i class="fas fa-calendar-alt me-1"></i>Số Đêm</th>
+                          <th><i class="fas fa-dollar-sign me-1"></i>Doanh Thu</th>
+                          <th><i class="fas fa-chart-line me-1"></i>Giá Trung Bình</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <c:if test="${empty reportData}">
-                          <tr>
-                            <td colspan="4" class="text-center">
-                              Không có dữ liệu để hiển thị.
-                            </td>
-                          </tr>
-                        </c:if>
-                        <c:forEach var="row" items="${reportData}">
-                          <tr>
-                            <td>
-                              <strong
-                                ><c:out value="${row['Loai Phong']}"
-                              /></strong>
-                            </td>
-                            <td><c:out value="${row['So Dem']}" /></td>
-                            <td>
-                              <fmt:formatNumber
-                                value="${row['Doanh Thu']}"
-                                type="currency"
-                                currencyCode="VND"
-                                pattern="#,##0 ¤"
-                              />
-                            </td>
-                            <td>
-                              <fmt:formatNumber
-                                value="${row['Gia Trung Binh']}"
-                                type="currency"
-                                currencyCode="VND"
-                                pattern="#,##0 ¤"
-                              />
-                            </td>
-                          </tr>
-                        </c:forEach>
+                        <c:choose>
+                          <c:when test="${empty reportData}">
+                            <tr>
+                              <td colspan="4" class="text-center py-4">
+                                <i class="fas fa-chart-bar fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">Không có dữ liệu để hiển thị.</p>
+                                <small class="text-muted">Dữ liệu sẽ xuất hiện khi có booking được xác nhận.</small>
+                              </td>
+                            </tr>
+                          </c:when>
+                          <c:otherwise>
+                            <c:forEach var="row" items="${reportData}">
+                              <tr>
+                                <td>
+                                  <strong class="text-primary">
+                                    <c:out value="${row['Loai Phong']}" />
+                                  </strong>
+                                </td>
+                                <td>
+                                  <span class="badge bg-info">
+                                    <c:out value="${row['So Dem']}" /> đêm
+                                  </span>
+                                </td>
+                                <td>
+                                  <fmt:formatNumber
+                                    value="${row['Doanh Thu']}"
+                                    type="currency"
+                                    currencyCode="VND"
+                                    pattern="#,##0 ¤"
+                                  />
+                                </td>
+                                <td>
+                                  <fmt:formatNumber
+                                    value="${row['Gia Trung Binh']}"
+                                    type="currency"
+                                    currencyCode="VND"
+                                    pattern="#,##0 ¤"
+                                  />
+                                </td>
+                              </tr>
+                            </c:forEach>
+                          </c:otherwise>
+                        </c:choose>
                       </tbody>
                     </table>
                   </div>
@@ -169,11 +182,14 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             </div>
           </div>
 
-          <!-- Combined Invoice Report -->
+          <!-- Room Booking Invoice Report -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
               <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Báo Cáo Hóa Đơn Chi Tiết</h5>
+                <h5 class="mb-0">
+                  <i class="fas fa-bed me-2 text-primary"></i>
+                  Báo Cáo Hóa Đơn Chi Tiết Đặt Phòng
+                </h5>
                 <div class="pagination-controls">
                   <button type="button" class="btn btn-outline-primary btn-sm me-2" 
                           onclick="changeCombinedPage(${currentCombinedPage != null ? currentCombinedPage - 1 : 0})" 
@@ -190,21 +206,27 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
               </div>
             </div>
             <div class="card-body">
-              <!-- Combined Filter Section -->              
+              <!-- Room Booking Filter Section -->              
               <form method="post" action="${pageContext.request.contextPath}/admin/purchasereport">
                 <input type="hidden" name="reportType" value="combined" />
                 <input type="hidden" name="combinedPage" value="1" />
                 <div class="row g-3 mb-4">
                   <div class="col-md-2">
-                    <label class="form-label">Từ Ngày</label>
+                    <label class="form-label">
+                      <i class="fas fa-calendar-alt me-1"></i>Từ Ngày
+                    </label>
                     <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="${param.dateFrom}" />
                   </div>
                   <div class="col-md-2">
-                    <label class="form-label">Đến Ngày</label>
+                    <label class="form-label">
+                      <i class="fas fa-calendar-alt me-1"></i>Đến Ngày
+                    </label>
                     <input type="date" class="form-control" id="dateTo" name="dateTo" value="${param.dateTo}" />
                   </div>
                   <div class="col-md-2">
-                    <label class="form-label">Loại Phòng</label>
+                    <label class="form-label">
+                      <i class="fas fa-door-open me-1"></i>Loại Phòng
+                    </label>
                     <select class="form-select" id="roomTypeFilter" name="roomTypeFilter">
                       <option value="">Tất Cả Loại</option>
                       <c:forEach var="type" items="${roomTypes}">
@@ -213,16 +235,9 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     </select>
                   </div>
                   <div class="col-md-2">
-                    <label class="form-label">Loại Dịch Vụ</label>
-                    <select class="form-select" id="serviceTypeFilter" name="serviceTypeFilter">
-                      <option value="">Tất Cả Loại</option>
-                      <c:forEach var="type" items="${serviceTypes}">
-                        <option value="${type}" ${param.serviceTypeFilter == type ? 'selected' : ''}>${type}</option>
-                      </c:forEach>
-                    </select>
-                  </div>
-                  <div class="col-md-2">
-                    <label class="form-label">Trạng Thái Thanh Toán</label>
+                    <label class="form-label">
+                      <i class="fas fa-credit-card me-1"></i>Trạng Thái Thanh Toán
+                    </label>
                     <select class="form-select" id="paymentStatusFilter" name="paymentStatusFilter">
                       <option value="">Tất Cả Trạng Thái</option>
                       <c:forEach var="status" items="${paymentStatuses}">
@@ -251,7 +266,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <th>Nhận Phòng</th>
                       <th>Trả Phòng</th>
                       <th>Phí Phòng</th>
-                      <th>Dịch Vụ</th>
                       <th>Tổng Tiền</th>
                       <th>Trạng Thái</th>
                       <th>Thao Tác</th>
@@ -260,7 +274,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   <tbody>
                     <c:if test="${empty combinedInvoiceData}">
                       <tr>
-                        <td colspan="10" class="text-center">
+                        <td colspan="9" class="text-center">
                           Không có dữ liệu để hiển thị.
                         </td>
                       </tr>
@@ -281,7 +295,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                         <td>
                           <fmt:formatNumber value="${invoice['Phí Phòng']}" type="currency" currencyCode="VND" pattern="#,##0 ¤" />
                         </td>
-                        <td><c:out value="${invoice['Dịch Vụ']}" /></td>
                         <td>
                           <strong><fmt:formatNumber value="${invoice['Tổng Tiền']}" type="currency" currencyCode="VND" pattern="#,##0 ¤" /></strong>
                         </td>
@@ -302,12 +315,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                           <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-primary" title="Xem Hóa Đơn" onclick="viewCombinedInvoice('${invoice['Số Hóa Đơn']}', '${invoice.type}')">
                               <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-info" title="In Hóa Đơn" onclick="printCombinedInvoice('${invoice['Số Hóa Đơn']}', '${invoice.type}')">
-                              <i class="fas fa-print"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary" title="Download PDF" onclick="downloadCombinedInvoice('${invoice['Số Hóa Đơn']}', '${invoice.type}')">
-                              <i class="fas fa-download"></i>
                             </button>
                           </div>
                         </td>
@@ -401,6 +408,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <th>Dịch Vụ</th>
                       <th>Ngày Đặt</th>
                       <th>Số Lượng</th>
+                      
                       <th>Đơn Giá</th>
                       <th>Tổng Tiền</th>
                       <th>Trạng Thái</th>
@@ -601,7 +609,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                                   '<p><strong>Nhận Phòng:</strong> ' + getValue(data.checkIn) + '</p>' +
                                   '<p><strong>Trả Phòng:</strong> ' + getValue(data.checkOut) + '</p>' +
                                   '<p><strong>Phí Phòng:</strong> ' + formatCurrency(data.roomFee) + '</p>' +
-                                  '<p><strong>Dịch Vụ Bổ Sung:</strong> ' + formatCurrency(data.additionalServices) + '</p>' +
                                   '<p><strong>Tổng Tiền:</strong> ' + formatCurrency(data.totalAmount) + '</p>' +
                                   '<p><strong>Trạng Thái:</strong> ' + getValue(data.status) + '</p>';
                         
@@ -661,8 +668,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                                   '<p><strong>Số Lượng:</strong> ' + getValue(data.quantity) + '</p>' +
                                   '<p><strong>Đơn Giá:</strong> ' + formatCurrency(data.unitPrice) + '</p>' +
                                   '<p><strong>Tổng Tiền:</strong> ' + formatCurrency(data.totalAmount) + '</p>' +
-                                  '<p><strong>Trạng Thái:</strong> ' + getValue(data.status) + '</p>' +
-                                  '<p><strong>Ghi Chú:</strong> ' + getValue(data.note) + '</p>';
+                                  '<p><strong>Trạng Thái:</strong> ' + getValue(data.status) + '</p>';
                         
                         invoiceDetails.innerHTML = html;
 

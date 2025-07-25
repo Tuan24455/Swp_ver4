@@ -20,7 +20,7 @@ public class Dashboard extends HttpServlet {
             throws ServletException, IOException {
         DashboardAdminDAO dao = new DashboardAdminDAO();        // Get data from DAO
         double totalRevenue = dao.getTotalRevenue();
-        double roomRevenue = dao.getRoomRevenue();
+        double roomRevenue = dao.getRoomRevenueFromTransactions(); // Lấy từ Transactions table
         double serviceRevenue = dao.getServiceRevenue();
         Map<String, Integer> roomStatusCounts = dao.getRoomStatusCounts();
         int totalRooms = dao.getTotalRooms();

@@ -478,30 +478,29 @@ public class PurchaseReportDAO extends DBContext {
             e.printStackTrace();
         }
         return invoiceDetails;
-    }
-
-    // Method lấy dữ liệu báo cáo doanh thu phòng
+    }    // Method lấy dữ liệu báo cáo doanh thu phòng (theo số phòng cụ thể)
     public List<Map<String, Object>> getPurchaseReportData() {
         List<Map<String, Object>> reportData = new ArrayList<>();
         String sql = "SELECT \n"
-                + "    rt.room_type AS [Loai Phong],\n"
-                + "    ISNULL(SUM(DATEDIFF(DAY, brd.check_in_date, brd.check_out_date) * brd.quantity), 0) AS [So Dem],\n"
-                + "    ISNULL(SUM(brd.prices), 0) AS [Doanh Thu],\n"
-                + "    CASE \n"
-                + "        WHEN SUM(DATEDIFF(DAY, brd.check_in_date, brd.check_out_date) * brd.quantity) > 0 \n"
-                + "        THEN SUM(brd.prices) / SUM(DATEDIFF(DAY, brd.check_in_date, brd.check_out_date) * brd.quantity) \n"
-                + "        ELSE 0 \n"
-                + "    END AS [Gia Trung Binh]\n"
+                + "    r.room_number AS [Loai Phong],\n"
+                + "    SUM(brd.quantity) AS [So Dem],\n"
+                + "    SUM(brd.prices) AS [Doanh Thu],\n"
+                + "    AVG(brd.prices / NULLIF(brd.quantity, 0)) AS [Gia Trung Binh]\n"
                 + "FROM \n"
-                + "    RoomTypes rt\n"
-                + "    LEFT JOIN Rooms r ON rt.id = r.room_type_id AND r.isDelete = 0\n"
-                + "    LEFT JOIN BookingRoomDetails brd ON r.id = brd.room_id\n"
-                + "    LEFT JOIN Bookings b ON brd.booking_id = b.id\n"
-                + "WHERE b.status = N'Confirmed' OR b.status IS NULL\n"
+                + "    Rooms r\n"
+                + "INNER JOIN \n"
+                + "    BookingRoomDetails brd ON r.id = brd.room_id\n"
+                + "INNER JOIN \n"
+                + "    Transactions t ON brd.booking_id = t.booking_id\n"
+                + "WHERE \n"
+                + "    r.isDelete = 0\n"
+                + "    AND brd.quantity IS NOT NULL\n"
+                + "    AND brd.prices IS NOT NULL\n"
+                + "    AND t.status = 'Confirmed'\n"
                 + "GROUP BY \n"
-                + "    rt.room_type\n"
+                + "    r.room_number\n"
                 + "ORDER BY \n"
-                + "    rt.room_type;";
+                + "    r.room_number;";
 
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -518,64 +517,47 @@ public class PurchaseReportDAO extends DBContext {
                 reportData.add(row);
             }
         } catch (SQLException e) {
+            System.err.println("Error in getPurchaseReportData: " + e.getMessage());
             e.printStackTrace();
         }
+        
+        System.out.println("Retrieved " + reportData.size() + " room revenue records from database");
         return reportData;
-    }
-
-    // Method lấy báo cáo hóa đơn kết hợp (phòng + dịch vụ) với phân trang
+    }    // Method lấy báo cáo hóa đơn chi tiết (Room booking report) với phân trang  
     public List<Map<String, Object>> getCombinedInvoiceReportDataPaginated(Date dateFrom, Date dateTo, String roomType, String serviceType, String paymentStatus, int page, int pageSize) {
-        List<Map<String, Object>> combinedData = new ArrayList<>();
-        String sql = "(SELECT \n"
-                + "    b.id AS [Số Hóa Đơn],\n"
+        List<Map<String, Object>> roomBookingData = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    brd.booking_id AS [Số Hóa Đơn],\n"
                 + "    u.full_name AS [Tên Khách],\n"
                 + "    r.room_number AS [Phòng],\n"
                 + "    brd.check_in_date AS [Nhận Phòng],\n"
                 + "    brd.check_out_date AS [Trả Phòng],\n"
                 + "    brd.prices AS [Phí Phòng],\n"
                 + "    NULL AS [Dịch Vụ],\n"
-                + "    b.total_prices AS [Tổng Tiền],\n"
+                + "    brd.prices AS [Tổng Tiền],\n"
                 + "    COALESCE(t.status, 'Pending') AS [Trạng Thái],\n"
                 + "    'room' AS type\n"
                 + "FROM \n"
-                + "    Bookings b\n"
+                + "    Rooms r\n"
+                + "    INNER JOIN BookingRoomDetails brd ON r.id = brd.room_id\n"
+                + "    INNER JOIN Transactions t ON brd.booking_id = t.booking_id\n"
+                + "    INNER JOIN Bookings b ON brd.booking_id = b.id\n"
                 + "    INNER JOIN Users u ON b.user_id = u.id\n"
-                + "    INNER JOIN BookingRoomDetails brd ON b.id = brd.booking_id\n"
-                + "    INNER JOIN Rooms r ON brd.room_id = r.id AND r.isDelete = 0\n"
-                + "    INNER JOIN RoomTypes rt ON r.room_type_id = rt.id\n"
-                + "    LEFT JOIN Transactions t ON b.id = t.booking_id\n"
-                + "WHERE \n"
-                + "    (? IS NULL OR brd.check_in_date >= ?) \n"
+                + "    INNER JOIN RoomTypes rt ON r.room_type_id = rt.id\n"                + "WHERE \n"
+                + "    r.isDelete = 0\n"
+                + "    AND (? IS NULL OR brd.check_in_date >= ?) \n"
                 + "    AND (? IS NULL OR brd.check_out_date <= ?) \n"
                 + "    AND (? = '' OR rt.room_type = ?) \n"
                 + "    AND (? = '' OR t.status = ?) \n"
-                + ") UNION ALL (\n"
-                + "SELECT \n"
-                + "    sb.id AS [Số Hóa Đơn],\n"
-                + "    u.full_name AS [Tên Khách],\n"
-                + "    NULL AS [Phòng],\n"
-                + "    NULL AS [Nhận Phòng],\n"
-                + "    NULL AS [Trả Phòng],\n"
-                + "    NULL AS [Phí Phòng],\n"
-                + "    s.service_name AS [Dịch Vụ],\n"
-                + "    sb.total_amount AS [Tổng Tiền],\n"
-                + "    sb.status AS [Trạng Thái],\n"
-                + "    'service' AS type\n"
-                + "FROM \n"
-                + "    ServiceBookings sb\n"
-                + "    INNER JOIN Users u ON sb.user_id = u.id\n"
-                + "    INNER JOIN Services s ON sb.service_id = s.id\n"
-                + "WHERE \n"
-                + "    (? IS NULL OR sb.booking_date >= ?) \n"
-                + "    AND (? IS NULL OR sb.booking_date <= ?) \n"
-                + "    AND (? = '' OR s.service_name LIKE ?) \n"
-                + "    AND (? = '' OR sb.status = ?) \n"
-                + ") ORDER BY [Số Hóa Đơn] DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                + "    AND (? = '' OR u.role = ?) \n"
+                + "ORDER BY \n"
+                + "    brd.check_in_date DESC\n"
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Parameters for room part
+            // Set parameters
             ps.setDate(1, dateFrom);
             ps.setDate(2, dateFrom);
             ps.setDate(3, dateTo);
@@ -584,20 +566,12 @@ public class PurchaseReportDAO extends DBContext {
             ps.setString(6, roomType);
             ps.setString(7, paymentStatus);
             ps.setString(8, paymentStatus);
-
-            // Parameters for service part
-            ps.setDate(9, dateFrom);
-            ps.setDate(10, dateFrom);
-            ps.setDate(11, dateTo);
-            ps.setDate(12, dateTo);
-            ps.setString(13, serviceType);
-            ps.setString(14, serviceType);
-            ps.setString(15, paymentStatus);
-            ps.setString(16, paymentStatus);
+            ps.setString(9, ""); // guestType placeholder
+            ps.setString(10, ""); // guestType placeholder
 
             // Pagination
-            ps.setInt(17, (page - 1) * pageSize);
-            ps.setInt(18, pageSize);
+            ps.setInt(11, (page - 1) * pageSize);
+            ps.setInt(12, pageSize);
 
             try (ResultSet rs = ps.executeQuery()) {
                 ResultSetMetaData md = rs.getMetaData();
@@ -608,42 +582,33 @@ public class PurchaseReportDAO extends DBContext {
                     for (int i = 1; i <= columns; i++) {
                         row.put(md.getColumnLabel(i), rs.getObject(i));
                     }
-                    combinedData.add(row);
+                    roomBookingData.add(row);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return combinedData;
-    }
-
-    public int getTotalCombinedInvoiceCount(Date dateFrom, Date dateTo, String roomType, String serviceType, String paymentStatus) {
+        return roomBookingData;
+    }    public int getTotalCombinedInvoiceCount(Date dateFrom, Date dateTo, String roomType, String serviceType, String paymentStatus) {
         int total = 0;
         String sql = "SELECT COUNT(*) FROM (\n"
-                + "(SELECT b.id FROM Bookings b\n"
+                + "    SELECT brd.booking_id FROM Rooms r\n"
+                + "    INNER JOIN BookingRoomDetails brd ON r.id = brd.room_id\n"
+                + "    INNER JOIN Transactions t ON brd.booking_id = t.booking_id\n"
+                + "    INNER JOIN Bookings b ON brd.booking_id = b.id\n"
                 + "    INNER JOIN Users u ON b.user_id = u.id\n"
-                + "    INNER JOIN BookingRoomDetails brd ON b.id = brd.booking_id\n"
-                + "    INNER JOIN Rooms r ON brd.room_id = r.id AND r.isDelete = 0\n"
                 + "    INNER JOIN RoomTypes rt ON r.room_type_id = rt.id\n"
-                + "    LEFT JOIN Transactions t ON b.id = t.booking_id\n"
-                + "WHERE (? IS NULL OR brd.check_in_date >= ?) \n"
-                + "    AND (? IS NULL OR brd.check_out_date <= ?) \n"
-                + "    AND (? = '' OR rt.room_type = ?) \n"
-                + "    AND (? = '' OR t.status = ?)) \n"
-                + "UNION ALL \n"
-                + "(SELECT sb.id FROM ServiceBookings sb\n"
-                + "    INNER JOIN Users u ON sb.user_id = u.id\n"
-                + "    INNER JOIN Services s ON sb.service_id = s.id\n"
-                + "WHERE (? IS NULL OR sb.booking_date >= ?) \n"
-                + "    AND (? IS NULL OR sb.booking_date <= ?) \n"
-                + "    AND (? = '' OR s.service_name LIKE ?) \n"
-                + "    AND (? = '' OR sb.status = ?))\n"
-                + ") AS combined";
+                + "    WHERE r.isDelete = 0\n"
+                + "        AND (? IS NULL OR brd.check_in_date >= ?) \n"
+                + "        AND (? IS NULL OR brd.check_out_date <= ?) \n"
+                + "        AND (? = '' OR rt.room_type = ?) \n"
+                + "        AND (? = '' OR t.status = ?)\n"
+                + ") AS roomBookings";
 
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Room part
+            // Set parameters
             ps.setDate(1, dateFrom);
             ps.setDate(2, dateFrom);
             ps.setDate(3, dateTo);
@@ -652,16 +617,6 @@ public class PurchaseReportDAO extends DBContext {
             ps.setString(6, roomType);
             ps.setString(7, paymentStatus);
             ps.setString(8, paymentStatus);
-
-            // Service part
-            ps.setDate(9, dateFrom);
-            ps.setDate(10, dateFrom);
-            ps.setDate(11, dateTo);
-            ps.setDate(12, dateTo);
-            ps.setString(13, serviceType);
-            ps.setString(14, serviceType);
-            ps.setString(15, paymentStatus);
-            ps.setString(16, paymentStatus);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -816,5 +771,145 @@ public class PurchaseReportDAO extends DBContext {
         }
         
         return total;
+    }    // Method lấy dữ liệu báo cáo doanh thu phòng với filter (theo số phòng cụ thể)
+    public List<Map<String, Object>> getRoomRevenueData(Date dateFrom, Date dateTo, String roomTypeFilter) {
+        List<Map<String, Object>> reportData = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder();
+        
+        sqlBuilder.append("SELECT \n")
+                .append("    r.room_number AS [Loai Phong],\n")
+                .append("    SUM(brd.quantity) AS [So Dem],\n")
+                .append("    SUM(brd.prices) AS [Doanh Thu],\n")
+                .append("    AVG(brd.prices / NULLIF(brd.quantity, 0)) AS [Gia Trung Binh]\n")
+                .append("FROM Rooms r\n")
+                .append("INNER JOIN BookingRoomDetails brd ON r.id = brd.room_id\n")
+                .append("INNER JOIN Transactions t ON brd.booking_id = t.booking_id\n")
+                .append("LEFT JOIN RoomTypes rt ON r.room_type_id = rt.id\n")
+                .append("WHERE r.isDelete = 0\n")
+                .append("    AND brd.quantity IS NOT NULL\n")
+                .append("    AND brd.prices IS NOT NULL\n")
+                .append("    AND t.status = 'Confirmed'");
+
+        List<Object> params = new ArrayList<>();
+        
+        // Add date filters
+        if (dateFrom != null) {
+            sqlBuilder.append(" AND brd.check_in_date >= ?");
+            params.add(dateFrom);
+        }
+        if (dateTo != null) {
+            sqlBuilder.append(" AND brd.check_out_date <= ?");
+            params.add(dateTo);
+        }
+        
+        // Add room type filter
+        if (roomTypeFilter != null && !roomTypeFilter.trim().isEmpty()) {
+            sqlBuilder.append(" AND rt.room_type = ?");
+            params.add(roomTypeFilter);
+        }
+        
+        sqlBuilder.append(" GROUP BY r.room_number\n")
+                .append("ORDER BY r.room_number");
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
+            
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                ResultSetMetaData md = rs.getMetaData();
+                int columns = md.getColumnCount();
+
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    for (int i = 1; i <= columns; i++) {
+                        row.put(md.getColumnLabel(i), rs.getObject(i));
+                    }
+                    reportData.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getRoomRevenueData: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        System.out.println("Retrieved " + reportData.size() + " filtered room revenue records from database");
+        return reportData;
+    }
+
+    // Method lấy tổng số room types có dữ liệu revenue
+    public int getTotalRoomRevenueCount() {
+        int total = 0;
+        String sql = "SELECT COUNT(DISTINCT rt.room_type) FROM RoomTypes rt " +
+                     "LEFT JOIN Rooms r ON rt.id = r.room_type_id AND r.isDelete = 0 " +
+                     "LEFT JOIN BookingRoomDetails brd ON r.id = brd.room_id " +
+                     "LEFT JOIN Bookings b ON brd.booking_id = b.id " +
+                     "LEFT JOIN Transactions t ON b.id = t.booking_id " +
+                     "WHERE (b.status IN (N'Confirmed', N'Paid') AND (t.status IN ('Confirmed', 'Paid') OR t.status IS NULL)) OR b.status IS NULL";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getTotalRoomRevenueCount: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    // Method lấy dữ liệu báo cáo doanh thu phòng chi tiết (bao gồm cả loại phòng)
+    public List<Map<String, Object>> getDetailedRoomRevenueData() {
+        List<Map<String, Object>> reportData = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    r.room_number AS [So Phong],\n"
+                + "    rt.room_type AS [Loai Phong],\n"
+                + "    SUM(brd.quantity) AS [So Dem],\n"
+                + "    SUM(brd.prices) AS [Doanh Thu],\n"
+                + "    AVG(brd.prices / NULLIF(brd.quantity, 0)) AS [Gia Trung Binh]\n"
+                + "FROM \n"
+                + "    Rooms r\n"
+                + "INNER JOIN \n"
+                + "    RoomTypes rt ON r.room_type_id = rt.id\n"
+                + "INNER JOIN \n"
+                + "    BookingRoomDetails brd ON r.id = brd.room_id\n"
+                + "INNER JOIN \n"
+                + "    Transactions t ON brd.booking_id = t.booking_id\n"
+                + "WHERE \n"
+                + "    r.isDelete = 0\n"
+                + "    AND brd.quantity IS NOT NULL\n"
+                + "    AND brd.prices IS NOT NULL\n"
+                + "    AND t.status = 'Confirmed'\n"
+                + "GROUP BY \n"
+                + "    r.room_number, rt.room_type\n"
+                + "ORDER BY \n"
+                + "    r.room_number;";
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            ResultSetMetaData md = rs.getMetaData();
+            int columns = md.getColumnCount();
+
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                for (int i = 1; i <= columns; i++) {
+                    row.put(md.getColumnLabel(i), rs.getObject(i));
+                }
+                reportData.add(row);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getDetailedRoomRevenueData: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        System.out.println("Retrieved " + reportData.size() + " detailed room revenue records from database");
+        return reportData;
     }
 }

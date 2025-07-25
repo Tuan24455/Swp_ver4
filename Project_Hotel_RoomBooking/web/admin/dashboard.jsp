@@ -70,20 +70,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                 </p>
               </div>
               <div class="col-md-4 text-end">
-                <div class="d-flex justify-content-end gap-2">
-                  <button
-                    class="btn btn-primary btn-sm"
-                    onclick="refreshData()"
-                  >
-                    <i class="fas fa-sync-alt"></i> Làm mới
-                  </button>
-                  <button
-                    class="btn btn-outline-secondary btn-sm"
-                    onclick="exportReport()"
-                  >
-                    <i class="fas fa-download"></i> Xuất báo cáo
-                  </button>
-                </div>
+                <!-- Removed refresh and export report buttons as requested -->
               </div>
             </div>
           </div>
@@ -123,48 +110,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                         <small class="text-muted">Tổng Doanh Thu Dịch Vụ</small>
                         <small class="fw-bold"><fmt:formatNumber value="${serviceRevenue}" type="currency" currencySymbol="đ" maxFractionDigits="0" /></small>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tỷ Lệ Lấp Đầy -->
-            <div class="col-xl-3 col-md-6">
-              <div class="kpi-card">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div>
-                    <div class="kpi-icon bg-success bg-opacity-10">
-                      <i class="fas fa-bed text-success"></i>
-                    </div>
-                    <h3 class="h4 mb-1">${occupancyRate}%</h3>
-                    <p class="text-muted mb-2">Tỷ Lệ Lấp Đầy</p>
-                    <div class="d-flex align-items-center">
-                      <small class="text-muted"
-                        >${occupiedRooms}/${totalRooms}
-                        phòng</small
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tổng Phòng -->
-            <div class="col-xl-3 col-md-6">
-              <div class="kpi-card">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div>
-                    <div class="kpi-icon bg-info bg-opacity-10">
-                      <i class="fas fa-door-open text-info"></i>
-                    </div>
-                    <h3 class="h4 mb-1">${totalRooms}</h3>
-                    <p class="text-muted mb-2">Tổng Số Phòng</p>
-                    <div class="d-flex align-items-center">
-                      <small class="text-success me-2"
-                        >${occupiedRooms} đang sử dụng</small
-                      >
-                      <small class="text-warning">${vacantRooms} trống</small>
                     </div>
                   </div>
                 </div>
@@ -437,6 +382,30 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
           new Chart(ctx, config);
       });
+    </script>
+    <script>
+      // Calculate and display total revenue
+      document.addEventListener('DOMContentLoaded', function() {
+          // Get room revenue and service revenue values from server
+          var roomRevenue = ${roomRevenue != null ? roomRevenue : 0};
+          var serviceRevenue = ${serviceRevenue != null ? serviceRevenue : 0};
+          
+          // Calculate total revenue
+          var totalRevenue = roomRevenue + serviceRevenue;
+          
+          // Format the total revenue as Vietnamese currency
+          var formattedTotal = new Intl.NumberFormat('vi-VN', {
+              style: 'currency',
+              currency: 'VND',
+              maximumFractionDigits: 0
+          }).format(totalRevenue);
+          
+          // Find the total revenue display element and update it
+          var totalRevenueElement = document.querySelector('h3.h4.mb-1');
+          if (totalRevenueElement) {
+              totalRevenueElement.textContent = formattedTotal;
+          }
+      });
     </script><!-- Room Status Modals -->
     <!-- Occupied Rooms Modal -->
     <div class="modal fade" id="occupiedModal" tabindex="-1" aria-labelledby="occupiedModalLabel" aria-hidden="true">
@@ -549,6 +518,31 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         </div>
       </div>
     </div>
+
+<script>
+  // Calculate and display total revenue
+  document.addEventListener('DOMContentLoaded', function() {
+      // Get room revenue and service revenue values from server
+      var roomRevenue = <c:out value="${roomRevenue != null ? roomRevenue : 0}" />;
+      var serviceRevenue = <c:out value="${serviceRevenue != null ? serviceRevenue : 0}" />;
+      
+      // Calculate total revenue
+      var totalRevenue = roomRevenue + serviceRevenue;
+      
+      // Format the total revenue as Vietnamese currency
+      var formattedTotal = new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+          maximumFractionDigits: 0
+      }).format(totalRevenue);
+      
+      // Find the total revenue display element and update it
+      var totalRevenueElement = document.querySelector('h3.h4.mb-1');
+      if (totalRevenueElement) {
+          totalRevenueElement.textContent = formattedTotal;
+      }
+  });
+</script>
 
 <script>
   function showRoomsModal(status) {
