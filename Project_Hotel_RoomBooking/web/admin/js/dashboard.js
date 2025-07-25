@@ -6,114 +6,123 @@ let currentPeriod = 'weekly';
 // Initialize Charts
 document.addEventListener('DOMContentLoaded', function() {
     initializeCharts();
-    updateChart('weekly');  // Load default weekly data dynamically
+    // Only update revenue chart if it was initialized
+    if (typeof revenueChart !== 'undefined' && revenueChart) {
+        updateChart('weekly');  // Load default weekly data dynamically
+    }
 });
 
 function initializeCharts() {
-    // Revenue Chart (init with empty data, will be updated by fetch)
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    revenueChart = new Chart(revenueCtx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Doanh Thu (VND)',
-                data: [],
-                borderColor: '#4f46e5',
-                backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                yAxisID: 'y'
-            }, {
-                label: 'Số Đặt Phòng',
-                data: [],
-                borderColor: '#06b6d4',
-                backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                yAxisID: 'y1'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
+    // Revenue Chart (init only if element exists)
+    const revenueElem = document.getElementById('revenueChart');
+    if (revenueElem) {
+        const revenueCtx = revenueElem.getContext('2d');
+        revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Doanh Thu (VND)',
+                    data: [],
+                    borderColor: '#4f46e5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Số Đặt Phòng',
+                    data: [],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.datasetIndex === 0) {
+                                    return context.dataset.label + ': ' + new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(context.parsed.y);
+                                } else {
+                                    return context.dataset.label + ': ' + context.parsed.y + ' đặt phòng';
+                                }
+                            }
+                        }
+                    }
                 },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                        label: function(context) {
-                            if (context.datasetIndex === 0) {
-                                return context.dataset.label + ': ' + new Intl.NumberFormat('vi-VN', {
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        ticks: {
+                            callback: function(value) {
+                                return new Intl.NumberFormat('vi-VN', {
                                     style: 'currency',
-                                    currency: 'VND'
-                                }).format(context.parsed.y);
-                            } else {
-                                return context.dataset.label + ': ' + context.parsed.y + ' đặt phòng';
+                                    currency: 'VND',
+                                    notation: 'compact'
+                            }).format(value);
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' đặt';
                             }
                         }
                     }
                 }
-            },
-            scales: {
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    ticks: {
-                        callback: function(value) {
-                            return new Intl.NumberFormat('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND',
-                                notation: 'compact'
-                            }).format(value);
-                        }
-                    }
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    grid: {
-                        drawOnChartArea: false,
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            return value + ' đặt';
-                        }
-                    }
-                }
             }
-        }
-    });
+        });
+    }
 
-    // Room Status Chart - Note: This will be populated with server data
-    const roomStatusCtx = document.getElementById('roomStatusChart').getContext('2d');
-    roomStatusChart = new Chart(roomStatusCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Đã Đặt', 'Trống', 'Bảo Trì'],
-            datasets: [{
-                data: [0, 0, 0], // Will be populated by JSP
-                backgroundColor: ['#10b981', '#4f46e5', '#f59e0b'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
+    // Room Status Chart (init only if element exists)
+    const statusElem = document.getElementById('roomStatusChart');
+    if (statusElem) {
+        const roomStatusCtx = statusElem.getContext('2d');
+        roomStatusChart = new Chart(roomStatusCtx, {
+             type: 'doughnut',
+             data: {
+                 labels: ['Đã Đặt', 'Trống', 'Bảo Trì'],
+                 datasets: [{
+                     data: [0, 0, 0], // Will be populated by JSP
+                     backgroundColor: ['#10b981', '#4f46e5', '#f59e0b'],
+                     borderWidth: 0
+                 }]
+             },
+             options: {
+                 responsive: true,
+                 maintainAspectRatio: false,
+                 plugins: {
+                     legend: {
+                         position: 'bottom'
+                     }
+                 }
+             }
+        });
+    }
 }
 
 // Function to update room status chart with server data

@@ -171,21 +171,9 @@
             </jsp:include>            <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">             
 
-                <!-- Thông báo từ servlet -->
-                <c:if test="${not empty message}">
-                    <div class="alert alert-${messageType} alert-dismissible fade show m-3" role="alert">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </c:if>
+                
 
-                <!-- Thông báo lỗi -->
-                <c:if test="${not empty error}">
-                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-                        ${error}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </c:if>
+                
 
                 <!-- Filter Section -->
                 <div class="card shadow-sm mb-4">
