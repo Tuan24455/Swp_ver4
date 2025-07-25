@@ -93,23 +93,21 @@ public class AddService extends HttpServlet {
                 response.getWriter().write("duplicate");
                 return;
             }
-
-            // Validate giá
             if (price <= 0 || price < 100000) {
                 response.getWriter().write("invalidPrice");
                 return;
             }
-            if (description.isEmpty() || description.isBlank()) {
+            description = description.trim();
+            if (description == null || description.length() < 10 || description.length() > 100) {
                 response.getWriter().write("blankDescription");
                 return;
             }
-            
-            name  = name.trim().replaceAll("\\s{2,}", " ");
+
+            name = name.trim().replaceAll("\\s{2,}", " ");
             if (!name.matches("^[\\p{L}0-9 ]+$")) {
                 response.getWriter().write("invalidNameFormat");
                 return;
             }
-            
 
             // Xử lý ảnh
             Part imagePart = request.getPart("image");
