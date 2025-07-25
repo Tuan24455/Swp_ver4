@@ -1,6 +1,5 @@
 package controller;
 
-import dao.PromotionDao;
 import dao.RoomDao;
 import dao.UserDao;
 import jakarta.servlet.ServletException;
@@ -16,7 +15,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import model.Promotion;
 
 @WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
 public class HomeServlet extends HttpServlet {
@@ -36,8 +34,6 @@ public class HomeServlet extends HttpServlet {
 
         checkCookie(request);
         RoomDao dao = new RoomDao();
-        PromotionDao pdao = new PromotionDao();
-        Promotion promotion = pdao.getLastAddedValidPromotion();
 
         List<RoomType> roomtypelist = dao.getAllRoomTypes();
         List<Room> roomlist = dao.getAllRooms();
@@ -53,7 +49,6 @@ public class HomeServlet extends HttpServlet {
         List<Room> paginatedRooms = roomlist.subList(start, end);
 
         request.setAttribute("roomlist", paginatedRooms);
-        request.setAttribute("promotion", promotion);
         request.setAttribute("roomtypelist", roomtypelist);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
@@ -67,8 +62,6 @@ public class HomeServlet extends HttpServlet {
 
         checkCookie(request);
         RoomDao dao = new RoomDao();
-        PromotionDao pdao = new PromotionDao();
-        Promotion promotion = pdao.getLastAddedValidPromotion();
 
         List<RoomType> roomtypelist = dao.getAllRoomTypes();
         request.setAttribute("roomtypelist", roomtypelist);
@@ -116,7 +109,6 @@ public class HomeServlet extends HttpServlet {
 
         List<Room> paginatedRooms = filteredRooms.subList(start, end);
 
-        request.setAttribute("promotion", promotion);
         request.setAttribute("roomlist", paginatedRooms);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
