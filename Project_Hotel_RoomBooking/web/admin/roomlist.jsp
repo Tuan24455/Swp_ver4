@@ -384,46 +384,46 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
             </div>
         </div>
 
-<script>
-    document.querySelectorAll('form[action$="deleteRoom"]').forEach(form => {
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
+        <script>
+            document.querySelectorAll('form[action$="deleteRoom"]').forEach(form => {
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
 
-            const roomNumber = this.getAttribute('data-room-number');
-            if (!confirm("Bạn có chắc chắn muốn xóa phòng số " + roomNumber + " không?")) {
-                return;
-            }
+                    const roomNumber = this.getAttribute('data-room-number');
+                    if (!confirm("Bạn có chắc chắn muốn xóa phòng số " + roomNumber + " không?")) {
+                        return;
+                    }
 
-            const formData = new FormData(this);
-            try {
-                const response = await fetch(this.action, {
-                    method: "POST",
-                    body: formData
+                    const formData = new FormData(this);
+                    try {
+                        const response = await fetch(this.action, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        const result = await response.text();
+
+                        switch (result) {
+                            case "success":
+                                alert("Xóa phòng thành công!");
+                                location.reload();
+                                break;
+                            case "invalidStatus":
+                                alert("Chỉ được xóa phòng đang trống hoặc đang bảo trì.");
+                                break;
+                            case "hasFutureBookings":
+                                alert("Không thể xóa phòng vì đã có lịch đặt trong tương lai.");
+                                break;
+                            default:
+                            alert("Có lỗi xảy ra khi xóa phòng." + result + "!";
+                        }
+                    } catch (err) {
+                        alert("Lỗi kết nối tới máy chủ.");
+                        console.error(err);
+                    }
                 });
-
-                const result = await response.text();
-
-                switch (result) {
-                    case "success":
-                        alert("Xóa phòng thành công!");
-                        location.reload();
-                        break;
-                    case "invalidStatus":
-                        alert("Chỉ được xóa phòng đang trống hoặc đang bảo trì.");
-                        break;
-                    case "hasFutureBookings":
-                        alert("Không thể xóa phòng vì đã có lịch đặt trong tương lai.");
-                        break;
-                    default:
-                        alert("Có lỗi xảy ra khi xóa phòng." + result +"!";
-                }
-            } catch (err) {
-                alert("Lỗi kết nối tới máy chủ.");
-                console.error(err);
-            }
-        });
-    });
-</script>
+            });
+        </script>
 
 
         <!-- Add Room Modal -->
@@ -576,6 +576,9 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                 break;
                             case 'invalidRoomFloor':
                                 alert("Số phòng không khớp với tầng đã chọn.");
+                                break;
+                            case 'cannotChangeToMaintenanceWithBooking':
+                                alert("Phòng đang có lịch đặt trong thời gian tới - Không thể bảo trì !");
                                 break;
                             case 'invalidPrice':
                                 alert("Giá phòng phải là số dương lớn hơn 500000");
