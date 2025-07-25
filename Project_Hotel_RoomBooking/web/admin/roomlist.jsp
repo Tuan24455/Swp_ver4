@@ -235,8 +235,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                                                               method="POST"
                                                               class="m-0 p-0"
                                                               data-room-number="${r.roomNumber}">
-                                                            <input type="hidden" name="roomId" value="${r.id}" />
-                                                            <input type="hidden" name="action" value="delete" />
+                                                            <input type="hidden" name="roomId" value="${r.id}" />                                                          
                                                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
@@ -385,18 +384,47 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
             </div>
         </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                document.querySelectorAll('.delete-form').forEach(form => {
-                    form.addEventListener('submit', function (event) {
-                        const roomNumber = this.dataset.roomNumber;
-                        if (!confirm('Are you sure you want to delete the room "' + roomNumber + '"?')) {
-                            event.preventDefault();
-                        }
-                    });
+<script>
+    document.querySelectorAll('form[action$="deleteRoom"]').forEach(form => {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const roomNumber = this.getAttribute('data-room-number');
+            if (!confirm("Bạn có chắc chắn muốn xóa phòng số " + roomNumber + " không?")) {
+                return;
+            }
+
+            const formData = new FormData(this);
+            try {
+                const response = await fetch(this.action, {
+                    method: "POST",
+                    body: formData
                 });
-            });
-        </script>
+
+                const result = await response.text();
+
+                switch (result) {
+                    case "success":
+                        alert("Xóa phòng thành công!");
+                        location.reload();
+                        break;
+                    case "invalidStatus":
+                        alert("Chỉ được xóa phòng đang trống hoặc đang bảo trì.");
+                        break;
+                    case "hasFutureBookings":
+                        alert("Không thể xóa phòng vì đã có lịch đặt trong tương lai.");
+                        break;
+                    default:
+                        alert("Có lỗi xảy ra khi xóa phòng." + result +"!";
+                }
+            } catch (err) {
+                alert("Lỗi kết nối tới máy chủ.");
+                console.error(err);
+            }
+        });
+    });
+</script>
+
 
         <!-- Add Room Modal -->
         <div class="modal fade" id="addRoomModal" tabindex="-1">
