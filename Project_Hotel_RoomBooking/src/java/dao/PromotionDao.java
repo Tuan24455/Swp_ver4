@@ -353,14 +353,13 @@ public class PromotionDao {
     public List<Promotion> getCurrentValidPromotions() {
         List<Promotion> list = new ArrayList<>();
         String SQL_SELECT = "SELECT * FROM Promotion WHERE isDeleted = 0 AND ? BETWEEN start_at AND end_at ORDER BY percentage DESC";
-        
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
-            
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
+
             // Sử dụng ngày hiện tại
             java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
             pstmt.setDate(1, currentDate);
-            
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Promotion p = new Promotion();
@@ -377,8 +376,54 @@ public class PromotionDao {
             System.err.println("Error in getCurrentValidPromotions: " + e.getMessage());
             e.printStackTrace();
         }
-        
+
         return list;
     }
 
+    public Promotion getLastAddedValidPromotion() {
+        Promotion latestPromotion = null;
+        // SQL để lấy promotion cuối cùng (giả sử ID tăng dần) và chưa bị xóa
+        // Corrected SQL for SQL Server: Use TOP 1 instead of LIMIT 1
+        String SQL_SELECT_LAST = "SELECT TOP 1 * FROM Promotion WHERE isDeleted = 0 ORDER BY id DESC";
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_LAST); ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) { // Only one result expected
+                Promotion p = new Promotion();
+                p.setId(rs.getInt("id"));
+                p.setTitle(rs.getString("title"));
+                p.setPercentage(rs.getDouble("percentage"));
+                p.setStartAt(rs.getDate("start_at")); // SQL Date
+                p.setEndAt(rs.getDate("end_at"));     // SQL Date
+                p.setDescription(rs.getString("description"));
+
+                // Chuyển đổi java.sql.Date sang java.util.Date để so sánh dễ hơn
+                // Note: For more robust date/time handling, consider java.time API (LocalDate, LocalDateTime)
+                // and java.sql.Timestamp if your database stores time components.
+                Date promoStart = new Date(p.getStartAt().getTime());
+                Date promoEnd = new Date(p.getEndAt().getTime());
+                Date currentTime = new Date(); // Thời điểm hiện tại
+
+                // Kiểm tra xem thời điểm hiện tại có nằm trong thời gian hiệu lực không
+                // Using .after() and .before() means the promotion is not valid *on* the start/end exact timestamp.
+                // If it should be inclusive, you might consider:
+                // (currentTime.compareTo(promoStart) >= 0 && currentTime.compareTo(promoEnd) <= 0)
+                if (currentTime.after(promoStart) && currentTime.before(promoEnd)) {
+                    latestPromotion = p; // Promotion hợp lệ
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getLastAddedValidPromotion: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return latestPromotion;
+    }
+
+    public static void main(String[] args) {
+        PromotionDao dao = new PromotionDao();
+        // The output is 'null' because either no promotion was found, or the found promotion
+        // is not currently valid based on your date comparison logic.
+        System.out.println(dao.getLastAddedValidPromotion());
+        System.out.println(dao.getLastAddedValidPromotion().getPercentage()/100);
+    }
 }

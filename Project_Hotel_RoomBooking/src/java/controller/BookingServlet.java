@@ -1,7 +1,6 @@
 package controller;
 
 import dao.BookingDao;
-import dao.PromotionDao;
 import java.io.IOException;
 import java.sql.Date;
 import jakarta.servlet.ServletException;
@@ -12,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
 import model.Booking;
-import model.Promotion;
 import service.VNPayService;
 
 @WebServlet(name = "BookingServlet", urlPatterns = {"/booking"})

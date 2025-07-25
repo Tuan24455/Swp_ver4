@@ -24,8 +24,8 @@ import model.User;
  *
  * @author ADMIN
  */
-@WebFilter(filterName = "CustomerRoleFilter", urlPatterns = {"/bookingDetail.jsp", "/bookingHistory.jsp", "/customerInfor.jsp",
-    "/transaction-history.jsp", "/process-payment", "/changePassword", "/delete",
+@WebFilter(filterName = "CustomerRoleFilter", urlPatterns = {"/bookingDetail.jsp", "/bookingHistory.jsp", "/customerInfor.jsp", "/booking",
+    "/transaction-history.jsp", "/booking-detail", "/process-payment", "/changePassword", "/delete",
     "/deleteimg", "/information", "/bookingHistory", "/transaction-history.jsp"})
 public class CustomerRoleFilter implements Filter {
 

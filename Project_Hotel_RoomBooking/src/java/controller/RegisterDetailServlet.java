@@ -1,6 +1,7 @@
 package controller;
 
 import dao.UserDao;
+import jakarta.mail.MessagingException;
 import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,11 +9,13 @@ import jakarta.servlet.http.*;
 import valid.InputValidator;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.EmailUtil;
 
 @WebServlet(name = "RegisterDetailServlet", urlPatterns = {"/registerDetail"})
 public class RegisterDetailServlet extends HttpServlet {
@@ -96,6 +99,14 @@ public class RegisterDetailServlet extends HttpServlet {
         try {
             // Lưu vào DB
             boolean up = dao.insert(user);
+            // Send mail nè
+            if (up) {
+                try {
+                    boolean sendwelcomemail = EmailUtil.sendWelcomeEmail(email, username);
+                } catch (MessagingException | UnsupportedEncodingException ex) {
+                    Logger.getLogger(RegisterDetailServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         } catch (SQLException ex) {
             Logger.getLogger(RegisterDetailServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
