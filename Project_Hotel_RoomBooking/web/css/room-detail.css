@@ -600,3 +600,207 @@ img, video {
     transform: translateX(5px);
   }
 }
+
+/* Price Breakdown Styles */
+.total-price-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #e9ecef;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-top: 15px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.total-price-container:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.price-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.price-row:last-child {
+  border-bottom: none;
+}
+
+.price-row.total-row {
+  border-top: 2px solid var(--secondary-color);
+  padding-top: 15px;
+  margin-top: 10px;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+  border-radius: 8px;
+  padding: 12px 8px;
+}
+
+.price-label {
+  color: var(--dark-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.price-value {
+  color: var(--secondary-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.total-row .price-label,
+.total-row .price-value {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.total-amount {
+  color: var(--accent-color) !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+
+/* Animation for price updates */
+.price-value {
+  transition: all 0.3s ease;
+}
+
+.price-value.updating {
+  transform: scale(1.1);
+  color: var(--gold-color);
+}
+
+/* Discount Code Styles */
+.discount-container {
+  position: relative;
+}
+
+.discount-container .form-select {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e9ecef;
+  border-radius: var(--border-radius);
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.discount-container .form-select:hover {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.1);
+}
+
+.discount-container .form-select:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+  outline: none;
+}
+
+.discount-info {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+  border: 1px solid rgba(39, 174, 96, 0.2);
+  border-radius: 6px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.discount-row {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+  border-radius: 6px;
+  padding: 8px 12px !important;
+  margin: 8px 0;
+}
+
+.discount-amount {
+  color: var(--success-color) !important;
+  font-weight: 700 !important;
+}
+
+.form-select option {
+  padding: 12px;
+  background: white;
+  color: var(--dark-text);
+}
+
+.form-select option:hover {
+  background: var(--light-bg);
+}
+
+/* Enhanced form styling */
+.form-label {
+  font-weight: 600;
+  color: var(--dark-text);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-control, .form-select {
+  transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Availability Status Styles */
+.availability-status {
+  margin-top: 15px;
+}
+
+.availability-status .alert {
+  border-radius: var(--border-radius);
+  padding: 12px 15px;
+  border: none;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.availability-status .alert.alert-success {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+  color: var(--success-color);
+  border-left: 4px solid var(--success-color);
+}
+
+.availability-status .alert.alert-danger {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
+  color: var(--danger-color);
+  border-left: 4px solid var(--danger-color);
+}
+
+.availability-status .alert.alert-info {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+  color: var(--secondary-color);
+  border-left: 4px solid var(--secondary-color);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

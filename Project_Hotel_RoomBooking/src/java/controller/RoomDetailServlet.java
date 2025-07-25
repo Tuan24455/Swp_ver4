@@ -1,14 +1,17 @@
 package controller;
 
 import dao.RoomDao;
+import dao.PromotionDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Room;
+import model.Promotion;
 
 @WebServlet(name = "RoomDetailServlet", urlPatterns = {"/room-detail"})
 public class RoomDetailServlet extends HttpServlet {
@@ -64,6 +67,15 @@ public class RoomDetailServlet extends HttpServlet {
             }
             
             request.setAttribute("isRoomAvailable", isRoomAvailable);
+
+            // Load active promotions from database
+            PromotionDao promotionDao = new PromotionDao();
+            List<Promotion> activePromotions = promotionDao.getActivePromotions();
+            System.out.println("DEBUG: Number of active promotions found: " + activePromotions.size());
+            for (Promotion p : activePromotions) {
+                System.out.println("DEBUG: Promotion - " + p.getTitle() + " - " + p.getPercentage() + "%");
+            }
+            request.setAttribute("activePromotions", activePromotions);
 
             request.setAttribute("room", room);
             request.getRequestDispatcher("room-detail.jsp").forward(request, response);

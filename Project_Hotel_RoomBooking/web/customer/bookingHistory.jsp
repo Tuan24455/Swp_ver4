@@ -1,330 +1,389 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %> <%@ taglib
+prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="fn"
+uri="http://java.sun.com/jsp/jstl/functions" %> <%@ taglib prefix="fmt"
+uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html lang="vi">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>Lịch sử đặt lịch</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lịch sử đặt phòng</title>
 
-        <!-- Font Awesome (nếu muốn dùng icon) -->
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <!-- Font Awesome (nếu muốn dùng icon) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
-        <link rel="stylesheet" href="customer/customer.css" />
-        <link rel="stylesheet" href="customer/includes/component.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <!-- CSS gộp vào JSP -->
-        <style>
-            :root {
-                --primary-color: #007bff;
-                --primary-hover: #0056b3;
-                --secondary-color: #6c757d;
-                --success-color: #28a745;
-                --danger-color: #dc3545;
-                --warning-color: #ffc107;
-                --light-color: #f8f9fa;
-                --dark-color: #343a40;
-                --border-color: #dee2e6;
-                --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
-                --shadow: 0 .5rem 1rem rgba(0,0,0,.15);
-                --transition: all 0.3s ease;
-            }
+    <link rel="stylesheet" href="customer/customer.css" />
+    <link rel="stylesheet" href="customer/includes/component.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- CSS gộp vào JSP -->
+    <style>
+      :root {
+        --primary-color: #007bff;
+        --primary-hover: #0056b3;
+        --secondary-color: #6c757d;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+        --border-color: #dee2e6;
+        --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        --transition: all 0.3s ease;
+      } /* Giữ nguyên phần navbar */
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #ffffff;
+        padding: 0 24px;
+        height: 60px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
 
-            /* Giữ nguyên phần navbar */
-            .navbar {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                background-color: #ffffff;
-                padding: 0 24px;
-                height: 60px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                position: sticky;
-                top: 0;
-                z-index: 100;
-            }
+      .navbar .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
 
-            .navbar .logo {
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #333;
-                text-decoration: none;
-            }
+      /* Booking History specific styles */
+      .booking-history-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
 
-            .navbar-center .nav-links {
-                display: flex;
-                gap: 24px;
-                position: relative;
-            }
+      .booking-history-header {
+        margin-bottom: 25px;
+      }
 
-            .navbar-center .nav-links li a {
-                text-decoration: none;
-                color: #333;
-                font-weight: 500;
-                padding: 6px 8px;
-                border-radius: 4px;
-                transition: background-color 0.2s;
-            }
+      .booking-history-header h2 {
+        color: #343a40;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+      }
 
-            .navbar-center .nav-links li a:hover,
-            .navbar-center .nav-links li a.active {
-                background-color: #f2f2f2;
-                color: #007bff;
-            }
+      .booking-history-header p {
+        color: #6c757d;
+        font-size: 1rem;
+      }
 
-            /* Custom Styles */
-            body {
-                background-color: #f5f7fa;
-                color: #333;
-                line-height: 1.6;
-            }
+      .booking-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
 
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 2rem;
-            }
+      .booking-table th {
+        background-color: #f8f9fa;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #343a40;
+        border-bottom: 2px solid #dee2e6;
+      }
 
-            .card {
-                background: #fff;
-                border-radius: 10px;
-                border: none;
-                transition: var(--transition);
-            }
+      .booking-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #dee2e6;
+        color: #343a40;
+      }
 
-            .card:hover {
-                transform: translateY(-2px);
-            }
+      .booking-table tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+      }
 
-            .card-title {
-                color: var(--dark-color);
-                font-size: 1.75rem;
-                font-weight: 600;
-            }
+      .status-confirmed {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+      }
 
-            .input-group {
-                box-shadow: var(--shadow-sm);
-                border-radius: 8px;
-                overflow: hidden;
-            }
+      .status-pending {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+      }
 
-            .form-control {
-                border: 1px solid var(--border-color);
-                padding: 0.75rem 1rem;
-                font-size: 1rem;
-                transition: var(--transition);
-            }
+      .status-cancelled {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+      }
 
-            .form-control:focus {
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-            }
+      .status-completed {
+        background-color: rgba(52, 58, 64, 0.15);
+        color: #343a40;
+      }
 
-            .btn-primary {
-                background-color: var(--primary-color);
-                border-color: var(--primary-color);
-                padding: 0.75rem 1.5rem;
-                font-weight: 500;
-                transition: var(--transition);
-            }
+      .status-payment-failed {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+      }
 
-            .btn-primary:hover {
-                background-color: var(--primary-hover);
-                border-color: var(--primary-hover);
-                transform: translateY(-1px);
-            }
+      .view-details-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: var(--transition);
+      }
 
-            .table {
-                margin-bottom: 0;
-            }
+      .view-details-btn:hover {
+        background-color: var(--primary-hover);
+        color: white;
+      }
+      .empty-bookings {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
 
-            .table thead th {
-                background-color: var(--light-color);
-                border-bottom: 2px solid var(--border-color);
-                color: var(--dark-color);
-                font-weight: 600;
-                text-transform: uppercase;
-                font-size: 0.85rem;
-                letter-spacing: 0.5px;
-            }
+      .empty-bookings i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #dee2e6;
+      }
 
-            .table td {
-                vertical-align: middle;
-                padding: 1rem;
-                border-bottom: 1px solid var(--border-color);
-            }
+      .price-column {
+        text-align: right;
+        font-weight: 600;
+        white-space: nowrap;
+      }
 
-            .table tbody tr {
-                transition: var(--transition);
-            }
+      /* Hover effect for table rows */
+      .table tbody tr {
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
 
-            .table tbody tr:hover {
-                background-color: rgba(0,123,255,.05);
-            }
+      .table tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR GIỐNG booking.jsp -->
+    <jsp:include page="includes/header.jsp" />
 
-            .badge {
-                padding: 0.5em 1em;
-                font-weight: 500;
-                letter-spacing: 0.5px;
-            }
+    <!-- NỘI DUNG CHÍNH: LỊCH SỬ ĐẶT LỊCH -->
+    <div class="container py-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Lịch sử đặt phòng</h2>
 
-            .pagination {
-                margin-top: 2rem;
-            }
+          <!-- THÔNG BÁO NẾU CÓ -->
+          <c:if test="${not empty message && messageType != 'danger'}">
+            <c:if test="${!(message eq 'Thanh toán đặt phòng thành công!')}">
+              <div
+                class="alert alert-${messageType} alert-dismissible fade show"
+                role="alert"
+              >
+                ${message}
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </c:if>
+          </c:if>
+          <!-- BẢNG HIỂN THỊ LỊCH SỬ ĐẶT PHÒNG -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-4">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Mã đặt phòng</th>
+                  <th scope="col">Ngày nhận phòng</th>
+                  <th scope="col">Ngày trả phòng</th>
+                  <th scope="col">Phòng</th>
+                  <th scope="col">Tầng</th>
+                  <th scope="col">Tổng tiền</th>
+                  <th scope="col">Trạng thái</th>
+                  <th scope="col">Ngày đặt</th>
+                </tr>
+              </thead>
+              <tbody>
+                <c:forEach var="booking" items="${bookings}">
+                  <tr>
+                    <td data-label="Mã đặt phòng">
+                      #<c:out value="${booking.bookingId}" />
+                    </td>
+                    <td data-label="Ngày nhận phòng">
+                      <fmt:formatDate
+                        value="${booking.checkInDate}"
+                        pattern="dd/MM/yyyy"
+                      />
+                    </td>
+                    <td data-label="Ngày trả phòng">
+                      <fmt:formatDate
+                        value="${booking.checkOutDate}"
+                        pattern="dd/MM/yyyy"
+                      />
+                    </td>
+                    <td data-label="Phòng">
+                      <c:out value="${booking.rooms}" />
+                    </td>
+                    <td data-label="Tầng">
+                      <c:out value="${booking.floors}" />
+                    </td>
+                    <td data-label="Tổng tiền" class="price-column">
+                      <fmt:formatNumber
+                        value="${booking.totalPrice}"
+                        type="currency"
+                        currencySymbol="đ"
+                        maxFractionDigits="0"
+                      />
+                    </td>
+                    <td data-label="Trạng thái">
+                      <c:choose>
+                        <c:when test="${booking.status == 'COMPLETED'}">
+                          <span class="status-badge status-completed"
+                            >Hoàn thành</span
+                          >
+                        </c:when>
+                        <c:when test="${booking.status == 'CONFIRMED'}">
+                          <span class="status-badge status-confirmed"
+                            >Đã xác nhận</span
+                          >
+                        </c:when>
+                        <c:when test="${booking.status == 'PENDING'}">
+                          <span class="status-badge status-pending"
+                            >Chờ thanh toán</span
+                          >
+                        </c:when>
+                        <c:when test="${booking.status == 'CANCELLED'}">
+                          <span class="status-badge status-cancelled"
+                            >Đã hủy</span
+                          >
+                        </c:when>
+                        <c:when test="${booking.status == 'PAYMENT_FAILED'}">
+                          <span class="status-badge status-payment-failed"
+                            >Thanh toán thất bại</span
+                          >
+                        </c:when>
+                        <c:otherwise>
+                          <span class="status-badge">${booking.status}</span>
+                        </c:otherwise>
+                      </c:choose>
+                    </td>
+                    <td data-label="Ngày đặt">
+                      <fmt:formatDate
+                        value="${booking.createdAt}"
+                        pattern="dd/MM/yyyy HH:mm"
+                      />
+                    </td>
+                  </tr>
+                </c:forEach>
 
-            .page-link {
-                border: none;
-                padding: 0.75rem 1rem;
-                margin: 0 0.25rem;
-                color: var(--dark-color);
-                border-radius: 6px;
-                transition: var(--transition);
-            }
+                <c:if test="${empty bookings}">
+                  <tr>
+                    <td colspan="8" class="text-center text-muted py-4">
+                      <i class="fas fa-calendar-times fs-4 mb-3 d-block"></i>
+                      Bạn chưa có lịch sử đặt phòng nào
+                    </td>
+                  </tr>
+                </c:if>
+              </tbody>
+            </table>
+          </div>
+          <!-- PHÂN TRANG -->
+          <c:if test="${totalPages > 1}">
+            <nav
+              aria-label="Điều hướng trang"
+              class="d-flex justify-content-center"
+            >
+              <ul class="pagination mb-0">
+                <!-- Nút Previous -->
+                <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+                  <a class="page-link" href="?page=${currentPage - 1}">
+                    <i class="fas fa-chevron-left"></i>
+                  </a>
+                </li>
 
-            .page-item.active .page-link {
-                background-color: var(--primary-color);
-                border-color: var(--primary-color);
-            }
+                <!-- Hiển thị các số trang -->
+                <c:forEach var="i" begin="1" end="${totalPages}">
+                  <li class="page-item ${i == currentPage ? 'active' : ''}">
+                    <a class="page-link" href="?page=${i}">${i}</a>
+                  </li>
+                </c:forEach>
 
-            .page-item.disabled .page-link {
-                background-color: var(--light-color);
-                color: var(--secondary-color);
-            }
-
-            /* Responsive Design */
-            @media (max-width: 768px) {
-                .container {
-                    padding: 1rem;
-                }
-
-                .card-body {
-                    padding: 1.25rem;
-                }
-
-                .table thead {
-                    display: none;
-                }
-
-                .table tbody tr {
-                    display: block;
-                    margin-bottom: 1rem;
-                    border: 1px solid var(--border-color);
-                    border-radius: 8px;
-                }
-
-                .table td {
-                    display: block;
-                    text-align: right;
-                    padding: 0.75rem;
-                    border: none;
-                }
-
-                .table td::before {
-                    content: attr(data-label);
-                    float: left;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    font-size: 0.85rem;
-                }
-
-                .pagination .page-link {
-                    padding: 0.5rem 0.75rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <!-- NAVBAR GIỐNG booking.jsp -->
-        <jsp:include page="includes/header.jsp"/>
-
-
-        <!-- NỘI DUNG CHÍNH: LỊCH SỬ ĐẶT LỊCH -->
-        <div class="container py-5">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Lịch sử đặt lịch</h2>
-
-                    <!-- FORM TÌM KIẾM -->
-                    <form action="bookingHistory" method="get" class="mb-4">
-                        <div class="input-group">
-                            <input type="text" name="search" 
-                                   class="form-control form-control-lg shadow-none"
-                                   placeholder="Tìm theo dịch vụ hoặc trạng thái..."
-                                   value="${fn:escapeXml(param.search)}"/>
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Tìm
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- BẢNG HIỂN THỊ LỊCH SỬ -->
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-4">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">Ngày</th>
-                                    <th scope="col">Giờ</th>
-                                    <th scope="col">Dịch vụ</th>
-                                    <th scope="col">Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="b" items="${historyList}">
-                                    <tr>
-                                        <td><c:out value="${b.ngay}" /></td>
-                                        <td><c:out value="${b.gio}" /></td>
-                                        <td><c:out value="${b.dichVu}" /></td>
-                                        <td>
-                                            <span class="badge rounded-pill bg-${b.trangThai == 'Đã hoàn thành' ? 'success' : b.trangThai == 'Đã hủy' ? 'danger' : 'warning'} text-white">
-                                                <c:out value="${b.trangThai}" />
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-
-                                <c:if test="${empty historyList}">
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted py-4">
-                                            <i class="fas fa-calendar-times fs-4 mb-3 d-block"></i>
-                                            Không tìm thấy lịch sử đặt nào
-                                        </td>
-                                    </tr>
-                                </c:if>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- PHÂN TRANG -->
-                    <nav aria-label="Điều hướng trang" class="d-flex justify-content-center">
-                        <ul class="pagination mb-0">
-                            <!-- Nút Previous -->
-                            <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
-                                <a class="page-link" href="?search=${fn:escapeXml(param.search)}&amp;page=${currentPage - 1}">
-                                    <i class="fas fa-chevron-left"></i>
-                                </a>
-                            </li>
-
-                            <!-- Hiển thị các số trang -->
-                            <c:forEach var="i" begin="1" end="${totalPages}">
-                                <li class="page-item ${i == currentPage ? 'active' : ''}">
-                                    <a class="page-link" href="?search=${fn:escapeXml(param.search)}&amp;page=${i}">${i}</a>
-                                </li>
-                            </c:forEach>
-
-                            <!-- Nút Next -->
-                            <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
-                                <a class="page-link" href="?search=${fn:escapeXml(param.search)}&amp;page=${currentPage + 1}">
-                                    <i class="fas fa-chevron-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+                <!-- Nút Next -->
+                <li
+                  class="page-item ${currentPage >= totalPages ? 'disabled' : ''}"
+                >
+                  <a class="page-link" href="?page=${currentPage + 1}">
+                    <i class="fas fa-chevron-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </c:if>
         </div>
-    </body>
+      </div>
+    </div>
+    <!-- Add Bootstrap JS and Popper.js for certain components -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom script for additional functionality -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Auto-dismiss alerts after 5 seconds
+        const alerts = document.querySelectorAll(".alert");
+        alerts.forEach(function (alert) {
+          setTimeout(function () {
+            const closeButton = alert.querySelector(".btn-close");
+            if (closeButton) {
+              closeButton.click();
+            }
+          }, 5000);
+        });
+
+        // Add click event for row highlighting
+        const tableRows = document.querySelectorAll(".booking-table tbody tr");
+        tableRows.forEach(function (row) {
+          row.addEventListener("click", function () {
+            // Could add functionality to view booking details in the future
+            console.log(
+              "Row clicked:",
+              this.querySelector("td:first-child").textContent
+            );
+          });
+        });
+      });
+    </script>
+  </body>
 </html>

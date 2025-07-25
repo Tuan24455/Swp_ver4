@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
          prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -19,6 +20,138 @@
             href="${pageContext.request.contextPath}/css/style.css"
             rel="stylesheet"
             />
+        <style>
+            :root {
+                --primary-color: #e53e3e;
+                --primary-hover: #c53030;
+                --secondary-color: #3182ce;
+                --success-color: #38a169;
+                --danger-color: #e53e3e;
+                --warning-color: #d69e2e;
+                --light-gray: #f7fafc;
+                --medium-gray: #edf2f7;
+                --dark-gray: #2d3748;
+                --border-color: #e2e8f0;
+                --text-primary: #1a202c;
+                --text-secondary: #718096;
+            }
+            body {
+                background-color: var(--light-gray);
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                color: var(--text-primary);
+            }
+            .section-card {
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+                margin-bottom: 2rem;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            .section-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 35px rgba(0,0,0,0.15);
+            }
+            .section-header {
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+                padding: 1.5rem 2rem;
+                color: white;
+                font-weight: 700;
+                font-size: 1.2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .section-content {
+                padding: 2rem;
+            }
+            .booking-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            .booking-table th {
+                background: linear-gradient(135deg, #9aafc3, #f1f5f9);
+                padding: 1rem 1.5rem;
+                text-align: left;
+                font-weight: 700;
+                color: var(--text-primary);
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+            .booking-table td {
+                padding: 1.2rem 1.5rem;
+                border-bottom: 1px solid var(--border-color);
+                vertical-align: middle;
+            }
+            .booking-table tbody tr {
+                transition: all 0.3s ease;
+            }
+            .booking-table tbody tr:hover {
+                background-color: rgba(102, 126, 234, 0.05);
+                transform: scale(1.01);
+            }
+            .booking-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+            .status-badge {
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+            }
+            .status-confirmed {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .status-pending {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+            .status-cancelled {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            .status-completed {
+                background-color: #d1ecf1;
+                color: #0c5460;
+            }
+            .status-checkin {
+                background-color: var(--success-color);
+                color: white;
+            }
+            .status-checkout {
+                background-color: var(--danger-color);
+                color: white;
+            }
+            .btn-action {
+                padding: 5px 10px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                text-decoration: none;
+                display: inline-block;
+                margin: 2px;
+            }
+            .btn-view {
+                background-color: var(--secondary-color);
+                color: white;
+            }
+            .btn-edit {
+                background-color: var(--warning-color);
+                color: white;
+            }
+            .btn-cancel {
+                background-color: var(--danger-color);
+                color: white;
+            }
+        </style>
     </head>
     <body>
         <div class="d-flex" id="wrapper">
@@ -40,41 +173,21 @@
                     </div>
                 </nav>
 
-                <div
-                    class="mb-4"
-                    style="
-                    background-image: url('https://images.squarespace-cdn.com/content/v1/5aadf482aa49a1d810879b88/1626698419120-J7CH9BPMB2YI728SLFPN/1.jpg');
-                    background-size: cover;
-                    background-position: center center;
-                    background-repeat: no-repeat;
-                    padding: 20px 30px;
-                    border-radius: 0.25rem;
-                    color: white;
-                    box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.4);
-                    "
-                    >
-                    <nav aria-label="breadcrumb" class="mb-3">
-                        <ol class="breadcrumb custom-breadcrumb" style="color: white;">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp" style="color: #ddd;">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: #fff;">
-                                Bookings
-                            </li>
-                        </ol>
-                    </nav>
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Bookings Management</h1>
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addBookingModal"
-                            >
-                            <i class="fas fa-plus me-2"></i>Add New Booking
-                        </button>
+                <!-- Thông báo từ servlet -->
+                <c:if test="${not empty message}">
+                    <div class="alert alert-${messageType} alert-dismissible fade show m-3" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                </div>
+                </c:if>
 
-
+                <!-- Thông báo lỗi -->
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                        ${error}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
 
                 <!-- Filter Section -->
                 <div class="card shadow-sm mb-4">
@@ -111,173 +224,104 @@
                 </div>
 
                 <!-- Bookings Table -->
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="mb-0">All Bookings</h5>
+                <div class="section-card">
+                    <div class="section-header">
+                        <span>Quản lý đặt phòng</span>
+                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                            <i class="fas fa-plus me-2"></i>Thêm đặt phòng mới
+                        </button>
                     </div>
-                    <div class="card-body">
-                        <div
-                            class="d-flex justify-content-between align-items-center mb-3 flex-wrap"
-                            >
-                            <div class="d-flex align-items-center mb-2 mb-md-0">
-                                <span class="me-2 text-muted">Show</span>
-                                <select
-                                    class="form-select form-select-sm"
-                                    style="width: auto"
-                                    >
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                                <span class="ms-2 text-muted">entries</span>
-                            </div>
-                            <div
-                                class="input-group search-table-input"
-                                style="width: 250px"
-                                >
-                                <span class="input-group-text"
-                                      ><i class="fas fa-search"></i
-                                    ></span>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Search bookings..."
-                                    />
-                            </div>
-                        </div>
-
+                    <div class="section-content">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover align-middle">
-                                <thead class="table-light">
+                            <table class="booking-table">
+                                <thead>
                                     <tr>
-                                        <th>Booking ID</th>
-                                        <th>Guest Name</th>
-                                        <th>Room Type</th>
-                                        <th>Check In</th>
-                                        <th>Check Out</th>
-                                        <th>Total Amount</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Mã đặt phòng</th>
+                                        <th>Tên khách</th>
+                                        <th>Loại phòng</th>
+                                        <th>Nhận phòng</th>
+                                        <th>Trả phòng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>#BK001</td>
-                                        <td>John Doe</td>
-                                        <td>Deluxe Room</td>
-                                        <td>2025-05-26</td>
-                                        <td>2025-05-28</td>
-                                        <td>$450.00</td>
-                                        <td><span class="badge bg-success">Confirmed</span></td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <button
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    title="View"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-sm btn-outline-warning"
-                                                    title="Edit"
-                                                    >
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    title="Cancel"
-                                                    >
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#BK002</td>
-                                        <td>Jane Smith</td>
-                                        <td>Standard Room</td>
-                                        <td>2025-05-27</td>
-                                        <td>2025-05-30</td>
-                                        <td>$320.00</td>
-                                        <td><span class="badge bg-warning">Pending</span></td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <button
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    title="View"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-sm btn-outline-warning"
-                                                    title="Edit"
-                                                    >
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    title="Cancel"
-                                                    >
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>#BK003</td>
-                                        <td>Mike Johnson</td>
-                                        <td>Suite</td>
-                                        <td>2025-05-25</td>
-                                        <td>2025-05-27</td>
-                                        <td>$680.00</td>
-                                        <td><span class="badge bg-primary">Completed</span></td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <button
-                                                    class="btn btn-sm btn-outline-primary"
-                                                    title="View"
-                                                    >
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    class="btn btn-sm btn-outline-secondary"
-                                                    title="Receipt"
-                                                    >
-                                                    <i class="fas fa-receipt"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <c:forEach var="booking" items="${bookings}">
+                                        <tr>
+                                            <td>#${booking.id}</td>
+                                            <td>${booking.customer}</td>
+                                            <td>${booking.roomNumber}</td>
+                                            <td>${booking.checkIn}</td>
+                                            <td>${booking.checkOut}</td>
+                                            <td><fmt:formatNumber value="${booking.totalPrices}" type="currency" currencySymbol="₫" maxFractionDigits="0"/></td>
+                                            <td>
+                                                <span class="status-badge ${booking.statusClass}">
+                                                    ${booking.status}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${booking.status eq 'pending' or booking.status eq 'Pending Payment'}">
+                                                        <button type="button" class="btn-action btn-view" title="Check-in" 
+                                                            onclick="alert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
+                                                            <i class="fas fa-sign-in-alt"></i> Check-in
+                                                        </button>
+                                                        <button type="button" class="btn-action btn-cancel" title="Check-out"
+                                                            onclick="alert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
+                                                            <i class="fas fa-sign-out-alt"></i> Check-out
+                                                        </button>
+                                                    </c:when>
+                                                    <c:when test="${booking.status eq 'Payment Failed'}">
+                                                        <button type="button" class="btn-action btn-view" title="Check-in"
+                                                            onclick="alert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
+                                                            <i class="fas fa-sign-in-alt"></i> Check-in
+                                                        </button>
+                                                        <button type="button" class="btn-action btn-cancel" title="Check-out"
+                                                            onclick="alert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
+                                                            <i class="fas fa-sign-out-alt"></i> Check-out
+                                                        </button>
+                                                    </c:when>                                                    <c:when test="${booking.status eq 'confirmed' or booking.status eq 'Confirmed' or 
+                                                                  booking.status eq 'Check-in' or booking.status eq 'checkin' or
+                                                                  booking.status eq 'Check-out' or booking.status eq 'checkout' or
+                                                                  booking.status eq 'completed' or booking.status eq 'Completed'}">
+                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                            <input type="hidden" name="action" value="checkin"/>
+                                                            <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                            <button type="submit" class="btn-action btn-view" title="Check-in">
+                                                                <i class="fas fa-sign-in-alt"></i> Check-in
+                                                            </button>
+                                                        </form>
+                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                            <input type="hidden" name="action" value="checkout"/>
+                                                            <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                            <button type="submit" class="btn-action btn-cancel" title="Check-out">
+                                                                <i class="fas fa-sign-out-alt"></i> Check-out
+                                                            </button>
+                                                        </form>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <button type="button" class="btn-action btn-view" title="Check-in" disabled>
+                                                            <i class="fas fa-sign-in-alt"></i> Check-in
+                                                        </button>
+                                                        <button type="button" class="btn-action btn-cancel" title="Check-out" disabled>
+                                                            <i class="fas fa-sign-out-alt"></i> Check-out
+                                                        </button>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:if test="${empty bookings}">
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-4">
+                                                <i class="fas fa-calendar-times fs-4 mb-3 d-block"></i>
+                                                Không có booking nào
+                                            </td>
+                                        </tr>
+                                    </c:if>
                                 </tbody>
                             </table>
-                        </div>
-
-                        <div
-                            class="d-flex justify-content-between align-items-center mt-3 flex-wrap"
-                            >
-                            <small class="text-muted mb-2 mb-md-0"
-                                   >Showing 1 to 3 of 50 entries</small
-                            >
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#">Previous</a>
-                                    </li>
-                                    <li class="page-item active">
-                                        <a class="page-link" href="#">1</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">2</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">3</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
                     </div>
                 </div>

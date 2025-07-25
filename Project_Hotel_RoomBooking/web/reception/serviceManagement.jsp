@@ -107,7 +107,7 @@
         }
 
         .service-table th {
-            background: linear-gradient(135deg, var(--medium-gray), #f1f5f9);
+            background: linear-gradient(135deg, #9aafc3, #f1f5f9);
             padding: 1rem 1.5rem;
             text-align: left;
             font-weight: 700;
@@ -295,7 +295,7 @@
                     <div class="section-card">
                         <div class="section-header d-flex justify-content-between align-items-center">
                             <span>All Service</span>
-                                                         <button type="button" class="add-service-btn" data-bs-toggle="modal" data-bs-target="#addServiceModal">Add new service</button>
+                            <!-- Removed Add new service button -->
                         </div>
                         <div class="section-content">
                             <table class="service-table">
@@ -304,7 +304,7 @@
                                         <th>Dịch Vụ</th>
                                         <th>Đơn Giá</th>
                                         <th>Trạng Thái</th>
-                                        <th>Thao Tác</th>
+                                        <!-- <th>Thao Tác</th> removed -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -314,7 +314,7 @@
                                             <td><span class="price-format"><fmt:formatNumber value="${service.price}" type="currency" currencySymbol="" pattern="#,##0" /> VND</span></td>
                                             <td><span class="status-badge status-active">Đang hoạt động</span></td>
                                             <td>
-                                                <button type="button" class="btn-action btn-edit" onclick="editService('${service.id}', '${service.name}', '${service.price}', '${service.description}', '${service.typeId}', '${service.imageUrl}')">Chỉnh sửa</button>
+                                                <!-- Removed edit button -->
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -385,7 +385,7 @@
                                         <th>Đơn Giá</th>
                                         <th>Tổng Tiền</th>
                                         <th>Trạng Thái</th>
-                                        <th>Thao Tác</th>
+                                        <!-- <th>Thao Tác</th> removed -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -408,9 +408,6 @@
                                                         <c:otherwise><c:out value="${booking.status}" /></c:otherwise>
                                                     </c:choose>
                                                 </span>
-                                            </td>
-                                            <td>
-                                                <a href="#" class="btn-action btn-view" onclick="viewServiceBooking('${booking.id}')">view</a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -756,4 +753,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

@@ -333,6 +333,43 @@ body {
     left: 100%;
 }
 
+/* Price Row Styles for Discount Display */
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.price-row:last-child {
+    border-bottom: none;
+}
+
+.discount-row {
+    color: var(--success-color);
+    background: linear-gradient(135deg, rgba(15, 157, 88, 0.1) 0%, rgba(15, 157, 88, 0.05) 100%);
+    border-radius: 6px;
+    padding: 8px 12px !important;
+    margin: 8px 0;
+    border: 1px solid rgba(15, 157, 88, 0.2);
+}
+
+.discount-amount {
+    font-weight: 700;
+    color: var(--success-color) !important;
+}
+
+.total-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--accent-color);
+    border-top: 2px solid var(--primary-color);
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {

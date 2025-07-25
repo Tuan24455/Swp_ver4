@@ -1,10 +1,12 @@
 package dao;
 
 import dal.DBContext;
+import model.BookingRoomDetails;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -180,5 +182,42 @@ public class BookingRoomDetailsDao {
         }
         
         return summary;
+    }
+    
+    /**
+     * Create a new booking room details record
+     * @param bookingRoomDetails The booking room details to create
+     * @return The generated booking room details ID, or -1 if failed
+     */
+    public int createBookingRoomDetails(BookingRoomDetails bookingRoomDetails) {
+        int id = -1;
+        String sql = "INSERT INTO BookingRoomDetails (booking_id, room_id, check_in_date, check_out_date, quantity, prices) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setInt(1, bookingRoomDetails.getBookingId());
+            ps.setInt(2, bookingRoomDetails.getRoomId());
+            ps.setDate(3, new java.sql.Date(bookingRoomDetails.getCheckInDate().getTime()));
+            ps.setDate(4, new java.sql.Date(bookingRoomDetails.getCheckOutDate().getTime()));
+            ps.setInt(5, bookingRoomDetails.getQuantity());
+            ps.setDouble(6, bookingRoomDetails.getPrices());
+            
+            int rowsAffected = ps.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        id = rs.getInt(1);
+                    }
+                }
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error creating booking room details: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return id;
     }
 }
