@@ -402,7 +402,7 @@
                 <div class="container">
                     <!-- Section Header -->
                     <div class="section-header text-center mb-5">
-                        <h2 class="section-title animate__animated animate__fadeInUp">
+                        <h2 class="section-title animate__animated animate__fadeInUp" style="color: white">
                             <i class="fas fa-list me-3"></i>Danh Sách Phòng
                         </h2>
                         <div class="section-divider"></div>

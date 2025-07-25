@@ -29,7 +29,10 @@ public class RegisterDetailServlet extends HttpServlet {
 
         String fName = request.getParameter("fName");
         String lName = request.getParameter("lName");
-        String fullName = fName.trim() + " " + lName.trim();
+        // Xóa khoảng trắng dư thừa bên trong và ghép lại
+        String fullName = (fName + " " + lName)
+                .trim() // Xóa đầu/cuối
+                .replaceAll("\\s+", " ");        // Thay nhiều khoảng trắng bằng 1
 
         String birthStr = request.getParameter("birth");
         String gender = request.getParameter("gender");

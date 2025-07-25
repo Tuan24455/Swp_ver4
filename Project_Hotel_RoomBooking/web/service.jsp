@@ -355,7 +355,7 @@
             <section class="room-list-section">
                 <div class="container">
                     <div class="section-header text-center mb-5">
-                        <h2 class="section-title animate__animated animate__fadeInUp">
+                        <h2 class="section-title animate__animated animate__fadeInUp" style="color: white">
                             <i class="fas fa-list me-3"></i>Danh sách dịch vụ
                         </h2>
                         <div class="section-divider"></div>
