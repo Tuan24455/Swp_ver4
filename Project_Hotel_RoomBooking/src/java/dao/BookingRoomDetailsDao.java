@@ -234,4 +234,118 @@ public class BookingRoomDetailsDao {      public List<Map<String, Object>> getCu
         
         return id;
     }
+
+    // Method to get filtered bookings with pagination
+    public List<Map<String, Object>> getFilteredBookingsPaginated(String startDate, String endDate, Integer roomTypeId, int page, int pageSize) {
+        List<Map<String, Object>> bookings = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder();
+        
+        // Calculate offset
+        int offset = (page - 1) * pageSize;
+        
+        sqlBuilder.append("SELECT ");
+        sqlBuilder.append("r.room_number AS [Tên Phòng], ");
+        sqlBuilder.append("r.floor AS [Tầng], ");
+        sqlBuilder.append("rt.room_type AS [Loại Phòng], ");
+        sqlBuilder.append("r.capacity AS [Sức Chứa], ");
+        sqlBuilder.append("u.full_name AS [Tên Khách Hàng], ");
+        sqlBuilder.append("b.created_at AS [Ngày Đặt], ");
+        sqlBuilder.append("brd.check_out_date AS [Ngày Trả], ");
+        sqlBuilder.append("b.total_prices AS [Tổng Tiền], ");
+        sqlBuilder.append("t.status AS [Status] ");
+        sqlBuilder.append("FROM BookingRoomDetails brd ");
+        sqlBuilder.append("INNER JOIN Rooms r ON brd.room_id = r.id ");
+        sqlBuilder.append("INNER JOIN RoomTypes rt ON r.room_type_id = rt.id ");
+        sqlBuilder.append("INNER JOIN Bookings b ON brd.booking_id = b.id ");
+        sqlBuilder.append("INNER JOIN Users u ON b.user_id = u.id ");
+        sqlBuilder.append("INNER JOIN Transactions t ON b.id = t.booking_id ");
+        sqlBuilder.append("WHERE r.isDelete = 0 AND u.isDeleted = 0 AND t.status = 'Confirmed' ");
+
+        List<Object> params = new ArrayList<>();
+        if (startDate != null && !startDate.isEmpty()) {
+            sqlBuilder.append("AND b.created_at >= ? ");
+            params.add(startDate);
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            sqlBuilder.append("AND brd.check_out_date <= ? ");
+            params.add(endDate);
+        }
+        if (roomTypeId != null) {
+            sqlBuilder.append("AND rt.id = ? ");
+            params.add(roomTypeId);
+        }
+        sqlBuilder.append("ORDER BY r.room_number ");
+        sqlBuilder.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add(offset);
+        params.add(pageSize);
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> booking = new HashMap<>();
+                    booking.put("roomNumber", rs.getString("Tên Phòng"));
+                    booking.put("floor", rs.getInt("Tầng"));
+                    booking.put("roomType", rs.getString("Loại Phòng"));
+                    booking.put("capacity", rs.getInt("Sức Chứa"));
+                    booking.put("customerName", rs.getString("Tên Khách Hàng"));
+                    booking.put("checkInDate", rs.getTimestamp("Ngày Đặt"));
+                    booking.put("checkOutDate", rs.getDate("Ngày Trả"));
+                    booking.put("totalPrice", rs.getDouble("Tổng Tiền"));
+                    booking.put("status", rs.getString("Status"));
+                    bookings.add(booking);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getFilteredBookingsPaginated: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return bookings;
+    }
+
+    // Method to get total count of filtered bookings for pagination
+    public int getTotalFilteredBookingsCount(String startDate, String endDate, Integer roomTypeId) {
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("SELECT COUNT(*) as totalCount ");
+        sqlBuilder.append("FROM BookingRoomDetails brd ");
+        sqlBuilder.append("INNER JOIN Rooms r ON brd.room_id = r.id ");
+        sqlBuilder.append("INNER JOIN RoomTypes rt ON r.room_type_id = rt.id ");
+        sqlBuilder.append("INNER JOIN Bookings b ON brd.booking_id = b.id ");
+        sqlBuilder.append("INNER JOIN Users u ON b.user_id = u.id ");
+        sqlBuilder.append("INNER JOIN Transactions t ON b.id = t.booking_id ");
+        sqlBuilder.append("WHERE r.isDelete = 0 AND u.isDeleted = 0 AND t.status = 'Confirmed' ");
+
+        List<Object> params = new ArrayList<>();
+        if (startDate != null && !startDate.isEmpty()) {
+            sqlBuilder.append("AND b.created_at >= ? ");
+            params.add(startDate);
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            sqlBuilder.append("AND brd.check_out_date <= ? ");
+            params.add(endDate);
+        }
+        if (roomTypeId != null) {
+            sqlBuilder.append("AND rt.id = ? ");
+            params.add(roomTypeId);
+        }
+
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totalCount");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in getTotalFilteredBookingsCount: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

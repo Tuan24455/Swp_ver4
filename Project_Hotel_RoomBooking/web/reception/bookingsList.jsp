@@ -271,6 +271,12 @@
                                                                   booking.status eq 'Check-out' or booking.status eq 'checkout' or
                                                                   booking.status eq 'completed' or booking.status eq 'Completed'}">
                                                         <c:choose>
+                                                            <c:when test="${booking.status eq 'Check-out' or booking.status eq 'checkout' or booking.status eq 'completed' or booking.status eq 'Completed'}">
+                                                                <button type="button" class="btn-action btn-view" title="Check-in"
+                                                                    onclick="showAlert('Booking #${booking.id} đã hoàn tất việc check-out không thể check-in lại')">
+                                                                    <i class="fas fa-sign-in-alt"></i> Check-in
+                                                                </button>
+                                                            </c:when>
                                                             <c:when test="${bookingCheckInDate.time <= todayDate.time}">
                                                                 <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
                                                                     <input type="hidden" name="action" value="checkin"/>
@@ -286,9 +292,14 @@
                                                                     <i class="fas fa-sign-in-alt"></i> Check-in
                                                                 </button>
                                                             </c:otherwise>
-                                                        </c:choose>
-                                                        <!-- Replace checkout form with conditional logic -->
+                                                        </c:choose>                                                        <!-- Replace checkout form with conditional logic -->
                                                         <c:choose>
+                                                            <c:when test="${booking.status eq 'Check-out' or booking.status eq 'checkout' or booking.status eq 'completed' or booking.status eq 'Completed'}">
+                                                                <button type="button" class="btn-action btn-cancel" title="Check-out"
+                                                                    onclick="showAlert('Booking #${booking.id} đã hoàn tất việc check-out, không thể check-out lại')">
+                                                                    <i class="fas fa-sign-out-alt"></i> Check-out
+                                                                </button>
+                                                            </c:when>
                                                             <c:when test="${booking.status eq 'Check-in' or booking.status eq 'checkin'}">
                                                                 <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
                                                                     <input type="hidden" name="action" value="checkout"/>

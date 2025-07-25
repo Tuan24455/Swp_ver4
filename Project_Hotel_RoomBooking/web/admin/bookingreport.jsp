@@ -84,31 +84,45 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           <!-- Bộ lọc tìm kiếm (đã bỏ filter loại phòng và CSS lại) -->
           <div class="card shadow-sm mb-4">
             <div class="card-body bg-light filter-card">
-              <div class="row g-3 align-items-center">
-                <div class="col-md-4 col-12">
-                  <label for="fromDate" class="form-label">Từ Ngày</label>
-                  <div class="input-group">
-                    <input type="date" class="form-control" id="fromDate" />
-                    <span class="input-group-text"
-                      ><i class="fas fa-calendar-alt"></i
-                    ></span>
+              <form method="get" action="bookingreport">
+                <div class="row g-3 align-items-center">
+                  <div class="col-md-4 col-12">
+                    <label for="fromDate" class="form-label">Từ Ngày</label>
+                    <div class="input-group">
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="fromDate"
+                        name="startDate"
+                        value="${param.startDate}"
+                      />
+                      <span class="input-group-text"
+                        ><i class="fas fa-calendar-alt"></i
+                      ></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-12">
+                    <label for="toDate" class="form-label">Đến Ngày</label>
+                    <div class="input-group">
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="toDate"
+                        name="endDate"
+                        value="${param.endDate}"
+                      />
+                      <span class="input-group-text"
+                        ><i class="fas fa-calendar-alt"></i
+                      ></span>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                      Lọc
+                    </button>
                   </div>
                 </div>
-                <div class="col-md-4 col-12">
-                  <label for="toDate" class="form-label">Đến Ngày</label>
-                  <div class="input-group">
-                    <input type="date" class="form-control" id="toDate" />
-                    <span class="input-group-text"
-                      ><i class="fas fa-calendar-alt"></i
-                    ></span>
-                  </div>
-                </div>
-                <div class="col-md-4 col-12 d-flex align-items-end">
-                  <button class="btn btn-primary w-100" id="filterButton">
-                    Lọc
-                  </button>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
 
@@ -218,6 +232,81 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                   </tbody>
                 </table>
               </div>
+
+              <!-- Pagination Controls -->
+              <c:if test="${totalPages > 1}">
+                <div
+                  class="d-flex justify-content-between align-items-center mt-3"
+                >
+                  <div class="text-muted">
+                    Hiển thị
+                    <strong>${(currentPage-1) * pageSize + 1}</strong> đến
+                    <strong
+                      >${currentPage * pageSize > totalRecords ? totalRecords :
+                      currentPage * pageSize}</strong
+                    >
+                    của <strong>${totalRecords}</strong> kết quả
+                  </div>
+                  <nav aria-label="Pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                      <!-- Previous Button -->
+                      <li
+                        class="page-item ${currentPage <= 1 ? 'disabled' : ''}"
+                      >
+                        <a
+                          class="page-link"
+                          href="?page=${currentPage - 1}&startDate=${param.startDate}&endDate=${param.endDate}&roomType=${param.roomType}"
+                        >
+                          <i class="fas fa-chevron-left"></i> Trước
+                        </a>
+                      </li>
+
+                      <!-- Page Numbers -->
+                      <c:forEach begin="1" end="${totalPages}" var="pageNum">
+                        <c:if
+                          test="${pageNum <= 5 || (pageNum >= currentPage - 2 && pageNum <= currentPage + 2) || pageNum >= totalPages - 2}"
+                        >
+                          <li
+                            class="page-item ${pageNum == currentPage ? 'active' : ''}"
+                          >
+                            <a
+                              class="page-link"
+                              href="?page=${pageNum}&startDate=${param.startDate}&endDate=${param.endDate}&roomType=${param.roomType}"
+                            >
+                              ${pageNum}
+                            </a>
+                          </li>
+                        </c:if>
+                        <c:if test="${pageNum == 6 && currentPage > 8}">
+                          <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                          </li>
+                        </c:if>
+                        <c:if
+                          test="${pageNum == currentPage + 3 && pageNum < totalPages - 2}"
+                        >
+                          <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                          </li>
+                        </c:if>
+                      </c:forEach>
+
+                      <!-- Next Button -->
+                      <li
+                        class="page-item ${currentPage >= totalPages ? 'disabled' : ''}"
+                      >
+                        <a
+                          class="page-link"
+                          href="?page=${currentPage + 1}&startDate=${param.startDate}&endDate=${param.endDate}&roomType=${param.roomType}"
+                        >
+                          Sau <i class="fas fa-chevron-right"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </c:if>
+
               <!-- Summary Footer đã bị bỏ hoàn toàn -->
             </div>
           </div>
