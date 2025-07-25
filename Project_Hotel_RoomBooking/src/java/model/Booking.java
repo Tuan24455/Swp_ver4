@@ -33,6 +33,7 @@ public class Booking {
     private String checkIn; // check_in_date (String format YYYY-MM-DD)
     private String checkOut; // check_out_date (String format YYYY-MM-DD)
     private String statusClass; // 'bg-success', etc. (cho màu badge)
+    private String roomNumber; // Room number for display
 
     // Getter and Setter methods (cũ giữ nguyên, thêm mới)
 
@@ -197,11 +198,20 @@ public class Booking {
         this.statusClass = statusClass;
     }
 
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
     // Constructor mới cho Booking
     public Booking(String roomNumber, String customer, String checkInDate, String checkOutDate, String status) {
         this.customer = customer;
         this.checkIn = checkInDate;
         this.checkOut = checkOutDate;
         this.status = status;
+        this.roomNumber = roomNumber;
     }
 }

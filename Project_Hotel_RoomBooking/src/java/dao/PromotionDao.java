@@ -16,10 +16,10 @@ import model.Promotion;
 
 public class PromotionDao {
 
-    // Lấy tất cả promotion chưa bị xóa
+    // Lấy tất cả promotion
     public List<Promotion> getAllPromotions() {
         List<Promotion> list = new ArrayList<>();
-        String SQL_SELECT_ALL = "SELECT * FROM Promotion WHERE isDeleted = 0";
+        String SQL_SELECT_ALL = "SELECT * FROM Promotion";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_ALL); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
@@ -39,9 +39,9 @@ public class PromotionDao {
         return list;
     }
 
-    // Lấy theo id (chỉ lấy khi chưa xóa)
+    // Lấy theo id
     public Promotion getPromotionById(int id) {
-        String SQL_SELECT = "SELECT * FROM Promotion WHERE id = ? AND isDeleted = 0";
+        String SQL_SELECT = "SELECT * FROM Promotion WHERE id = ?";
         Promotion p = null;
         try (Connection conn = new DBContext().getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
 
@@ -343,7 +343,58 @@ public int countTotal(String title, Date startDate, Date endDate) {
 }
 
 
-   
+    // Lấy tất cả promotion đang active (trong thời gian hiệu lực)
+    public List<Promotion> getActivePromotions() {
+        List<Promotion> list = new ArrayList<>();
+        String SQL_SELECT_ACTIVE = "SELECT * FROM Promotion WHERE start_at <= GETDATE() AND end_at >= GETDATE()";
+        
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_ACTIVE); 
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Promotion p = new Promotion();
+                p.setId(rs.getInt("id"));
+                p.setTitle(rs.getString("title"));
+                p.setPercentage(rs.getDouble("percentage"));
+                p.setStartAt(rs.getDate("start_at"));
+                p.setEndAt(rs.getDate("end_at"));
+                p.setDescription(rs.getString("description"));
+                list.add(p);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getActivePromotions: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    // Lấy promotion theo title (mã giảm giá)
+    public Promotion getPromotionByTitle(String title) {
+        String SQL_SELECT = "SELECT * FROM Promotion WHERE title = ? AND start_at <= GETDATE() AND end_at >= GETDATE()";
+        Promotion p = null;
+        
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT)) {
+
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                p = new Promotion();
+                p.setId(rs.getInt("id"));
+                p.setTitle(rs.getString("title"));
+                p.setPercentage(rs.getDouble("percentage"));
+                p.setStartAt(rs.getDate("start_at"));
+                p.setEndAt(rs.getDate("end_at"));
+                p.setDescription(rs.getString("description"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getPromotionByTitle: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return p;
+    }
 
 
 }
