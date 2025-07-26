@@ -35,13 +35,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-secondary" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                </nav>
+
 
                 <style>
                     .header-bg {
@@ -66,7 +60,7 @@
                     <nav aria-label="breadcrumb" class="mb-3">
                         <ol class="breadcrumb custom-breadcrumb">
                             <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Dịch Vụ</li>
+                           
                         </ol>
                     </nav>
 

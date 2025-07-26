@@ -59,7 +59,7 @@
                     <nav aria-label="breadcrumb" class="mb-3">
                         <ol class="breadcrumb custom-breadcrumb">
                             <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Promotions</li>
+                            
                         </ol>
                     </nav>
 

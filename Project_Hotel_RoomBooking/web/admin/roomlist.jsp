@@ -45,26 +45,31 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                 <jsp:include page="includes/navbar.jsp" />
 
                 <div class="container-fluid py-4" >
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                Room List
-                            </li>
-                        </ol>
-                    </nav>
 
                     <!-- Page Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="h3 mb-0">Quản lí phòng</h1>
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addRoomModal"
-                            >
-                            <i class="fas fa-plus me-2"></i>Thêm phòng mới
-                        </button>
+                    <div class="mb-4 p-3 rounded shadow-sm bg-light">
+                        <!-- Dòng breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-2">
+                                <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
+
+                            </ol>
+                        </nav>
+
+                        <!-- Dòng tiêu đề + nút -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="h3 mb-0">Quản lí phòng</h1>
+                            <button
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addRoomModal"
+                                >
+                                <i class="fas fa-plus me-2"></i>Thêm phòng mới
+                            </button>
+                        </div>
                     </div>
+
+
 
                     <!-- Room Statistics Cards -->
                     <div class="row g-4 mb-4">
