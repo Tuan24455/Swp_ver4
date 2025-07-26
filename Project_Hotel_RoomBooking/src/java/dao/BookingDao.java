@@ -148,9 +148,9 @@ public class BookingDao extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                
-                // Correctly use the Booking constructor with String arguments
-                Booking booking = new Booking(rs.getString("room_number"), rs.getString("customer"), rs.getString("check_in_date"), rs.getString("check_out_date"), rs.getString("status"));
+                Booking booking = new Booking();
+
+
                 booking.setId(rs.getInt("id"));
                 booking.setUserId(rs.getInt("user_id"));
                 booking.setUserName(rs.getString("full_name"));
@@ -560,11 +560,50 @@ public void addBooking(Booking booking) {
         e.printStackTrace();
         System.out.println("❌ Error when adding booking: " + e.getMessage());
     }
+      /**
+     * Lấy tất cả booking với thông tin phòng, khách, ngày nhận/trả, tổng tiền, trạng thái...
+     */
+    public List<Booking> getAllBookingsWithDetails() {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT b.id AS booking_id, u.full_name AS customer, " +
+                "STRING_AGG(r.room_number, ', ') AS room_numbers, " +
+                "MIN(brd.check_in_date) AS check_in, " +
+                "MAX(brd.check_out_date) AS check_out, " +
+                "b.total_prices, b.status, b.created_at " +
+                "FROM Bookings b " +
+                "JOIN Users u ON b.user_id = u.id " +
+                "JOIN BookingRoomDetails brd ON brd.booking_id = b.id " +
+                "JOIN Rooms r ON brd.room_id = r.id " +
+                "JOIN RoomTypes rt ON r.room_type_id = rt.id " +
+                "GROUP BY b.id, u.full_name, b.total_prices, b.status, b.created_at " +
+                "ORDER BY b.created_at DESC";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Booking booking = new Booking(
+                    rs.getString("room_numbers"),
+                    rs.getString("customer"),
+                    rs.getString("check_in"),
+                    rs.getString("check_out"),
+                    rs.getString("status")
+                );
+                booking.setId(rs.getInt("booking_id"));
+                booking.setTotalPrices(rs.getDouble("total_prices"));
+                booking.setStatus(rs.getString("status"));
+                booking.setCreatedAt(rs.getTimestamp("created_at"));
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
 }
 
 
-    
-    
+
+
      public static void main(String[] args) {
         try {
             BookingDao dao = new BookingDao();

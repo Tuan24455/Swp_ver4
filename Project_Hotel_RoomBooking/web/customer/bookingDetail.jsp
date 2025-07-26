@@ -3,17 +3,26 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%
-    // Calculate number of nights
-    String checkIn = request.getParameter("checkIn");
-    String checkOut = request.getParameter("checkOut");
+    // Calculate number of nights - use parameter if available, otherwise calculate
+    String nightsParam = request.getParameter("nights");
+    long nights = 0;
     
-    // Parse dates to calculate nights
-    if (checkIn != null && checkOut != null) {
-        java.time.LocalDate dateIn = java.time.LocalDate.parse(checkIn);
-        java.time.LocalDate dateOut = java.time.LocalDate.parse(checkOut);
-        long nights = java.time.temporal.ChronoUnit.DAYS.between(dateIn, dateOut);
-        request.setAttribute("nights", nights);
+    if (nightsParam != null && !nightsParam.isEmpty()) {
+        // Use nights from parameter (calculated in servlet)
+        nights = Long.parseLong(nightsParam);
+    } else {
+        // Fallback: calculate from dates
+        String checkIn = request.getParameter("checkIn");
+        String checkOut = request.getParameter("checkOut");
+        
+        if (checkIn != null && checkOut != null) {
+            java.time.LocalDate dateIn = java.time.LocalDate.parse(checkIn);
+            java.time.LocalDate dateOut = java.time.LocalDate.parse(checkOut);
+            nights = java.time.temporal.ChronoUnit.DAYS.between(dateIn, dateOut);
+        }
     }
+    
+    request.setAttribute("nights", nights);
 %>
 
 <!DOCTYPE html>
@@ -86,9 +95,25 @@
 
             <div class="price-details">
                 <h3>Chi tiết giá</h3>
-                <p>${nights} đêm x <fmt:formatNumber value="${param.pricePerNight}" pattern="#,###"/>đ/đêm</p>
+                <p>${param.nights} đêm x <fmt:formatNumber value="${param.pricePerNight}" pattern="#,###"/>đ/đêm</p>
+                
+                <!-- Subtotal -->
+                <div class="price-row">
+                    <span>Tạm tính:</span>
+                    <span><fmt:formatNumber value="${param.originalTotal}" pattern="#,###"/>đ</span>
+                </div>
+                
+                <!-- Discount section (if applicable) -->
+                <c:if test="${not empty param.discountCode and param.discountAmount > 0}">
+                    <div class="price-row discount-row">
+                        <span>Mã giảm giá (${param.discountCode} - ${param.discountPercentage}%):</span>
+                        <span class="discount-amount">-<fmt:formatNumber value="${param.discountAmount}" pattern="#,###"/>đ</span>
+                    </div>
+                </c:if>
+                
+                <!-- Total -->
                 <div class="total-price" id="totalPrice">
-                    Tổng cộng: <fmt:formatNumber value="${param.pricePerNight * nights}" pattern="#,###"/>đ
+                    Tổng cộng: <fmt:formatNumber value="${param.finalTotal}" pattern="#,###"/>đ
                 </div>
             </div>
 
@@ -100,13 +125,17 @@
         </div>
     </div>
     <script>
-        let basePrice = 0;
         document.addEventListener('DOMContentLoaded', function() {
-            var stayNights = parseInt('${nights}', 10);
-            var pricePerNight = parseInt('${param.pricePerNight}', 10);
-            var total = pricePerNight * stayNights;
-            document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + new Intl.NumberFormat('vi-VN').format(total) + 'đ';
-            document.getElementById('totalAmountInput').value = total;
+            // Use the final total that already includes discount calculation
+            var finalTotal = parseFloat('${param.finalTotal}' || '0');
+            
+            // Update total amount input for form submission
+            document.getElementById('totalAmountInput').value = finalTotal;
+            
+            // Update display (already handled by JSP formatting, but ensure consistency)
+            if (finalTotal > 0) {
+                document.getElementById('totalPrice').textContent = 'Tổng cộng: ' + new Intl.NumberFormat('vi-VN').format(finalTotal) + 'đ';
+            }
         });
     </script>
 

@@ -71,7 +71,7 @@
                                         </div>
                                         <div class="col-12 d-flex justify-content-center">
                                             <div class="col-4">
-                                                <button class="btn btn-primary btn-lg" type="submit">Log in</button>
+                                                <button class="btn btn-primary btn-lg" type="submit">Đăng nhập</button>
                                             </div>
                                         </div>
                                     </div>

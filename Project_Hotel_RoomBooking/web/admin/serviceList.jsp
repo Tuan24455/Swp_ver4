@@ -35,13 +35,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-secondary" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                </nav>
+
 
                 <style>
                     .header-bg {
@@ -62,16 +56,27 @@
                     }
                 </style>
 
-                <div class="header-bg mb-4">
+                <div class="header-bg mb-4 p-3 rounded shadow-sm bg-light">
+                    <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb" class="mb-3">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Dịch Vụ</li>
+                        <ol class="breadcrumb custom-breadcrumb mb-0">
+                            <li></li>
+                            <li class="breadcrumb-item active" aria-current="page"></li>
                         </ol>
                     </nav>
 
+                    <!-- Dòng tiêu đề + nút -->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
+                        <div class="d-flex align-items-center">
+                            <!-- Nút Home -->
+                            <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-secondary me-3">
+                                <i class="fas fa-home"></i>
+                            </a>
+                            <!-- Tiêu đề -->
+                            <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
+                        </div>
+
+                        <!-- Nút Thêm Dịch Vụ -->
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
@@ -82,8 +87,9 @@
                     </div>
                 </div>
 
+
                 <!-- Filter Section -->
-                <form action="serviceList" method="get" class="mb-4">
+                <form action="serviceList" method="post" class="mb-4">
                     <input type="hidden" name="page" value="1" />
                     <div class="card shadow-sm border-0 rounded-4" style="background: #f5f9ff;">
                         <div class="card-body rounded-4">
@@ -153,7 +159,7 @@
                         <!-- Phần tìm kiếm dịch vụ -->
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                             <div class="input-group search-table-input" style="width: 250px">
-                                <form action="serviceList" method="get" class="d-flex">
+                                <form action="serviceList" method="post" class="d-flex">
                                     <input type="text" class="form-control" name="searchQuery" placeholder="Tìm dịch vụ..." value="${param.searchQuery}" />
                                     <button class="btn btn-outline-primary" type="submit">
                                         <i class="fas fa-search"></i>
@@ -186,21 +192,29 @@
                                             <td>${s.price}</td>
                                             <td>${s.description}</td>
                                             <td>
-                                                <div class="btn-group" role="group">           
-                                                    <button class="btn btn-sm btn-outline-warning" title="Edit" type="button"
-                                                            data-bs-toggle="modal" data-bs-target="#editServiceModal${s.id}" style="margin-right: 10px;">
+                                                <div class="d-flex align-items-center gap-2">                                    
+                                                    <button class="btn btn-sm btn-outline-warning"
+                                                            title="Chỉnh sửa"
+                                                            type="button"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editServiceModal${s.id}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <form action="deleteService" method="post" style="display:inline;" 
-                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                                                    <form action="deleteService"
+                                                          method="post"
+                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');"
+                                                          class="m-0 p-0">
                                                         <input type="hidden" name="id" value="${s.id}" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
                                                 </div>
                                             </td>
+
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -336,7 +350,7 @@
 
                         <div class="mb-3">
                             <label for="service_price" class="form-label">Giá (VNĐ)</label>
-                            <input type="number" class="form-control" id="service_price" name="service_price"  required>
+                            <input type="number" class="form-control" id="service_price" name="service_price" min="100000" step="50000" required>
                         </div>
 
                         <div class="mb-3">
@@ -369,13 +383,12 @@
                                                                       .create(document.querySelector('#description'), {
                                                                           toolbar: [
                                                                               'heading', '|',
-                                                                              'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                                                                              'bold', 'italic', 'bulletedList', 'numberedList', '|',
                                                                               'undo', 'redo'
                                                                           ]
                                                                       })
                                                                       .then(e => editor = e)
                                                                       .catch(error => console.error(error));
-
                                                               // Gắn sự kiện khi form submit
                                                               document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
                                                                   e.preventDefault(); // ❌ Chặn reload
@@ -383,24 +396,23 @@
                                                                   const form = this;
                                                                   const formData = new FormData(form);
                                                                   formData.set("description", editor.getData());
-
                                                                   try {
                                                                       const response = await fetch("addService", {
                                                                           method: "POST",
                                                                           body: formData
                                                                       });
-
                                                                       const result = await response.text();
-
                                                                       if (result === "success") {
                                                                           alert("Thêm dịch vụ thành công!");
                                                                           location.reload();
                                                                       } else if (result === "duplicate") {
                                                                           alert("Tên dịch vụ đã tồn tại!");
                                                                       } else if (result === "invalidPrice") {
-                                                                          alert("Giá phải là số dương lớn hơn 0!");
+                                                                          alert("Giá phải bắt đầu từ 100000");
                                                                       } else if (result === "blankDescription") {
                                                                           alert("Mô tả Không được để trống !");
+                                                                      } else if (result === "invalidNameFormat") {
+                                                                          alert("Tên dịch vụ không hợp lệ !");
                                                                       } else {
                                                                           alert("Có lỗi xảy ra khi thêm dịch vụ.");
                                                                       }
@@ -412,7 +424,6 @@
     </script>
     <script>
         const ckeditors = {};
-
         // Khởi tạo CKEditor khi modal mở
         document.querySelectorAll('[id^="editServiceModal"]').forEach(modal => {
             modal.addEventListener('shown.bs.modal', function () {
@@ -420,19 +431,17 @@
                 const textarea = document.getElementById("editDescription" + id);
                 if (!ckeditors[id]) {
                     ClassicEditor.create(textarea, {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+                        toolbar: ['heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
                     })
                             .then(editor => ckeditors[id] = editor)
                             .catch(error => console.error(error));
                 }
             });
         });
-
         // Xử lý submit form chỉnh sửa dịch vụ
         document.querySelectorAll('form[action="updateService"]').forEach(form => {
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-
                 const formData = new FormData(this);
                 const serviceIdInput = form.querySelector('input[name="id"]');
                 if (!serviceIdInput) {
@@ -442,7 +451,6 @@
 
                 const serviceId = serviceIdInput.value;
                 const editor = ckeditors[serviceId];
-
                 // Validate: loại dịch vụ
                 const typeSelect = form.querySelector('select[name="service_type_id"]');
                 if (!typeSelect || !typeSelect.value) {
@@ -484,13 +492,11 @@
 
                 // Gán lại mô tả vào formData
                 formData.set("description", description);
-
                 try {
                     const res = await fetch("updateService", {
                         method: "POST",
                         body: formData
                     });
-
                     const result = await res.text();
                     if (result === "success") {
                         alert("Cập nhật dịch vụ thành công!");
@@ -499,6 +505,8 @@
                         alert("Tên dịch vụ đã tồn tại!");
                     } else if (result === "invalidPrice") {
                         alert("Giá không hợp lệ!");
+                    } else if (result === "invalidName") {
+                        alert("Tên dịch vụ không hợp lệ !");
                     } else if (result === "invalidDescription") {
                         alert("Mô tả không hợp lệ!");
                     } else {
