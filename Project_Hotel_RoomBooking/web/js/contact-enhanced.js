@@ -52,8 +52,8 @@ class ContactFormManager {
         message: "Email không hợp lệ",
       },
       phone: {
-        pattern: /^[0-9]{10,11}$/,
-        message: "Số điện thoại phải có 10-11 chữ số",
+        pattern: /^[0-9]{10}$/,
+        message: "Số điện thoại phải có 10 chữ số và băst đầu bằng số 0",
       },
       subject: {
         required: true,

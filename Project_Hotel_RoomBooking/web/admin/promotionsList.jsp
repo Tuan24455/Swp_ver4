@@ -55,16 +55,21 @@
                     }
                 </style>
 
-                <div class="header-bg mb-4">
-                    <nav aria-label="breadcrumb" class="mb-3">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Promotions</li>
-                        </ol>
-                    </nav>
+                <div class="header-bg mb-4 p-3 rounded shadow-sm bg-light">
+              
 
+                    <!-- Dòng tiêu đề + nút -->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Khuyến Mãi</h1>
+                        <div class="d-flex align-items-center">
+                            <!-- Nút Home (icon) -->
+                            <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-secondary me-3">
+                                <i class="fas fa-home"></i>
+                            </a>
+                            <!-- Tiêu đề -->
+                            <h1 class="h3 mb-0">Quản lí Khuyến Mãi</h1>
+                        </div>
+
+                        <!-- Nút Thêm Khuyến Mãi -->
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
@@ -75,10 +80,11 @@
                     </div>
                 </div>
 
+
                 <!-- Filter Section -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <form method="get" action="promotionList">
+                        <form method="post" action="promotionList">
                             <input type="hidden" name="page" value="1" />
                             <div class="row g-3 align-items-end">
                                 <div class="col-md-4 col-sm-6">
@@ -118,7 +124,7 @@
                                 ${requestScope.noResultsMessage}
                             </div>
                         </c:if>
-                        <form action="promotionList" method="get" class="d-flex mb-3" style="width: 300px;">
+                        <form action="promotionList" method="post" class="d-flex mb-3" style="width: 300px;">
                             <input type="text" class="form-control me-2" name="searchQuery"
                                    placeholder="Tìm khuyến mãi..."
                                    value="${sessionScope.promotionSearchQuery}" />
@@ -355,16 +361,20 @@
                 success: function (response) {
                     if (response === "duplicate") {
                         alert("Tên khuyến mãi đã tồn tại.");
+                    } else if (response === "invalidTitleFormat") {
+                        alert("Tên không được chứa kí tự đặc biệt !");
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự.");
+                    } else if (response === "overlap") {
+                        alert("Thời gian khuyến mãi trùng với khuyến mãi hiện có ");
                     } else if (response === "invalidPercentage") {
                         alert("Phần trăm khuyến mãi không hợp lệ.");
                     } else if (response === "startMustAfterLastEnd") {
-                        alert("Ngày bắt đầu phải sau ngày kết thúc khuyến mãi trước.");
-                    } else if (response === "invalidDate") {
+                        alert("Ngày bắt đầu khuyến mãi đang tồn tại khuyến mãi khác ! ");
+                    } else if (response === "invalidDateRange") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
                     } else if (response === "success") {
-                        alert("Thêm khuyến mãi thành công!");
+                        alert("Thêm khuyến mãi thành công ❤");
                         $('#addPromotionModal').modal('hide');
                         location.reload();
                     } else {
@@ -396,13 +406,17 @@
                     } else if (response === "duplicate") {
                         alert("Tên khuyến mãi đã tồn tại.");
                     } else if (response.trim() === "success") {
-                        alert("Cập nhật thành công!");
+                        alert("Cập nhật thành công ❤️");
                         $('.modal').modal('hide');
                         location.reload();
-                    } else if (response === "invalidDate") {
+                    } else if (response === "invalidDateRange") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
+                    } else if (response === "overlap") {
+                        alert("Khuyến mãi đã trùng với khuyến mãi hiện có !");
+                    } else if (response === "invalidTitleFormat") {
+                        alert("Tên khuyến mãi không được chứa các kí tự đăcj biệt !");
                     } else if (response === "blankDescription") {
-                        alert("Mô tả phải từ 10-100 ký tự.");
+                        alert("Mô tả phải từ 10-100 ký tự !");
                     } else {
                         alert(response);
                     }

@@ -7,11 +7,21 @@
     <servlet-mapping>
         <servlet-name>DashboardReceptionServlet</servlet-name>
         <url-pattern>/reception/dashboard</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
+    </servlet-mapping>    <servlet-mapping>
         <servlet-name>DashboardReceptionServlet</servlet-name>
         <url-pattern>/json-test</url-pattern>
     </servlet-mapping>
+    
+    <!-- VNPay Return Servlet -->
+    <servlet>
+        <servlet-name>VNPayReturnServlet</servlet-name>
+        <servlet-class>controller.VNPayReturnServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VNPayReturnServlet</servlet-name>
+        <url-pattern>/vnpay-return</url-pattern>
+    </servlet-mapping>
+    
     <filter>
         <filter-name>AdminFilter</filter-name>
         <filter-class>filter.AdminFilter</filter-class>

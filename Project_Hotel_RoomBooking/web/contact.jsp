@@ -66,7 +66,7 @@
                                                 </div>
                                                 <div class="contact-details">
                                                     <h6>Địa chỉ</h6>
-                                                    <p>123 Đường ABC, Quận XYZ<br>Thành phố Hồ Chí Minh</p>
+                                                    <p>Khu CNC, láng Hòa Lạc, Thạch Thất<br> thành phố Hà Nội</p>
                                                 </div>
                                             </div>
 
@@ -76,7 +76,7 @@
                                                 </div>
                                                 <div class="contact-details">
                                                     <h6>Điện thoại</h6>
-                                                    <p>+84 123 456 789<br>+84 987 654 321</p>
+                                                    <p>+84 334 688 774<br>+84 987 654 321</p>
                                                 </div>
                                             </div>
 
@@ -86,7 +86,7 @@
                                                 </div>
                                                 <div class="contact-details">
                                                     <h6>Email</h6>
-                                                    <p>info@hotel.com<br>support@hotel.com</p>
+                                                    <p>yenlaem412@gmail.com<br>tdpoke412@gmail.com</p>
                                                 </div>
                                             </div>
 
@@ -100,30 +100,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!-- Social Media Card -->
-                                <div class="social-card">
-                                    <div class="social-card-header">
-                                        <h4><i class="fas fa-share-alt me-2"></i>Kết nối với chúng tôi</h4>
-                                    </div>
-                                    <div class="social-links">
-                                        <a href="#" class="social-link facebook" title="Facebook">
-                                            <i class="fab fa-facebook-f"></i>
-                                        </a>
-                                        <a href="#" class="social-link twitter" title="Twitter">
-                                            <i class="fab fa-twitter"></i>
-                                        </a>
-                                        <a href="#" class="social-link instagram" title="Instagram">
-                                            <i class="fab fa-instagram"></i>
-                                        </a>
-                                        <a href="#" class="social-link linkedin" title="LinkedIn">
-                                            <i class="fab fa-linkedin-in"></i>
-                                        </a>
-                                        <a href="#" class="social-link youtube" title="YouTube">
-                                            <i class="fab fa-youtube"></i>
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +172,8 @@
                                                            name="phone" 
                                                            class="form-control" 
                                                            value="${sessionScope.user.getPhone()}"
-                                                           placeholder="0123 456 789">
+                                                           placeholder="0123 456 789"
+                                                           required>
                                                     <div class="invalid-feedback"></div>
                                                 </div>
 

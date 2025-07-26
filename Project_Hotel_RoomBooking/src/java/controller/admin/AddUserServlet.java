@@ -1,6 +1,7 @@
 package controller.admin;
 
 import dao.UserDao;
+import jakarta.mail.MessagingException;
 import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -9,11 +10,13 @@ import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.EmailUtil;
 import valid.Encrypt;
 
 @WebServlet(name = "AddUserServlet", urlPatterns = {"/addUser"})
@@ -28,7 +31,7 @@ public class AddUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
 
         // 1. Nhận dữ liệu từ form
@@ -99,7 +102,12 @@ public class AddUserServlet extends HttpServlet {
         if (success) {
             // Gửi email chào mừng nếu checkbox được tick
             if (sendWelcomeEmail != null) {
-                // TODO: Gửi email ở đây nếu bạn có EmailUtility
+                try {
+                    // TODO: Gửi email ở đây nếu bạn có EmailUtility
+                    EmailUtil.sendWelcomeEmail(email, fullName);
+                } catch (MessagingException ex) {
+                    Logger.getLogger(AddUserServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             response.sendRedirect("userList");
         } else {

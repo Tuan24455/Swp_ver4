@@ -44,9 +44,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
         >
           <div class="container-fluid">
-            <button class="btn btn-sm btn-outline-secondary" id="menu-toggle">
-              <i class="fas fa-bars"></i>
-            </button>
             <div class="d-flex align-items-center gap-3 ms-auto">
               <span id="current-date" class="fw-semibold text-muted"
                 >Thứ Ba, 24 Tháng 6, 2025</span
@@ -168,7 +165,7 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             >
               Đóng
             </button>
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" onclick="redirectToRoomStatus()">
               Chỉnh Sửa Đặt Phòng
             </button>
           </div>
@@ -194,11 +191,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Menu toggle functionality
-      document.getElementById("menu-toggle")?.addEventListener("click", () => {
-        document.getElementById("wrapper")?.classList.toggle("toggled");
-      });
-
       // Global variables
       let roomDetails = {};
       let calendar;
@@ -252,6 +244,11 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
           document.getElementById("roomDetailModal")
         );
         modal.show();
+      }
+
+      // Function to redirect to room status page
+      function redirectToRoomStatus() {
+        window.location.href = '${pageContext.request.contextPath}/roomStatus';
       }
 
       // Load booking data via AJAX to avoid JSP JSON escaping issues

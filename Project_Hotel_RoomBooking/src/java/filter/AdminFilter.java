@@ -24,7 +24,7 @@ import model.User;
  *
  * @author ADMIN
  */
-@WebFilter(urlPatterns = {"/additem", "/addUser", "/bookingreport", "/admin/dashboard",
+@WebFilter(urlPatterns = {"/admin", "/additem", "/addUser", "/bookingreport", "/admin/dashboard",
     "/promotionList", "/purchasereport", "/ratingreport", "/roomList", "/addPromotion",
     "/addRoom", "/deletePromotion", "/deleteRoom", "/updatePromotion", "/updateRoom",
     "/userList"})
@@ -122,6 +122,7 @@ public class AdminFilter implements Filter {
         } else if (!user.getRole().equalsIgnoreCase("Admin")) {
             res.sendRedirect(contextPath + "/RoleAuth.jsp");
         }
+
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
