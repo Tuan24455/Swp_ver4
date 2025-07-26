@@ -131,17 +131,6 @@ CREATE TABLE BookingRoomDetails (
     FOREIGN KEY (room_id) REFERENCES Rooms(id)
 );
 
--- Chi tiết đặt dịch vụ
-CREATE TABLE BookingServiceDetail (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    booking_id INT,
-    service_id INT,
-    quantity INT,
-    prices DECIMAL(10, 2),
-    FOREIGN KEY (booking_id) REFERENCES Bookings(id),
-    FOREIGN KEY (service_id) REFERENCES Services(id)
-);
-
 -- Bảng giao dịch thanh toán
 CREATE TABLE Transactions (
     id INT PRIMARY KEY IDENTITY(1,1),
@@ -156,18 +145,18 @@ CREATE TABLE Transactions (
 
 
 -- Dữ liệu cho bảng Users (giữ nguyên)
-INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url) 
-VALUES 
--- password gốc: password123
-('nguyenminhquan', 'q5tcb63SSYLuZb5eX0ltbA==', N'Nguyễn Minh Quân', '1990-05-15', 'Male', 'quan.nguyen@email.com', '0123456789', N'123 Đường ABC, Hà Nội', 'Customer', 'images/user/default_avatar.png'),
+INSERT INTO Users (user_name, pass, full_name, birth, gender, email, phone, address, role, avatar_url)
+VALUES
+-- password gốc: Password123
+('nguyenminhquan', 'iOIn6rY20XzbTxNEc2fEuQ==', N'Nguyễn Minh Quân', '1990-05-15', 'Male', 'quan.nguyen@email.com', '0123456789', N'123 P. Hàng Bông, Hoàn Kiếm, Hà Nội', 'Customer', 'images/user/default_avatar.png'),
 
--- password gốc: password456
-('tranthithuy', 'OFvwS0UtlUn9k2qYqH/8gQ==', N'Trần Thị Thúy', '1985-08-25', 'Female', 'thuy.tran@email.com', '0123456780', N'456 Đường XYZ, TP.HCM', 'Admin', 'images/user/default_avatar.png'),
+-- password gốc: Password123
+('tranthiyen', 'iOIn6rY20XzbTxNEc2fEuQ==', N'Trần Thị Yến', '1985-08-25', 'Female', 'yenlaem412@gmail.com', '0123456780', N'456 P. Hàng Gai, Hoàn Kiếm, Hà Nội', 'Admin', 'images/user/default_avatar.png'),
 
--- password gốc: password123
-('lequangthang', 'q5tcb63SSYLuZb5eX0ltbA==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 Đường XYZ, TP.HCM', 'Reception', 'images/user/default_avatar.png'),
-('newuser4', 'xxx', N'Người dùng 4', '1995-01-01', 'Male', 'user4@email.com', '0111111111', N'Địa chỉ', 'Customer', 'images/user/default_avatar.png'),
-('newuser5', 'xxx', N'Người dùng 5', '1996-01-01', 'Female', 'user5@email.com', '0111111112', N'Địa chỉ', 'Customer', 'images/user/default_avatar.png');
+-- password gốc: Password123
+('lequangthang', 'iOIn6rY20XzbTxNEc2fEuQ==', N'Lê Quang Thắng', '1990-11-11', 'Male', 'thang.le@email.com', '0123456789', N'888 P. Tràng Tiền, Hoàn Kiếm, Hà Nội', 'Reception', 'images/user/default_avatar.png'),
+('newuser4', 'iOIn6rY20XzbTxNEc2fEuQ==', N'Trần Quốc Tuấn', '1995-01-01', 'Male', 'user4@email.com', '0111111111', N'P. Quốc Tử Giám, Văn Miếu, Đống Đa, Hà Nội', 'Customer', 'images/user/default_avatar.png'),
+('newuser5', 'iOIn6rY20XzbTxNEc2fEuQ==', N'Nguyễn Anh Minh', '1996-01-01', 'Female', 'user5@email.com', '0111111112', N'P. Đinh Tiên Hoàng, Hàng Trống, Hoàn Kiếm, Hà Nội', 'Customer', 'images/user/default_avatar.png');
 
 -- Dữ liệu cho bảng RoomTypes (giữ nguyên)
 INSERT INTO RoomTypes (room_type) 
@@ -178,18 +167,42 @@ VALUES
 (N'Presidential Suite');
 
 -- Dữ liệu cho bảng Rooms (giữ nguyên)
-INSERT INTO Rooms (room_number, room_type_id, room_price, room_status, capacity, description, image_url, floor) 
-VALUES 
-('101', 1, 500000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'https://image.url', 1),
-('102', 2, 1000000, N'Occupied', 3, N'Phòng sang trọng với giường lớn', 'https://image.url', 2),
-('201', 1, 550000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'https://image.url', 1),
-('202', 2, 1200000, N'Occupied', 3, N'Phòng sang trọng với giường lớn', 'https://image.url', 2),
-('301', 3, 1500000, N'Available', 4, N'Phòng suite với bồn tắm', 'https://image.url', 3),
-('302', 3, 1600000, N'Occupied', 4, N'Phòng suite với bồn tắm', 'https://image.url', 3),
-('401', 4, 2000000, N'Available', 5, N'Phòng tổng thống với tầm nhìn đẹp', 'https://image.url', 4),
-('402', 4, 2100000, N'Available', 5, N'Phòng tổng thống với tầm nhìn đẹp', 'https://image.url', 4),
-('501', 1, 530000, N'Available', 2, N'Phòng tiêu chuẩn, thoải mái', 'https://image.url', 5),
-('502', 2, 1100000, N'Available', 3, N'Phòng sang trọng, rộng rãi', 'https://image.url', 5);
+INSERT INTO Rooms (room_number, room_type_id, room_price, room_status, capacity, description, image_url, floor)
+VALUES
+-- Tầng 1
+('101', 1, 500000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/101.jpg', 1),
+('102', 2, 1000000, N'Occupied', 3, N'Phòng sang trọng với giường lớn', 'images/room/102.jpg', 1),
+('103', 1, 550000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/103.jpg', 1),
+('104', 3, 1500000, N'Available', 4, N'Phòng suite với bồn tắm', 'images/room/104.jpg', 1),
+('105', 4, 2000000, N'Available', 5, N'Phòng tổng thống với tầm nhìn đẹp', 'images/room/105.jpg', 1),
+
+-- Tầng 2
+('201', 1, 500000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/201.jpg', 2),
+('202', 2, 1000000, N'Occupied', 3, N'Phòng sang trọng với giường lớn', 'images/room/202.jpg', 2),
+('203', 1, 550000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/203.jpg', 2),
+('204', 3, 1500000, N'Available', 4, N'Phòng suite với bồn tắm', 'images/room/204.jpg', 2),
+('205', 4, 2000000, N'Available', 5, N'Phòng tổng thống với tầm nhìn đẹp', 'images/room/205.jpg', 2),
+
+-- Tầng 3
+('301', 1, 500000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/301.jpg', 3),
+('302', 2, 1000000, N'Occupied', 3, N'Phòng sang trọng với giường lớn', 'images/room/302.jpg', 3),
+('303', 1, 550000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/303.jpg', 3),
+('304', 3, 1500000, N'Available', 4, N'Phòng suite với bồn tắm', 'images/room/304.jpg', 3),
+('305', 4, 2000000, N'Available', 5, N'Phòng tổng thống với tầm nhìn đẹp', 'images/room/305.jpg', 3),
+
+-- Tầng 4
+('401', 1, 500000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/401.jpg', 4),
+('402', 2, 1000000, N'Occupied', 3, N'Phòng sang trọng với giường lớn', 'images/room/402.jpg', 4),
+('403', 1, 550000, N'Available', 2, N'Phòng tiêu chuẩn, đầy đủ tiện nghi', 'images/room/403.jpg', 4),
+('404', 3, 1500000, N'Available', 4, N'Phòng suite với bồn tắm', 'images/room/404.jpg', 4),
+('405', 4, 2000000, N'Available', 5, N'Phòng tổng thống với tầm nhìn đẹp', 'images/room/405.jpg', 4),
+
+-- Tầng 5
+('501', 1, 600000, N'Available', 2, N'Phòng tiêu chuẩn, có ban công hướng thành phố', 'images/room/501.jpg', 5),
+('502', 2, 1200000, N'Occupied', 3, N'Phòng sang trọng với view hồ, bồn tắm đứng', 'images/room/502.jpg', 5),
+('503', 1, 650000, N'Available', 2, N'Phòng tiêu chuẩn, thoải mái, ấm cúng', 'images/room/503.jpg', 5),
+('504', 3, 1700000, N'Available', 4, N'Phòng suite gia đình, có hai phòng ngủ', 'images/room/504.jpg', 5),
+('505', 4, 2500000, N'Occupied', 5, N'Phòng tổng thống, tầm nhìn toàn cảnh thành phố', 'images/room/505.jpg', 5);
 
 -- Dữ liệu cho bảng RoomReviews (giữ nguyên)
 INSERT INTO RoomReviews (room_id, quality, comment) 
@@ -235,7 +248,7 @@ VALUES
 (N'Bánh ướt lòng gà', 1, 55000, N'Món ăn dân dã với bánh ướt tráng mỏng, lòng gà luộc, ăn kèm rau thơm và mắm nêm.', 'https://image.url'),
 (N'Chè đậu trắng', 1, 30000, N'Chè ngọt thanh từ đậu trắng, nấu với đường phèn, có thể thêm trân châu hoặc thạch.', 'https://image.url'),
 (N'Bánh canh ghẹ', 1, 120000, N'Sợi bánh canh to, dai, nước dùng ngọt từ ghẹ, thịt ghẹ nhiều và tươi ngon.', 'https://image.url'),
-(N'Phở gà', 1, 55000, N'Biến thể nhẹ nhàng của phở, với nước dùng trong, ngọt từ xương gà, sợi phở, thịt gà xé và hành lá.', 'https://image.url');
+(N'Phở gà', 1, 55000, N'Biến thể nhẹ nhàng của phở, với nước dùng trong, ngọt từ xương gà, sợi phở, thịt gà xé và hành lá.', 'https://image.url'),
 (N'Buffet', 1, 200000, N'Tận hưởng bữa sáng buffet phong phú với đa dạng món Á - Âu, từ bánh mì nóng hổi, cháo dinh dưỡng đến các món Âu như trứng, xúc xích, salad tươi ngon và nhiều lựa chọn nước uống.', 'https://image.url'),
 (N'Spa thư giãn', 2, 500000, N'Giải tỏa mọi căng thẳng với liệu pháp massage thư giãn chuyên sâu, giúp cơ thể phục hồi năng lượng, lưu thông khí huyết và mang lại cảm giác sảng khoái.', 'https://image.url'),
 (N'Phòng tập', 3, 150000, N'Rèn luyện sức khỏe trong không gian hiện đại, đầy đủ ánh sáng tự nhiên và trang thiết bị tập luyện cardio, tạ tay chuyên nghiệp, phù hợp cho mọi nhu cầu từ tập luyện cơ bản đến nâng cao.', 'https://image.url'),
@@ -295,7 +308,6 @@ VALUES
 
 -- Thêm: Xóa data cũ trước insert để tránh lỗi foreign key khi chạy lại script
 DELETE FROM Transactions;
-DELETE FROM BookingServiceDetail;
 DELETE FROM BookingRoomDetails;
 DELETE FROM Bookings;
 

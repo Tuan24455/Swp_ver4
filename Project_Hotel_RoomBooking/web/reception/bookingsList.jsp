@@ -2,6 +2,9 @@
          pageEncoding="UTF-8"%> <%@ taglib uri="http://java.sun.com/jsp/jstl/core"
          prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<jsp:useBean id="todayDate" class="java.util.Date" scope="page" />
+<fmt:formatDate value="${todayDate}" pattern="yyyy-MM-dd" var="today" />
+<fmt:formatDate value="${todayDate}" pattern="dd/MM/yyyy" var="todayFormatted" />
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -39,6 +42,13 @@
                 background-color: var(--light-gray);
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 color: var(--text-primary);
+            }            #alert-container {
+                position: fixed;
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                width: 720px;
+                z-index: 10150;
             }
             .section-card {
                 background: white;
@@ -146,139 +156,56 @@
             .btn-edit {
                 background-color: var(--warning-color);
                 color: white;
-            }            .btn-cancel {
+            }
+            .btn-cancel {
                 background-color: var(--danger-color);
                 color: white;
-            }
-            
-            /* Date validation styling */
-            .invalid-feedback {
-                display: none;
-                color: #dc3545;
-                font-size: 80%;
-                margin-top: 4px;
-            }
-            .is-invalid {
-                border-color: #dc3545;
-                padding-right: calc(1.5em + 0.75rem);
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
-                background-repeat: no-repeat;
-                background-position: right calc(0.375em + 0.1875rem) center;
-                background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-            }
-            
-            /* Pagination Styling */
-            .pagination-container {
-                padding: 1rem 0;
-                font-size: 0.9rem;
-            }
-            .pagination {
-                margin-bottom: 0;
-            }
-            .pagination .page-link {
-                color: var(--text-primary);
-                border-radius: 4px;
-                margin: 0 2px;
-                transition: all 0.2s ease;
-            }
-            .pagination .page-item.active .page-link {
-                background-color: var(--primary-color);
-                border-color: var(--primary-color);
-                color: white;
-            }
-            .pagination .page-item.disabled .page-link {
-                color: var(--text-secondary);
-                opacity: 0.6;
-            }
-            .pagination .page-link:hover {
-                background-color: var(--medium-gray);
-                transform: translateY(-2px);
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            .pagination .page-item.active .page-link:hover {
-                background-color: var(--primary-hover);
-            }
-            .pagination-info {
-                color: var(--text-secondary);
             }
         </style>
     </head>
     <body>
+        <div id="alert-container"></div>
         <div class="d-flex" id="wrapper">
             <jsp:include page="includes/sidebar.jsp">
                 <jsp:param name="activePage" value="bookings" />
-            </jsp:include>
+            </jsp:include>            <!-- Main Content -->
+            <div id="page-content-wrapper" class="flex-fill">             
 
-            <!-- Main Content -->
-            <div id="page-content-wrapper" class="flex-fill">
-                <!-- Top Navigation -->
-                <nav
-                    class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm"
-                    >
-                    <div class="container-fluid">
-                        <div class="d-flex align-items-center gap-3">
-                            <span id="current-date" class="fw-semibold text-muted">Thứ Ba, 24 tháng 6, 2025</span>
-                            <span id="current-time" class="fw-semibold">16:56:28</span>
-                        </div>
-                    </div>
-                </nav>
+                
 
-                <!-- Thông báo từ servlet -->
-                <c:if test="${not empty message}">
-                    <div class="alert alert-${messageType} alert-dismissible fade show m-3" role="alert">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </c:if>
+                
 
-                <!-- Thông báo lỗi -->
-                <c:if test="${not empty error}">
-                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-                        ${error}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </c:if>                <!-- Filter Section -->
+                <!-- Filter Section -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <form action="${pageContext.request.contextPath}/bookingList" method="get">                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">Status</label>                                    <select class="form-select" name="status">
-                                        <option value="">All Status</option>
-                                        <option value="confirmed" ${statusFilter eq 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                                        <option value="pending" ${statusFilter eq 'pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="Pending Payment" ${statusFilter eq 'Pending Payment' ? 'selected' : ''}>Pending Payment</option>
-                                        <option value="Payment Failed" ${statusFilter eq 'Payment Failed' ? 'selected' : ''}>Payment Failed</option>
-                                        <option value="cancelled" ${statusFilter eq 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                                        <option value="completed" ${statusFilter eq 'completed' ? 'selected' : ''}>Completed</option>
-                                        <option value="check-in" ${statusFilter eq 'check-in' ? 'selected' : ''}>Check-in</option>
-                                        <option value="check-out" ${statusFilter eq 'check-out' ? 'selected' : ''}>Check-out</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Check-in Date</label>
-                                    <input type="date" class="form-control" id="checkInDateFilter" name="checkInDate" value="${checkInDate}" />
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Check-out Date</label>
-                                    <input type="date" class="form-control" id="checkOutDateFilter" name="checkOutDate" value="${checkOutDate}" />
-                                    <div class="invalid-feedback" id="dateErrorMsg">
-                                        Check-out date must be after check-in date
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">&nbsp;</label>
-                                    <div class="d-grid">
-                                        <button type="submit" id="filterButton" class="btn btn-outline-primary">
-                                            <i class="fas fa-search me-2"></i>Filter
-                                        </button>
-                                    </div>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Check-in Date</label>
+                                <input type="date" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Check-out Date</label>
+                                <input type="date" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-primary">
+                                        <i class="fas fa-search me-2"></i>Filter
+                                    </button>
                                 </div>
                             </div>
-                            <!-- Keep current page if set -->
-                            <c:if test="${not empty currentPage}">
-                                <input type="hidden" name="page" value="${currentPage}" />
-                            </c:if>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -286,9 +213,6 @@
                 <div class="section-card">
                     <div class="section-header">
                         <span>Quản lý đặt phòng</span>
-                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                            <i class="fas fa-plus me-2"></i>Thêm đặt phòng mới
-                        </button>
                     </div>
                     <div class="section-content">
                         <div class="table-responsive">
@@ -307,6 +231,8 @@
                                 </thead>
                                 <tbody>
                                     <c:forEach var="booking" items="${bookings}">
+                                        <fmt:parseDate value="${booking.checkIn}" pattern="yyyy-MM-dd" var="bookingCheckInDate" />
+                                        <fmt:formatDate value="${bookingCheckInDate}" pattern="dd/MM/yyyy" var="bookingCheckInFormatted" />
                                         <tr>
                                             <td>#${booking.id}</td>
                                             <td>${booking.customer}</td>
@@ -323,48 +249,73 @@
                                                 <c:choose>
                                                     <c:when test="${booking.status eq 'pending' or booking.status eq 'Pending Payment'}">
                                                         <button type="button" class="btn-action btn-view" title="Check-in" 
-                                                            onclick="alert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-in-alt"></i> Check-in
                                                         </button>
                                                         <button type="button" class="btn-action btn-cancel" title="Check-out"
-                                                            onclick="alert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} đang chờ thanh toán, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-out-alt"></i> Check-out
                                                         </button>
                                                     </c:when>
                                                     <c:when test="${booking.status eq 'Payment Failed'}">
                                                         <button type="button" class="btn-action btn-view" title="Check-in"
-                                                            onclick="alert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-in-alt"></i> Check-in
                                                         </button>
                                                         <button type="button" class="btn-action btn-cancel" title="Check-out"
-                                                            onclick="alert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
+                                                            onclick="showAlert('Booking #${booking.id} thanh toán thất bại, không cho phép checkin hoặc checkout')">
                                                             <i class="fas fa-sign-out-alt"></i> Check-out
                                                         </button>
                                                     </c:when>                                                    <c:when test="${booking.status eq 'confirmed' or booking.status eq 'Confirmed' or 
                                                                   booking.status eq 'Check-in' or booking.status eq 'checkin' or
                                                                   booking.status eq 'Check-out' or booking.status eq 'checkout' or
-                                                                  booking.status eq 'completed' or booking.status eq 'Completed'}">                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
-                                                            <input type="hidden" name="action" value="checkin"/>
-                                                            <input type="hidden" name="bookingId" value="${booking.id}"/>
-                                                            <input type="hidden" name="currentPage" value="${currentPage}"/>
-                                                            <input type="hidden" name="statusFilter" value="${statusFilter}"/>
-                                                            <input type="hidden" name="checkInDate" value="${checkInDate}"/>
-                                                            <input type="hidden" name="checkOutDate" value="${checkOutDate}"/>
-                                                            <button type="submit" class="btn-action btn-view" title="Check-in">
-                                                                <i class="fas fa-sign-in-alt"></i> Check-in
-                                                            </button>
-                                                        </form>
-                                                        <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
-                                                            <input type="hidden" name="action" value="checkout"/>
-                                                            <input type="hidden" name="bookingId" value="${booking.id}"/>
-                                                            <input type="hidden" name="currentPage" value="${currentPage}"/>
-                                                            <input type="hidden" name="statusFilter" value="${statusFilter}"/>
-                                                            <input type="hidden" name="checkInDate" value="${checkInDate}"/>
-                                                            <input type="hidden" name="checkOutDate" value="${checkOutDate}"/>
-                                                            <button type="submit" class="btn-action btn-cancel" title="Check-out">
-                                                                <i class="fas fa-sign-out-alt"></i> Check-out
-                                                            </button>
-                                                        </form>
+                                                                  booking.status eq 'completed' or booking.status eq 'Completed'}">
+                                                        <c:choose>
+                                                            <c:when test="${booking.status eq 'Check-out' or booking.status eq 'checkout' or booking.status eq 'completed' or booking.status eq 'Completed'}">
+                                                                <button type="button" class="btn-action btn-view" title="Check-in"
+                                                                    onclick="showAlert('Booking #${booking.id} đã hoàn tất việc check-out không thể check-in lại')">
+                                                                    <i class="fas fa-sign-in-alt"></i> Check-in
+                                                                </button>
+                                                            </c:when>
+                                                            <c:when test="${bookingCheckInDate.time <= todayDate.time}">
+                                                                <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                                    <input type="hidden" name="action" value="checkin"/>
+                                                                    <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                                    <button type="submit" class="btn-action btn-view" title="Check-in">
+                                                                        <i class="fas fa-sign-in-alt"></i> Check-in
+                                                                    </button>
+                                                                </form>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <button type="button" class="btn-action btn-view" title="Check-in"
+                                                                    onclick="showAlert('Booking #${booking.id} đang có lịch check-in là ${bookingCheckInFormatted} và hôm nay là ${todayFormatted}, không cho phép check-in trước ngày khách đặt')">
+                                                                    <i class="fas fa-sign-in-alt"></i> Check-in
+                                                                </button>
+                                                            </c:otherwise>
+                                                        </c:choose>                                                        <!-- Replace checkout form with conditional logic -->
+                                                        <c:choose>
+                                                            <c:when test="${booking.status eq 'Check-out' or booking.status eq 'checkout' or booking.status eq 'completed' or booking.status eq 'Completed'}">
+                                                                <button type="button" class="btn-action btn-cancel" title="Check-out"
+                                                                    onclick="showAlert('Booking #${booking.id} đã hoàn tất việc check-out, không thể check-out lại')">
+                                                                    <i class="fas fa-sign-out-alt"></i> Check-out
+                                                                </button>
+                                                            </c:when>
+                                                            <c:when test="${booking.status eq 'Check-in' or booking.status eq 'checkin'}">
+                                                                <form action="${pageContext.request.contextPath}/bookingList" method="post" style="display: inline;">
+                                                                    <input type="hidden" name="action" value="checkout"/>
+                                                                    <input type="hidden" name="bookingId" value="${booking.id}"/>
+                                                                    <button type="submit" class="btn-action btn-cancel" title="Check-out">
+                                                                        <i class="fas fa-sign-out-alt"></i> Check-out
+                                                                    </button>
+                                                                </form>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <button type="button" class="btn-action btn-cancel" title="Check-out"
+                                                                    onclick="showAlert('Booking #${booking.id} chỉ cho phép check-out khi phòng đang ở trạng thái check-in')">
+                                                                    <i class="fas fa-sign-out-alt"></i> Check-out
+                                                                </button>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <button type="button" class="btn-action btn-view" title="Check-in" disabled>
@@ -376,7 +327,8 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                        </tr>                                    </c:forEach>
+                                        </tr>
+                                    </c:forEach>
                                     <c:if test="${empty bookings}">
                                         <tr>
                                             <td colspan="8" class="text-center text-muted py-4">
@@ -388,41 +340,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <!-- Pagination Controls -->
-                        <c:if test="${totalPages > 1}">
-                            <div class="pagination-container mt-4 d-flex justify-content-between align-items-center">
-                                <div class="pagination-info">
-                                    Hiển thị <strong>${(currentPage-1)*8 + 1}</strong> - <strong>${(currentPage-1)*8 + bookings.size()}</strong> 
-                                    trong tổng số <strong>${totalBookings}</strong> booking
-                                </div>
-                                <div class="pagination-buttons">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination mb-0">                            <!-- Previous button -->
-                                            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                                <a class="page-link" href="${pageContext.request.contextPath}/bookingList?page=${currentPage - 1}${not empty statusFilter ? '&status='.concat(statusFilter) : ''}${not empty checkInDate ? '&checkInDate='.concat(checkInDate) : ''}${not empty checkOutDate ? '&checkOutDate='.concat(checkOutDate) : ''}" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            
-                                            <!-- Page numbers -->
-                                            <c:forEach begin="1" end="${totalPages}" var="pageNum">
-                                                <li class="page-item ${pageNum == currentPage ? 'active' : ''}">
-                                                    <a class="page-link" href="${pageContext.request.contextPath}/bookingList?page=${pageNum}${not empty statusFilter ? '&status='.concat(statusFilter) : ''}${not empty checkInDate ? '&checkInDate='.concat(checkInDate) : ''}${not empty checkOutDate ? '&checkOutDate='.concat(checkOutDate) : ''}">${pageNum}</a>
-                                                </li>
-                                            </c:forEach>
-                                            
-                                            <!-- Next button -->
-                                            <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                                <a class="page-link" href="${pageContext.request.contextPath}/bookingList?page=${currentPage + 1}${not empty statusFilter ? '&status='.concat(statusFilter) : ''}${not empty checkInDate ? '&checkInDate='.concat(checkInDate) : ''}${not empty checkOutDate ? '&checkOutDate='.concat(checkOutDate) : ''}" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </c:if>
                     </div>
                 </div>
             </div>
@@ -433,14 +350,7 @@
     <div class="modal fade" id="addBookingModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Booking</h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        ></button>
-                </div>
+                
                 <div class="modal-body">
                     <form>
                         <div class="row g-3">
@@ -515,54 +425,31 @@
         </div>
     </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sidebar toggle functionality
-        document
-                .getElementById("menu-toggle")
-                .addEventListener("click", function () {
-                    document
-                            .getElementById("sidebar-wrapper")
-                            .classList.toggle("toggled");
-                });
-        
-        // Date validation for filter form
-        document.addEventListener('DOMContentLoaded', function() {
-            const checkInDateInput = document.getElementById('checkInDateFilter');
-            const checkOutDateInput = document.getElementById('checkOutDateFilter');
-            const filterForm = checkInDateInput.closest('form');
-            const dateErrorMsg = document.getElementById('dateErrorMsg');
-            
-            // Function to validate dates
-            function validateDates() {
-                if (checkInDateInput.value && checkOutDateInput.value) {
-                    const checkInDate = new Date(checkInDateInput.value);
-                    const checkOutDate = new Date(checkOutDateInput.value);
-                    
-                    if (checkOutDate < checkInDate) {
-                        checkOutDateInput.classList.add('is-invalid');
-                        dateErrorMsg.style.display = 'block';
-                        return false;
-                    } else {
-                        checkOutDateInput.classList.remove('is-invalid');
-                        dateErrorMsg.style.display = 'none';
-                        return true;
-                    }
-                }
-                return true; // If either date is not set, validation passes
-            }
-            
-            // Add event listeners
-            checkInDateInput.addEventListener('change', validateDates);
-            checkOutDateInput.addEventListener('change', validateDates);
-            
-            // Form submission validation
-            filterForm.addEventListener('submit', function(event) {
-                if (!validateDates()) {
-                    event.preventDefault(); // Prevent form submission if validation fails
-                }
-            });
-            
-            // Initial validation
-            validateDates();
+        // Function to show alerts
+        function showAlert(message) {
+            const container = document.getElementById('alert-container');
+            // Clear existing alerts to prevent stacking
+            container.innerHTML = '';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show m-3';
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+            container.appendChild(alertDiv);
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                alertDiv.classList.add('hide');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
+
+        // Initialize clock when DOM is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize immediately
+            updateDateTime();
+            // Update time every second
+            setInterval(updateDateTime, 1000);
         });
     </script>
 </body>

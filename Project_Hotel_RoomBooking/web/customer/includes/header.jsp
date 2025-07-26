@@ -36,7 +36,7 @@
                                ><i class="fas fa-sign-in-alt"></i> Login</a
                             >
                             <a href="${pageContext.request.contextPath}/register.jsp" class="dropdown-item"
-                               ><i class="fas fa-usr-plus"></i> Register</a
+                               ><i class="fas fa-user-plus"></i> Register</a
                             >
                         </c:when>
 

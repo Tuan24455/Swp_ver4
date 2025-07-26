@@ -53,8 +53,8 @@ public class HomeServlet extends HttpServlet {
         List<Room> paginatedRooms = roomlist.subList(start, end);
 
         request.setAttribute("roomlist", paginatedRooms);
-        request.setAttribute("promotion", promotion);
         request.setAttribute("roomtypelist", roomtypelist);
+        request.setAttribute("promotion", promotion);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
 
@@ -116,8 +116,8 @@ public class HomeServlet extends HttpServlet {
 
         List<Room> paginatedRooms = filteredRooms.subList(start, end);
 
-        request.setAttribute("promotion", promotion);
         request.setAttribute("roomlist", paginatedRooms);
+        request.setAttribute("promotion", promotion);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
 

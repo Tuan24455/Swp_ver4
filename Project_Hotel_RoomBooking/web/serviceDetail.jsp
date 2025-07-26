@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         body {
             background-color: #f8f9fa;
@@ -158,6 +159,7 @@
         
         .tab-header {
             display: flex;
+            justify-content: center;
             border-bottom: 1px solid #eee;
             margin-bottom: 20px;
         }
@@ -345,12 +347,7 @@
                                 <!-- Product Information -->
                                 <div class="info-row">
                                     <span class="info-label">Tình trạng</span>
-                                    <span class="info-value stock-status">Còn hàng</span>
-                                </div>
-                                
-                                <div class="info-row">
-                                    <span class="info-label">Vận chuyển</span>
-                                    <span class="info-value shipping-info">Miễn phí giao hàng cho đơn từ 300.000₫<br>Giao hàng trong 2 giờ.</span>
+                                    <span class="info-value stock-status">Đang Hoạt Động</span>
                                 </div>
                                 
                                 <form id="paymentForm" action="servicePayment" method="post">
@@ -359,7 +356,7 @@
                                     <!-- Usage Date -->
                                     <div class="info-row">
                                         <span class="info-label">Ngày sử dụng</span>
-                                        <input type="date" class="form-control" id="usageDate" name="usageDate" required style="width: auto;">
+                                        <input type="text" class="form-control" id="usageDate" name="usageDate" placeholder="dd/mm/yyyy" required style="width: auto;">
                                     </div>
                                     
                                     <!-- Quantity Selector -->
@@ -391,24 +388,24 @@
                 <!-- Information Tabs -->
                 <div class="product-detail-container">
                     <div class="section-tabs">
-                        <div class="tab-header">
+                        <div class="tab-header" style="display: flex; justify-content: center;">
                             <div class="tab-item active" onclick="showTab('description')">Mô tả</div>
                             <div class="tab-item" onclick="showTab('reviews')">Đánh giá</div>
                         </div>
                         
-                        <div id="description-tab" class="tab-content active">
-                            <h4>Mô tả dịch vụ</h4>
-                            <p>${service.description}</p>
+                        <div id="description-tab" class="tab-content active" style="text-align: center;">
+                            <h4 style="text-align: center;">Mô tả dịch vụ</h4>
+                            <p style="text-align: center;">Tận hưởng bữa sáng buffet phong phú với đa dạng món Á - Âu, từ bánh mì nóng hổi, cháo dinh dưỡng đến các món Âu như trứng, xúc xích, salad tươi ngon và nhiều lựa chọn nước uống.</p>
                         </div>
                         
 
                         
-                        <div id="reviews-tab" class="tab-content">
-                            <h4>Đánh giá khách hàng</h4>
+                        <div id="reviews-tab" class="tab-content" style="text-align: center;">
+                            <h4 style="text-align: center;">Đánh giá khách hàng</h4>
                             <c:choose>
                                 <c:when test="${not empty reviews}">
                                     <c:forEach var="review" items="${reviews}">
-                                        <div class="review-item">
+                                        <div class="review-item" style="display: inline-block; text-align: left; max-width: 600px;">
                                             <div class="d-flex align-items-center mb-2">
                                                 <i class="fas fa-user-circle fa-2x text-secondary me-3"></i>
                                                 <div>
@@ -423,7 +420,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p class="mb-0">${review.comment}</p>
+                                            <p class="mb-0">Thực đơn buffet vô cùng đa dạng và phong phú, từ các món Á đến Âu đều được chế biến tươi ngon và hấp dẫn. Nhân viên phục vụ tận tình, không gian ấm cúng, là điểm nhấn tuyệt vời cho buổi sáng tại khách sạn.</p>
                                         </div>
                                     </c:forEach>
                                 </c:when>
@@ -482,6 +479,7 @@
     <jsp:include page="customer/includes/footer.jsp"/>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="js/home-enhanced.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -556,6 +554,12 @@
                 alert('Ngày sử dụng phải từ hôm nay trở đi!');
                 return;
             }
+        });
+
+        // Flatpickr initialization
+        flatpickr("#usageDate", {
+            dateFormat: "d/m/Y",
+            minDate: new Date().toISOString().split('T')[0]
         });
     </script>
 </body>

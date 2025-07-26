@@ -35,13 +35,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-secondary" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                </nav>
+
 
                 <style>
                     .header-bg {
@@ -62,16 +56,27 @@
                     }
                 </style>
 
-                <div class="header-bg mb-4">
+                <div class="header-bg mb-4 p-3 rounded shadow-sm bg-light">
+                    <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb" class="mb-3">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Dịch Vụ</li>
+                        <ol class="breadcrumb custom-breadcrumb mb-0">
+                            <li></li>
+                            <li class="breadcrumb-item active" aria-current="page"></li>
                         </ol>
                     </nav>
 
+                    <!-- Dòng tiêu đề + nút -->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
+                        <div class="d-flex align-items-center">
+                            <!-- Nút Home -->
+                            <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-secondary me-3">
+                                <i class="fas fa-home"></i>
+                            </a>
+                            <!-- Tiêu đề -->
+                            <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
+                        </div>
+
+                        <!-- Nút Thêm Dịch Vụ -->
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
@@ -82,8 +87,9 @@
                     </div>
                 </div>
 
+
                 <!-- Filter Section -->
-                <form action="serviceList" method="get" class="mb-4">
+                <form action="serviceList" method="post" class="mb-4">
                     <input type="hidden" name="page" value="1" />
                     <div class="card shadow-sm border-0 rounded-4" style="background: #f5f9ff;">
                         <div class="card-body rounded-4">
@@ -153,7 +159,7 @@
                         <!-- Phần tìm kiếm dịch vụ -->
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                             <div class="input-group search-table-input" style="width: 250px">
-                                <form action="serviceList" method="get" class="d-flex">
+                                <form action="serviceList" method="post" class="d-flex">
                                     <input type="text" class="form-control" name="searchQuery" placeholder="Tìm dịch vụ..." value="${param.searchQuery}" />
                                     <button class="btn btn-outline-primary" type="submit">
                                         <i class="fas fa-search"></i>
@@ -186,21 +192,29 @@
                                             <td>${s.price}</td>
                                             <td>${s.description}</td>
                                             <td>
-                                                <div class="btn-group" role="group">           
-                                                    <button class="btn btn-sm btn-outline-warning" title="Edit" type="button"
-                                                            data-bs-toggle="modal" data-bs-target="#editServiceModal${s.id}" style="margin-right: 10px;">
+                                                <div class="d-flex align-items-center gap-2">                                    
+                                                    <button class="btn btn-sm btn-outline-warning"
+                                                            title="Chỉnh sửa"
+                                                            type="button"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editServiceModal${s.id}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <form action="deleteService" method="post" style="display:inline;" 
-                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                                                    <form action="deleteService"
+                                                          method="post"
+                                                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');"
+                                                          class="m-0 p-0">
                                                         <input type="hidden" name="id" value="${s.id}" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
                                                 </div>
                                             </td>
+
                                         </tr>
                                     </c:forEach>
                                 </tbody>

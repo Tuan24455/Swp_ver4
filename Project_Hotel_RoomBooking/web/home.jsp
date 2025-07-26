@@ -344,12 +344,12 @@
                                             <div class="input-group">
                                                 <label class="input-label">Từ (VND)</label>
                                                 <input type="number" name="priceFrom" value="${param.priceFrom}" 
-                                                       min="0" class="form-input" placeholder="0">
+                                                       min="0" step="100000" class="form-input" placeholder="0">
                                             </div>
                                             <div class="input-group">
                                                 <label class="input-label">Đến (VND)</label>
                                                 <input type="number" name="priceTo" value="${param.priceTo}" 
-                                                       min="0" class="form-input" placeholder="Không giới hạn">
+                                                       min="0" step="100000" class="form-input" placeholder="Không giới hạn">
                                             </div>
                                         </div>
                                     </div>

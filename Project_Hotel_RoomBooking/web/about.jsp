@@ -245,109 +245,75 @@
         <!-- Header -->
         <jsp:include page="customer/includes/header.jsp"/>
 
-        <main class="container py-5">
+        <main class="container py-5 px-3 px-md-5">
             <!-- Giới thiệu -->
             <section class="mb-5">
-                <h1 class="text-center mb-4">Về Chúng Tôi</h1>
-                <p class="lead text-justify">
-                    <strong>Luxury Hotel</strong> là hệ thống khách sạn cao cấp, tọa lạc tại những vị trí trung tâm của các thành phố lớn và khu nghỉ dưỡng hàng đầu. 
-                    Chúng tôi tự hào mang đến trải nghiệm lưu trú đẳng cấp, dịch vụ hoàn hảo và nền tảng đặt phòng trực tuyến hiện đại.
+                <h1 class="text-center mb-4 fw-bold text-primary">Về Chúng Tôi</h1>
+                <p class="lead text-justify text-dark">
+                    <strong>Luxury Hotel</strong> – Không gian nghỉ dưỡng ven biển dành cho những tâm hồn yêu cái đẹp và sự tận hưởng.
                 </p>
-                <p class="text-justify">
-                    Dù bạn đang tìm kiếm kỳ nghỉ thư giãn bên bờ biển, chuyến công tác chuyên nghiệp giữa lòng thành phố hay kỳ nghỉ lãng mạn cùng người thân, Luxury Hotel chính là nơi khởi đầu cho những trải nghiệm đáng nhớ.
-
-                    Với hệ thống đặt phòng thông minh và giao diện thân thiện, bạn có thể dễ dàng tìm kiếm, so sánh và đặt phòng chỉ trong vài cú click. Chúng tôi cung cấp thông tin phòng rõ ràng, hình ảnh chân thực, giá cả minh bạch và các ưu đãi độc quyền mỗi ngày.
-
-                    Không chỉ là nơi lưu trú, Luxury Hotel mang đến không gian nghỉ dưỡng đẳng cấp, dịch vụ tận tâm 24/7 và những tiện ích hiện đại như nhà hàng sang trọng, spa thư giãn, trung tâm thể hình và hỗ trợ khách hàng mọi lúc, mọi nơi.
-
-                    Chúng tôi tin rằng mỗi kỳ nghỉ là một câu chuyện, và Luxury Hotel sẽ là nơi bắt đầu của những kỷ niệm khó quên. Hãy để chúng tôi đồng hành cùng bạn trong hành trình tận hưởng cuộc sống theo cách trọn vẹn nhất.
+                <p class="text-justify text-secondary">
+                    Tọa lạc tại một trong những bãi biển đẹp nhất Việt Nam, Luxury Hotel là khách sạn cao cấp mang đến trải nghiệm nghỉ dưỡng khác biệt – nơi hội tụ giữa vẻ đẹp thiên nhiên nguyên sơ và những tiêu chuẩn dịch vụ quốc tế. Chúng tôi không chỉ là một điểm đến, mà là nơi mở ra những khoảnh khắc sống chậm, thư giãn và đắm mình trong sự yên bình tuyệt đối.
                 </p>
-            </section>
-
-            <!-- Đội ngũ -->
-            <section>
-                <h2 class="text-center mb-4">Đội Ngũ Phát Triển Hệ Thống</h2>
-
-                <div class="member-card">
-                    <img src="#" alt="Phạm Quốc Tuấn" class="member-img">
-                    <div>
-                        <h5>Phạm Quốc Tuấn</h5>
-                        <p class="mb-1"><strong>Vai trò:</strong> Trưởng nhóm</p>
-                        <p><strong>MSSV:</strong> HE181869</p>
-                        <p>Chịu trách nhiệm chính về quản lý dự án, thiết kế hệ thống và phát triển giao diện người dùng.</p>
-                    </div>
-                </div>
-
-                <div class="member-card">
-                    <img src="#" alt="Mai Tiến Dũng" class="member-img">
-                    <div>
-                        <h5>Mai Tiến Dũng</h5>
-                        <p class="mb-1"><strong>Vai trò:</strong> Thành viên</p>
-                        <p><strong>MSSV:</strong> HE186519</p>
-                        <p>Phụ trách xử lý backend, xác thực người dùng và tích hợp các chức năng quản lý người dùng.</p>
-                    </div>
-                </div>
-
-                <div class="member-card">
-                    <img src="#" alt="Phạm Xuân Hiếu" class="member-img">
-                    <div>
-                        <h5>Phạm Xuân Hiếu</h5>
-                        <p class="mb-1"><strong>Vai trò:</strong> Thành viên</p>
-                        <p><strong>MSSV:</strong> HE150075</p>
-                        <p>Chịu trách nhiệm thiết kế cơ sở dữ liệu, xây dựng chức năng quản lý phòng và dịch vụ khách sạn.</p>
-                    </div>
-                </div>
-
-                <div class="member-card">
-                    <img src="#" alt="Lê Anh Minh" class="member-img">
-                    <div>
-                        <h5>Lê Anh Minh</h5>
-                        <p class="mb-1"><strong>Vai trò:</strong> Thành viên</p>
-                        <p><strong>MSSV:</strong> HE180621</p>
-                        <p>Phụ trách biểu đồ thống kê, hệ thống báo cáo và hỗ trợ tối ưu giao diện quản trị.</p>
-                    </div>
-                </div>
+                <p class="text-justify text-secondary">
+                    Với kiến trúc hiện đại lấy cảm hứng từ sóng biển và ánh nắng, từng đường nét của khách sạn được thiết kế để giao hòa với thiên nhiên – từ phòng nghỉ rộng mở ngập tràn ánh sáng tự nhiên, ban công riêng nhìn thẳng ra biển, đến những khu vườn xanh mát bên trong khuôn viên.
+                </p>
+                <p class="text-justify text-secondary">
+                    Chúng tôi hiểu rằng mỗi vị khách đều xứng đáng được phục vụ bằng sự chân thành và chuyên nghiệp nhất. Vì vậy, Luxury Hotel không ngừng nâng cao chất lượng dịch vụ – từ đội ngũ lễ tân thân thiện, dịch vụ phòng tận tâm 24/7, đến những tiện nghi như hồ bơi tràn viền, trung tâm thể thao, spa trị liệu, nhà hàng sang trọng với thực đơn đa dạng phong cách ẩm thực Á – Âu.
+                </p>
+                <p class="text-justify text-secondary">
+                    Điểm nổi bật của Luxury Hotel chính là hệ thống đặt phòng thông minh, nhanh chóng và minh bạch. Chúng tôi áp dụng chính sách <strong>không hủy</strong> đối với một số hạng phòng để đảm bảo sự ổn định trong mùa cao điểm – phản ánh cam kết chuẩn hóa và chuyên nghiệp trong vận hành.
+                </p>
+                <p class="text-justify text-secondary">
+                    Luxury Hotel hướng tới xây dựng một cộng đồng khách hàng thân thiết – những người không chỉ đến để lưu trú, mà còn tìm thấy sự gắn kết, niềm vui và nguồn cảm hứng trong từng kỳ nghỉ.
+                </p>
+                <p class="text-justify text-secondary">
+                    Chúng tôi tin rằng mỗi chuyến đi đều bắt đầu bằng một sự lựa chọn. Và khi bạn chọn Luxury Hotel, bạn đang chọn một nơi lưu trú xứng tầm, nơi mọi chi tiết đều được chăm chút để nâng niu cảm xúc của bạn.
+                </p>
             </section>
 
             <!-- Thông tin liên hệ -->
             <section class="contact-content mt-5">
-                <div class="contact-info-section px-4 py-3">
-                    <div class="row text-center">
-                        <div class="col-md-3 mb-4">
+                <h2 class="text-center text-primary mb-4">Thông Tin Liên Hệ</h2>
+                <div class="contact-info-section px-4 py-3 bg-light rounded shadow-sm">
+                    <div class="row text-center gy-4">
+                        <div class="col-md-3 col-6">
                             <div class="contact-icon mb-2">
                                 <i class="fas fa-map-marker-alt fa-2x"></i>
                             </div>
                             <h6>Địa chỉ</h6>
-                            <p>Khu CNC, Láng Hòa Lạc<br>Thạch Thất, Hà Nội</p>
+                            <p>Khu CNC, Láng Hòa Lạc</p>
+                            <p>Thạch Thất, Hà Nội</p>
                         </div>
-
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-3 col-6">
                             <div class="contact-icon mb-2">
                                 <i class="fas fa-phone fa-2x"></i>
                             </div>
                             <h6>Điện thoại</h6>
-                            <p>+84 334 688 774<br>+84 987 654 321</p>
+                            <p>+84 334 688 774</p>
+                            <p>+84 987 654 321</p>
                         </div>
-
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-3 col-6">
                             <div class="contact-icon mb-2">
                                 <i class="fas fa-envelope fa-2x"></i>
                             </div>
                             <h6>Email</h6>
-                            <p>yenlaem412@gmail.com<br>tdpoke412@gmail.com</p>
+                            <p>yenlaem412@gmail.com</p>
+                            <p>tdpoke412@gmail.com</p>
                         </div>
-
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-3 col-6">
                             <div class="contact-icon mb-2">
                                 <i class="fas fa-clock fa-2x"></i>
                             </div>
                             <h6>Giờ làm việc</h6>
-                            <p>Thứ 2 - Chủ nhật<br>24/7 - Luôn sẵn sàng</p>
+                            <p>Thứ 2 - Chủ nhật</p>
+                            <p>24/7 - Luôn sẵn sàng</p>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
+
 
         <!-- Footer -->
         <jsp:include page="customer/includes/footer.jsp"/>
