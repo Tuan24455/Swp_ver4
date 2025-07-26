@@ -20,7 +20,11 @@ public class DBContext {
         try {
             // Change the username, password, and URL to match your database settings
             String username = "sa";
+<<<<<<< HEAD
+            String password = "123456";
+=======
             String password = "123";
+>>>>>>> 3a90dcb734a8acd8c2ee3fbed49134379c02aa09
             String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v4;encrypt=true;trustServerCertificate=true";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, username, password);
@@ -35,7 +39,7 @@ public class DBContext {
             // Tạo kết nối mới nếu cần
             try {
                 String username = "sa";
-                String password = "123";
+                String password = "123456";
                 String url = "jdbc:sqlserver://localhost:1433;databaseName=BookingHotel_v4;encrypt=true;trustServerCertificate=true";
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                 connection = DriverManager.getConnection(url, username, password);

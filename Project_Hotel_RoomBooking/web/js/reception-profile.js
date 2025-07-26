@@ -39,7 +39,7 @@ class ProfileManager {
 
     toggleEditMode() {
         this.isEditMode = !this.isEditMode;
-        const inputs = this.personalInfoForm.querySelectorAll("input:not([type='hidden']), select, textarea");
+        const inputs = document.querySelectorAll('#personalInfoForm input:not([type="hidden"]), select, textarea');
 
         if (this.isEditMode) {
             inputs.forEach(input => {
@@ -52,13 +52,7 @@ class ProfileManager {
             this.editBtn.innerHTML = '<i class="fas fa-times"></i> Hủy';
             this.showActions();
         } else {
-            inputs.forEach(input => {
-                if (input.tagName.toLowerCase() === "select") {
-                    input.setAttribute("disabled", "disabled");
-                } else {
-                    input.setAttribute("readonly", "readonly");
-                }
-            });
+            inputs.forEach(input => input.setAttribute("readonly", "readonly"));
             this.restoreOriginalFormData();
             this.editBtn.innerHTML = '<i class="fas fa-edit"></i> Chỉnh sửa';
             this.hideActions();
@@ -129,90 +123,37 @@ class ProfileManager {
     }
 
     validatePersonalInfoForm() {
-        const inputs = this.personalInfoForm.querySelectorAll(
-                'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
-                );
-        let isFormValid = true;
+        const requiredFields = this.personalInfoForm.querySelectorAll("input[required]:not([readonly]), select[required], textarea[required]");
+        let valid = true;
 
-        inputs.forEach(input => {
-            const isValid = this.validateField(input);
-            if (!isValid)
-                isFormValid = false;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                this.showError(field, "Trường bắt buộc");
+                valid = false;
+            } else {
+                this.clearError(field);
+            }
         });
 
-        return isFormValid;
-    }
+        // ✅ Kiểm tra người dùng phải đủ 18 tuổi
+        const birthInput = this.personalInfoForm.querySelector('[name="birth"]');
+        if (birthInput && birthInput.value) {
+            const birthDate = new Date(birthInput.value);
+            const today = new Date();
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const isBirthdayPassed = today.getMonth() > birthDate.getMonth() ||
+                    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+            const actualAge = isBirthdayPassed ? age : age - 1;
 
-    validateField(input) {
-        this.clearError(input);
-        const value = input.value.trim();
-        const name = input.name;
-        let isValid = true;
-        let message = "";
-
-        if (name === "fullName") {
-            const nameRegex = /^[\p{L} ]+$/u;
-            if (!value) {
-                isValid = false;
-                message = "Họ tên không được để trống.";
-            } else if (value.length < 2) {
-                isValid = false;
-                message = "Họ tên phải có ít nhất 2 ký tự.";
-            } else if (!nameRegex.test(value)) {
-                isValid = false;
-                message = "Họ tên chỉ được chứa chữ cái và khoảng trắng.";
-            }
-        } else if (name === "email") {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!value) {
-                isValid = false;
-                message = "Email không được để trống.";
-            } else if (!emailRegex.test(value)) {
-                isValid = false;
-                message = "Email không hợp lệ.";
-            }
-        } else if (name === "phone") {
-            const phoneRegex = /^[0-9]{10,11}$/;
-            if (value && !phoneRegex.test(value)) {
-                isValid = false;
-                message = "Số điện thoại không hợp lệ (10–11 chữ số).";
-            }
-        } else if (name === "birth") {
-            if (value) {
-                const birthDate = new Date(value);
-                const today = new Date();
-                if (isNaN(birthDate.getTime())) {
-                    isValid = false;
-                    message = "Ngày sinh không hợp lệ.";
-                } else {
-                    let age = today.getFullYear() - birthDate.getFullYear();
-                    const m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-                    if (age < 18 || age > 100) {
-                        isValid = false;
-                        message = "Tuổi phải từ 18 đến 100.";
-                    }
-                }
+            if (actualAge < 18) {
+                this.showError(birthInput, "Bạn phải đủ 18 tuổi");
+                valid = false;
+            } else {
+                this.clearError(birthInput);
             }
         }
 
-        if (!isValid) {
-            this.showError(input, message);
-        }
-
-        return isValid;
-    }
-
-    realTimeValidation() {
-        const inputs = this.personalInfoForm.querySelectorAll(
-                'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
-                );
-
-        inputs.forEach(input => {
-            input.addEventListener("blur", () => this.validateField(input));
-        });
+        return valid;
     }
 
     handleAvatarUpload(e) {
@@ -265,6 +206,84 @@ class ProfileManager {
         }
     }
 
+    showMessage(msg, type = "info") {
+        const alert = document.createElement("div");
+        alert.className = `alert alert-${type === "error" ? "danger" : type} alert-message fade-in`;
+        alert.innerHTML = `
+            <strong>${msg}</strong>
+            <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+        `;
+        alert.style.cssText = "position: fixed; top: 20px; right: 20px; z-index: 9999;";
+        document.body.appendChild(alert);
+        setTimeout(() => alert.remove(), 5000);
+    }
+
+    showError(field, msg) {
+        this.clearError(field);
+        const error = document.createElement("div");
+        error.className = "error-message";
+        error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
+        field.classList.add("shake");
+        field.parentElement.appendChild(error);
+        setTimeout(() => field.classList.remove("shake"), 500);
+    }
+
+    clearError(field) {
+        const error = field.parentElement.querySelector(".error-message");
+        if (error)
+            error.remove();
+    }
+
+    realTimeValidation() {
+        const email = this.personalInfoForm.querySelector('[name="email"]');
+        const phone = this.personalInfoForm.querySelector('[name="phone"]');
+        if (email) {
+            email.addEventListener("blur", () => {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!re.test(email.value))
+                    this.showError(email, "Email không hợp lệ");
+                else
+                    this.clearError(email);
+            });
+        }
+        if (phone) {
+            phone.addEventListener("blur", () => {
+                const re = /^[0-9]{10,11}$/;
+                if (!re.test(phone.value))
+                    this.showError(phone, "SĐT không hợp lệ");
+                else
+                    this.clearError(phone);
+            });
+        }
+    }
+
+    setLoading(target, on) {
+        if (!target)
+            return;
+        target.classList.toggle("loading", on);
+        target.style.pointerEvents = on ? "none" : "auto";
+    }
+
+    setupValidation() {
+        const fields = document.querySelectorAll("input[required], select[required], textarea[required]");
+        fields.forEach(field => {
+            const label = field.closest(".form-group")?.querySelector("label");
+            if (label && !label.innerHTML.includes("*")) {
+                const span = document.createElement("span");
+                span.className = "required-indicator";
+                span.innerHTML = " *";
+                span.style.color = "#e74c3c";
+                label.appendChild(span);
+            }
+        });
+    }
+
+    animateSections() {
+        const sections = document.querySelectorAll(".profile-header, .avatar-section, .form-section");
+        sections.forEach((section, i) => {
+            setTimeout(() => section.classList.add("fade-in"), i * 200);
+        });
+    }
     validatePasswordForm() {
         const currentInput = document.getElementById("currentPassword");
         const newInput = document.getElementById("newPassword");
@@ -333,63 +352,6 @@ class ProfileManager {
         } finally {
             this.setLoading(this.passwordForm, false);
         }
-    }
-    showMessage(msg, type = "info") {
-        const alert = document.createElement("div");
-        alert.className = `alert alert-${type === "error" ? "danger" : type} alert-message fade-in`;
-        alert.innerHTML = `
-            <strong>${msg}</strong>
-            <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
-        `;
-        alert.style.cssText = "position: fixed; top: 20px; right: 20px; z-index: 9999;";
-        document.body.appendChild(alert);
-        setTimeout(() => alert.remove(), 5000);
-    }
-
-    showError(field, msg) {
-        this.clearError(field);
-        const error = document.createElement("div");
-        error.className = "error-message";
-        error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
-        if (!field.parentElement.querySelector(".error-message")) {
-            field.parentElement.appendChild(error);
-        }
-        field.classList.add("shake");
-        setTimeout(() => field.classList.remove("shake"), 500);
-    }
-
-    clearError(field) {
-        const error = field.parentElement.querySelector(".error-message");
-        if (error)
-            error.remove();
-    }
-
-    setLoading(target, on) {
-        if (!target)
-            return;
-        target.classList.toggle("loading", on);
-        target.style.pointerEvents = on ? "none" : "auto";
-    }
-
-    setupValidation() {
-        const fields = document.querySelectorAll("input[required], select[required], textarea[required]");
-        fields.forEach(field => {
-            const label = field.closest(".form-group")?.querySelector("label");
-            if (label && !label.innerHTML.includes("*")) {
-                const span = document.createElement("span");
-                span.className = "required-indicator";
-                span.innerHTML = " *";
-                span.style.color = "#e74c3c";
-                label.appendChild(span);
-            }
-        });
-    }
-
-    animateSections() {
-        const sections = document.querySelectorAll(".profile-header, .avatar-section, .form-section");
-        sections.forEach((section, i) => {
-            setTimeout(() => section.classList.add("fade-in"), i * 200);
-        });
     }
 
 }

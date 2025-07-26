@@ -20,52 +20,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         width: 40px;
         height: 40px;
       }
-      /* Custom CSS cho phần bộ lọc (từ tin nhắn trước) */
-      .filter-card .input-group {
-        border: 1px solid #ced4da; /* Border mặc định */
-        border-radius: 0.375rem;
-        transition: border-color 0.3s ease;
-      }
-
-      .filter-card .input-group:focus-within {
-        border-color: #0d6efd; /* Màu primary khi focus */
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-      }
-
-      .filter-card .form-control {
-        border: none; /* Xóa border input để hợp nhất với group */
-      }
-
-      .filter-card .input-group-text {
-        background-color: #f8f9fa; /* Nền nhẹ cho icon */
-        border: none;
-      }
-
-      .filter-card .btn-primary {
-        transition: background-color 0.3s ease, transform 0.2s ease;
-      }
-
-      .filter-card .btn-primary:hover {
-        background-color: #0b5ed7; /* Darker primary on hover */
-        transform: translateY(-2px); /* Effect nâng nhẹ */
-      }
-
-      .filter-card .form-label {
-        font-weight: 500; /* Bold label */
-        margin-bottom: 0.5rem;
-      }
-
-      /* Validation styles (thêm class 'is-invalid' bằng JS nếu cần) */
-      .filter-card .is-invalid .input-group {
-        border-color: #dc3545;
-      }
-
-      /* Responsive: Stack vertically on small screens */
-      @media (max-width: 767px) {
-        .filter-card .row > div {
-          margin-bottom: 1rem;
-        }
-      }
     </style>
   </head>
   <body>
@@ -81,52 +35,72 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         <jsp:include page="includes/navbar.jsp" />
 
         <div class="container-fluid py-4">
-          <!-- Bộ lọc tìm kiếm (đã bỏ filter loại phòng và CSS lại) -->
+          <!-- Bộ lọc tìm kiếm -->
           <div class="card shadow-sm mb-4">
-            <div class="card-body bg-light filter-card">
-              <form method="get" action="bookingreport">
-                <div class="row g-3 align-items-center">
-                  <div class="col-md-4 col-12">
-                    <label for="fromDate" class="form-label">Từ Ngày</label>
-                    <div class="input-group">
-                      <input
-                        type="date"
-                        class="form-control"
-                        id="fromDate"
-                        name="startDate"
-                        value="${param.startDate}"
-                      />
-                      <span class="input-group-text"
-                        ><i class="fas fa-calendar-alt"></i
-                      ></span>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12">
-                    <label for="toDate" class="form-label">Đến Ngày</label>
-                    <div class="input-group">
-                      <input
-                        type="date"
-                        class="form-control"
-                        id="toDate"
-                        name="endDate"
-                        value="${param.endDate}"
-                      />
-                      <span class="input-group-text"
-                        ><i class="fas fa-calendar-alt"></i
-                      ></span>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-12 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">
-                      Lọc
-                    </button>
+            <div class="card-body bg-light">
+              <div class="row g-3 align-items-center">
+                <div class="col-md-3">
+                  <label for="fromDate" class="form-label">Từ Ngày</label>
+                  <div class="input-group">
+                    <input type="date" class="form-control" id="fromDate">
                   </div>
                 </div>
-              </form>
+                <div class="col-md-3">
+                  <label for="toDate" class="form-label">Đến Ngày</label>
+                  <div class="input-group">
+                    <input type="date" class="form-control" id="toDate">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="roomType" class="form-label">Loại Phòng</label>
+                  <div class="input-group">
+                    <select class="form-select" id="roomType">
+                      <option value="" ${selectedRoomType == null ? 'selected' : ''}>Tất Cả Loại Phòng</option>
+                      <c:forEach items="${roomTypes}" var="type">
+                        <option value="${type.id}" ${selectedRoomType == type.id ? 'selected' : ''}>${type.roomType}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                  <button class="btn btn-primary w-100" id="filterButton">Lọc</button>
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- Current Bookings Table (đã bỏ Summary Footer) -->
+          
+          <!-- Thống kê chi tiết phòng -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom py-3">
+              <h5 class="mb-0">
+                <i class="fas fa-chart-bar me-2"></i>Chi Tiết Thống Kê Phòng
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Trạng Thái Phòng</th>
+                      <th>Số Lượng</th>
+                      <th>Mô Tả</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <c:forEach items="${roomStatistics}" var="entry">
+                      <tr>
+                        <td>${entry.key}</td>
+                        <td>${entry.value.count}</td>
+                        <td>${entry.value.description}</td>
+                      </tr>
+                    </c:forEach>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Current Bookings Table -->
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-bottom py-3">
               <h5 class="mb-0">
@@ -152,7 +126,6 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                       <th>
                         <i class="fas fa-money-bill-wave me-1"></i>Tổng Tiền
                       </th>
-                      <th><i class="fas fa-info-circle me-1"></i>Trạng Thái</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -209,105 +182,21 @@ prefix="c" %> <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                               maxFractionDigits="0"
                           /></strong>
                         </td>
-                        <td>
-                          <c:choose>
-                            <c:when test="${booking.status == 'Confirmed'}">
-                              <span class="badge bg-success">Đã Xác Nhận</span>
-                            </c:when>
-                            <c:when test="${booking.status == 'Pending'}">
-                              <span class="badge bg-warning">Chờ Xử Lý</span>
-                            </c:when>
-                            <c:when test="${booking.status == 'Cancelled'}">
-                              <span class="badge bg-danger">Đã Hủy</span>
-                            </c:when>
-                            <c:otherwise>
-                              <span class="badge bg-secondary"
-                                >${booking.status}</span
-                              >
-                            </c:otherwise>
-                          </c:choose>
-                        </td>
                       </tr>
                     </c:forEach>
                   </tbody>
                 </table>
               </div>
 
-              <!-- Pagination Controls -->
-              <c:if test="${totalPages > 1}">
-                <div
-                  class="d-flex justify-content-between align-items-center mt-3"
-                >
-                  <div class="text-muted">
-                    Hiển thị
-                    <strong>${(currentPage-1) * pageSize + 1}</strong> đến
-                    <strong
-                      >${currentPage * pageSize > totalRecords ? totalRecords :
-                      currentPage * pageSize}</strong
-                    >
-                    của <strong>${totalRecords}</strong> kết quả
-                  </div>
-                  <nav aria-label="Pagination">
-                    <ul class="pagination pagination-sm mb-0">
-                      <!-- Previous Button -->
-                      <li
-                        class="page-item ${currentPage <= 1 ? 'disabled' : ''}"
-                      >
-                        <a
-                          class="page-link"
-                          href="?page=${currentPage - 1}&startDate=${param.startDate}&endDate=${param.endDate}&roomType=${param.roomType}"
-                        >
-                          <i class="fas fa-chevron-left"></i> Trước
-                        </a>
-                      </li>
-
-                      <!-- Page Numbers -->
-                      <c:forEach begin="1" end="${totalPages}" var="pageNum">
-                        <c:if
-                          test="${pageNum <= 5 || (pageNum >= currentPage - 2 && pageNum <= currentPage + 2) || pageNum >= totalPages - 2}"
-                        >
-                          <li
-                            class="page-item ${pageNum == currentPage ? 'active' : ''}"
-                          >
-                            <a
-                              class="page-link"
-                              href="?page=${pageNum}&startDate=${param.startDate}&endDate=${param.endDate}&roomType=${param.roomType}"
-                            >
-                              ${pageNum}
-                            </a>
-                          </li>
-                        </c:if>
-                        <c:if test="${pageNum == 6 && currentPage > 8}">
-                          <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                          </li>
-                        </c:if>
-                        <c:if
-                          test="${pageNum == currentPage + 3 && pageNum < totalPages - 2}"
-                        >
-                          <li class="page-item disabled">
-                            <span class="page-link">...</span>
-                          </li>
-                        </c:if>
-                      </c:forEach>
-
-                      <!-- Next Button -->
-                      <li
-                        class="page-item ${currentPage >= totalPages ? 'disabled' : ''}"
-                      >
-                        <a
-                          class="page-link"
-                          href="?page=${currentPage + 1}&startDate=${param.startDate}&endDate=${param.endDate}&roomType=${param.roomType}"
-                        >
-                          Sau <i class="fas fa-chevron-right"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
+              <!-- Summary Footer -->
+              <div class="row mt-3 pt-3 border-top">
+                <div class="col-md-6">
+                  <!-- Phần tử này sẽ được cập nhật bởi JavaScript -->
                 </div>
-              </c:if>
-
-              <!-- Summary Footer đã bị bỏ hoàn toàn -->
+                <div class="col-md-6 text-end">
+                  <!-- Phần tử này sẽ được cập nhật bởi JavaScript -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
