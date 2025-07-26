@@ -172,7 +172,8 @@
                                                            name="phone" 
                                                            class="form-control" 
                                                            value="${sessionScope.user.getPhone()}"
-                                                           placeholder="0123 456 789">
+                                                           placeholder="0123 456 789"
+                                                           required>
                                                     <div class="invalid-feedback"></div>
                                                 </div>
 
