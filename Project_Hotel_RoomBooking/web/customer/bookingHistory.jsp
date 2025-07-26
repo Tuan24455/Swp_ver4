@@ -200,12 +200,45 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
     <jsp:include page="includes/header.jsp" />
 
     <!-- NỘI DUNG CHÍNH: LỊCH SỬ ĐẶT LỊCH -->
-    <div class="container py-5">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h2 class="card-title text-center mb-4">Lịch sử đặt phòng</h2>
+    <div class="booking-history-container">
+  <div class="booking-history-header text-center">
+    <h2>Lịch sử đặt phòng</h2>
+    <p class="text-muted mb-4">Xem lại các lần đặt phòng của bạn, tìm kiếm nhanh theo số phòng, tầng, ngày nhận/trả.</p>
+  </div>
 
-          <!-- THÔNG BÁO NẾU CÓ -->
+  <!-- FORM FILTER -->
+  <form class="row g-3 mb-4 align-items-end bg-light p-3 rounded shadow-sm" method="get" style="box-shadow: var(--shadow-sm);">
+    <div class="col-md-2">
+      <label for="roomNumber" class="form-label">Số phòng</label>
+      <input type="text" class="form-control" id="roomNumber" name="roomNumber" placeholder="Nhập số phòng" value="${roomNumber}">
+    </div>
+    <div class="col-md-2">
+      <label for="floor" class="form-label">Tầng</label>
+      <input type="number" class="form-control" id="floor" name="floor" placeholder="Tầng" value="${floor}">
+    </div>
+    <div class="col-md-2">
+      <label for="checkInFrom" class="form-label">Nhận từ</label>
+      <input type="date" class="form-control" id="checkInFrom" name="checkInFrom" value="${checkInFrom}">
+    </div>
+    <div class="col-md-2">
+      <label for="checkInTo" class="form-label">Nhận đến</label>
+      <input type="date" class="form-control" id="checkInTo" name="checkInTo" value="${checkInTo}">
+    </div>
+    <div class="col-md-2">
+      <label for="checkOutFrom" class="form-label">Trả từ</label>
+      <input type="date" class="form-control" id="checkOutFrom" name="checkOutFrom" value="${checkOutFrom}">
+    </div>
+    <div class="col-md-2">
+      <label for="checkOutTo" class="form-label">Trả đến</label>
+      <input type="date" class="form-control" id="checkOutTo" name="checkOutTo" value="${checkOutTo}">
+    </div>
+    <div class="col-md-12 d-flex align-items-center gap-2 mt-2">
+      <button type="submit" class="btn btn-primary px-4"><i class="fa fa-search me-1"></i> Lọc</button>
+      <a href="bookingHistory" class="btn btn-outline-secondary px-3"><i class="fa fa-rotate-left"></i> Reset</a>
+    </div>
+  </form>
+
+  <!-- THÔNG BÁO NẾU CÓ -->
           <c:if test="${not empty message && messageType != 'danger'}">
             <c:if test="${!(message eq 'Thanh toán đặt phòng thành công!')}">
               <div
