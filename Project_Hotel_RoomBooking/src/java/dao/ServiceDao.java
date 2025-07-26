@@ -8,6 +8,7 @@ import dal.DBContext;
 import model.Service;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class ServiceDao {
 
         return list;
     }    // Lấy dịch vụ theo ID
+
     public Service getServiceById(int id) {
         String sql = "SELECT s.*, st.service_type "
                 + "FROM Services s "
@@ -130,7 +132,7 @@ public class ServiceDao {
         StringBuilder sql = new StringBuilder(
                 "SELECT s.id, s.service_name, s.service_type_id, t.service_type AS service_type_name, "
                 + "s.service_price, s.description, s.image_url "
-                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE isDelete=0"
+                + "FROM Services s JOIN ServiceTypes t ON s.service_type_id = t.id WHERE isDeleted=0"
         );
 
         List<Object> params = new ArrayList<>();
@@ -267,7 +269,9 @@ public class ServiceDao {
             e.printStackTrace();
         }
         return false;
-    }    public boolean checkNameExistsExceptId(String name, int excludeId) {
+    }
+
+    public boolean checkNameExistsExceptId(String name, int excludeId) {
         String sql = "SELECT COUNT(*) FROM Services WHERE service_name = ? AND id != ?";
         try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -294,13 +298,12 @@ public class ServiceDao {
                 + "WHERE s.service_type_id = ? AND s.id != ? AND s.isDeleted = 0 "
                 + "ORDER BY s.id DESC";
 
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, limit);
             ps.setInt(2, typeId);
             ps.setInt(3, excludeServiceId);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Service s = new Service();
@@ -321,151 +324,174 @@ public class ServiceDao {
 
         return list;
     }
-    
-public List<Service> filterServicesWithSearchAndPagination(String searchQuery, String type, Double minPrice, Double maxPrice, int pageNumber, int pageSize) {
-    List<Service> list = new ArrayList<>();
-    StringBuilder sql = new StringBuilder(
-            "SELECT s.*, st.service_type FROM Services s " +
-            "JOIN ServiceTypes st ON s.service_type_id = st.id " +
-            "WHERE s.isDeleted = 0"
-    );
 
-    List<Object> params = new ArrayList<>();
+    public List<Service> filterServicesWithSearchAndPagination(String searchQuery, String type, Double minPrice, Double maxPrice, int pageNumber, int pageSize) {
+        List<Service> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT s.*, st.service_type FROM Services s "
+                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
+                + "WHERE s.isDeleted = 0"
+        );
 
-    // Nếu có tìm kiếm, thêm điều kiện tìm kiếm vào SQL
-    if (searchQuery != null && !searchQuery.isEmpty()) {
-        sql.append(" AND s.service_name LIKE ?");
-        params.add("%" + searchQuery + "%");  // Sử dụng LIKE để tìm kiếm chuỗi khớp
-    }
+        List<Object> params = new ArrayList<>();
 
-    // Thêm điều kiện lọc theo loại dịch vụ nếu có
-    if (type != null && !type.isEmpty()) {
-        sql.append(" AND st.service_type = ?");
-        params.add(type);
-    }
-
-    // Thêm điều kiện lọc theo giá tối thiểu nếu có
-    if (minPrice != null) {
-        sql.append(" AND s.service_price >= ?");
-        params.add(minPrice);
-    }
-
-    // Thêm điều kiện lọc theo giá tối đa nếu có
-    if (maxPrice != null) {
-        sql.append(" AND s.service_price <= ?");
-        params.add(maxPrice);
-    }
-
-    // Thêm phần phân trang vào truy vấn
-    int offset = (pageNumber - 1) * pageSize;
-    sql.append(" ORDER BY s.id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-    // Thêm offset và pageSize vào tham số truy vấn
-    params.add(offset);
-    params.add(pageSize);
-
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-        // Gán giá trị cho các tham số trong câu truy vấn
-        for (int i = 0; i < params.size(); i++) {
-            ps.setObject(i + 1, params.get(i));
+        // Nếu có tìm kiếm, thêm điều kiện tìm kiếm vào SQL
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            sql.append(" AND s.service_name LIKE ?");
+            params.add("%" + searchQuery + "%");  // Sử dụng LIKE để tìm kiếm chuỗi khớp
         }
 
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Service s = new Service();
-                s.setId(rs.getInt("id"));
-                s.setName(rs.getString("service_name"));
-                s.setTypeId(rs.getInt("service_type_id"));
-                s.setTypeName(rs.getString("service_type"));
-                s.setPrice(rs.getDouble("service_price"));
-                s.setDescription(rs.getString("description"));
-                s.setImageUrl(rs.getString("image_url"));
-                list.add(s);
+        // Thêm điều kiện lọc theo loại dịch vụ nếu có
+        if (type != null && !type.isEmpty()) {
+            sql.append(" AND st.service_type = ?");
+            params.add(type);
+        }
+
+        // Thêm điều kiện lọc theo giá tối thiểu nếu có
+        if (minPrice != null) {
+            sql.append(" AND s.service_price >= ?");
+            params.add(minPrice);
+        }
+
+        // Thêm điều kiện lọc theo giá tối đa nếu có
+        if (maxPrice != null) {
+            sql.append(" AND s.service_price <= ?");
+            params.add(maxPrice);
+        }
+
+        // Thêm phần phân trang vào truy vấn
+        int offset = (pageNumber - 1) * pageSize;
+        sql.append(" ORDER BY s.id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        // Thêm offset và pageSize vào tham số truy vấn
+        params.add(offset);
+        params.add(pageSize);
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            // Gán giá trị cho các tham số trong câu truy vấn
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
             }
-        }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
-
-
-    
- public int getTotalServices(String searchQuery, String type, Double minPrice, Double maxPrice) {
-    StringBuilder sql = new StringBuilder(
-            "SELECT COUNT(*) FROM Services s " +
-            "JOIN ServiceTypes st ON s.service_type_id = st.id " +
-            "WHERE s.isDeleted = 0"
-    );
-
-    List<Object> params = new ArrayList<>();
-
-    // Thêm điều kiện lọc theo tên dịch vụ (tìm kiếm theo tên)
-    if (searchQuery != null && !searchQuery.isEmpty()) {
-        sql.append(" AND s.service_name LIKE ?");
-        params.add("%" + searchQuery + "%");  // Tìm kiếm theo tên dịch vụ có chứa searchQuery
-    }
-
-    // Thêm điều kiện lọc theo loại dịch vụ nếu có
-    if (type != null && !type.isEmpty()) {
-        sql.append(" AND st.service_type = ?");
-        params.add(type);
-    }
-
-    // Thêm điều kiện lọc theo giá tối thiểu nếu có
-    if (minPrice != null) {
-        sql.append(" AND s.service_price >= ?");
-        params.add(minPrice);
-    }
-
-    // Thêm điều kiện lọc theo giá tối đa nếu có
-    if (maxPrice != null) {
-        sql.append(" AND s.service_price <= ?");
-        params.add(maxPrice);
-    }
-
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-        // Gán giá trị cho các tham số trong câu truy vấn
-        for (int i = 0; i < params.size(); i++) {
-            ps.setObject(i + 1, params.get(i));
-        }
-
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1); // Trả về tổng số dịch vụ
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Service s = new Service();
+                    s.setId(rs.getInt("id"));
+                    s.setName(rs.getString("service_name"));
+                    s.setTypeId(rs.getInt("service_type_id"));
+                    s.setTypeName(rs.getString("service_type"));
+                    s.setPrice(rs.getDouble("service_price"));
+                    s.setDescription(rs.getString("description"));
+                    s.setImageUrl(rs.getString("image_url"));
+                    list.add(s);
+                }
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return list;
     }
 
-    return 0;
-}
+    public int getTotalServices(String searchQuery, String type, Double minPrice, Double maxPrice) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM Services s "
+                + "JOIN ServiceTypes st ON s.service_type_id = st.id "
+                + "WHERE s.isDeleted = 0"
+        );
 
+        List<Object> params = new ArrayList<>();
 
+        // Thêm điều kiện lọc theo tên dịch vụ (tìm kiếm theo tên)
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            sql.append(" AND s.service_name LIKE ?");
+            params.add("%" + searchQuery + "%");  // Tìm kiếm theo tên dịch vụ có chứa searchQuery
+        }
 
+        // Thêm điều kiện lọc theo loại dịch vụ nếu có
+        if (type != null && !type.isEmpty()) {
+            sql.append(" AND st.service_type = ?");
+            params.add(type);
+        }
 
-    // test thử 
+        // Thêm điều kiện lọc theo giá tối thiểu nếu có
+        if (minPrice != null) {
+            sql.append(" AND s.service_price >= ?");
+            params.add(minPrice);
+        }
+
+        // Thêm điều kiện lọc theo giá tối đa nếu có
+        if (maxPrice != null) {
+            sql.append(" AND s.service_price <= ?");
+            params.add(maxPrice);
+        }
+
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            // Gán giá trị cho các tham số trong câu truy vấn
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // Trả về tổng số dịch vụ
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public static void main(String[] args) {
         ServiceDao dao = new ServiceDao();
-        List<Service> list = dao.getAllServices();
 
-        if (list.isEmpty()) {
-            System.out.println(" Không có dữ liệu nào được trả về.");
+        // Trường hợp 1: Lọc theo khoảng giá (500000 - 1000000)
+        System.out.println("--- Lọc dịch vụ theo khoảng giá từ 500000 đến 1000000 ---");
+        List<Service> servicesByPrice = dao.filterServices(null, 500000.0, 1000000.0);
+        if (servicesByPrice.isEmpty()) {
+            System.out.println("Không có dịch vụ nào trong khoảng giá này.");
         } else {
-            for (Service s : list) {
+            for (Service s : servicesByPrice) {
+                System.out.println("Dịch vụ: " + s.getName()
+                        + " | Loại: " + s.getTypeName()
+                        + " | Giá: " + s.getPrice());
+            }
+        }
+        System.out.println();
+
+        // Trường hợp 2: Lọc theo loại dịch vụ (typeId 1 và 3)
+        System.out.println("--- Lọc dịch vụ theo loại có ID 1 và 3 ---");
+        List<Integer> typeIds = Arrays.asList(1, 3);
+        List<Service> servicesByType = dao.filterServices(typeIds, null, null);
+        if (servicesByType.isEmpty()) {
+            System.out.println("Không có dịch vụ nào thuộc loại này.");
+        } else {
+            for (Service s : servicesByType) {
+                System.out.println("Dịch vụ: " + s.getName()
+                        + " | Loại: " + s.getTypeName()
+                        + " | Giá: " + s.getPrice());
+            }
+        }
+        System.out.println();
+
+        // Trường hợp 3: Lọc kết hợp (typeId 2, giá từ 300000 đến 700000)
+        System.out.println("--- Lọc kết hợp: Loại ID 2 và giá từ 300000 đến 700000 ---");
+        List<Integer> combinedTypeIds = Arrays.asList(2);
+        List<Service> combinedServices = dao.filterServices(combinedTypeIds, 300000.0, 700000.0);
+        if (combinedServices.isEmpty()) {
+            System.out.println("Không có dịch vụ nào thỏa mãn cả hai điều kiện.");
+        } else {
+            for (Service s : combinedServices) {
                 System.out.println("Dịch vụ: " + s.getName()
                         + " | Loại: " + s.getTypeName()
                         + " | Giá: " + s.getPrice());
             }
         }
     }
-
 }

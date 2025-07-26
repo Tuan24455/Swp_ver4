@@ -434,45 +434,51 @@
             </section>
 
             <!-- Phân trang -->
+            <script>
+                function goToPage(page) {
+                    // Lấy các tham số lọc hiện tại từ URL
+                    let url = new URL(window.location.href);
+                    let searchParams = url.searchParams;
+
+                    // Xóa tham số 'page' cũ nếu có
+                    if (searchParams.has('page')) {
+                        searchParams.delete('page');
+                    }
+
+                    // Thêm tham số 'page' mới
+                    searchParams.set('page', page);
+
+                    // Chuyển hướng đến URL mới
+                    window.location.href = url.pathname + '?' + searchParams.toString();
+                }
+            </script>
+
             <c:if test="${totalPages > 1}">
                 <section class="pagination-section">
                     <div class="container">
                         <nav class="pagination-nav" aria-label="Phân trang">
                             <ul class="pagination-list">
-                                <li
-                                    class="pagination-item ${currentPage == 1 ? 'disabled' : ''}"
-                                    >
-                                    <button
-                                        class="pagination-link"
-                                        type="button"
-                                        onclick="goToPage(${currentPage - 1})"
-                                        >
+                                <li class="pagination-item ${currentPage == 1 ? 'disabled' : ''}">
+                                    <button class="pagination-link" type="button" 
+                                            onclick="goToPage(${currentPage - 1})"
+                                            ${currentPage == 1 ? 'disabled' : ''}>
                                         <i class="fas fa-chevron-left"></i>
                                     </button>
                                 </li>
 
                                 <c:forEach var="i" begin="1" end="${totalPages}">
-                                    <li
-                                        class="pagination-item ${i == currentPage ? 'active' : ''}"
-                                        >
-                                        <button
-                                            class="pagination-link"
-                                            type="button"
-                                            onclick="goToPage(${i})"
-                                            >
+                                    <li class="pagination-item ${i == currentPage ? 'active' : ''}">
+                                        <button class="pagination-link" type="button" 
+                                                onclick="goToPage(${i})">
                                             ${i}
                                         </button>
                                     </li>
                                 </c:forEach>
 
-                                <li
-                                    class="pagination-item ${currentPage == totalPages ? 'disabled' : ''}"
-                                    >
-                                    <button
-                                        class="pagination-link"
-                                        type="button"
-                                        onclick="goToPage(${currentPage + 1})"
-                                        >
+                                <li class="pagination-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                    <button class="pagination-link" type="button" 
+                                            onclick="goToPage(${currentPage + 1})"
+                                            ${currentPage == totalPages ? 'disabled' : ''}>
                                         <i class="fas fa-chevron-right"></i>
                                     </button>
                                 </li>
