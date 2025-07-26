@@ -93,11 +93,11 @@ public class addRoom extends HttpServlet {
 
         // Kiểm tra xem roomNumber có null hoặc rỗng không
         if (roomNumberRaw == null || roomNumberRaw.isEmpty()) {
-            response.getWriter().write("invalidRoomNumber"); // Trả về lỗi nếu số phòng null hoặc rỗng
+            response.getWriter().write("invalidRoomNumber"); 
             return;
         }
 
-        // Kiểm tra giá trị roomType, floor, capacity, price, description có null không
+        // Kiểm tra giá trị null không
         if (roomTypeRaw == null || roomTypeRaw.isEmpty()) {
             response.getWriter().write("invalidRoomType");
             return;
@@ -107,7 +107,6 @@ public class addRoom extends HttpServlet {
             return;
         }
 
-        // Chuyển đổi các giá trị sang kiểu đúng
         int roomTypeId = Integer.parseInt(roomTypeRaw);
         int floor = Integer.parseInt(floorRaw);
         int capacity = Integer.parseInt(capacityRaw);
@@ -171,7 +170,7 @@ public class addRoom extends HttpServlet {
         }
 
         // Lưu ảnh vào server
-        String uploadPath = request.getServletContext().getRealPath("/images/rooms");
+        String uploadPath = request.getServletContext().getRealPath("/images/room");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();

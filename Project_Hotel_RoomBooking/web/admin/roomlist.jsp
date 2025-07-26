@@ -45,26 +45,33 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                 <jsp:include page="includes/navbar.jsp" />
 
                 <div class="container-fluid py-4" >
-                    <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">
-                                Room List
-                            </li>
-                        </ol>
-                    </nav>
 
                     <!-- Page Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="h3 mb-0">Quản lí phòng</h1>
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addRoomModal"
-                            >
-                            <i class="fas fa-plus me-2"></i>Thêm phòng mới
-                        </button>
+                    <div class="mb-4 p-3 rounded shadow-sm bg-light">
+                        <!-- Dòng chứa nút Home + tiêu đề + nút Thêm -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <!-- Nút Home -->
+                                <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-outline-secondary me-3">
+                                    <i class="fas fa-home"></i>
+                                </a>
+                                <!-- Tiêu đề -->
+                                <h1 class="h3 mb-0">Quản lí phòng</h1>
+                            </div>
+
+                            <!-- Nút Thêm phòng -->
+                            <button
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addRoomModal"
+                                >
+                                <i class="fas fa-plus me-2"></i>Thêm phòng mới
+                            </button>
+                        </div>
                     </div>
+
+
+
 
                     <!-- Room Statistics Cards -->
                     <div class="row g-4 mb-4">

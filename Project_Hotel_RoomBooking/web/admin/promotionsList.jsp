@@ -55,16 +55,21 @@
                     }
                 </style>
 
-                <div class="header-bg mb-4">
-                    <nav aria-label="breadcrumb" class="mb-3">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Promotions</li>
-                        </ol>
-                    </nav>
+                <div class="header-bg mb-4 p-3 rounded shadow-sm bg-light">
+              
 
+                    <!-- Dòng tiêu đề + nút -->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Khuyến Mãi</h1>
+                        <div class="d-flex align-items-center">
+                            <!-- Nút Home (icon) -->
+                            <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-secondary me-3">
+                                <i class="fas fa-home"></i>
+                            </a>
+                            <!-- Tiêu đề -->
+                            <h1 class="h3 mb-0">Quản lí Khuyến Mãi</h1>
+                        </div>
+
+                        <!-- Nút Thêm Khuyến Mãi -->
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
@@ -74,6 +79,7 @@
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Filter Section -->
                 <div class="card border-0 shadow-sm mb-4">
@@ -355,12 +361,12 @@
                 success: function (response) {
                     if (response === "duplicate") {
                         alert("Tên khuyến mãi đã tồn tại.");
-                    } else if(response === "invalidTitleFormat"){
+                    } else if (response === "invalidTitleFormat") {
                         alert("Tên không được chứa kí tự đặc biệt !");
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự.");
-                    } else if(response === "overlap"){
-                        alert("Thời gian khuyến mãi trùng với khuyến mãi hiện có ");   
+                    } else if (response === "overlap") {
+                        alert("Thời gian khuyến mãi trùng với khuyến mãi hiện có ");
                     } else if (response === "invalidPercentage") {
                         alert("Phần trăm khuyến mãi không hợp lệ.");
                     } else if (response === "startMustAfterLastEnd") {
@@ -405,10 +411,10 @@
                         location.reload();
                     } else if (response === "invalidDateRange") {
                         alert("Ngày bắt đầu phải lớn hơn ngày kết thúc !");
-                    } else if(response === "overlap"){
-                        alert("Khuyến mãi đã trùng với khuyến mãi hiện có !");   
-                    } else if(response ==="invalidTitleFormat"){
-                        alert("Tên khuyến mãi không được chứa các kí tự đăcj biệt !");    
+                    } else if (response === "overlap") {
+                        alert("Khuyến mãi đã trùng với khuyến mãi hiện có !");
+                    } else if (response === "invalidTitleFormat") {
+                        alert("Tên khuyến mãi không được chứa các kí tự đăcj biệt !");
                     } else if (response === "blankDescription") {
                         alert("Mô tả phải từ 10-100 ký tự !");
                     } else {

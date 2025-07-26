@@ -167,7 +167,7 @@ public class updateRoom extends HttpServlet {
                     out.write("invalidImage");
                     return;
                 }
-                String uploadPath = request.getServletContext().getRealPath("/images/rooms");
+                String uploadPath = request.getServletContext().getRealPath("/images/room");
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();

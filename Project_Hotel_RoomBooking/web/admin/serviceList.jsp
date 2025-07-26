@@ -35,13 +35,7 @@
             <!-- Main Content -->
             <div id="page-content-wrapper" class="flex-fill">
                 <!-- Top Navigation -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-secondary" id="menu-toggle">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                </nav>
+
 
                 <style>
                     .header-bg {
@@ -62,16 +56,27 @@
                     }
                 </style>
 
-                <div class="header-bg mb-4">
+                <div class="header-bg mb-4 p-3 rounded shadow-sm bg-light">
+                    <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb" class="mb-3">
-                        <ol class="breadcrumb custom-breadcrumb">
-                            <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Dịch Vụ</li>
+                        <ol class="breadcrumb custom-breadcrumb mb-0">
+                            <li></li>
+                            <li class="breadcrumb-item active" aria-current="page"></li>
                         </ol>
                     </nav>
 
+                    <!-- Dòng tiêu đề + nút -->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
+                        <div class="d-flex align-items-center">
+                            <!-- Nút Home -->
+                            <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-secondary me-3">
+                                <i class="fas fa-home"></i>
+                            </a>
+                            <!-- Tiêu đề -->
+                            <h1 class="h3 mb-0">Quản lí Dịch Vụ</h1>
+                        </div>
+
+                        <!-- Nút Thêm Dịch Vụ -->
                         <button
                             class="btn btn-primary"
                             data-bs-toggle="modal"
@@ -81,6 +86,7 @@
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Filter Section -->
                 <form action="serviceList" method="post" class="mb-4">
@@ -371,50 +377,50 @@
 
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
-                  // Khởi tạo CKEditor
-                  let editor;
-                  ClassicEditor
-                          .create(document.querySelector('#description'), {
-                              toolbar: [
-                                  'heading', '|',
-                                  'bold', 'italic', 'bulletedList', 'numberedList', '|',
-                                  'undo', 'redo'
-                              ]
-                          })
-                          .then(e => editor = e)
-                          .catch(error => console.error(error));
-                  // Gắn sự kiện khi form submit
-                  document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
-                      e.preventDefault(); // ❌ Chặn reload
+                                                              // Khởi tạo CKEditor
+                                                              let editor;
+                                                              ClassicEditor
+                                                                      .create(document.querySelector('#description'), {
+                                                                          toolbar: [
+                                                                              'heading', '|',
+                                                                              'bold', 'italic', 'bulletedList', 'numberedList', '|',
+                                                                              'undo', 'redo'
+                                                                          ]
+                                                                      })
+                                                                      .then(e => editor = e)
+                                                                      .catch(error => console.error(error));
+                                                              // Gắn sự kiện khi form submit
+                                                              document.querySelector("#addServiceModal form").addEventListener("submit", async function (e) {
+                                                                  e.preventDefault(); // ❌ Chặn reload
 
-                      const form = this;
-                      const formData = new FormData(form);
-                      formData.set("description", editor.getData());
-                      try {
-                          const response = await fetch("addService", {
-                              method: "POST",
-                              body: formData
-                          });
-                          const result = await response.text();
-                          if (result === "success") {
-                              alert("Thêm dịch vụ thành công!");
-                              location.reload();
-                          } else if (result === "duplicate") {
-                              alert("Tên dịch vụ đã tồn tại!");
-                          } else if (result === "invalidPrice") {
-                              alert("Giá phải bắt đầu từ 100000");
-                          } else if (result === "blankDescription") {
-                              alert("Mô tả Không được để trống !");
-                          } else if (result === "invalidNameFormat") {
-                              alert("Tên dịch vụ không hợp lệ !");
-                          } else {
-                              alert("Có lỗi xảy ra khi thêm dịch vụ.");
-                          }
-                      } catch (err) {
-                          alert("Lỗi kết nối máy chủ.");
-                          console.error(err);
-                      }
-                  });
+                                                                  const form = this;
+                                                                  const formData = new FormData(form);
+                                                                  formData.set("description", editor.getData());
+                                                                  try {
+                                                                      const response = await fetch("addService", {
+                                                                          method: "POST",
+                                                                          body: formData
+                                                                      });
+                                                                      const result = await response.text();
+                                                                      if (result === "success") {
+                                                                          alert("Thêm dịch vụ thành công!");
+                                                                          location.reload();
+                                                                      } else if (result === "duplicate") {
+                                                                          alert("Tên dịch vụ đã tồn tại!");
+                                                                      } else if (result === "invalidPrice") {
+                                                                          alert("Giá phải bắt đầu từ 100000");
+                                                                      } else if (result === "blankDescription") {
+                                                                          alert("Mô tả Không được để trống !");
+                                                                      } else if (result === "invalidNameFormat") {
+                                                                          alert("Tên dịch vụ không hợp lệ !");
+                                                                      } else {
+                                                                          alert("Có lỗi xảy ra khi thêm dịch vụ.");
+                                                                      }
+                                                                  } catch (err) {
+                                                                      alert("Lỗi kết nối máy chủ.");
+                                                                      console.error(err);
+                                                                  }
+                                                              });
     </script>
     <script>
         const ckeditors = {};
