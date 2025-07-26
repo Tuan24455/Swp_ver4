@@ -48,17 +48,18 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
 
                     <!-- Page Header -->
                     <div class="mb-4 p-3 rounded shadow-sm bg-light">
-                        <!-- Dòng breadcrumb -->
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-2">
-                                <li class="breadcrumb-item"><a href="dashboard.jsp">Home</a></li>
-
-                            </ol>
-                        </nav>
-
-                        <!-- Dòng tiêu đề + nút -->
+                        <!-- Dòng chứa nút Home + tiêu đề + nút Thêm -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <h1 class="h3 mb-0">Quản lí phòng</h1>
+                            <div class="d-flex align-items-center">
+                                <!-- Nút Home -->
+                                <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="btn btn-outline-secondary me-3">
+                                    <i class="fas fa-home"></i>
+                                </a>
+                                <!-- Tiêu đề -->
+                                <h1 class="h3 mb-0">Quản lí phòng</h1>
+                            </div>
+
+                            <!-- Nút Thêm phòng -->
                             <button
                                 class="btn btn-primary"
                                 data-bs-toggle="modal"
@@ -68,6 +69,7 @@ E<%@ page language="java" contentType="text/html; charset=UTF-8"
                             </button>
                         </div>
                     </div>
+
 
 
 
