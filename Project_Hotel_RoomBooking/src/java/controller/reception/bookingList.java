@@ -1,6 +1,8 @@
 package controller.reception;
 
 import dao.BookingDao;
+import dao.BookingRoomDetailsDao;
+import dao.RoomDao;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -9,6 +11,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Booking;
+import model.BookingRoomDetails;
+import model.Room;
 
 @WebServlet(name = "BookingListServlet", urlPatterns = {"/bookingList"})
 public class bookingList extends HttpServlet {
@@ -50,12 +54,23 @@ public class bookingList extends HttpServlet {
         try {
             int bookingId = Integer.parseInt(request.getParameter("bookingId"));
             BookingDao dao = new BookingDao();
+            BookingRoomDetailsDao brdao = new BookingRoomDetailsDao();
+            RoomDao rdao = new RoomDao();
             boolean ok = false;
             if ("checkin".equals(action)) {
                 ok = dao.updateBookingStatus(bookingId, "Check-in");
+                BookingRoomDetails details = brdao.getBookingRoomDetailsbyBookingId(bookingId);
+                Room crroom = rdao.getRoomById(details.getRoomId());
+                crroom.setRoomStatus("Occupied");
+                rdao.updateRoom(crroom);
                 msg = ok ? "Booking #" + bookingId + " check-in thành công" : "Booking #" + bookingId + " check-in thất bại";
             } else if ("checkout".equals(action)) {
                 ok = dao.updateBookingStatus(bookingId, "Check-out");
+                BookingRoomDetails details = brdao.getBookingRoomDetailsbyBookingId(bookingId);
+                Room crroom = rdao.getRoomById(details.getRoomId());
+                crroom.setRoomStatus("Available");
+                rdao.updateRoom(crroom);
+
                 msg = ok ? "Booking #" + bookingId + " checked out successfully." : "Failed to check out booking #" + bookingId + ".";
             }
             if (!ok) {

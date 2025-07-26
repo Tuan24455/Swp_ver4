@@ -247,18 +247,32 @@
         <div class="container py-5">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Lịch sử đặt dịch vụ</h2>
+                    <div class="booking-history-header text-center">
+                        <h2>Lịch sử đặt dịch vụ</h2>
+                        <p class="text-muted mb-4">Xem lại các dịch vụ bạn đã đặt, tìm kiếm nhanh theo tên dịch vụ.</p>
+                    </div>
+                    <!-- FORM SEARCH -->
+                    
 
                     <!-- FORM TÌM KIẾM -->
-                    <form action="ServicePaymentServlet" method="get" class="mb-4">
-                        <input type="hidden" name="action" value="history">
-                        <div class="input-group">
-                            <input type="text" name="search" 
-                                   class="form-control form-control-lg shadow-none"
-                                   placeholder="Tìm theo tên dịch vụ hoặc trạng thái..."
-                                   value="${fn:escapeXml(param.search)}"/>
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search me-2"></i>Tìm
+<form action="servicePayment" method="get" class="mb-4">
+    <input type="hidden" name="action" value="history">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; max-width: 420px; margin: 0 auto;">
+        <input type="text" name="search"
+               class="form-control form-control-lg shadow-none"
+               placeholder="Tìm theo tên dịch vụ..."
+               value="${fn:escapeXml(param.search)}"
+               style="height:48px; border-radius:8px;" />
+        <button class="btn btn-primary d-flex align-items-center justify-content-center" type="submit" style="width:48px; height:48px; border-radius:8px; font-size:1.2rem; padding:0;">
+            <i class="fas fa-search"></i>
+        </button>
+        <button class="btn btn-secondary d-flex align-items-center justify-content-center" type="button" style="width:48px; height:48px; border-radius:8px; font-size:1.2rem; padding:0;" onclick="window.location.href='servicePayment?action=history'">
+            <i class="fas fa-rotate-left"></i>
+        </button>
+    </div>
+</form>
+
+
                             </button>
                         </div>
                     </form>
@@ -331,7 +345,7 @@
                                 <!-- Nút Previous -->
                                 <li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
                                     <a class="page-link" href="?action=history&search=${fn:escapeXml(param.search)}&page=${currentPage - 1}">
-                                        <i class="fas fa-chevron-left"></i>
+                                        
                                     </a>
                                 </li>
 
